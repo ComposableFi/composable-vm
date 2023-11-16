@@ -7,8 +7,7 @@ jobs:
     runs-on: "ubuntu-latest-m"
     concurrency:  
       cancel-in-progress: true
-      group: "main"
-      
+      group: "main"      
     permissions:
       id-token: "write"
       contents: "read"
