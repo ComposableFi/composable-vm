@@ -24,7 +24,6 @@ cargo run --bin mantis --osmosis http://127.0.0.1:36657 --centauri http://127.0.
 
 # PLAN FOR TODAY
 
-1. all code compiles
 5. logs added
 2. simulator runs on devnet
 3. solver is called to mainnet
