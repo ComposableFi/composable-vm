@@ -12,10 +12,11 @@ use std::fmt::Write;
 async fn main() {
     let args = MantisArgs::parsed();
     let mut client = create_wasm_query_client(&args.centauri).await;
+    let mut write_client = create_wasm_write_client(&args.centauri).await;
 
     while (true) {
-        if let Some(assets) = args.simulate {
-            simulate_order(&mut write_client, args.order_contract, assets).await;
+        if let Some(assets) = args.simulate.clone() {
+            simulate_order(&mut write_client, args.order_contract.clone(), assets).await;
         };
     }
 }
@@ -31,7 +32,7 @@ async fn main() {
 /// timeout is also randomized starting from 10 to 100 blocks
 ///
 /// Also calls `timeout` so old orders are cleaned.
-async fn simulate_order(write_client: WriteClient, order_contract: String, assets: String) {
+async fn simulate_order(write_client: &mut WriteClient, order_contract: String, assets: String) {
     if std::time::Instant::now().elapsed().as_millis() % 10 == 0 {}
 }
 
@@ -42,10 +43,10 @@ async fn simulate_order(write_client: WriteClient, order_contract: String, asset
 /// gets data from chain pools/fees on osmosis and neutron
 /// gets CVM routing data
 /// uses cfmm algorithm
-async fn solve(read: ReadClient, write: WriteClient, order_contract: String, cvm_contract: String) {
+async fn solve(read: &mut  ReadClient, write: WriteClient, order_contract: String, cvm_contract: String) {
     let query = cw_mantis_order::QueryMsg::GetAllOrders {};
     let orders_request = QuerySmartContractStateRequest {
-        address: args.order_contract.clone(),
+        address: order_contract.clone(),
         query_data: serde_json_wasm::to_vec(&query).expect("json"),
     };
     let orders = read
@@ -56,13 +57,17 @@ async fn solve(read: ReadClient, write: WriteClient, order_contract: String, cvm
         .data;
     let orders: Vec<OrderItem> = serde_json_wasm::from_slice(&orders).expect("orders");
 
-    let orders = orders
-        .into_iter()
-        .group_by(|x| (x.given.denom, x.msg.wants.denom).into_iter().sorted());
-    for pair in orders {
+    let orders = orders.into_iter().group_by(|x| {
+        if x.given.denom < x.msg.wants.denom {
+            (x.given.denom.clone(), x.msg.wants.denom.clone())
+        } else {
+            (x.msg.wants.denom.clone(), x.given.denom.clone())
+        }
+    });
+    for (pair, orders) in orders.into_iter() {
         // solve here !
         // post solution
         // just print them for now
-        println!("orders: {:?}", orders);
+        println!("pair {pair:?} orders: {:?}", orders.collect::<Vec<_>>());
     }
 }
