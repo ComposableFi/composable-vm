@@ -43,7 +43,12 @@ async fn simulate_order(write_client: &mut WriteClient, order_contract: String, 
 /// gets data from chain pools/fees on osmosis and neutron
 /// gets CVM routing data
 /// uses cfmm algorithm
-async fn solve(read: &mut  ReadClient, write: WriteClient, order_contract: String, cvm_contract: String) {
+async fn solve(
+    read: &mut ReadClient,
+    write: WriteClient,
+    order_contract: String,
+    cvm_contract: String,
+) {
     let query = cw_mantis_order::QueryMsg::GetAllOrders {};
     let orders_request = QuerySmartContractStateRequest {
         address: order_contract.clone(),

@@ -131,6 +131,6 @@ impl<Id: Copy + PartialEq + Debug> OrderList<Id> {
             }
             order.fill(order.amount_in, price);
             filled.0 += order.amount_in;
-        }        
+        }
     }
 }

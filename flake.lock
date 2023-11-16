@@ -262,6 +262,22 @@
         "type": "github"
       }
     },
+    "devour-flake": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1699722684,
+        "narHash": "sha256-LapKkHNZ8D3k/uLaJjmGxx7GuYRinGBxEkIAGb/8pCo=",
+        "owner": "srid",
+        "repo": "devour-flake",
+        "rev": "c89ad7a611caef31899292bc8f9aae9e7aa251cb",
+        "type": "github"
+      },
+      "original": {
+        "owner": "srid",
+        "repo": "devour-flake",
+        "type": "github"
+      }
+    },
     "evmos-src": {
       "flake": false,
       "locked": {
@@ -1077,6 +1093,7 @@
       "inputs": {
         "cosmos": "cosmos",
         "crane": "crane",
+        "devour-flake": "devour-flake",
         "flake-parts": "flake-parts",
         "nixpkgs": "nixpkgs_2",
         "rust-overlay": "rust-overlay"

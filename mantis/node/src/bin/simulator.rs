@@ -9,7 +9,7 @@ fn main() {
         value: orders.collect(),
     };
     orders.print();
-    
+
     /// solves nothing as no really overlap of orders
     let mut solution = Solution::new(orders.value.clone());
     solution = solution.match_orders(Price::new_float(1.0));
@@ -23,7 +23,6 @@ fn main() {
     /// finds maximal volume price
     let optimal_price = orders.compute_optimal_price(50);
 
-    
     let mut solution = Solution::new(orders.value.clone());
     solution = solution.match_orders(optimal_price);
     solution.print();
