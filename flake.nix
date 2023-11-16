@@ -106,13 +106,13 @@
         formatter = pkgs.alejandra;
         packages = rec {
           inherit cw-mantis-order;
-          mantis-node = rust.buildPackage {
+          mantis = rust.buildPackage {
             src = rust-src;
-            pname = "mantis-node";
-            name = "mantis-node";
-            cargoBuildCommand = "cargo build --release --package mantis-node --bin mantis";
+            pname = "mantis";
+            name = "mantis";
+            cargoBuildCommand = "cargo build --release --bin mantis";
           };
-          default = mantis-node;
+          default = mantis;
           ci = pkgs.writeShellApplication {
             name = "nix-build-all";
             runtimeInputs = [
