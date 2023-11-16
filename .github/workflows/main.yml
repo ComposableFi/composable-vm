@@ -18,4 +18,5 @@ jobs:
       - uses: "DeterminateSystems/flakehub-push@main"
         with:
           visibility: "public"
+          rolling: true
       - run: nix run .#ci | cachix push composable
