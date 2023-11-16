@@ -9,18 +9,18 @@ use scale_info::TypeInfo;
 #[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 pub struct InterpreterOrigin {
-	pub user_origin: UserOrigin,
-	#[serde(with = "hex")]
-	#[cfg_attr(feature = "json-schema", schemars(with = "String"))]
-	pub salt: Vec<u8>,
+    pub user_origin: UserOrigin,
+    #[serde(with = "hex")]
+    #[cfg_attr(feature = "json-schema", schemars(with = "String"))]
+    pub salt: Vec<u8>,
 }
 
 impl Display for InterpreterOrigin {
-	#[inline]
-	fn fmt(&self, fmtr: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-		let salt = hex::encode(self.salt.as_slice());
-		core::write!(fmtr, "{}-{salt}", self.user_origin)
-	}
+    #[inline]
+    fn fmt(&self, fmtr: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        let salt = hex::encode(self.salt.as_slice());
+        core::write!(fmtr, "{}-{salt}", self.user_origin)
+    }
 }
 
 /// The origin of a user, which consist of the composite, origin network and origin network user id.
@@ -28,15 +28,15 @@ impl Display for InterpreterOrigin {
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 #[cfg_attr(feature = "scale", derive(TypeInfo, Encode, Decode))]
 pub struct UserOrigin {
-	pub network_id: NetworkId,
-	pub user_id: UserId,
+    pub network_id: NetworkId,
+    pub user_id: UserId,
 }
 
 impl Display for UserOrigin {
-	#[inline]
-	fn fmt(&self, fmtr: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-		core::write!(fmtr, "{}-{}", self.network_id, self.user_id)
-	}
+    #[inline]
+    fn fmt(&self, fmtr: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        core::write!(fmtr, "{}-{}", self.network_id, self.user_id)
+    }
 }
 
 /// Arbitrary `User` type that represent the identity of a user on a given network, usually a public
@@ -45,34 +45,34 @@ impl Display for UserOrigin {
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 #[repr(transparent)]
 pub struct UserId(
-	#[serde(with = "hex")]
-	#[cfg_attr(feature = "json-schema", schemars(with = "String"))]
-	pub Vec<u8>,
+    #[serde(with = "hex")]
+    #[cfg_attr(feature = "json-schema", schemars(with = "String"))]
+    pub Vec<u8>,
 );
 
 impl Display for UserId {
-	#[inline]
-	fn fmt(&self, fmtr: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-		hex::encode(self.0.as_slice()).fmt(fmtr)
-	}
+    #[inline]
+    fn fmt(&self, fmtr: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        hex::encode(self.0.as_slice()).fmt(fmtr)
+    }
 }
 
 impl From<Vec<u8>> for UserId {
-	fn from(x: Vec<u8>) -> Self {
-		Self(x)
-	}
+    fn from(x: Vec<u8>) -> Self {
+        Self(x)
+    }
 }
 
 impl From<UserId> for Vec<u8> {
-	fn from(UserId(x): UserId) -> Self {
-		x
-	}
+    fn from(UserId(x): UserId) -> Self {
+        x
+    }
 }
 
 impl AsRef<[u8]> for UserId {
-	fn as_ref(&self) -> &[u8] {
-		self.0.as_ref()
-	}
+    fn as_ref(&self) -> &[u8] {
+        self.0.as_ref()
+    }
 }
 
 /// Newtype for CVM networks ID. Must be unique for each network and must never change.
@@ -85,39 +85,39 @@ impl AsRef<[u8]> for UserId {
 pub struct NetworkId(pub u32);
 
 impl Display for NetworkId {
-	fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-		<u32 as Display>::fmt(&self.0, f)
-	}
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        <u32 as Display>::fmt(&self.0, f)
+    }
 }
 
 impl From<u32> for NetworkId {
-	fn from(x: u32) -> Self {
-		NetworkId(x)
-	}
+    fn from(x: u32) -> Self {
+        NetworkId(x)
+    }
 }
 
 impl From<NetworkId> for u32 {
-	fn from(network_id: NetworkId) -> Self {
-		network_id.0
-	}
+    fn from(network_id: NetworkId) -> Self {
+        network_id.0
+    }
 }
 
 impl From<Picasso> for NetworkId {
-	fn from(_: Picasso) -> Self {
-		Picasso::ID
-	}
+    fn from(_: Picasso) -> Self {
+        Picasso::ID
+    }
 }
 
 impl From<Ethereum> for NetworkId {
-	fn from(_: Ethereum) -> Self {
-		Ethereum::ID
-	}
+    fn from(_: Ethereum) -> Self {
+        Ethereum::ID
+    }
 }
 
 impl From<Centauri> for NetworkId {
-	fn from(_: Centauri) -> Self {
-		Centauri::ID
-	}
+    fn from(_: Centauri) -> Self {
+        Centauri::ID
+    }
 }
 
 /// The index 0 must not be used for safety purpose, we hence introduce an invalid network at this
@@ -135,50 +135,50 @@ pub struct Composable;
 
 /// Type implement network must be part of [`Networks`], otherwise invalid.
 pub trait Network {
-	const ID: NetworkId;
-	type EncodedCall;
+    const ID: NetworkId;
+    type EncodedCall;
 }
 
 impl Network for Picasso {
-	const ID: NetworkId = NetworkId(1);
-	type EncodedCall = Vec<u8>;
+    const ID: NetworkId = NetworkId(1);
+    type EncodedCall = Vec<u8>;
 }
 
 impl Network for Ethereum {
-	const ID: NetworkId = NetworkId(3);
-	type EncodedCall = Vec<u8>;
+    const ID: NetworkId = NetworkId(3);
+    type EncodedCall = Vec<u8>;
 }
 
 impl Network for Centauri {
-	const ID: NetworkId = NetworkId(2);
-	type EncodedCall = Vec<u8>;
+    const ID: NetworkId = NetworkId(2);
+    type EncodedCall = Vec<u8>;
 }
 
 #[cfg(test)]
 mod tests {
-	use super::*;
+    use super::*;
 
-	#[test]
-	fn network_ids() {
-		assert_eq!(Picasso::ID, NetworkId(1));
-		assert_eq!(Centauri::ID, NetworkId(2));
-		assert_eq!(Ethereum::ID, NetworkId(3));
-	}
+    #[test]
+    fn network_ids() {
+        assert_eq!(Picasso::ID, NetworkId(1));
+        assert_eq!(Centauri::ID, NetworkId(2));
+        assert_eq!(Ethereum::ID, NetworkId(3));
+    }
 
-	#[test]
-	fn test_serialisation() {
-		#[track_caller]
-		fn check<T>(want: &str, value: T)
-		where
-			T: for<'a> Deserialize<'a> + Serialize + core::fmt::Debug + PartialEq,
-		{
-			let serialised = serde_json_wasm::to_string(&value).unwrap();
-			assert_eq!(want, serialised);
-			let deserialised = serde_json_wasm::from_str::<T>(&serialised).unwrap();
-			assert_eq!(value, deserialised);
-		}
+    #[test]
+    fn test_serialisation() {
+        #[track_caller]
+        fn check<T>(want: &str, value: T)
+        where
+            T: for<'a> Deserialize<'a> + Serialize + core::fmt::Debug + PartialEq,
+        {
+            let serialised = serde_json_wasm::to_string(&value).unwrap();
+            assert_eq!(want, serialised);
+            let deserialised = serde_json_wasm::from_str::<T>(&serialised).unwrap();
+            assert_eq!(value, deserialised);
+        }
 
-		check("42", NetworkId(42));
-		check("\"616c696365\"", UserId(b"alice".to_vec()));
-	}
+        check("42", NetworkId(42));
+        check("\"616c696365\"", UserId(b"alice".to_vec()));
+    }
 }

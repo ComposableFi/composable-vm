@@ -1,7 +1,7 @@
 [package]
 edition = "2021"
 name = "cvm"
-version = "0.1.0"
+version = "0.2.0"
 
 [build-dependencies]
 prost-build = { workspace = true }
@@ -9,14 +9,14 @@ prost-build = { workspace = true }
 [dependencies]
 serde = { workspace = true, default-features = false }
 derive_more = { workspace = true, default-features = false }
-cosmwasm-std = { version = "^1.4.1", default-features = false, optional = true }
+cosmwasm-std = { workspace = true, default-features = false, optional = true }
 schemars = { workspace = true, default-features = false, optional = true }
 cosmwasm-schema = { workspace = true, default-features = false, optional = true }
 hex = { workspace = true, default-features = false }
 num = { workspace = true, default-features = false }
 
 [dev-dependencies]
-serde-json-wasm = { version = "1.0.0", default-features = false, features = [
+serde-json-wasm = { workspace = true, default-features = false, features = [
   "std",
 ] }
 
@@ -31,5 +31,5 @@ protobuf = []
 json-schema = ["dep:schemars", "cosmwasm-schema"]
 ibc = []
 evm = []
-serde = []
-std = ["derive_more/std"]
+serde = ["hex/serde"]
+std = []
