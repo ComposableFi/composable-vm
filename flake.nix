@@ -1,11 +1,25 @@
 {
-  description = "Description for the project";
+  description = "CVM and MANTIS";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    rust-overlay = {
+      url = "github:oxalica/rust-overlay";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    crane = {
+      url = "github:ipetkov/crane";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    cosmos = {
+      url =
+        "github:informalsystems/cosmos.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.rust-overlay.follows = "rust-overlay";
+    };
   };
 
-  outputs = inputs@{ flake-parts, ... }:
+  outputs = inputs@{ flake-parts, self, crane, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } {
       imports = [
         # To import a flake module
@@ -18,12 +32,43 @@
       perSystem = { config, self', inputs', pkgs, system, ... }:
 
         let
+          craneLib = crane.lib.${system};
+          rust-src = craneLib.cleanCargoSource (craneLib.path ./.);
+          rust-toolchain =
+            pkgs.rust-bin.fromRustupToolchainFile ./rust-toolchain.toml;
           rust = (self.inputs.crane.mkLib pkgs).overrideToolchain
-            (pkgs.rust-bin.stable."1.73.0".default.override {
-              targets = [ "wasm32-unknown-unknown" ];
+            rust-toolchain;
+          makeCosmwasmContract = name: rust: std-config:
+            let binaryName = "${builtins.replaceStrings [ "-" ] [ "_" ] name}.wasm";
+            in rust.buildPackage ({
+              src = rust-src;
+              pnameSuffix = "-${name}";
+              nativeBuildInputs = [
+                pkgs.binaryen
+                self.inputs.cosmos.packages.${system}.cosmwasm-check
+              ];
+              pname = name;
+              cargoBuildCommand =
+                "cargo build --target wasm32-unknown-unknown --profile release --package ${name} ${std-config}";
+              RUSTFLAGS = "-C link-arg=-s";
+              installPhaseCommand = ''
+                mkdir --parents $out/lib
+                # from CosmWasm/rust-optimizer
+                # --signext-lowering is needed to support blockchains runnning CosmWasm < 1.3. It can be removed eventually
+                wasm-opt target/wasm32-unknown-unknown/release/${binaryName} -o $out/lib/${binaryName} -Os --signext-lowering
+                cosmwasm-check $out/lib/${binaryName}
+              '';
             });
+
+          cw-mantis-order = makeCosmwasmContract "cw-mantis-order" rust "--no-default-features";
         in
         {
+          _module.args.pkgs = import self.inputs.nixpkgs {
+            inherit system;
+            overlays = with self.inputs; [
+              rust-overlay.overlays.default
+            ];
+          };
           devShells.default =
             let
               python-packages = ps: with ps; [ numpy cvxpy wheel virtualenv ];
@@ -43,13 +88,18 @@
               ];
             };
           # Equivalent to  inputs'.nixpkgs.legacyPackages.hello;
-          packages.default = pkgs.hello;
-        };
-      flake = {
-        # The usual flake attributes can be defined here, including system-
-        # agnostic ones like nixosModule and system-enumerating ones, although
-        # those are more easily expressed in perSystem.
+          packages = {
+            inherit cw-mantis-order;
+            default = rust.buildPackage {
+              src = rust-src;
+              pname = "mantis-node";
+            };
+          };
+          flake = {
+            # The usual flake attributes can be defined here, including system-
+            # agnostic ones like nixosModule and system-enumerating ones, although
+            # those are more easily expressed in perSystem.
 
-      };
-    };
-}
+          };
+        };
+    }
