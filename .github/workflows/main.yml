@@ -4,7 +4,7 @@ on:
       - "main"
 jobs:
   publish:
-    runs-on: "ubuntu-latest"
+    runs-on: "ubuntu-latest-m"
     concurrency:  
       cancel-in-progress: true
       group: "main"
@@ -15,8 +15,15 @@ jobs:
     steps:
       - uses: "actions/checkout@v3"
       - uses: "DeterminateSystems/nix-installer-action@main"
+      - uses: cachix/cachix-action@586bf280495080c5a6d4868237ad28a860e4b309
+        with:
+          authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
+          name: composable
+          installCommand: "true"
+          skipAddingSubstituter: false
+          skipPush: true
+      - run: nix run .#ci
       - uses: "DeterminateSystems/flakehub-push@main"
         with:
           visibility: "public"
-          rolling: true
-      - run: nix run .#ci | cachix push composable
+          rolling: true      
