@@ -3,7 +3,8 @@ name = "mantis-node"
 version = "0.1.0"
 edition = "2021"
 
-
+[[bin]]
+name = "mantis"
 
 [dependencies]
 cw-mantis-order = { path = "../../contracts/cosmwasm/order" }
