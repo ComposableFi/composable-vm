@@ -146,6 +146,7 @@ dist
 
 # Nix derivation output
 **/result/**
+result
 
 # Nix shell file system overlay (like chroot but per repo)
 .devenv/**

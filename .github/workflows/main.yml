@@ -1,10 +1,14 @@
 on:
   push:
-    tags:
-      - "*.*.*"
+    branches:
+      - "main"
 jobs:
   publish:
     runs-on: "ubuntu-latest"
+    concurrency:  
+      cancel-in-progress: true
+      group: "main"
+      
     permissions:
       id-token: "write"
       contents: "read"
@@ -14,3 +18,4 @@ jobs:
       - uses: "DeterminateSystems/flakehub-push@main"
         with:
           visibility: "public"
+      - run: nix run .#ci | cachix push composable
