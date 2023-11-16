@@ -31,7 +31,7 @@ pub struct MantisArgs {
 impl MantisArgs {
     pub fn parsed() -> Self {
         use clap::Parser;
-        let args = Self::parse();
-        args
+        
+        Self::parse()
     }
 }

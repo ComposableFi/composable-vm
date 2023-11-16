@@ -383,14 +383,14 @@ impl OrderContract<'_> {
             let spawn = if let Some(execute) = spawn.execute {
                 let program = Self::traverse_route(execute);
                 XcInstruction::Spawn {
-                    network_id: spawn.to_chain.into(),
+                    network_id: spawn.to_chain,
                     salt: b"solution".to_vec(),
                     assets: <_>::default(), // map spawn.carry to CVM assets
                     program,
                 }
             } else {
                 XcInstruction::Spawn {
-                    network_id: spawn.to_chain.into(),
+                    network_id: spawn.to_chain,
                     salt: b"solution".to_vec(),
                     assets: <_>::default(), // map spawn.carry to CVM assets
                     program: XcProgram {
@@ -620,7 +620,7 @@ fn solves_cows_via_bank(
     for order in all_orders.iter() {
         let cowed = order.solution.cow_amount;
         let amount = Coin {
-            amount: cowed.into(),
+            amount: cowed,
             ..order.given().clone()
         };
 

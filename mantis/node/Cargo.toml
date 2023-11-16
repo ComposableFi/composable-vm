@@ -3,6 +3,8 @@ name = "mantis-node"
 version = "0.1.0"
 edition = "2021"
 
+
+
 [dependencies]
 cw-mantis-order = { path = "../../contracts/cosmwasm/order" }
 clap = { workspace = true, features = ["derive"] }

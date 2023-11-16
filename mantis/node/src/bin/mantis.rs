@@ -1,20 +1,20 @@
 use cosmos_sdk_proto::cosmwasm::wasm::v1::QuerySmartContractStateRequest;
-use cosmrs::cosmwasm::*;
-use cosmrs::rpc::{Client, HttpClient, HttpClientUrl};
+
+
 use cw_mantis_order::OrderItem;
 use mantis_node::{
     mantis::{args::*, cosmos::*},
     prelude::*,
 };
-use std::fmt::Write;
+
 
 #[tokio::main]
 async fn main() {
     let args = MantisArgs::parsed();
-    let mut client = create_wasm_query_client(&args.centauri).await;
+    let _client = create_wasm_query_client(&args.centauri).await;
     let mut write_client = create_wasm_write_client(&args.centauri).await;
 
-    while (true) {
+    loop {
         if let Some(assets) = args.simulate.clone() {
             simulate_order(&mut write_client, args.order_contract.clone(), assets).await;
         };
@@ -32,7 +32,7 @@ async fn main() {
 /// timeout is also randomized starting from 10 to 100 blocks
 ///
 /// Also calls `timeout` so old orders are cleaned.
-async fn simulate_order(write_client: &mut WriteClient, order_contract: String, assets: String) {
+async fn simulate_order(_write_client: &mut WriteClient, _order_contract: String, _assets: String) {
     if std::time::Instant::now().elapsed().as_millis() % 10 == 0 {}
 }
 
@@ -45,9 +45,9 @@ async fn simulate_order(write_client: &mut WriteClient, order_contract: String, 
 /// uses cfmm algorithm
 async fn solve(
     read: &mut ReadClient,
-    write: WriteClient,
+    _write: WriteClient,
     order_contract: String,
-    cvm_contract: String,
+    _cvm_contract: String,
 ) {
     let query = cw_mantis_order::QueryMsg::GetAllOrders {};
     let orders_request = QuerySmartContractStateRequest {

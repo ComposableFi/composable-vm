@@ -100,7 +100,7 @@ impl<Id: Copy + PartialEq + Debug> Solution<Id> {
                 .into_iter()
                 .collect(),
         };
-        let mut solution = Solution::new(matched.filled().value);
+        let solution = Solution::new(matched.filled().value);
 
         solution.check_constraints();
         solution
