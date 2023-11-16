@@ -1,0 +1,34 @@
+[package]
+name = "cw-mantis-order"
+version = "0.2.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+cosmwasm-std = { workspce = true, features = [
+  "iterator",
+], default-features = false }
+cw-controllers = { workspce = true, default-features = false }
+sylvia = { workspce = true, default-features = false }
+schemars = { workspace = true, default-features = false, optional = true }
+cosmwasm-schema = { workspce = true, default-features = false }
+serde = { workspace = true, default-features = false }
+cw-storage-plus = { workspce = true, features = [
+  "iterator",
+], default-features = false }
+itertools = { workspace = true, features = [
+  "use_std",
+], default-features = false }
+num-rational = { workspce = true, default-features = false, features = [
+  "num-bigint-std",
+  "std",
+] }
+num-integer = { workspce = true, default-features = false, features = ["std"] }
+
+cvm = { path = "../../../crates/cvm", default-features = false, features = [
+  "cosmwasm",
+  "std",
+  "json-schema",
+] }
