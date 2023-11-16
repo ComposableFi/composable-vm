@@ -20,7 +20,7 @@ jobs:
           name: composable
           installCommand: "true"
           skipAddingSubstituter: false
-          skipPush: true
+          skipPush: false
       - run: nix run .#ci
       - uses: "DeterminateSystems/flakehub-push@main"
         with:
