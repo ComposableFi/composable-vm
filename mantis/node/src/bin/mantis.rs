@@ -36,11 +36,9 @@ async fn main() {
         let rpc_client: cosmrs::rpc::HttpClient =
             cosmrs::rpc::HttpClient::new(args.rpc_centauri.as_ref()).unwrap();
         let status = rpc_client.status().await.expect("status").sync_info;
-
         println!("status: {:?}", status);
-        let mut cosmos_query_client = create_cosmos_query_client(&args.rpc_centauri).await;
-        let mut write_client = create_wasm_write_client(&args.rpc_centauri).await;
-        let acc = query_cosmos_account(
+
+        let account = query_cosmos_account(
             &args.grpc_centauri,
             signer
                 .public_key()
@@ -49,7 +47,14 @@ async fn main() {
                 .to_string(),
         )
         .await;
-        println!("acc: {:?}", acc);
+        println!("account: {:?}", account);
+
+        let mut cosmos_query_client = create_cosmos_query_client(&args.rpc_centauri).await;
+        print!("client 1");
+        let mut write_client = create_wasm_write_client(&args.rpc_centauri).await;
+        print!("client 2");
+        
+        println!("acc: {:?}", account);
         if let Some(assets) = args.simulate.clone() {
             simulate_order(
                 &mut write_client,
@@ -57,7 +62,7 @@ async fn main() {
                 args.order_contract.clone(),
                 assets,
                 &signer,
-                acc,
+                account,
                 &args.rpc_centauri,
             )
             .await;
