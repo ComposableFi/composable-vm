@@ -20,6 +20,7 @@ async fn main() {
 
 
 
+
     let mut write_client = create_wasm_write_client(&args.centauri).await;
 
     loop {
@@ -40,11 +41,11 @@ async fn main() {
 /// timeout is also randomized starting from 10 to 100 blocks
 ///
 /// Also calls `timeout` so old orders are cleaned.
-async fn simulate_order(write_client: &mut CosmWasmWriteClient, order_contract: String, _assets: String) {
-    if std::time::Instant::now().elapsed().as_millis() % 10 == 0 {
+async fn simulate_order(write_client: &mut CosmWasmWriteClient, order_contract: String, asset: String, key : cosmrs::crypto::secp256k1::SigningKey) {
+    if std::time::Instant::now().elapsed().as_millis() % 100 == 0 {
         
         let msg = MsgExecuteContract {
-            sender: todo!(),
+            sender: key.public_key(),
             contract: todo!(),
             msg: todo!(),
             funds: todo!(),
