@@ -1,7 +1,17 @@
-use cosmos_sdk_proto::cosmwasm::wasm::v1::QuerySmartContractStateRequest;
+use cosmos_sdk_proto::{
+    cosmos::base::v1beta1::Coin,
+    cosmwasm::{self, wasm::v1::QuerySmartContractStateRequest},
+};
+use cosmrs::tx::Msg;
+use cosmos_sdk_proto::{traits::Message, Any};
 
-use cosmrs::{cosmwasm::MsgExecuteContract, rpc::Client};
-use cw_mantis_order::OrderItem;
+use cosmrs::{
+    cosmwasm::MsgExecuteContract,
+    rpc::Client,
+    tx::{Fee, SignerInfo, self},
+    AccountId,
+};
+use cw_mantis_order::{OrderItem, OrderSubMsg};
 use mantis_node::{
     mantis::{args::*, cosmos::*},
     prelude::*,
@@ -10,7 +20,8 @@ use mantis_node::{
 #[tokio::main]
 async fn main() {
     let args = MantisArgs::parsed();
-    let read_client = create_wasm_query_client(&args.centauri).await;
+    let wasm_read_client = create_wasm_query_client(&args.centauri).await;
+    let mut cosmos_query_client = create_cosmos_query_client(&args.centauri).await;
 
     let signer = mantis_node::mantis::beaker::cli::support::signer::from_mnemonic(
         args.wallet.as_str(),
@@ -18,14 +29,27 @@ async fn main() {
     )
     .expect("mnemonic");
 
-
-
-
     let mut write_client = create_wasm_write_client(&args.centauri).await;
-
     loop {
+        let account = query_cosmos_account(
+            &args.centauri,
+            signer
+                .public_key()
+                .account_id("centauri")
+                .expect("key")
+                .to_string(),
+        )
+        .await;
         if let Some(assets) = args.simulate.clone() {
-            simulate_order(&mut write_client, args.order_contract.clone(), assets).await;
+            simulate_order(
+                &mut write_client,
+                &mut cosmos_query_client,
+                args.order_contract.clone(),
+                assets,
+                &signer,
+                account.sequence,
+            )
+            .await;
         };
     }
 }
@@ -41,16 +65,48 @@ async fn main() {
 /// timeout is also randomized starting from 10 to 100 blocks
 ///
 /// Also calls `timeout` so old orders are cleaned.
-async fn simulate_order(write_client: &mut CosmWasmWriteClient, order_contract: String, asset: String, key : cosmrs::crypto::secp256k1::SigningKey) {
+async fn simulate_order(
+    write_client: &mut CosmWasmWriteClient,
+    cosmos_query_client: &mut CosmosQueryClient,
+    order_contract: String,
+    asset: String,
+    signing_key: &cosmrs::crypto::secp256k1::SigningKey,
+    sequence: u64,
+) {
     if std::time::Instant::now().elapsed().as_millis() % 100 == 0 {
-        
-        let msg = MsgExecuteContract {
-            sender: key.public_key(),
-            contract: todo!(),
-            msg: todo!(),
-            funds: todo!(),
-        };
+        let auth_info = SignerInfo::single_direct(Some(signing_key.public_key()), sequence)
+            .auth_info(Fee {
+                amount: vec![],
+                gas_limit: 100_000_000,
+                payer: None,
+                granter: None,
+            });
 
+        let msg = MsgExecuteContract {
+            sender: signing_key
+                .public_key()
+                .account_id("centauri")
+                .expect("account"),
+            contract: AccountId::from_str(&order_contract).expect("contract"),
+            msg: serde_json_wasm::to_vec(&cw_mantis_order::ExecMsg::Order {
+                msg: OrderSubMsg {
+                    wants: cosmwasm_std::Coin {
+                        amount: 1000u128.into(),
+                        denom: asset.to_string(),
+                    },
+                    transfer: None,
+                    timeout: todo!(),
+                    min_fill: None,
+                },
+            })
+            .expect("json"),
+            funds: vec![cosmrs::Coin {
+                amount: 1000u128.into(),
+                denom: cosmrs::Denom::from_str("ppica").expect("denom"),
+            }],
+        };
+        let msg = msg.to_any().expect("proto");
+        let tx_body = tx::Body::new(vec![msg], "mantis-solver", 14);
         //let result = write_client.execute_contract(request).await.expect("executed");
     }
 }

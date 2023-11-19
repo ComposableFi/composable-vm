@@ -1377,6 +1377,7 @@ dependencies = [
  "clap",
  "cosmos-sdk-proto",
  "cosmrs",
+ "cosmwasm-std",
  "cw-mantis-order",
  "derive_more",
  "itertools 0.12.0",

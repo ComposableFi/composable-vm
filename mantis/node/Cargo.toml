@@ -26,3 +26,4 @@ itertools = { workspace = true }
 derive_more = { workspace = true }
 serde-json-wasm = { workspace = true }
 tuples = { workspace = true }
+cosmwasm-std = {workspace = true}
