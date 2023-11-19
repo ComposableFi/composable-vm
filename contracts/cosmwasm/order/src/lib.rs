@@ -1,6 +1,11 @@
 #![allow(clippy::disallowed_methods)] // does unwrap inside
 #![allow(deprecated)] // sylvia macro
 
+mod types;
+mod prelude;
+
+pub use types::*;
+
 pub use crate::sv::{ExecMsg, QueryMsg};
 use cosmwasm_schema::{cw_serde, schemars};
 use cosmwasm_std::{
@@ -23,7 +28,7 @@ use num_rational::BigRational;
 
 use cvm::network::NetworkId;
 pub type Amount = Uint128;
-pub type OrderId = Uint128;
+
 
 /// block moment (analog of timestamp)
 pub type Block = u64;
@@ -67,14 +72,6 @@ pub struct OrderSubMsg {
     pub timeout: Block,
     /// if ok with partial fill, what is the minimum amount
     pub min_fill: Option<Ratio>,
-}
-
-#[cw_serde]
-pub struct OrderItem {
-    pub owner: Addr,
-    pub msg: OrderSubMsg,
-    pub given: Coin,
-    pub order_id: OrderId,
 }
 
 #[cw_serde]
@@ -309,7 +306,7 @@ impl OrderContract<'_> {
         _orders: Vec<OrderId>,
         _solutions: Vec<Addr>,
     ) -> StdResult<Response> {
-        let orders: Vec<_> = self
+        let orders: Result<Vec<(u128,OrderItem)>, _> = self
             .orders
             .range(ctx.deps.storage, None, None, Order::Ascending)
             .filter(|x| {
@@ -317,10 +314,24 @@ impl OrderContract<'_> {
                 order.msg.timeout < ctx.env.block.height
             })
             .collect();
-        for order in orders {
-            self.orders.remove(ctx.deps.storage, order?.0);
+        let mut msgs = vec![];
+        for order in orders? {
+            self.orders.remove(ctx.deps.storage, order.0);
+            let msg = BankMsg::Send { amount :  [order.1.given].to_vec(), to_address: order.1.owner.to_string() };
+            msgs.push(msg);
         }
-        Ok(Response::default())
+        Ok(Response::default().add_messages(msgs))
+    }
+
+    /// Allow admin to move stuck funds. 
+    #[msg(exec)]
+    pub fn force_transfer(&self, ctx: ExecCtx, amount: Vec<Coin>, to_address: String) -> StdResult<Response> {
+        ensure!(
+            self.admin.is_admin(ctx.deps.as_ref(), &ctx.info.sender)?,
+            StdError::generic_err("only admin can call this")
+        );
+        let msg: BankMsg = BankMsg::Send { to_address, amount };
+        Ok(Response::default().add_message(msg))
     }
 
     /// until order/solution in execution can cancel
@@ -578,10 +589,7 @@ impl OrderContract<'_> {
         let mut results = vec![];
         for (transfer, order) in cows.into_iter() {
             let mut order: OrderItem = self.orders.load(storage, order.u128())?;
-
-            order.msg.wants.amount -= transfer.amount;
-            order.given.amount -= transfer.amount * order.given.amount / order.msg.wants.amount;
-
+            order.fill(&transfer);
             let event = if order.given.amount.is_zero() {
                 self.orders.remove(storage, order.order_id.u128());
                 Event::new("mantis-order-filled-full")
