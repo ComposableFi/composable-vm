@@ -3,9 +3,6 @@ use crate::prelude::*;
 use cosmos_sdk_proto::cosmwasm::wasm::v1::msg_client::MsgClient;
 use cosmos_sdk_proto::cosmwasm::wasm::v1::query_client::QueryClient;
 
-
-
-
 use tonic::transport::Channel;
 
 pub type WriteClient = MsgClient<Channel>;

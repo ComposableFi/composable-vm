@@ -1,12 +1,10 @@
 use cosmos_sdk_proto::cosmwasm::wasm::v1::QuerySmartContractStateRequest;
 
-
 use cw_mantis_order::OrderItem;
 use mantis_node::{
     mantis::{args::*, cosmos::*},
     prelude::*,
 };
-
 
 #[tokio::main]
 async fn main() {
