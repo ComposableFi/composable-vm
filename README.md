@@ -7,6 +7,11 @@ For `issues` and `high level docs` go to `ComposableFi/composable` repo
 
 ## Plan for today
 
-1. Buy shit coin
-2. Transfer to Centauri
 3. Start simulator.
+4. Split coin
+5. Randomize
+6. Make TX
+7. Converts to Input and output back
+8. TX solution.
+6. Run for a while.
+7. Deploy

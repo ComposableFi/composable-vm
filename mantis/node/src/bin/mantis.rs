@@ -1,5 +1,6 @@
 use cosmos_sdk_proto::cosmwasm::wasm::v1::QuerySmartContractStateRequest;
 
+use cosmrs::{cosmwasm::MsgExecuteContract, rpc::Client};
 use cw_mantis_order::OrderItem;
 use mantis_node::{
     mantis::{args::*, cosmos::*},
@@ -9,7 +10,16 @@ use mantis_node::{
 #[tokio::main]
 async fn main() {
     let args = MantisArgs::parsed();
-    let _client = create_wasm_query_client(&args.centauri).await;
+    let read_client = create_wasm_query_client(&args.centauri).await;
+
+    let signer = mantis_node::mantis::beaker::cli::support::signer::from_mnemonic(
+        args.wallet.as_str(),
+        "centauri",
+    )
+    .expect("mnemonic");
+
+
+
     let mut write_client = create_wasm_write_client(&args.centauri).await;
 
     loop {
@@ -30,8 +40,18 @@ async fn main() {
 /// timeout is also randomized starting from 10 to 100 blocks
 ///
 /// Also calls `timeout` so old orders are cleaned.
-async fn simulate_order(_write_client: &mut WriteClient, _order_contract: String, _assets: String) {
-    if std::time::Instant::now().elapsed().as_millis() % 10 == 0 {}
+async fn simulate_order(write_client: &mut CosmWasmWriteClient, order_contract: String, _assets: String) {
+    if std::time::Instant::now().elapsed().as_millis() % 10 == 0 {
+        
+        let msg = MsgExecuteContract {
+            sender: todo!(),
+            contract: todo!(),
+            msg: todo!(),
+            funds: todo!(),
+        };
+
+        //let result = write_client.execute_contract(request).await.expect("executed");
+    }
 }
 
 /// gets orders, groups by pairs
@@ -42,8 +62,8 @@ async fn simulate_order(_write_client: &mut WriteClient, _order_contract: String
 /// gets CVM routing data
 /// uses cfmm algorithm
 async fn solve(
-    read: &mut ReadClient,
-    _write: WriteClient,
+    read: &mut CosmWasmReadClient,
+    _write: CosmWasmWriteClient,
     order_contract: String,
     _cvm_contract: String,
 ) {
