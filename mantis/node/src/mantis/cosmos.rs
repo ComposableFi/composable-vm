@@ -13,6 +13,7 @@ pub type CosmosQueryClient =
 pub async fn create_cosmos_query_client(rpc: &str) -> CosmosQueryClient {
     use cosmos_sdk_proto::cosmos::auth::v1beta1::query_client::*;
     use cosmos_sdk_proto::cosmos::auth::v1beta1::*;
+
     let url = tonic::transport::Endpoint::from_str(rpc).expect("url");
     QueryClient::connect(url).await.expect("connected")
 }
