@@ -27,6 +27,7 @@ pub async fn query_cosmos_account(rpc: &str, address : String) -> cosmos_sdk_pro
     BaseAccount::decode(account.account.expect("some").value.as_slice()).expect("decode")
 }
 
+
 pub async fn create_wasm_query_client(rpc: &str) -> CosmWasmReadClient {
     let url = tonic::transport::Endpoint::from_str(rpc).expect("url");
     cosmos_sdk_proto::cosmwasm::wasm::v1::query_client::QueryClient::connect(url)

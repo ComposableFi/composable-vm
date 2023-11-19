@@ -15,3 +15,8 @@ For `issues` and `high level docs` go to `ComposableFi/composable` repo
 8. TX solution.
 6. Run for a while.
 7. Deploy
+
+
+# CFMM
+
+- query 
