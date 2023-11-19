@@ -1,14 +1,17 @@
 use cosmos_sdk_proto::{
-    cosmos::base::v1beta1::Coin,
+    cosmos::{auth::v1beta1::BaseAccount, base::v1beta1::Coin},
     cosmwasm::{self, wasm::v1::QuerySmartContractStateRequest},
 };
-use cosmrs::tx::Msg;
 use cosmos_sdk_proto::{traits::Message, Any};
+use cosmrs::{
+    tendermint::chain,
+    tx::{Msg, SignDoc},
+};
 
 use cosmrs::{
     cosmwasm::MsgExecuteContract,
     rpc::Client,
-    tx::{Fee, SignerInfo, self},
+    tx::{self, Fee, SignerInfo},
     AccountId,
 };
 use cw_mantis_order::{OrderItem, OrderSubMsg};
@@ -31,7 +34,7 @@ async fn main() {
 
     let mut write_client = create_wasm_write_client(&args.centauri).await;
     loop {
-        let account = query_cosmos_account(
+        let acc = query_cosmos_account(
             &args.centauri,
             signer
                 .public_key()
@@ -47,7 +50,8 @@ async fn main() {
                 args.order_contract.clone(),
                 assets,
                 &signer,
-                account.sequence,
+                acc,
+                &args.centauri,
             )
             .await;
         };
@@ -71,16 +75,26 @@ async fn simulate_order(
     order_contract: String,
     asset: String,
     signing_key: &cosmrs::crypto::secp256k1::SigningKey,
-    sequence: u64,
+    acc: BaseAccount,
+    rpc: &str,
 ) {
     if std::time::Instant::now().elapsed().as_millis() % 100 == 0 {
-        let auth_info = SignerInfo::single_direct(Some(signing_key.public_key()), sequence)
+        let auth_info = SignerInfo::single_direct(Some(signing_key.public_key()), acc.sequence)
             .auth_info(Fee {
                 amount: vec![],
                 gas_limit: 100_000_000,
                 payer: None,
                 granter: None,
             });
+
+        use cosmrs::tendermint::block::Height;
+        let rpc_client: cosmrs::rpc::HttpClient = cosmrs::rpc::HttpClient::new(rpc).unwrap();
+        let status = rpc_client
+            .status()
+            .await
+            .expect("status")
+            .sync_info
+            .latest_block_height;
 
         let msg = MsgExecuteContract {
             sender: signing_key
@@ -95,7 +109,7 @@ async fn simulate_order(
                         denom: asset.to_string(),
                     },
                     transfer: None,
-                    timeout: todo!(),
+                    timeout: status.value() + 100,
                     min_fill: None,
                 },
             })
@@ -106,7 +120,29 @@ async fn simulate_order(
             }],
         };
         let msg = msg.to_any().expect("proto");
-        let tx_body = tx::Body::new(vec![msg], "mantis-solver", 14);
+
+        let tx_body = tx::Body::new(
+            vec![msg],
+            "mantis-solver",
+            Height::try_from(status.value() + 100).unwrap(),
+        );
+
+        let sign_doc = SignDoc::new(
+            &tx_body,
+            &auth_info,
+            &chain::Id::try_from("centauri-1").expect("id"),
+            acc.account_number,
+        )
+        .unwrap();
+
+        let tx_raw = sign_doc.sign(&signing_key).unwrap();
+        let result = tx_raw
+            .broadcast_commit(&rpc_client)
+            .await
+            .expect("broadcasted");
+        assert!(!result.check_tx.code.is_err(), "err");
+        assert!(!result.tx_result.code.is_err(), "err");
+
         //let result = write_client.execute_contract(request).await.expect("executed");
     }
 }
