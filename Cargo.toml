@@ -50,7 +50,7 @@ num-integer = { version = "^0.1.45", default-features = false }
 serde-json-wasm = { version = "^1.0.0", default-features = false }
 
 clap = { version = "^4.4.8", features = ["derive"] }
-cosmrs = { version = "^0.15.0", features = ["cosmwasm", "rpc", "grpc"] }
+cosmrs = { version = "^0.15.0", features = ["cosmwasm", "rpc", "grpc", "bip32", "dev"] }
 tokio = { version = "^1.34.0", features = ["full"] }
 cosmos-sdk-proto = { version = "^0.20.0", features = ["grpc-transport"] }
 tonic = { version = "^0.10.2" }
@@ -61,3 +61,6 @@ rand_distr = "^0.4.3"
 strum = "^0.25"
 strum_macros = "^0.25"
 tuples = { version = "^1.12.0" }
+
+
+bip32 = { version = "^0.5.1", default-features = false, features = ["alloc", "secp256k1", "mnemonic", "bip39"] }

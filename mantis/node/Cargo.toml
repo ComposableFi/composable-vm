@@ -9,7 +9,10 @@ name = "mantis"
 [dependencies]
 cw-mantis-order = { path = "../../contracts/cosmwasm/order" }
 clap = { workspace = true, features = ["derive"] }
-cosmrs = { workspace = true, features = ["cosmwasm", "rpc", "grpc"] }
+cosmrs = { workspace = true}
+bip32 = { workspace = true}
+
+
 tokio = { workspace = true, features = ["full"] }
 cosmos-sdk-proto = { workspace = true, features = ["grpc-transport"] }
 tonic = { workspace = true }
