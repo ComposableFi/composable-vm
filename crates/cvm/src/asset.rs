@@ -200,7 +200,7 @@ impl Amount {
                 .ok_or(ArithmeticError::Underflow)?
                 .checked_div(Self::MAX_PARTS.into())
                 .ok_or(ArithmeticError::Overflow)?;
-            
+
             value
                 .checked_add(self.intercept.0)
                 .ok_or(ArithmeticError::Overflow)?
@@ -234,7 +234,7 @@ impl Amount {
                         .ok_or(ArithmeticError::Overflow)?,
                 )
                 .ok_or(ArithmeticError::Overflow)?;
-            
+
             value
                 .checked_mul(10_u128.pow(decimals as u32))
                 .ok_or(ArithmeticError::Overflow)?

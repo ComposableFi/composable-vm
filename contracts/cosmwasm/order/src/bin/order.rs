@@ -3,7 +3,7 @@
 fn main() {
     use cosmwasm_schema::write_api;
     use cw_mantis_order::sv::*;
-    
+
     write_api! {
         instantiate: InstantiateMsg,
         query: QueryMsg,

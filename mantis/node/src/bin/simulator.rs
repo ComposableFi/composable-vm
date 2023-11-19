@@ -1,4 +1,3 @@
-
 use mantis_node::solver::{orderbook::OrderList, solution::Solution, types::Order};
 use mantis_node::{prelude::*, solver::types::Price};
 
