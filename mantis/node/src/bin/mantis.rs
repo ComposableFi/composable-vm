@@ -23,19 +23,25 @@ use mantis_node::{
 #[tokio::main]
 async fn main() {
     let args = MantisArgs::parsed();
-    let wasm_read_client = create_wasm_query_client(&args.centauri).await;
-    let mut cosmos_query_client = create_cosmos_query_client(&args.centauri).await;
+    println!("args: {:?}", args);
+    let wasm_read_client = create_wasm_query_client(&args.rpc_centauri).await;
 
     let signer = mantis_node::mantis::beaker::cli::support::signer::from_mnemonic(
         args.wallet.as_str(),
-        "centauri",
+        "m/44'/118'/0'/0/0",
     )
     .expect("mnemonic");
 
-    let mut write_client = create_wasm_write_client(&args.centauri).await;
     loop {
+        let rpc_client: cosmrs::rpc::HttpClient =
+            cosmrs::rpc::HttpClient::new(args.rpc_centauri.as_ref()).unwrap();
+        let status = rpc_client.status().await.expect("status").sync_info;
+
+        println!("status: {:?}", status);
+        let mut cosmos_query_client = create_cosmos_query_client(&args.rpc_centauri).await;
+        let mut write_client = create_wasm_write_client(&args.rpc_centauri).await;
         let acc = query_cosmos_account(
-            &args.centauri,
+            &args.grpc_centauri,
             signer
                 .public_key()
                 .account_id("centauri")
@@ -43,6 +49,7 @@ async fn main() {
                 .to_string(),
         )
         .await;
+        println!("acc: {:?}", acc);
         if let Some(assets) = args.simulate.clone() {
             simulate_order(
                 &mut write_client,
@@ -51,7 +58,7 @@ async fn main() {
                 assets,
                 &signer,
                 acc,
-                &args.centauri,
+                &args.rpc_centauri,
             )
             .await;
         };
