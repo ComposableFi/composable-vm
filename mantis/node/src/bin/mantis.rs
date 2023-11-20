@@ -53,7 +53,7 @@ async fn main() {
         print!("client 1");
         let mut write_client = create_wasm_write_client(&args.rpc_centauri).await;
         print!("client 2");
-        
+
         println!("acc: {:?}", account);
         if let Some(assets) = args.simulate.clone() {
             simulate_order(
@@ -90,11 +90,21 @@ async fn simulate_order(
     acc: BaseAccount,
     rpc: &str,
 ) {
+    let coins: Vec<_> = asset
+        .split(',')
+        .map(|x| cosmwasm_std::Coin::from_str(x).expect("coin"))
+        .collect();
+
     if std::time::Instant::now().elapsed().as_millis() % 100 == 0 {
         let auth_info = SignerInfo::single_direct(Some(signing_key.public_key()), acc.sequence)
             .auth_info(Fee {
-                amount: vec![],
-                gas_limit: 100_000_000,
+                amount: vec![
+                    cosmrs::Coin {
+                        amount: 10,
+                        denom: cosmrs::Denom::from_str("ppica").expect("denom"),
+                    }
+                ],
+                gas_limit: 1_000_000,
                 payer: None,
                 granter: None,
             });
@@ -108,27 +118,28 @@ async fn simulate_order(
             .sync_info
             .latest_block_height;
 
+        let msg = cw_mantis_order::ExecMsg::Order {
+            msg: OrderSubMsg {
+                wants: cosmwasm_std::Coin {
+                    amount: coins[0].amount,
+                    denom: coins[0].denom.clone(),
+                },
+                transfer: None,
+                timeout: status.value() + 100,
+                min_fill: None,
+            },
+        };
+        println!("msg: {:?}", msg);
         let msg = MsgExecuteContract {
             sender: signing_key
                 .public_key()
                 .account_id("centauri")
                 .expect("account"),
             contract: AccountId::from_str(&order_contract).expect("contract"),
-            msg: serde_json_wasm::to_vec(&cw_mantis_order::ExecMsg::Order {
-                msg: OrderSubMsg {
-                    wants: cosmwasm_std::Coin {
-                        amount: 1000u128.into(),
-                        denom: asset.to_string(),
-                    },
-                    transfer: None,
-                    timeout: status.value() + 100,
-                    min_fill: None,
-                },
-            })
-            .expect("json"),
+            msg: serde_json_wasm::to_vec(&msg).expect("json"),
             funds: vec![cosmrs::Coin {
-                amount: 1000u128.into(),
-                denom: cosmrs::Denom::from_str("ppica").expect("denom"),
+                amount: coins[1].amount.into(),
+                denom: cosmrs::Denom::from_str(&coins[1].denom).expect("denom"),
             }],
         };
         let msg = msg.to_any().expect("proto");
@@ -152,10 +163,11 @@ async fn simulate_order(
             .broadcast_commit(&rpc_client)
             .await
             .expect("broadcasted");
+        println!("result: {:?}", result);
         assert!(!result.check_tx.code.is_err(), "err");
         assert!(!result.tx_result.code.is_err(), "err");
 
-        //let result = write_client.execute_contract(request).await.expect("executed");
+        // here parse contract result for its response
     }
 }
 

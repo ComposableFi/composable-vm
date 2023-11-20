@@ -1,0 +1,44 @@
+{
+    "terraform.languageServer.rootModules": [
+      "/terraform/github",
+    ],
+    "files.exclude": {
+      "**/tmp/**": true,
+      "**/node_modules/**": true,
+      "**/.git/objects/**": true,
+      "**/.devenv/**": true,
+      "**/data/**": true,
+    },
+    "files.watcherExclude": {
+      "**/.git/objects/**": true,
+      "**/.git/subtree-cache/**": true,
+      "**/node_modules/**": true,
+      "**/tmp/**": true,
+      "**/dist/**": true,
+      "**/target/**": true,
+      "**/result/**": true,
+      "**/.devenv/**": true,
+      "**/data/**": true,
+    },
+    "search.exclude": {
+      "**/result/**": true,
+      "**/node_modules/**": true,
+      "**/dist/**": true,
+      "**/tmp/**": true,
+      "**/.git/objects/**": true,
+      "**/.git/subtree-cache/**": true,
+      "**/.devenv/**": true,
+      "**/data/**": true,
+    },
+    "extensions.autoCheckUpdates": false,
+    "extensions.autoUpdate": false,
+    "search.followSymlinks": false,
+    "cSpell.words": [
+      "alfanumeric",
+      "helpfull",
+      "multisignatures",
+      "overengineering",
+      "rollbackable",
+      "semirandomly"
+    ],
+  }
