@@ -199,17 +199,42 @@ async fn solve(
     cvm_contract: &String,
 ) {
     let query = cw_mantis_order::QueryMsg::GetAllOrders {};
-    let orders: Vec<OrderItem> = smart_query(order_contract, query, read).await;
-    let orders = orders.into_iter().group_by(|x| {
+    let all_orders: Vec<OrderItem> = smart_query(order_contract, query, read).await;
+    let all_orders = all_orders.into_iter().group_by(|x| {
         let mut ab = (x.given.denom.clone(), x.msg.wants.denom.clone());
         ab.sort_selection();
         ab
     });
-    for (((a,b)), orders) in orders.into_iter() {
-        
+    for ((a, b), orders) in all_orders.into_iter().enumerate() {
+        let orders = orders.collect::<Vec<_>>();
+        use mantis_node::solver::types::*;
+        let orders = orders.into_iter().map(|x: OrderItem| {
+            let (side, price) = if x.given.denom == a {
+                (
+                    Side::Buy,
+                    Price::new_float(
+                        x.msg.wants.amount.u128() as f64 / x.given.amount.u128() as f64,
+                    ),
+                )
+            } else {
+                (
+                    Side::Sell,
+                    Price::new_float(
+                        x.given.amount.u128() as f64 / x.msg.wants.amount.u128() as f64,
+                    ),
+                )
+            };
+
+            mantis_node::solver::types::Order::new(
+                Amount::from_f64_retain(x.msg.given.amount.u128() as f64),
+                price,
+                side,
+                x.order_id,
+            );
+        });
         // solve here !
         // post solution
         // just print them for now
-        println!("pair {pair:?} orders: {:?}", orders.collect::<Vec<_>>());
+        println!("pair {pair:?} orders: {:?}", orders);
     }
 }
