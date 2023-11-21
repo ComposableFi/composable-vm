@@ -28,7 +28,7 @@ use mantis_node::{
 async fn main() {
     let args = MantisArgs::parsed();
     println!("args: {:?}", args);
-    let wasm_read_client = create_wasm_query_client(&args.rpc_centauri).await;
+    let mut wasm_read_client = create_wasm_query_client(&args.rpc_centauri).await;
 
     let signer = mantis_node::mantis::cosmos::signer::from_mnemonic(
         args.wallet.as_str(),
@@ -36,26 +36,14 @@ async fn main() {
     )
     .expect("mnemonic");
 
+    let mut cosmos_query_client = create_cosmos_query_client(&args.rpc_centauri).await;
+    print!("client 1");
+    let mut write_client = create_wasm_write_client(&args.rpc_centauri).await;
+    print!("client 2");
+
     loop {
-        let rpc_client: cosmrs::rpc::HttpClient =
-            cosmrs::rpc::HttpClient::new(args.rpc_centauri.as_ref()).unwrap();
-        let status = rpc_client.status().await.expect("status").sync_info;
-        println!("status: {:?}", status);
-
-        let (block, account) = get_latest_block_and_account(
-            &args.rpc_centauri,
-            signer
-                .public_key()
-                .account_id("centauri")
-                .expect("key")
-                .to_string(),
-        )
-        .await;
-
-        let mut cosmos_query_client = create_cosmos_query_client(&args.rpc_centauri).await;
-        print!("client 1");
-        let mut write_client = create_wasm_write_client(&args.rpc_centauri).await;
-        print!("client 2");
+        let (block, account) =
+            get_latest_block_and_account_by_key(&args.rpc_centauri, &signer).await;
 
         println!("acc: {:?}", account);
         if let Some(assets) = args.simulate.clone() {
@@ -65,12 +53,23 @@ async fn main() {
                 args.order_contract.clone(),
                 assets,
                 &signer,
-                account,
-                block,
+                &account,
+                &block,
                 &args.rpc_centauri,
             )
             .await;
         };
+
+        let (block, account) =
+            get_latest_block_and_account_by_key(&args.rpc_centauri, &signer).await;
+
+        solve(
+            &mut wasm_read_client,
+            &mut write_client,
+            &args.order_contract,
+            &args.cvm_contract,
+        )
+        .await;
     }
 }
 
@@ -91,8 +90,8 @@ async fn simulate_order(
     order_contract: String,
     asset: String,
     signing_key: &cosmrs::crypto::secp256k1::SigningKey,
-    account: BaseAccount,
-    block: cosmrs::tendermint::block::Height,
+    account: &BaseAccount,
+    block: &cosmrs::tendermint::block::Height,
     rpc: &str,
 ) {
     let coins: Vec<_> = asset
@@ -151,9 +150,9 @@ async fn simulate_order(
 /// uses cfmm algorithm
 async fn solve(
     read: &mut CosmWasmReadClient,
-    _write: CosmWasmWriteClient,
-    order_contract: String,
-    _cvm_contract: String,
+    write: &mut CosmWasmWriteClient,
+    order_contract: &String,
+    cvm_contract: &String,
 ) {
     let query = cw_mantis_order::QueryMsg::GetAllOrders {};
     let orders_request = QuerySmartContractStateRequest {

@@ -179,7 +179,7 @@ impl<Id: Copy + PartialEq> Order<Id> {
 }
 
 impl<Id: Copy + PartialEq> Order<Id> {
-    pub fn new_random(mean: f64, std: f64, volume_range: (u64, u64), id: Id) -> Self {
+    pub fn random_f64(mean: f64, std: f64, volume_range: (u64, u64), id: Id) -> Self {
         let amount_in = rand::thread_rng().gen_range(volume_range.0..volume_range.1 + 1) as f64;
         let normal = rand_distr::Normal::new(mean, std).unwrap();
         let limit_price = normal.sample(&mut rand::thread_rng());

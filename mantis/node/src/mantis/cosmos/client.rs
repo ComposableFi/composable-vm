@@ -1,10 +1,13 @@
 use crate::prelude::*;
 
-use cosmos_sdk_proto::cosmos::{auth::v1beta1::{QueryAccountRequest, BaseAccount}, base::tendermint};
+use cosmos_sdk_proto::cosmos::{
+    auth::v1beta1::{BaseAccount, QueryAccountRequest},
+    base::tendermint,
+};
 use cosmrs::{
     rpc::Client,
     tendermint::{block::Height, chain},
-    tx::{self, SignDoc, SignerInfo, Fee},
+    tx::{self, Fee, SignDoc, SignerInfo},
 };
 use prost_types::Any;
 use tonic::transport::Channel;
@@ -71,6 +74,23 @@ pub async fn get_latest_block_and_account(
     (status, account)
 }
 
+pub async fn get_latest_block_and_account_by_key(
+    rpc: &str,
+    address: &cosmrs::crypto::secp256k1::SigningKey,
+) -> (
+    cosmrs::tendermint::block::Height,
+    cosmos_sdk_proto::cosmos::auth::v1beta1::BaseAccount,
+) {
+    get_latest_block_and_account(
+        rpc,
+        address
+            .public_key()
+            .account_id("centauri")
+            .expect("key")
+            .to_string(),
+    ).await
+}
+
 /// latest chain state
 async fn get_latest_block(rpc: &str) -> cosmrs::tendermint::block::Height {
     use cosmrs::tendermint::block::Height;
@@ -103,9 +123,9 @@ pub async fn sign_and_tx_tendermint(
 
 pub async fn tx_broadcast_single_signed_msg(
     msg: Any,
-    block: Height,
+    block: &Height,
     auth_info: tx::AuthInfo,
-    account: cosmos_sdk_proto::cosmos::auth::v1beta1::BaseAccount,
+    account: &cosmos_sdk_proto::cosmos::auth::v1beta1::BaseAccount,
     rpc: &str,
     signing_key: &cosmrs::crypto::secp256k1::SigningKey,
 ) {
@@ -126,9 +146,11 @@ pub async fn tx_broadcast_single_signed_msg(
     sign_and_tx_tendermint(rpc, sign_doc, signing_key).await;
 }
 
-
 /// simulates tx and ensure fees are within limits
-pub async fn simulate_and_set_fee(signing_key: &cosmrs::crypto::secp256k1::SigningKey, account: &BaseAccount) -> tx::AuthInfo {
+pub async fn simulate_and_set_fee(
+    signing_key: &cosmrs::crypto::secp256k1::SigningKey,
+    account: &BaseAccount,
+) -> tx::AuthInfo {
     let auth_info = SignerInfo::single_direct(Some(signing_key.public_key()), account.sequence)
         .auth_info(Fee {
             amount: vec![cosmrs::Coin {
