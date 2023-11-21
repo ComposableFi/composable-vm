@@ -1,6 +1,7 @@
 use crate::prelude::*;
 
-use cosmos_sdk_proto::cosmos::auth::v1beta1::QueryAccountRequest;
+use cosmos_sdk_proto::cosmos::{auth::v1beta1::QueryAccountRequest, base::tendermint};
+use cosmrs::{rpc::Client, tx::SignDoc};
 use tonic::transport::Channel;
 
 pub type CosmWasmWriteClient = cosmos_sdk_proto::cosmwasm::wasm::v1::msg_client::MsgClient<Channel>;
@@ -41,4 +42,43 @@ pub async fn create_wasm_write_client(rpc: &str) -> CosmWasmWriteClient {
     cosmos_sdk_proto::cosmwasm::wasm::v1::msg_client::MsgClient::connect(url)
         .await
         .expect("connected")
+}
+
+pub async fn get_latest_block_and_account(rpc: &str, address : String) -> (cosmrs::tendermint::block::Height, cosmos_sdk_proto::cosmos::auth::v1beta1::BaseAccount) {
+    let rpc_client: cosmrs::rpc::HttpClient = cosmrs::rpc::HttpClient::new(rpc).unwrap();
+    let status = rpc_client
+        .status()
+        .await
+        .expect("status")
+        .sync_info
+        .latest_block_height;
+    let account = query_cosmos_account(rpc, address).await;
+    (status, account)
+}
+
+
+/// latest chain state
+async fn get_latest_block(rpc: &str) -> cosmrs::tendermint::block::Height {
+    use cosmrs::tendermint::block::Height;
+    let rpc_client: cosmrs::rpc::HttpClient = cosmrs::rpc::HttpClient::new(rpc).unwrap();
+    let status = rpc_client
+        .status()
+        .await
+        .expect("status")
+        .sync_info
+        .latest_block_height;
+    status
+}
+
+pub async fn sign_and_tx_tendermint(rpc: &str, sign_doc: SignDoc, signing_key: &cosmrs::crypto::secp256k1::SigningKey) -> cosmrs::rpc::endpoint::broadcast::tx_commit::Response {
+    let rpc_client: cosmrs::rpc::HttpClient = cosmrs::rpc::HttpClient::new(rpc).unwrap();
+    let tx_raw = sign_doc.sign(&signing_key).expect("signed");
+    let result  = tx_raw
+        .broadcast_commit(&rpc_client)
+        .await
+        .expect("broadcasted");
+    println!("result: {:?}", result);
+    assert!(!result.check_tx.code.is_err(), "err");
+    assert!(!result.tx_result.code.is_err(), "err");
+    result
 }

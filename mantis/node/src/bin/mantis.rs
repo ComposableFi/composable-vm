@@ -1,10 +1,11 @@
+use bip32::secp256k1::elliptic_curve::rand_core::block;
 use cosmos_sdk_proto::{
     cosmos::{auth::v1beta1::BaseAccount, base::v1beta1::Coin},
     cosmwasm::{self, wasm::v1::QuerySmartContractStateRequest},
 };
 use cosmos_sdk_proto::{traits::Message, Any};
 use cosmrs::{
-    tendermint::chain,
+    tendermint::{chain, block::Height},
     tx::{Msg, SignDoc},
 };
 
@@ -16,7 +17,10 @@ use cosmrs::{
 };
 use cw_mantis_order::{OrderItem, OrderSubMsg};
 use mantis_node::{
-    mantis::{args::*, cosmos::{*, client::*}},
+    mantis::{
+        args::*,
+        cosmos::{client::*, *},
+    },
     prelude::*,
 };
 
@@ -38,16 +42,14 @@ async fn main() {
         let status = rpc_client.status().await.expect("status").sync_info;
         println!("status: {:?}", status);
 
-        let account = query_cosmos_account(
-            &args.grpc_centauri,
+        
+        let (block, account) = get_latest_block_and_account(&args.rpc_centauri, 
             signer
-                .public_key()
-                .account_id("centauri")
-                .expect("key")
-                .to_string(),
-        )
-        .await;
-        println!("account: {:?}", account);
+            .public_key()
+            .account_id("centauri")
+            .expect("key")
+            .to_string(),
+        ).await;
 
         let mut cosmos_query_client = create_cosmos_query_client(&args.rpc_centauri).await;
         print!("client 1");
@@ -63,6 +65,7 @@ async fn main() {
                 assets,
                 &signer,
                 account,
+                block,
                 &args.rpc_centauri,
             )
             .await;
@@ -87,7 +90,8 @@ async fn simulate_order(
     order_contract: String,
     asset: String,
     signing_key: &cosmrs::crypto::secp256k1::SigningKey,
-    acc: BaseAccount,
+    account: BaseAccount,
+    block: cosmrs::tendermint::block::Height,
     rpc: &str,
 ) {
     let coins: Vec<_> = asset
@@ -101,27 +105,16 @@ async fn simulate_order(
         (coins[1].clone(), coins[0].clone())
     };
     if std::time::Instant::now().elapsed().as_millis() % 1000 == 0 {
-        let auth_info = SignerInfo::single_direct(Some(signing_key.public_key()), acc.sequence)
+        let auth_info = SignerInfo::single_direct(Some(signing_key.public_key()), account.sequence)
             .auth_info(Fee {
-                amount: vec![
-                    cosmrs::Coin {
-                        amount: 10,
-                        denom: cosmrs::Denom::from_str("ppica").expect("denom"),
-                    }
-                ],
+                amount: vec![cosmrs::Coin {
+                    amount: 10,
+                    denom: cosmrs::Denom::from_str("ppica").expect("denom"),
+                }],
                 gas_limit: 1_000_000,
                 payer: None,
                 granter: None,
             });
-
-        use cosmrs::tendermint::block::Height;
-        let rpc_client: cosmrs::rpc::HttpClient = cosmrs::rpc::HttpClient::new(rpc).unwrap();
-        let status = rpc_client
-            .status()
-            .await
-            .expect("status")
-            .sync_info
-            .latest_block_height;
 
         let msg = cw_mantis_order::ExecMsg::Order {
             msg: OrderSubMsg {
@@ -130,7 +123,7 @@ async fn simulate_order(
                     denom: coins.0.denom.clone(),
                 },
                 transfer: None,
-                timeout: status.value() + 100,
+                timeout: block.value() + 100,
                 min_fill: None,
             },
         };
@@ -147,34 +140,13 @@ async fn simulate_order(
                 denom: cosmrs::Denom::from_str(&coins.1.denom).expect("denom"),
             }],
         };
-        let msg = msg.to_any().expect("proto");
 
-        let tx_body = tx::Body::new(
-            vec![msg],
-            "mantis-solver",
-            Height::try_from(status.value() + 100).unwrap(),
-        );
-
-        let sign_doc = SignDoc::new(
-            &tx_body,
-            &auth_info,
-            &chain::Id::try_from("centauri-1").expect("id"),
-            acc.account_number,
-        )
-        .unwrap();
-
-        let tx_raw = sign_doc.sign(&signing_key).unwrap();
-        let result = tx_raw
-            .broadcast_commit(&rpc_client)
-            .await
-            .expect("broadcasted");
-        println!("result: {:?}", result);
-        assert!(!result.check_tx.code.is_err(), "err");
-        assert!(!result.tx_result.code.is_err(), "err");
+        tx_broadcast_single_signed_msg(msg, block, auth_info, account, rpc, signing_key).await;
 
         // here parse contract result for its response
     }
 }
+
 
 /// gets orders, groups by pairs
 /// solves them using algorithm
