@@ -19,6 +19,13 @@ pub type CosmWasmReadClient =
 pub type CosmosQueryClient =
     cosmos_sdk_proto::cosmos::auth::v1beta1::query_client::QueryClient<Channel>;
 
+
+/// tip of chain to use for tx formation
+pub struct Tip{
+    pub block: Height,
+    pub account: cosmos_sdk_proto::cosmos::auth::v1beta1::BaseAccount,
+}
+
 pub async fn create_cosmos_query_client(rpc: &str) -> CosmosQueryClient {
     use cosmos_sdk_proto::cosmos::auth::v1beta1::query_client::*;
     use cosmos_sdk_proto::cosmos::auth::v1beta1::*;
