@@ -22,6 +22,7 @@ fn main() {
     /// finds maximal volume price
     let optimal_price = orders.compute_optimal_price(50);
 
+    /// fill orders
     let mut solution = Solution::new(orders.value.clone());
     solution = solution.match_orders(optimal_price);
     solution.print();
