@@ -24,6 +24,7 @@ pub struct MantisArgs {
     pub order_contract: String,
 
     /// tokens to send to order contract as problem
+    /// format: "token1amount1,token2amount2"
     #[arg(long)]
     pub simulate: Option<String>,
 

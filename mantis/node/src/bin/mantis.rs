@@ -1,10 +1,11 @@
+use bip32::secp256k1::elliptic_curve::rand_core::block;
 use cosmos_sdk_proto::{
     cosmos::{auth::v1beta1::BaseAccount, base::v1beta1::Coin},
     cosmwasm::{self, wasm::v1::QuerySmartContractStateRequest},
 };
 use cosmos_sdk_proto::{traits::Message, Any};
 use cosmrs::{
-    tendermint::chain,
+    tendermint::{block::Height, chain},
     tx::{Msg, SignDoc},
 };
 
@@ -16,7 +17,14 @@ use cosmrs::{
 };
 use cw_mantis_order::{OrderItem, OrderSubMsg};
 use mantis_node::{
-    mantis::{args::*, cosmos::*},
+    mantis::{
+        args::*,
+        cosmos::{
+            client::*,
+            cosmwasm::{smart_query, to_exec_signed, to_exec_signed_with_fund},
+            *,
+        },
+    },
     prelude::*,
 };
 
@@ -24,49 +32,65 @@ use mantis_node::{
 async fn main() {
     let args = MantisArgs::parsed();
     println!("args: {:?}", args);
-    let wasm_read_client = create_wasm_query_client(&args.rpc_centauri).await;
+    let mut wasm_read_client = create_wasm_query_client(&args.rpc_centauri).await;
 
-    let signer = mantis_node::mantis::beaker::cli::support::signer::from_mnemonic(
+    let signer = mantis_node::mantis::cosmos::signer::from_mnemonic(
         args.wallet.as_str(),
         "m/44'/118'/0'/0/0",
     )
     .expect("mnemonic");
 
+    let mut cosmos_query_client = create_cosmos_query_client(&args.rpc_centauri).await;
+    print!("client 1");
+    let mut write_client = create_wasm_write_client(&args.rpc_centauri).await;
+    print!("client 2");
+
     loop {
-        let rpc_client: cosmrs::rpc::HttpClient =
-            cosmrs::rpc::HttpClient::new(args.rpc_centauri.as_ref()).unwrap();
-        let status = rpc_client.status().await.expect("status").sync_info;
-        println!("status: {:?}", status);
+        let (block, account) =
+            get_latest_block_and_account_by_key(&args.rpc_centauri, &args.grpc_centauri, &signer)
+                .await;
 
-        let account = query_cosmos_account(
-            &args.grpc_centauri,
-            signer
-                .public_key()
-                .account_id("centauri")
-                .expect("key")
-                .to_string(),
-        )
-        .await;
-        println!("account: {:?}", account);
-
-        let mut cosmos_query_client = create_cosmos_query_client(&args.rpc_centauri).await;
-        print!("client 1");
-        let mut write_client = create_wasm_write_client(&args.rpc_centauri).await;
-        print!("client 2");
-        
         println!("acc: {:?}", account);
         if let Some(assets) = args.simulate.clone() {
-            simulate_order(
+            if std::time::Instant::now().elapsed().as_millis() % 1000 == 0 {
+                simulate_order(
+                    &mut write_client,
+                    &mut cosmos_query_client,
+                    args.order_contract.clone(),
+                    assets,
+                    &signer,
+                    &account,
+                    &block,
+                    &args.rpc_centauri,
+                )
+                .await;
+            };
+        };
+
+        let (block, account) =
+            get_latest_block_and_account_by_key(&args.rpc_centauri, &args.grpc_centauri, &signer)
+                .await;
+
+        if std::time::Instant::now().elapsed().as_millis() % 10000 == 0 {
+            cleanup(
                 &mut write_client,
                 &mut cosmos_query_client,
                 args.order_contract.clone(),
-                assets,
                 &signer,
-                account,
+                &account,
+                &block,
                 &args.rpc_centauri,
             )
             .await;
         };
+
+        solve(
+            &mut wasm_read_client,
+            &mut write_client,
+            &args.order_contract,
+            &args.cvm_contract,
+        )
+        .await;
     }
 }
 
@@ -87,76 +111,78 @@ async fn simulate_order(
     order_contract: String,
     asset: String,
     signing_key: &cosmrs::crypto::secp256k1::SigningKey,
-    acc: BaseAccount,
+    account: &BaseAccount,
+    block: &cosmrs::tendermint::block::Height,
     rpc: &str,
 ) {
-    if std::time::Instant::now().elapsed().as_millis() % 100 == 0 {
-        let auth_info = SignerInfo::single_direct(Some(signing_key.public_key()), acc.sequence)
-            .auth_info(Fee {
-                amount: vec![],
-                gas_limit: 100_000_000,
-                payer: None,
-                granter: None,
-            });
+    let coins: Vec<_> = asset
+        .split(',')
+        .map(|x| cosmwasm_std::Coin::from_str(x).expect("coin"))
+        .collect();
+    let coins = if std::time::Instant::now().elapsed().as_millis() % 2 == 0 {
+        (coins[0].clone(), coins[1].clone())
+    } else {
+        (coins[1].clone(), coins[0].clone())
+    };
 
-        use cosmrs::tendermint::block::Height;
-        let rpc_client: cosmrs::rpc::HttpClient = cosmrs::rpc::HttpClient::new(rpc).unwrap();
-        let status = rpc_client
-            .status()
-            .await
-            .expect("status")
-            .sync_info
-            .latest_block_height;
+    let auth_info = simulate_and_set_fee(signing_key, &account).await;
+    let msg = cw_mantis_order::ExecMsg::Order {
+        msg: OrderSubMsg {
+            wants: cosmwasm_std::Coin {
+                amount: coins.0.amount,
+                denom: coins.0.denom.clone(),
+            },
+            transfer: None,
+            timeout: block.value() + 100,
+            min_fill: None,
+        },
+    };
+    println!("msg: {:?}", msg);
 
-        let msg = MsgExecuteContract {
-            sender: signing_key
-                .public_key()
-                .account_id("centauri")
-                .expect("account"),
-            contract: AccountId::from_str(&order_contract).expect("contract"),
-            msg: serde_json_wasm::to_vec(&cw_mantis_order::ExecMsg::Order {
-                msg: OrderSubMsg {
-                    wants: cosmwasm_std::Coin {
-                        amount: 1000u128.into(),
-                        denom: asset.to_string(),
-                    },
-                    transfer: None,
-                    timeout: status.value() + 100,
-                    min_fill: None,
-                },
-            })
-            .expect("json"),
-            funds: vec![cosmrs::Coin {
-                amount: 1000u128.into(),
-                denom: cosmrs::Denom::from_str("ppica").expect("denom"),
-            }],
-        };
-        let msg = msg.to_any().expect("proto");
+    let fund = cosmrs::Coin {
+        amount: coins.1.amount.into(),
+        denom: cosmrs::Denom::from_str(&coins.1.denom).expect("denom"),
+    };
 
-        let tx_body = tx::Body::new(
-            vec![msg],
-            "mantis-solver",
-            Height::try_from(status.value() + 100).unwrap(),
-        );
+    let msg = to_exec_signed_with_fund(signing_key, order_contract, msg, fund);
 
-        let sign_doc = SignDoc::new(
-            &tx_body,
-            &auth_info,
-            &chain::Id::try_from("centauri-1").expect("id"),
-            acc.account_number,
-        )
-        .unwrap();
+    tx_broadcast_single_signed_msg(
+        msg.to_any().expect("proto"),
+        block,
+        auth_info,
+        account,
+        rpc,
+        signing_key,
+    )
+    .await;
 
-        let tx_raw = sign_doc.sign(&signing_key).unwrap();
-        let result = tx_raw
-            .broadcast_commit(&rpc_client)
-            .await
-            .expect("broadcasted");
-        assert!(!result.check_tx.code.is_err(), "err");
-        assert!(!result.tx_result.code.is_err(), "err");
+    // here parse contract result for its response
+}
 
-        //let result = write_client.execute_contract(request).await.expect("executed");
-    }
+async fn cleanup(
+    write_client: &mut CosmWasmWriteClient,
+    cosmos_query_client: &mut CosmosQueryClient,
+    order_contract: String,
+    signing_key: &cosmrs::crypto::secp256k1::SigningKey,
+    account: &BaseAccount,
+    block: &cosmrs::tendermint::block::Height,
+    rpc: &str,
+) {
+    let auth_info = simulate_and_set_fee(signing_key, &account).await;
+    let msg = cw_mantis_order::ExecMsg::Timeout {
+        orders: vec![],
+        solutions: vec![],
+    };
+    let msg = to_exec_signed(signing_key, order_contract, msg);
+    tx_broadcast_single_signed_msg(
+        msg.to_any().expect("proto"),
+        block,
+        auth_info,
+        account,
+        rpc,
+        signing_key,
+    )
+    .await;
 }
 
 /// gets orders, groups by pairs
@@ -168,31 +194,19 @@ async fn simulate_order(
 /// uses cfmm algorithm
 async fn solve(
     read: &mut CosmWasmReadClient,
-    _write: CosmWasmWriteClient,
-    order_contract: String,
-    _cvm_contract: String,
+    write: &mut CosmWasmWriteClient,
+    order_contract: &String,
+    cvm_contract: &String,
 ) {
     let query = cw_mantis_order::QueryMsg::GetAllOrders {};
-    let orders_request = QuerySmartContractStateRequest {
-        address: order_contract.clone(),
-        query_data: serde_json_wasm::to_vec(&query).expect("json"),
-    };
-    let orders = read
-        .smart_contract_state(orders_request)
-        .await
-        .expect("orders obtained")
-        .into_inner()
-        .data;
-    let orders: Vec<OrderItem> = serde_json_wasm::from_slice(&orders).expect("orders");
-
+    let orders: Vec<OrderItem> = smart_query(order_contract, query, read).await;
     let orders = orders.into_iter().group_by(|x| {
-        if x.given.denom < x.msg.wants.denom {
-            (x.given.denom.clone(), x.msg.wants.denom.clone())
-        } else {
-            (x.msg.wants.denom.clone(), x.given.denom.clone())
-        }
+        let mut ab = (x.given.denom.clone(), x.msg.wants.denom.clone());
+        ab.sort_selection();
+        ab
     });
-    for (pair, orders) in orders.into_iter() {
+    for (((a,b)), orders) in orders.into_iter() {
+        
         // solve here !
         // post solution
         // just print them for now

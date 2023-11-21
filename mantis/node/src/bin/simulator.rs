@@ -3,7 +3,7 @@ use mantis_node::{prelude::*, solver::types::Price};
 
 fn main() {
     /// randomize price around 2.0 (ratio of 2 price tokens in pair)
-    let orders = (1..100).map(|x| Order::new_random(2., 0.1, (50, 150), x));
+    let orders = (1..100).map(|x| Order::random_f64(2., 0.1, (50, 150), x));
     let orders = OrderList {
         value: orders.collect(),
     };

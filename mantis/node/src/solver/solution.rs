@@ -116,7 +116,7 @@ impl<Id: Copy + PartialEq + Debug> Solution<Id> {
     ) -> Self {
         Self::new(
             (0..num_orders)
-                .map(|_| Order::new_random(mean, std, volume_range, next()))
+                .map(|_| Order::random_f64(mean, std, volume_range, next()))
                 .collect(),
         )
     }
