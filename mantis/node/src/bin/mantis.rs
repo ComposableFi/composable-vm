@@ -141,7 +141,7 @@ async fn simulate_order(
             }],
         };
 
-        tx_broadcast_single_signed_msg(msg, block, auth_info, account, rpc, signing_key).await;
+        tx_broadcast_single_signed_msg(msg.to_any().expect("proto"), block, auth_info, account, rpc, signing_key).await;
 
         // here parse contract result for its response
     }
