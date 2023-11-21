@@ -105,16 +105,7 @@ async fn simulate_order(
         (coins[1].clone(), coins[0].clone())
     };
     if std::time::Instant::now().elapsed().as_millis() % 1000 == 0 {
-        let auth_info = SignerInfo::single_direct(Some(signing_key.public_key()), account.sequence)
-            .auth_info(Fee {
-                amount: vec![cosmrs::Coin {
-                    amount: 10,
-                    denom: cosmrs::Denom::from_str("ppica").expect("denom"),
-                }],
-                gas_limit: 1_000_000,
-                payer: None,
-                granter: None,
-            });
+        let auth_info = simulate_and_set_fee(signing_key, &account);
 
         let msg = cw_mantis_order::ExecMsg::Order {
             msg: OrderSubMsg {
@@ -128,24 +119,33 @@ async fn simulate_order(
             },
         };
         println!("msg: {:?}", msg);
-        let msg = MsgExecuteContract {
-            sender: signing_key
-                .public_key()
-                .account_id("centauri")
-                .expect("account"),
-            contract: AccountId::from_str(&order_contract).expect("contract"),
-            msg: serde_json_wasm::to_vec(&msg).expect("json"),
-            funds: vec![cosmrs::Coin {
-                amount: coins.1.amount.into(),
-                denom: cosmrs::Denom::from_str(&coins.1.denom).expect("denom"),
-            }],
+
+        let fund = cosmrs::Coin {
+            amount: coins.1.amount.into(),
+            denom: cosmrs::Denom::from_str(&coins.1.denom).expect("denom"),
         };
+
+        let msg = ndsend_from_signed_with_fund(signing_key, order_contract, msg, fund);
 
         tx_broadcast_single_signed_msg(msg.to_any().expect("proto"), block, auth_info, account, rpc, signing_key).await;
 
         // here parse contract result for its response
     }
 }
+
+fn ndsend_from_signed_with_fund<T:Serialize>(signing_key: &cosmrs::crypto::secp256k1::SigningKey, order_contract: String, msg: T, fund: cosmrs::Coin) -> MsgExecuteContract {
+    let msg = MsgExecuteContract {
+        sender: signing_key
+            .public_key()
+            .account_id("centauri")
+            .expect("account"),
+        contract: AccountId::from_str(&order_contract).expect("contract"),
+        msg: serde_json_wasm::to_vec(&msg).expect("json"),
+        funds: vec![fund],
+    };
+    msg
+}
+
 
 
 /// gets orders, groups by pairs

@@ -126,3 +126,19 @@ pub async fn tx_broadcast_single_signed_msg(
 
     sign_and_tx_tendermint(rpc, sign_doc, signing_key).await;
 }
+
+
+/// simulates tx and ensure fees are within limits
+pub async fn simulate_and_set_fee(signing_key: &cosmrs::crypto::secp256k1::SigningKey, account: &BaseAccount) -> tx::AuthInfo {
+    let auth_info = SignerInfo::single_direct(Some(signing_key.public_key()), account.sequence)
+        .auth_info(Fee {
+            amount: vec![cosmrs::Coin {
+                amount: 10,
+                denom: cosmrs::Denom::from_str("ppica").expect("denom"),
+            }],
+            gas_limit: 1_000_000,
+            payer: None,
+            granter: None,
+        });
+    auth_info
+}
