@@ -16,7 +16,7 @@ use cosmrs::{
 };
 use cw_mantis_order::{OrderItem, OrderSubMsg};
 use mantis_node::{
-    mantis::{args::*, cosmos::*},
+    mantis::{args::*, cosmos::{*, client::*}},
     prelude::*,
 };
 
@@ -26,7 +26,7 @@ async fn main() {
     println!("args: {:?}", args);
     let wasm_read_client = create_wasm_query_client(&args.rpc_centauri).await;
 
-    let signer = mantis_node::mantis::beaker::cli::support::signer::from_mnemonic(
+    let signer = mantis_node::mantis::cosmos::signer::from_mnemonic(
         args.wallet.as_str(),
         "m/44'/118'/0'/0/0",
     )
@@ -95,7 +95,12 @@ async fn simulate_order(
         .map(|x| cosmwasm_std::Coin::from_str(x).expect("coin"))
         .collect();
 
-    if std::time::Instant::now().elapsed().as_millis() % 100 == 0 {
+    let coins = if std::time::Instant::now().elapsed().as_millis() % 2 == 0 {
+        (coins[0].clone(), coins[1].clone())
+    } else {
+        (coins[1].clone(), coins[0].clone())
+    };
+    if std::time::Instant::now().elapsed().as_millis() % 1000 == 0 {
         let auth_info = SignerInfo::single_direct(Some(signing_key.public_key()), acc.sequence)
             .auth_info(Fee {
                 amount: vec![
@@ -121,8 +126,8 @@ async fn simulate_order(
         let msg = cw_mantis_order::ExecMsg::Order {
             msg: OrderSubMsg {
                 wants: cosmwasm_std::Coin {
-                    amount: coins[0].amount,
-                    denom: coins[0].denom.clone(),
+                    amount: coins.0.amount,
+                    denom: coins.0.denom.clone(),
                 },
                 transfer: None,
                 timeout: status.value() + 100,
@@ -138,8 +143,8 @@ async fn simulate_order(
             contract: AccountId::from_str(&order_contract).expect("contract"),
             msg: serde_json_wasm::to_vec(&msg).expect("json"),
             funds: vec![cosmrs::Coin {
-                amount: coins[1].amount.into(),
-                denom: cosmrs::Denom::from_str(&coins[1].denom).expect("denom"),
+                amount: coins.1.amount.into(),
+                denom: cosmrs::Denom::from_str(&coins.1.denom).expect("denom"),
             }],
         };
         let msg = msg.to_any().expect("proto");
