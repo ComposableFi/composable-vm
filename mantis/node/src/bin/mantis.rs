@@ -5,7 +5,7 @@ use cosmos_sdk_proto::{
 };
 use cosmos_sdk_proto::{traits::Message, Any};
 use cosmrs::{
-    tendermint::{chain, block::Height},
+    tendermint::{block::Height, chain},
     tx::{Msg, SignDoc},
 };
 
@@ -19,7 +19,7 @@ use cw_mantis_order::{OrderItem, OrderSubMsg};
 use mantis_node::{
     mantis::{
         args::*,
-        cosmos::{client::*, *},
+        cosmos::{client::*, cosmwasm::to_exec_signed_with_fund, *},
     },
     prelude::*,
 };
@@ -42,14 +42,15 @@ async fn main() {
         let status = rpc_client.status().await.expect("status").sync_info;
         println!("status: {:?}", status);
 
-        
-        let (block, account) = get_latest_block_and_account(&args.rpc_centauri, 
+        let (block, account) = get_latest_block_and_account(
+            &args.rpc_centauri,
             signer
-            .public_key()
-            .account_id("centauri")
-            .expect("key")
-            .to_string(),
-        ).await;
+                .public_key()
+                .account_id("centauri")
+                .expect("key")
+                .to_string(),
+        )
+        .await;
 
         let mut cosmos_query_client = create_cosmos_query_client(&args.rpc_centauri).await;
         print!("client 1");
@@ -105,7 +106,7 @@ async fn simulate_order(
         (coins[1].clone(), coins[0].clone())
     };
     if std::time::Instant::now().elapsed().as_millis() % 1000 == 0 {
-        let auth_info = simulate_and_set_fee(signing_key, &account);
+        let auth_info = simulate_and_set_fee(signing_key, &account).await;
 
         let msg = cw_mantis_order::ExecMsg::Order {
             msg: OrderSubMsg {
@@ -125,28 +126,21 @@ async fn simulate_order(
             denom: cosmrs::Denom::from_str(&coins.1.denom).expect("denom"),
         };
 
-        let msg = ndsend_from_signed_with_fund(signing_key, order_contract, msg, fund);
+        let msg = to_exec_signed_with_fund(signing_key, order_contract, msg, fund);
 
-        tx_broadcast_single_signed_msg(msg.to_any().expect("proto"), block, auth_info, account, rpc, signing_key).await;
+        tx_broadcast_single_signed_msg(
+            msg.to_any().expect("proto"),
+            block,
+            auth_info,
+            account,
+            rpc,
+            signing_key,
+        )
+        .await;
 
         // here parse contract result for its response
     }
 }
-
-fn ndsend_from_signed_with_fund<T:Serialize>(signing_key: &cosmrs::crypto::secp256k1::SigningKey, order_contract: String, msg: T, fund: cosmrs::Coin) -> MsgExecuteContract {
-    let msg = MsgExecuteContract {
-        sender: signing_key
-            .public_key()
-            .account_id("centauri")
-            .expect("account"),
-        contract: AccountId::from_str(&order_contract).expect("contract"),
-        msg: serde_json_wasm::to_vec(&msg).expect("json"),
-        funds: vec![fund],
-    };
-    msg
-}
-
-
 
 /// gets orders, groups by pairs
 /// solves them using algorithm

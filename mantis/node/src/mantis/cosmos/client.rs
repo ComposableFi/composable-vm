@@ -1,11 +1,10 @@
 use crate::prelude::*;
 
-use cosmos_sdk_proto::cosmos::{auth::v1beta1::QueryAccountRequest, base::tendermint};
+use cosmos_sdk_proto::cosmos::{auth::v1beta1::{QueryAccountRequest, BaseAccount}, base::tendermint};
 use cosmrs::{
-    auth::BaseAccount,
     rpc::Client,
     tendermint::{block::Height, chain},
-    tx::{self, SignDoc},
+    tx::{self, SignDoc, SignerInfo, Fee},
 };
 use prost_types::Any;
 use tonic::transport::Channel;
