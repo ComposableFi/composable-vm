@@ -47,7 +47,8 @@ async fn main() {
 
     loop {
         let (block, account) =
-            get_latest_block_and_account_by_key(&args.rpc_centauri, &args.grpc_centauri,&signer).await;
+            get_latest_block_and_account_by_key(&args.rpc_centauri, &args.grpc_centauri, &signer)
+                .await;
 
         println!("acc: {:?}", account);
         if let Some(assets) = args.simulate.clone() {
@@ -67,26 +68,29 @@ async fn main() {
         };
 
         let (block, account) =
-            get_latest_block_and_account_by_key(&args.rpc_centauri, &args.grpc_centauri,&signer).await;
+            get_latest_block_and_account_by_key(&args.rpc_centauri, &args.grpc_centauri, &signer)
+                .await;
 
-        cleanup(
+        if std::time::Instant::now().elapsed().as_millis() % 10000 == 0 {
+            cleanup(
+                &mut write_client,
+                &mut cosmos_query_client,
+                args.order_contract.clone(),
+                &signer,
+                &account,
+                &block,
+                &args.rpc_centauri,
+            )
+            .await;
+        };
+        
+        solve(
+            &mut wasm_read_client,
             &mut write_client,
-            &mut cosmos_query_client,
-            args.order_contract.clone(),
-            &signer,
-            &account,
-            &block,
-            &args.rpc_centauri,
+            &args.order_contract,
+            &args.cvm_contract,
         )
         .await;
-
-        // solve(
-        //     &mut wasm_read_client,
-        //     &mut write_client,
-        //     &args.order_contract,
-        //     &args.cvm_contract,
-        // )
-        // .await;
     }
 }
 
