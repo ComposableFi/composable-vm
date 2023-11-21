@@ -47,7 +47,7 @@ async fn main() {
 
     loop {
         let (block, account) =
-            get_latest_block_and_account_by_key(&args.rpc_centauri, &signer).await;
+            get_latest_block_and_account_by_key(&args.rpc_centauri, &args.grpc_centauri,&signer).await;
 
         println!("acc: {:?}", account);
         if let Some(assets) = args.simulate.clone() {
@@ -67,7 +67,7 @@ async fn main() {
         };
 
         let (block, account) =
-            get_latest_block_and_account_by_key(&args.rpc_centauri, &signer).await;
+            get_latest_block_and_account_by_key(&args.rpc_centauri, &args.grpc_centauri,&signer).await;
 
         cleanup(
             &mut write_client,
@@ -80,13 +80,13 @@ async fn main() {
         )
         .await;
 
-        solve(
-            &mut wasm_read_client,
-            &mut write_client,
-            &args.order_contract,
-            &args.cvm_contract,
-        )
-        .await;
+        // solve(
+        //     &mut wasm_read_client,
+        //     &mut write_client,
+        //     &args.order_contract,
+        //     &args.cvm_contract,
+        // )
+        // .await;
     }
 }
 

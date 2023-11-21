@@ -35,12 +35,12 @@ pub async fn create_cosmos_query_client(rpc: &str) -> CosmosQueryClient {
 }
 
 pub async fn query_cosmos_account(
-    rpc: &str,
+    grpc: &str,
     address: String,
 ) -> cosmos_sdk_proto::cosmos::auth::v1beta1::BaseAccount {
     use cosmos_sdk_proto::cosmos::auth::v1beta1::*;
     use cosmos_sdk_proto::traits::Message;
-    let mut client = create_cosmos_query_client(rpc).await;
+    let mut client = create_cosmos_query_client(grpc).await;
     let account = client
         .account(QueryAccountRequest { address })
         .await
@@ -65,6 +65,7 @@ pub async fn create_wasm_write_client(rpc: &str) -> CosmWasmWriteClient {
 
 pub async fn get_latest_block_and_account(
     rpc: &str,
+    grpc:&str,
     address: String,
 ) -> (
     cosmrs::tendermint::block::Height,
@@ -77,12 +78,13 @@ pub async fn get_latest_block_and_account(
         .expect("status")
         .sync_info
         .latest_block_height;
-    let account = query_cosmos_account(rpc, address).await;
+    let account = query_cosmos_account(grpc, address).await;
     (status, account)
 }
 
 pub async fn get_latest_block_and_account_by_key(
     rpc: &str,
+    grpc: &str,
     address: &cosmrs::crypto::secp256k1::SigningKey,
 ) -> (
     cosmrs::tendermint::block::Height,
@@ -90,6 +92,7 @@ pub async fn get_latest_block_and_account_by_key(
 ) {
     get_latest_block_and_account(
         rpc,
+        grpc,
         address
             .public_key()
             .account_id("centauri")
