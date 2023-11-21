@@ -60,7 +60,7 @@ rust_decimal_macros = "^1.33"
 rand_distr = "^0.4.3"
 strum = "^0.25"
 strum_macros = "^0.25"
-tuples = { version = "^1.12.0" }
+tuples = { version = "^1.14.0" }
 
 
 bip32 = { version = "^0.5.1", default-features = false, features = ["alloc", "secp256k1", "mnemonic", "bip39"] }

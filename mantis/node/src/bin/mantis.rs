@@ -21,7 +21,7 @@ use mantis_node::{
         args::*,
         cosmos::{
             client::*,
-            cosmwasm::{to_exec_signed, to_exec_signed_with_fund},
+            cosmwasm::{smart_query, to_exec_signed, to_exec_signed_with_fund},
             *,
         },
     },
@@ -83,7 +83,7 @@ async fn main() {
             )
             .await;
         };
-        
+
         solve(
             &mut wasm_read_client,
             &mut write_client,
@@ -199,26 +199,14 @@ async fn solve(
     cvm_contract: &String,
 ) {
     let query = cw_mantis_order::QueryMsg::GetAllOrders {};
-    let orders_request = QuerySmartContractStateRequest {
-        address: order_contract.clone(),
-        query_data: serde_json_wasm::to_vec(&query).expect("json"),
-    };
-    let orders = read
-        .smart_contract_state(orders_request)
-        .await
-        .expect("orders obtained")
-        .into_inner()
-        .data;
-    let orders: Vec<OrderItem> = serde_json_wasm::from_slice(&orders).expect("orders");
-
+    let orders: Vec<OrderItem> = smart_query(order_contract, query, read).await;
     let orders = orders.into_iter().group_by(|x| {
-        if x.given.denom < x.msg.wants.denom {
-            (x.given.denom.clone(), x.msg.wants.denom.clone())
-        } else {
-            (x.msg.wants.denom.clone(), x.given.denom.clone())
-        }
+        let mut ab = (x.given.denom.clone(), x.msg.wants.denom.clone());
+        ab.sort_selection();
+        ab
     });
-    for (pair, orders) in orders.into_iter() {
+    for (((a,b)), orders) in orders.into_iter() {
+        
         // solve here !
         // post solution
         // just print them for now
