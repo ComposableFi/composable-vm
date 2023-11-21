@@ -19,7 +19,11 @@ use cw_mantis_order::{OrderItem, OrderSubMsg};
 use mantis_node::{
     mantis::{
         args::*,
-        cosmos::{client::*, cosmwasm::to_exec_signed_with_fund, *},
+        cosmos::{
+            client::*,
+            cosmwasm::{to_exec_signed, to_exec_signed_with_fund},
+            *,
+        },
     },
     prelude::*,
 };
@@ -47,21 +51,34 @@ async fn main() {
 
         println!("acc: {:?}", account);
         if let Some(assets) = args.simulate.clone() {
-            simulate_order(
-                &mut write_client,
-                &mut cosmos_query_client,
-                args.order_contract.clone(),
-                assets,
-                &signer,
-                &account,
-                &block,
-                &args.rpc_centauri,
-            )
-            .await;
+            if std::time::Instant::now().elapsed().as_millis() % 1000 == 0 {
+                simulate_order(
+                    &mut write_client,
+                    &mut cosmos_query_client,
+                    args.order_contract.clone(),
+                    assets,
+                    &signer,
+                    &account,
+                    &block,
+                    &args.rpc_centauri,
+                )
+                .await;
+            };
         };
 
         let (block, account) =
             get_latest_block_and_account_by_key(&args.rpc_centauri, &signer).await;
+
+        cleanup(
+            &mut write_client,
+            &mut cosmos_query_client,
+            args.order_contract.clone(),
+            &signer,
+            &account,
+            &block,
+            &args.rpc_centauri,
+        )
+        .await;
 
         solve(
             &mut wasm_read_client,
@@ -98,47 +115,70 @@ async fn simulate_order(
         .split(',')
         .map(|x| cosmwasm_std::Coin::from_str(x).expect("coin"))
         .collect();
-
     let coins = if std::time::Instant::now().elapsed().as_millis() % 2 == 0 {
         (coins[0].clone(), coins[1].clone())
     } else {
         (coins[1].clone(), coins[0].clone())
     };
-    if std::time::Instant::now().elapsed().as_millis() % 1000 == 0 {
-        let auth_info = simulate_and_set_fee(signing_key, &account).await;
 
-        let msg = cw_mantis_order::ExecMsg::Order {
-            msg: OrderSubMsg {
-                wants: cosmwasm_std::Coin {
-                    amount: coins.0.amount,
-                    denom: coins.0.denom.clone(),
-                },
-                transfer: None,
-                timeout: block.value() + 100,
-                min_fill: None,
+    let auth_info = simulate_and_set_fee(signing_key, &account).await;
+    let msg = cw_mantis_order::ExecMsg::Order {
+        msg: OrderSubMsg {
+            wants: cosmwasm_std::Coin {
+                amount: coins.0.amount,
+                denom: coins.0.denom.clone(),
             },
-        };
-        println!("msg: {:?}", msg);
+            transfer: None,
+            timeout: block.value() + 100,
+            min_fill: None,
+        },
+    };
+    println!("msg: {:?}", msg);
 
-        let fund = cosmrs::Coin {
-            amount: coins.1.amount.into(),
-            denom: cosmrs::Denom::from_str(&coins.1.denom).expect("denom"),
-        };
+    let fund = cosmrs::Coin {
+        amount: coins.1.amount.into(),
+        denom: cosmrs::Denom::from_str(&coins.1.denom).expect("denom"),
+    };
 
-        let msg = to_exec_signed_with_fund(signing_key, order_contract, msg, fund);
+    let msg = to_exec_signed_with_fund(signing_key, order_contract, msg, fund);
 
-        tx_broadcast_single_signed_msg(
-            msg.to_any().expect("proto"),
-            block,
-            auth_info,
-            account,
-            rpc,
-            signing_key,
-        )
-        .await;
+    tx_broadcast_single_signed_msg(
+        msg.to_any().expect("proto"),
+        block,
+        auth_info,
+        account,
+        rpc,
+        signing_key,
+    )
+    .await;
 
-        // here parse contract result for its response
-    }
+    // here parse contract result for its response
+}
+
+async fn cleanup(
+    write_client: &mut CosmWasmWriteClient,
+    cosmos_query_client: &mut CosmosQueryClient,
+    order_contract: String,
+    signing_key: &cosmrs::crypto::secp256k1::SigningKey,
+    account: &BaseAccount,
+    block: &cosmrs::tendermint::block::Height,
+    rpc: &str,
+) {
+    let auth_info = simulate_and_set_fee(signing_key, &account).await;
+    let msg = cw_mantis_order::ExecMsg::Timeout {
+        orders: vec![],
+        solutions: vec![],
+    };
+    let msg = to_exec_signed(signing_key, order_contract, msg);
+    tx_broadcast_single_signed_msg(
+        msg.to_any().expect("proto"),
+        block,
+        auth_info,
+        account,
+        rpc,
+        signing_key,
+    )
+    .await;
 }
 
 /// gets orders, groups by pairs

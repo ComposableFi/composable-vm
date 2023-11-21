@@ -113,8 +113,8 @@ impl OrderContract<'_> {
     pub fn timeout(
         &self,
         ctx: ExecCtx,
-        _orders: Vec<OrderId>,
-        _solutions: Vec<Addr>,
+        orders: Vec<OrderId>,
+        solutions: Vec<Addr>,
     ) -> StdResult<Response> {
         let orders: Result<Vec<(u128, OrderItem)>, _> = self
             .orders
