@@ -26,9 +26,6 @@ use sylvia::{
     types::{ExecCtx, InstantiateCtx, QueryCtx},
 };
 
-/// so this is just to make code easy to read, we will optimize later
-use num_rational::BigRational;
-
 use cvm::network::NetworkId;
 
 pub struct OrderContract<'a> {
@@ -311,11 +308,8 @@ impl OrderContract<'_> {
                 .map(|x| x.given().amount.u128())
                 .sum();
 
-            let alternative_transfers = solves_cows_via_bank(
-                &alternative_all_orders.clone(),
-                a_total_in,
-                b_total_in,
-            );
+            let alternative_transfers =
+                solves_cows_via_bank(&alternative_all_orders.clone(), a_total_in, b_total_in);
 
             ctx.deps.api.debug(&format!(
                 "mantis::solutions::alternative {:?}",
@@ -472,11 +466,9 @@ fn order_created(order_id: u128, order: &OrderItem) -> Event {
 /// and return proper action to handle settling funds locally according solution
 fn solves_cows_via_bank(
     all_orders: &Vec<SolvedOrder>,
-    a_total_in: u128,
-    b_total_in: u128,
+    mut a_total_in: u128,
+    mut b_total_in: u128,
 ) -> Result<Vec<CowFilledOrder>, StdError> {
-    let mut a_total_in = BigRational::from_integer(a_total_in.into());
-    let mut b_total_in = BigRational::from_integer(b_total_in.into());
     let mut transfers = vec![];
     for order in all_orders.iter() {
         let cowed = order.solution.cow_amount;
@@ -488,17 +480,24 @@ fn solves_cows_via_bank(
         // so if not enough was deposited as was taken from original orders, it will fail - so
         // solver cannot rob the bank
         if order.pair().0 == filled_wanted.denom {
-            a_total_in -= BigRational::from_integer(cowed.u128().into());
+            a_total_in = a_total_in.checked_sub(cowed.u128()).ok_or_else(|| {
+                StdError::generic_err(format!(
+                    "a underflow: {} - {}",
+                    a_total_in,
+                    cowed.u128().to_string()
+                ))
+            })?;
         } else {
-            b_total_in -= BigRational::from_integer(cowed.u128().into());
+            b_total_in = b_total_in.checked_sub(cowed.u128()).ok_or_else(|| {
+                StdError::generic_err(format!(
+                    "b underflow: {} - {}",
+                    b_total_in,
+                    cowed.u128().to_string()
+                ))
+            })?;
         };
 
         transfers.push((filled_wanted, order.order.order_id));
-    }
-    if a_total_in < BigRational::default() || b_total_in < BigRational::default() {
-        return Err(StdError::generic_err(format!(
-            "SolutionForCowsViaBankIsNotBalanced"
-        )));
     }
     Ok(transfers)
 }
