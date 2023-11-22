@@ -1,4 +1,4 @@
-use cosmwasm_std::{ensure, BankMsg, Event, StdError, StdResult, Uint64};
+use cosmwasm_std::{ensure, BankMsg, Event, OverflowError, StdError, StdResult, Uint64};
 use cvm::{instruction::ExchangeId, network::NetworkId};
 
 use crate::prelude::*;
@@ -31,9 +31,16 @@ pub struct OrderItem {
 }
 
 impl OrderItem {
-    pub fn fill(&mut self, transfer: &Coin) {
-        self.msg.wants.amount -= transfer.amount;
-        self.given.amount -= transfer.amount * self.given.amount / self.msg.wants.amount;
+    pub fn fill(&mut self, wanted_transfer: Uint128) {
+        // was given more or exact wanted - user happy
+        if wanted_transfer >= self.msg.wants.amount {
+            self.given.amount = <_>::default();
+            self.msg.wants.amount = <_>::default();
+        } else {
+            self.msg.wants.amount = self.msg.wants.amount - wanted_transfer;
+            let given_reduction = wanted_transfer * self.given.amount / self.msg.wants.amount;
+            self.given.amount = self.given.amount - given_reduction;
+        }
     }
 }
 
@@ -83,6 +90,8 @@ pub struct SolutionItem {
 pub struct SolutionSubMsg {
     #[serde(skip_serializing_if = "Vec::is_empty", default)]
     pub cows: Vec<Cow>,
+    /// all CoWs ensured to be solved against one optimal price
+    pub optimal_price: (u64, u64),
     /// must adhere Connection.fork_join_supported, for now it is always false (it restrict set of
     /// routes possible)
     #[serde(skip_serializing_if = "Option::is_none", default)]
@@ -128,14 +137,9 @@ pub struct SolvedOrder {
 }
 
 impl SolvedOrder {
+    /// if given less, it will be partial, validated via bank
+    /// if given more, it is over limit - user is happy, and total verified via bank
     pub fn new(order: OrderItem, solution: Cow) -> StdResult<Self> {
-        ensure!(
-            order.msg.wants.amount <= solution.given,
-            StdError::generic_err(format!(
-                "user limit was not satisfied {order:?} {solution:?}"
-            ))
-        );
-
         Ok(Self { order, solution })
     }
 

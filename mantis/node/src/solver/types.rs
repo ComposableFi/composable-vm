@@ -1,6 +1,7 @@
 //! Basic types with simple checks and domain, no heavy math or solving.
 use crate::prelude::*;
 use derive_more::{Display, From};
+use num_traits::FromPrimitive;
 use strum_macros::AsRefStr;
 
 pub type Amount = Decimal;
@@ -67,7 +68,7 @@ pub struct Order<Id> {
 impl<Id: Copy + PartialEq> Order<Id> {
     pub fn print(&self) {
         println!(
-            "[{}]-{}- Limit Price: {:0.3}, In: {}, Filled: {}, Filled price: {}, Out: {}",
+            "[{}]-{}- Limit Price: {}, In: {}, Filled: {}, Filled price: {}, Out: {}",
             self.order_type,
             self.status,
             self.limit_price,
@@ -77,7 +78,12 @@ impl<Id: Copy + PartialEq> Order<Id> {
             self.amount_out
         );
     }
-    pub fn new(amount_in: Amount, limit_price: Price, order_type: OrderType, id: Id) -> Self {
+    pub fn new_decimal(
+        amount_in: Amount,
+        limit_price: Price,
+        order_type: OrderType,
+        id: Id,
+    ) -> Self {
         Order {
             amount_in,
             filled_price: dec!(0.0),
@@ -87,6 +93,25 @@ impl<Id: Copy + PartialEq> Order<Id> {
             status: OrderStatus::Pending,
             id,
             limit_price,
+        }
+    }
+
+    pub fn new_integer(amount_in: u128, min_want: u128, order_type: OrderType, id: Id) -> Self {
+        let amount_in: Amount = amount_in.try_into().expect("smaller");
+        let min_want: Amount = min_want.try_into().expect("smaller");
+        let limit_price = match order_type {
+            OrderType::Buy => amount_in / min_want,
+            OrderType::Sell => min_want / amount_in,
+        };
+        Order {
+            amount_in,
+            filled_price: dec!(0.0),
+            order_type,
+            amount_out: dec!(0.0),
+            amount_filled: dec!(0.0),
+            status: OrderStatus::Pending,
+            id,
+            limit_price: limit_price.into(),
         }
     }
 
@@ -190,7 +215,7 @@ impl<Id: Copy + PartialEq> Order<Id> {
             OrderType::Sell
         };
 
-        Order::new(
+        Order::new_decimal(
             Decimal::from_f64_retain(amount_in).unwrap(),
             Price(Decimal::from_f64_retain(limit_price).unwrap()),
             order_type,

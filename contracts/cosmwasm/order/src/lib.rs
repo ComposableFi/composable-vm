@@ -5,6 +5,7 @@ mod prelude;
 mod store;
 mod types;
 
+use prelude::*;
 use store::*;
 pub use types::*;
 
@@ -247,28 +248,32 @@ impl OrderContract<'_> {
         let at_least_one = all_orders.first().expect("at least one");
 
         // normalize pair
-        let mut ab = [
+        let mut ab = (
             at_least_one.given().denom.clone(),
             at_least_one.wants().denom.clone(),
-        ];
-        ab.sort();
-        let [a, b] = ab;
+        );
+        ab.sort_selection();
 
         // add solution to total solutions
         let possible_solution = SolutionItem {
-            pair: (a.clone(), b.clone()),
+            pair: ab.clone(),
             msg,
             block_added: ctx.env.block.height,
         };
 
         self.solutions.save(
             ctx.deps.storage,
-            &(a.clone(), b.clone(), ctx.info.sender.clone().to_string()),
+            &(
+                ab.clone().0,
+                ab.clone().1,
+                ctx.info.sender.clone().to_string(),
+            ),
             &possible_solution,
         )?;
         let solution_upserted = Event::new("mantis-solution-upserted")
-            .add_attribute("pair", &format!("{}{}", a, b))
-            .add_attribute("solver", &ctx.info.sender.to_string());
+            .add_attribute("token_a", ab.clone().0)
+            .add_attribute("token_b", ab.clone().1)
+            .add_attribute("solver_address", &ctx.info.sender.to_string());
         ctx.deps.api.debug(&format!(
             "mantis::solution::upserted {:?}",
             &solution_upserted
@@ -277,7 +282,7 @@ impl OrderContract<'_> {
         // get all solution for pair
         let all_solutions: Result<Vec<SolutionItem>, _> = self
             .solutions
-            .prefix((a.clone(), b.clone()))
+            .prefix(ab.clone())
             .range(ctx.deps.storage, None, None, Order::Ascending)
             .map(|r| r.map(|(_, solution)| solution))
             .collect();
@@ -289,6 +294,7 @@ impl OrderContract<'_> {
         // pick up optimal solution with solves with bank
         let mut a_in = 0;
         let mut b_in = 0;
+        let (a, b) = ab.clone();
         let mut transfers = vec![];
         let mut solution_item: SolutionItem = possible_solution;
         for solution in all_solutions {
@@ -338,9 +344,15 @@ impl OrderContract<'_> {
         };
 
         let solution_chosen = Event::new("mantis-solution-chosen")
-            .add_attribute("pair", format!("{}{}", a, b))
-            .add_attribute("solver", ctx.info.sender.to_string());
-        let transfers = self.fill(ctx.deps.storage, transfers)?;
+            .add_attribute("token_a", ab.clone().0)
+            .add_attribute("token_b", ab.clone().1)
+            .add_attribute("solver_address", &ctx.info.sender.to_string());
+        let transfers = self.fill(
+            ctx.deps.storage,
+            transfers,
+            ctx.info.sender.to_string(),
+            solution_item.block_added,
+        )?;
         ctx.deps
             .api
             .debug(&format!("mantis-solution-chosen: {:?}", &solution_chosen));
@@ -402,20 +414,26 @@ impl OrderContract<'_> {
         &self,
         storage: &mut dyn Storage,
         cows: Vec<CowFilledOrder>,
+        solver_address: String,
+        solution_block_added: u64,
     ) -> StdResult<Vec<CowFillResult>> {
         let mut results = vec![];
         for (transfer, order) in cows.into_iter() {
             let mut order: OrderItem = self.orders.load(storage, order.u128())?;
-            order.fill(&transfer);
+            order.fill(transfer.amount);
             let event = if order.given.amount.is_zero() {
                 self.orders.remove(storage, order.order_id.u128());
                 Event::new("mantis-order-filled-full")
                     .add_attribute("order_id", order.order_id.to_string())
+                    .add_attribute("solver_address", solver_address.clone())
+                    .add_attribute("solution_block_added", solution_block_added.to_string())
             } else {
                 self.orders.save(storage, order.order_id.u128(), &order)?;
                 Event::new("mantis-order-filled-parts")
                     .add_attribute("order_id", order.order_id.to_string())
                     .add_attribute("amount", transfer.amount.to_string())
+                    .add_attribute("solver_address", solver_address.clone())
+                    .add_attribute("solution_block_added", solution_block_added.to_string())
             };
             let transfer = BankMsg::Send {
                 to_address: order.owner.to_string(),

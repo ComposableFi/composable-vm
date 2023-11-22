@@ -1,10 +1,20 @@
 from decimal import Decimal, getcontext
-from objects import Order, OrderList, Solver, Solution, CFMMSolver, CFMMVolumeSolver, CFMMProfitSolver, CFMM
+from objects import Order, OrderList, OrderType, Solver, Solution, CFMMSolver, CFMMVolumeSolver, CFMMProfitSolver, CFMM
 
 def simulate():
 
     getcontext().prec = 30
 
+    # simple case of perfect matching
+    orders = OrderList([
+        Order(100000.0, 100000.0/3.0, OrderType.BUY), 
+        Order(3.0, 100000.0/3.0, OrderType.SELL)
+        ])
+    assert(orders.value[0].is_acceptable_price(orders.value[1].limit_price))
+    assert(orders.value[1].is_acceptable_price(orders.value[0].limit_price))
+    
+    Solution.match_orders(orders, orders.compute_optimal_price()).print()
+    
     # CoW part
     orders = OrderList([Order.random(std=0.1, mean=2) for _ in range(100)])
 

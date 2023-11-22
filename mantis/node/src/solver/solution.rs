@@ -62,7 +62,7 @@ impl<Id: Copy + PartialEq + Debug> Solution<Id> {
         println!("{} Start Solution {}", "#".repeat(20), "#".repeat(20));
         self.orders.print();
         println!(
-            "\x1b[1mMatched Price {:.4} \tSell volume {:.4}\tBuy volume {:.4}\x1b[0m",
+            "\x1b[1mMatched Price {:} \tSell volume {:}\tBuy volume {:}\x1b[0m",
             self.matched_price.0, self.sell_volume.0, self.buy_volume.0
         );
         println!("{} End Solution {}", "#".repeat(20), "#".repeat(20));
