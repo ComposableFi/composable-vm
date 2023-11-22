@@ -32,15 +32,15 @@ pub struct OrderItem {
 
 impl OrderItem {
     pub fn fill(&mut self, wanted_transfer: Uint128) {
-        // was given more or exact wanted - user happy
+        // was given more or exact wanted - user happy or user was given all before, do not give more
         if wanted_transfer >= self.msg.wants.amount || self.msg.wants.amount.u128() == <_>::default() {
             self.given.amount = <_>::default();
             self.msg.wants.amount = <_>::default();
         } else {
             self.msg.wants.amount = self.msg.wants.amount.checked_sub(wanted_transfer).expect("proven above via comparison");
             let given_reduction = wanted_transfer * self.given.amount / self.msg.wants.amount;
-            
-            self.given.amount = self.given.amount.checked_sub(given_reduction).expect("proven above via ratio");
+                        
+            self.given.amount = self.given.amount.saturating_sub(given_reduction);
         }
     }
 }
