@@ -97,8 +97,7 @@ impl OrderContract<'_> {
         };
         self.orders.save(ctx.deps.storage, order_id, &order)?;
         self.next_order_id.save(ctx.deps.storage, &(order_id + 1))?;
-        let order_created =
-            Event::new("mantis-order-created").add_attribute("order_id", order_id.to_string());
+        let order_created = order_created(order_id, &order);
         ctx.deps
             .api
             .debug(&format!("mantis::order::created: {:?}", order));
@@ -429,6 +428,17 @@ impl OrderContract<'_> {
         }
         Ok(results)
     }
+}
+
+fn order_created(order_id: u128, order: &OrderItem) -> Event {
+    let order_created = Event::new("mantis-order-created")
+        .add_attribute("order_id", order_id.to_string())
+        .add_attribute("order_given_amount", order.given.amount.to_string())
+        .add_attribute("order_given_denom", order.given.denom.to_string())
+        .add_attribute("order_owner", order.owner.to_string())
+        .add_attribute("order_wants_amount", order.msg.wants.amount.to_string())
+        .add_attribute("order_wants_denom", order.msg.wants.denom.to_string());
+    order_created
 }
 
 /// given all orders amounts aggregated into common pool,
