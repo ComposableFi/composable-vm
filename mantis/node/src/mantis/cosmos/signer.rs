@@ -1,6 +1,6 @@
 //! given whatever string, give me the signer struct
 
-use cosmrs::{crypto::secp256k1::SigningKey, cosmwasm::MsgExecuteContract, tx};
+use cosmrs::{cosmwasm::MsgExecuteContract, crypto::secp256k1::SigningKey, tx};
 use prost_types::Any;
 
 pub fn from_mnemonic(phrase: &str, derivation_path: &str) -> Result<SigningKey, String> {

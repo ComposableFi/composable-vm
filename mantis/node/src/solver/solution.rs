@@ -55,7 +55,7 @@ impl<Id: Copy + PartialEq + Debug> Solution<Id> {
                 self.sell_volume.0,
                 self.orders.sell().amount_filled().0,
             );
-        }        
+        }
     }
 
     pub fn print(&self) {

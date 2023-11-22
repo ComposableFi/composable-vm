@@ -3,10 +3,10 @@ pub struct MantisArgs {
     /// the node hosting order contract
     #[arg(long)]
     pub rpc_centauri: String,
-    
+
     #[arg(long)]
     pub grpc_centauri: String,
-    
+
     /// the node with pools
     #[arg(long)]
     pub osmosis: String,
