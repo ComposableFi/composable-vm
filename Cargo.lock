@@ -1381,6 +1381,7 @@ dependencies = [
  "cw-mantis-order",
  "derive_more",
  "itertools 0.12.0",
+ "num-traits",
  "prost-types",
  "rand",
  "rand_distr",

@@ -107,10 +107,18 @@ pub struct Cow {
     pub order_id: OrderId,
     /// how much of order to be solved by from bank for all aggregated cows
     pub cow_amount: Amount,
-    /// amount of order to be taken (100% in case of full fill, can be less in case of partial)
-    pub taken: Option<Amount>,
     /// amount user should get after order executed
     pub given: Amount,
+}
+impl Cow {
+    pub fn new(order_id: OrderId, cow_amount: Amount, given: Amount) -> Self {
+        assert!(cow_amount <= given);
+        Self {
+            order_id,
+            cow_amount,
+            given,
+        }
+    }
 }
 
 #[cw_serde]

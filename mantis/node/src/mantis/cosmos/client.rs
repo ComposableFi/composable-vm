@@ -19,11 +19,17 @@ pub type CosmWasmReadClient =
 pub type CosmosQueryClient =
     cosmos_sdk_proto::cosmos::auth::v1beta1::query_client::QueryClient<Channel>;
 
-
 /// tip of chain to use for tx formation
-pub struct Tip{
+#[derive(Debug)]
+pub struct Tip {
     pub block: Height,
     pub account: cosmos_sdk_proto::cosmos::auth::v1beta1::BaseAccount,
+}
+
+impl Tip {
+    pub fn timeout(&self, delta: u32) -> u64 {
+        self.block.value() + delta as u64
+    }
 }
 
 pub async fn create_cosmos_query_client(rpc: &str) -> CosmosQueryClient {
@@ -63,14 +69,7 @@ pub async fn create_wasm_write_client(rpc: &str) -> CosmWasmWriteClient {
         .expect("connected")
 }
 
-pub async fn get_latest_block_and_account(
-    rpc: &str,
-    grpc:&str,
-    address: String,
-) -> (
-    cosmrs::tendermint::block::Height,
-    cosmos_sdk_proto::cosmos::auth::v1beta1::BaseAccount,
-) {
+pub async fn get_latest_block_and_account(rpc: &str, grpc: &str, address: String) -> Tip {
     let rpc_client: cosmrs::rpc::HttpClient = cosmrs::rpc::HttpClient::new(rpc).unwrap();
     let status = rpc_client
         .status()
@@ -78,18 +77,18 @@ pub async fn get_latest_block_and_account(
         .expect("status")
         .sync_info
         .latest_block_height;
-    let account = query_cosmos_account(grpc, address).await;
-    (status, account)
+    let account: BaseAccount = query_cosmos_account(grpc, address).await;
+    Tip {
+        block: status,
+        account,
+    }
 }
 
 pub async fn get_latest_block_and_account_by_key(
     rpc: &str,
     grpc: &str,
     address: &cosmrs::crypto::secp256k1::SigningKey,
-) -> (
-    cosmrs::tendermint::block::Height,
-    cosmos_sdk_proto::cosmos::auth::v1beta1::BaseAccount,
-) {
+) -> Tip {
     get_latest_block_and_account(
         rpc,
         grpc,
@@ -98,7 +97,8 @@ pub async fn get_latest_block_and_account_by_key(
             .account_id("centauri")
             .expect("key")
             .to_string(),
-    ).await
+    )
+    .await
 }
 
 /// latest chain state
@@ -133,23 +133,18 @@ pub async fn sign_and_tx_tendermint(
 
 pub async fn tx_broadcast_single_signed_msg(
     msg: Any,
-    block: &Height,
     auth_info: tx::AuthInfo,
-    account: &cosmos_sdk_proto::cosmos::auth::v1beta1::BaseAccount,
     rpc: &str,
     signing_key: &cosmrs::crypto::secp256k1::SigningKey,
+    tip: &Tip,
 ) {
-    let tx_body = tx::Body::new(
-        vec![msg],
-        "",
-        Height::try_from(block.value() + 100).unwrap(),
-    );
+    let tx_body = tx::Body::new(vec![msg], "", Height::try_from(tip.timeout(100)).unwrap());
 
     let sign_doc = SignDoc::new(
         &tx_body,
         &auth_info,
         &chain::Id::try_from("centauri-1").expect("id"),
-        account.account_number,
+        tip.account.account_number,
     )
     .unwrap();
 
