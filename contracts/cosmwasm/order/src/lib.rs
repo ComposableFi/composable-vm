@@ -259,6 +259,7 @@ impl OrderContract<'_> {
             pair: ab.clone(),
             msg,
             block_added: ctx.env.block.height,
+            owner: ctx.info.sender.clone(),
         };
 
         self.solutions.save(
@@ -316,11 +317,16 @@ impl OrderContract<'_> {
                 a_total_in,
                 b_total_in,
             );
+
             ctx.deps.api.debug(&format!(
                 "mantis::solutions::alternative {:?}",
                 &alternative_transfers
             ));
-            if let Ok(alternative_transfers) = alternative_transfers {
+            if let Err(err) = alternative_transfers {
+                if solution.owner == ctx.info.sender {
+                    return Err(err);
+                }
+            } else if let Ok(alternative_transfers) = alternative_transfers {
                 if a_total_in * b_total_in > a_in * b_in {
                     a_in = a_total_in;
                     b_in = b_total_in;
@@ -476,23 +482,26 @@ fn solves_cows_via_bank(
     let mut transfers = vec![];
     for order in all_orders.iter() {
         let cowed = order.solution.cow_amount;
-        let amount = Coin {
+        let filled_wanted = Coin {
             amount: cowed,
-            ..order.given().clone()
+            denom: order.wanted_denom().clone(),
         };
 
-        // so if not enough was deposited as was taken from original orders, it will fails - so
+        // so if not enough was deposited as was taken from original orders, it will fail - so
         // solver cannot rob the bank
-        if amount.denom == a {
+        if filled_wanted.denom == a {
             a_total_in -= BigRational::from_integer(cowed.u128().into());
         } else {
             b_total_in -= BigRational::from_integer(cowed.u128().into());
         };
 
-        transfers.push((amount, order.order.order_id));
+        transfers.push((filled_wanted, order.order.order_id));
     }
     if a_total_in < BigRational::default() || b_total_in < BigRational::default() {
-        return Err(StdError::generic_err("SolutionForCowsViaBankIsNotBalanced"));
+        return Err(StdError::generic_err(format!(
+            "SolutionForCowsViaBankIsNotBalanced {} {}",
+            a_total_in, b_total_in
+        )));
     }
     Ok(transfers)
 }

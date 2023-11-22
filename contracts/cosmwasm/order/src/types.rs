@@ -79,6 +79,7 @@ pub struct SolutionItem {
     pub msg: SolutionSubMsg,
     /// at which block solution was added
     pub block_added: u64,
+    pub owner: Addr,
 }
 
 /// price information will not be used on chain or deciding.
@@ -114,9 +115,9 @@ pub struct RouteSubMsg {
 #[cw_serde]
 pub struct Cow {
     pub order_id: OrderId,
-    /// how much of order to be solved by from bank for all aggregated cows
+    /// how much of order to be solved by from bank for all aggregated cows, `want` unit
     pub cow_amount: Amount,
-    /// amount user should get after order executed
+    /// amount user should get after order executed in `want` unit
     pub given: Amount,
 }
 impl Cow {
@@ -145,6 +146,14 @@ impl SolvedOrder {
 
     pub fn cross_chain(&self) -> u128 {
         self.order.msg.wants.amount.u128() - self.solution.cow_amount.u128()
+    }
+
+    pub fn filled(&self) -> u128 {
+        self.solution.cow_amount.u128()
+    }
+
+    pub fn wanted_denom(&self) -> String {
+        self.order.msg.wants.denom.clone()
     }
 
     pub fn given(&self) -> &Coin {
