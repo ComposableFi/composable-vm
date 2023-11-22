@@ -499,8 +499,7 @@ fn solves_cows_via_bank(
     }
     if a_total_in < BigRational::default() || b_total_in < BigRational::default() {
         return Err(StdError::generic_err(format!(
-            "SolutionForCowsViaBankIsNotBalanced {} {}",
-            a_total_in, b_total_in
+            "SolutionForCowsViaBankIsNotBalanced"
         )));
     }
     Ok(transfers)
