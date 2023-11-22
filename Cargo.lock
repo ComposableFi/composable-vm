@@ -677,6 +677,7 @@ dependencies = [
  "schemars",
  "serde",
  "sylvia",
+ "tuples",
 ]
 
 [[package]]

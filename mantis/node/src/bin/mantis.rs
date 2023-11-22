@@ -138,7 +138,7 @@ async fn simulate_order(
     let msg = cw_mantis_order::ExecMsg::Order {
         msg: OrderSubMsg {
             wants: cosmwasm_std::Coin {
-                amount: coins.0.amount,
+                amount: coins.0.amount.saturating_sub(1u32.into()),
                 denom: coins.0.denom.clone(),
             },
             transfer: None,
@@ -209,38 +209,32 @@ async fn solve(
 ) {
     println!("========================= solve =========================");
     let query = cw_mantis_order::QueryMsg::GetAllOrders {};
-    let all_orders: Vec<OrderItem> = smart_query(order_contract, query, cosmos_query_client).await;
+    let all_orders = smart_query::<_, Vec<OrderItem>>(order_contract, query, cosmos_query_client)
+        .await
+        .into_iter()
+        .filter(|x| x.msg.timeout > tip.block.value())
+        .collect::<Vec<OrderItem>>();
     println!("all_orders: {:?}", all_orders);
     if !all_orders.is_empty() {
         let all_orders = all_orders.into_iter().group_by(|x| {
-            let mut ab = (x.given.denom.clone(), x.msg.wants.denom.clone());
-            ab.sort_selection();
-            ab
+            let mut ab = [x.given.denom.clone(), x.msg.wants.denom.clone()];
+            ab.sort();
+            (ab[0].clone(), ab[1].clone())
         });
         for ((a, b), orders) in all_orders.into_iter() {
             let orders = orders.collect::<Vec<_>>();
             use mantis_node::solver::solver::*;
             use mantis_node::solver::types::*;
             let orders = orders.iter().map(|x| {
-                let (side, price) = if x.given.denom == a {
-                    (
-                        OrderType::Buy,
-                        Price::new_float(
-                            x.msg.wants.amount.u128() as f64 / x.given.amount.u128() as f64,
-                        ),
-                    )
+                let side = if x.given.denom == a {
+                    OrderType::Buy
                 } else {
-                    (
-                        OrderType::Sell,
-                        Price::new_float(
-                            x.given.amount.u128() as f64 / x.msg.wants.amount.u128() as f64,
-                        ),
-                    )
+                    OrderType::Sell
                 };
 
-                mantis_node::solver::types::Order::new(
-                    Amount::from_f64_retain(x.given.amount.u128() as f64).expect("decimal"),
-                    price,
+                mantis_node::solver::types::Order::new_integer(
+                    x.given.amount.u128(),
+                    x.msg.wants.amount.u128(),
                     side,
                     x.order_id,
                 )
@@ -250,6 +244,7 @@ async fn solve(
             };
             orders.print();
             let optimal_price = orders.compute_optimal_price(1000);
+            println!("optimal_price: {:?}", optimal_price);
             let mut solution = Solution::new(orders.value.clone());
             solution = solution.match_orders(optimal_price);
             solution.print();
@@ -257,22 +252,37 @@ async fn solve(
                 .orders
                 .value
                 .into_iter()
-                .filter(|x| x.amount_filled > <_>::default())
+                .filter(|x| x.amount_out > <_>::default())
                 .map(|x| {
-                    let filled = x.amount_filled.ceil().to_u128().expect("u128");
+                    let filled = x.amount_out.to_u128().expect("u128");
                     Cow {
                         order_id: x.id,
                         cow_amount: filled.into(),
                         given: filled.into(),
                     }
-                });
-            let solution = SolutionSubMsg {
-                cows: cows.collect(),
-                route: None,
-                timeout: tip.timeout(12),
-            };
+                })
+                .collect::<Vec<_>>();
+            if !cows.is_empty() {
+                println!("========================= settle =========================");
+                println!("cows: {:?}", cows);
+                let solution = SolutionSubMsg {
+                    cows,
+                    route: None,
+                    timeout: tip.timeout(12),
+                };
 
-            let msg = cw_mantis_order::ExecMsg::Solve { msg: solution };
+                let auth_info = simulate_and_set_fee(signing_key, &tip.account).await;
+                let msg = cw_mantis_order::ExecMsg::Solve { msg: solution };
+                let msg = to_exec_signed(signing_key, order_contract.clone(), msg);
+                tx_broadcast_single_signed_msg(
+                    msg.to_any().expect("proto"),
+                    auth_info,
+                    rpc,
+                    signing_key,
+                    tip,
+                )
+                .await;
+            }
         }
     }
 }

@@ -28,7 +28,7 @@ impl<Id: Copy + PartialEq + Debug> Solver<Id> {
             target_price,
             buy_token,
             sell_token,
-            order: Order::new(dec!(0.0), Price(dec!(0.0)), OrderType::Buy, solver_order_id),
+            order: Order::new_decimal(dec!(0.0), Price(dec!(0.0)), OrderType::Buy, solver_order_id),
         }
     }
 
@@ -112,6 +112,6 @@ impl<Id: Copy + PartialEq + Debug> Solver<Id> {
     }
 
     fn order_for(&self, amount: Decimal, order_type: OrderType, id: Id) -> Order<Id> {
-        Order::new(amount, self.limit_price(), order_type, id)
+        Order::new_decimal(amount, self.limit_price(), order_type, id)
     }
 }

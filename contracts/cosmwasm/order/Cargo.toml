@@ -34,3 +34,5 @@ cvm = { path = "../../../crates/cvm", default-features = false, features = [
   "std",
   "json-schema",
 ] }
+
+tuples ={ workspace = true }
