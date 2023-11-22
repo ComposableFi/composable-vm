@@ -342,17 +342,19 @@ impl OrderContract<'_> {
             )?;
             response = response.add_message(route);
         };
-
-        let solution_chosen = Event::new("mantis-solution-chosen")
-            .add_attribute("token_a", ab.clone().0)
-            .add_attribute("token_b", ab.clone().1)
-            .add_attribute("solver_address", &ctx.info.sender.to_string());
         let transfers = self.fill(
             ctx.deps.storage,
             transfers,
             ctx.info.sender.to_string(),
             solution_item.block_added,
         )?;
+
+        let solution_chosen = Event::new("mantis-solution-chosen")
+            .add_attribute("token_a", ab.clone().0)
+            .add_attribute("token_b", ab.clone().1)
+            .add_attribute("solver_address", &ctx.info.sender.to_string())
+            .add_attribute("total_transfers", transfers.len().to_string());
+
         ctx.deps
             .api
             .debug(&format!("mantis-solution-chosen: {:?}", &solution_chosen));
@@ -362,7 +364,8 @@ impl OrderContract<'_> {
         }
         Ok(response
             .add_event(solution_upserted)
-            .add_event(solution_chosen))
+            .add_event(solution_chosen)
+            .add_messages(transfers))
     }
 
     fn merge_solution_with_orders(

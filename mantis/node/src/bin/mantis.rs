@@ -291,7 +291,7 @@ async fn solve(
 
 fn decimal_to_fraction(amount: Decimal) -> (u64, u64) {
     let digits_after_decimal = amount.to_string().split('.').nth(1).unwrap().len() as u32;
-    let denominator = 10_u64.pow(digits_after_decimal);
+    let denominator = 10_u128.pow(digits_after_decimal) as u64;
     let numerator = (amount * Decimal::from(denominator))
         .to_f64()
         .expect("converted")
