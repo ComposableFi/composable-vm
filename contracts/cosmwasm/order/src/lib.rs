@@ -347,7 +347,12 @@ impl OrderContract<'_> {
             .add_attribute("token_a", ab.clone().0)
             .add_attribute("token_b", ab.clone().1)
             .add_attribute("solver_address", &ctx.info.sender.to_string());
-        let transfers = self.fill(ctx.deps.storage, transfers, ctx.info.sender.to_string(), solution_item.block_added)?;
+        let transfers = self.fill(
+            ctx.deps.storage,
+            transfers,
+            ctx.info.sender.to_string(),
+            solution_item.block_added,
+        )?;
         ctx.deps
             .api
             .debug(&format!("mantis-solution-chosen: {:?}", &solution_chosen));
@@ -409,7 +414,7 @@ impl OrderContract<'_> {
         &self,
         storage: &mut dyn Storage,
         cows: Vec<CowFilledOrder>,
-        solver_address : String,
+        solver_address: String,
         solution_block_added: u64,
     ) -> StdResult<Vec<CowFillResult>> {
         let mut results = vec![];
@@ -422,13 +427,13 @@ impl OrderContract<'_> {
                     .add_attribute("order_id", order.order_id.to_string())
                     .add_attribute("solver_address", solver_address.clone())
                     .add_attribute("solution_block_added", solution_block_added.to_string())
-                } else {
-                    self.orders.save(storage, order.order_id.u128(), &order)?;
-                    Event::new("mantis-order-filled-parts")
+            } else {
+                self.orders.save(storage, order.order_id.u128(), &order)?;
+                Event::new("mantis-order-filled-parts")
                     .add_attribute("order_id", order.order_id.to_string())
                     .add_attribute("amount", transfer.amount.to_string())
                     .add_attribute("solver_address", solver_address.clone())
-                    .add_attribute("solution_block_added", solution_block_added.to_string())                    
+                    .add_attribute("solution_block_added", solution_block_added.to_string())
             };
             let transfer = BankMsg::Send {
                 to_address: order.owner.to_string(),
@@ -465,8 +470,6 @@ fn solves_cows_via_bank(
 ) -> Result<Vec<CowFilledOrder>, StdError> {
     let mut a_total_in = BigRational::from_integer(a_total_in.into());
     let mut b_total_in = BigRational::from_integer(b_total_in.into());
-    let a_total_obligation = BigRational::zero();
-    let b_total_obligation = BigRational::zero();
     let mut transfers = vec![];
     for order in all_orders.iter() {
         let cowed = order.solution.cow_amount;

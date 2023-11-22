@@ -78,7 +78,12 @@ impl<Id: Copy + PartialEq> Order<Id> {
             self.amount_out
         );
     }
-    pub fn new_decimal(amount_in: Amount, limit_price: Price, order_type: OrderType, id: Id) -> Self {
+    pub fn new_decimal(
+        amount_in: Amount,
+        limit_price: Price,
+        order_type: OrderType,
+        id: Id,
+    ) -> Self {
         Order {
             amount_in,
             filled_price: dec!(0.0),
@@ -91,11 +96,11 @@ impl<Id: Copy + PartialEq> Order<Id> {
         }
     }
 
-    pub fn new_integer(amount_in : u128, min_want: u128,  order_type: OrderType, id: Id) -> Self {
+    pub fn new_integer(amount_in: u128, min_want: u128, order_type: OrderType, id: Id) -> Self {
         let amount_in: Amount = amount_in.try_into().expect("smaller");
         let min_want: Amount = min_want.try_into().expect("smaller");
         let limit_price = match order_type {
-            OrderType::Buy => amount_in / min_want ,
+            OrderType::Buy => amount_in / min_want,
             OrderType::Sell => min_want / amount_in,
         };
         Order {
@@ -129,7 +134,6 @@ impl<Id: Copy + PartialEq> Order<Id> {
         self.order_type
             .is_acceptable_price(price.0, self.limit_price.0)
     }
-    
 
     pub fn token1_at_price(&self, price: Amount) -> Amount {
         if self.order_type == OrderType::Sell {
@@ -219,4 +223,3 @@ impl<Id: Copy + PartialEq> Order<Id> {
         )
     }
 }
-

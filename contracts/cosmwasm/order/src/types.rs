@@ -34,13 +34,13 @@ impl OrderItem {
     pub fn fill(&mut self, wanted_transfer: Uint128) {
         // was given more or exact wanted - user happy
         if wanted_transfer >= self.msg.wants.amount {
-            self.given.amount = 0;
-            self.msg.wants.amount = 0;
+            self.given.amount = <_>::default();
+            self.msg.wants.amount = <_>::default();
         } else {
             self.msg.wants.amount = self.msg.wants.amount - wanted_transfer;
             let given_reduction = wanted_transfer * self.given.amount / self.msg.wants.amount;
             self.given.amount = self.given.amount - given_reduction;
-        }        
+        }
     }
 }
 
@@ -90,6 +90,8 @@ pub struct SolutionItem {
 pub struct SolutionSubMsg {
     #[serde(skip_serializing_if = "Vec::is_empty", default)]
     pub cows: Vec<Cow>,
+    /// all CoWs ensured to be solved against one optimal price
+    pub optimal_price: (u64, u64),
     /// must adhere Connection.fork_join_supported, for now it is always false (it restrict set of
     /// routes possible)
     #[serde(skip_serializing_if = "Option::is_none", default)]

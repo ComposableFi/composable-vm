@@ -15,7 +15,7 @@ use cosmrs::{
     tx::{self, Fee, SignerInfo},
     AccountId,
 };
-use cw_mantis_order::{Cow, OrderItem, OrderSubMsg, SolutionSubMsg};
+use cw_mantis_order::{Amount, Cow, OrderItem, OrderSubMsg, SolutionSubMsg};
 use mantis_node::{
     mantis::{
         args::*,
@@ -265,10 +265,12 @@ async fn solve(
             if !cows.is_empty() {
                 println!("========================= settle =========================");
                 println!("cows: {:?}", cows);
+                let optimal_price = decimal_to_fraction(optimal_price.0);
                 let solution = SolutionSubMsg {
                     cows,
                     route: None,
                     timeout: tip.timeout(12),
+                    optimal_price,
                 };
 
                 let auth_info = simulate_and_set_fee(signing_key, &tip.account).await;
@@ -285,4 +287,14 @@ async fn solve(
             }
         }
     }
+}
+
+fn decimal_to_fraction(amount: Decimal) -> (u64, u64) {
+    let digits_after_decimal = amount.to_string().split('.').nth(1).unwrap().len() as u32;
+    let denominator = 10_u64.pow(digits_after_decimal);
+    let numerator = (amount * Decimal::from(denominator))
+        .to_f64()
+        .expect("converted")
+        .round() as u64;
+    (numerator, denominator)
 }
