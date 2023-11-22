@@ -26,6 +26,12 @@ pub struct Tip{
     pub account: cosmos_sdk_proto::cosmos::auth::v1beta1::BaseAccount,
 }
 
+impl Tip {
+    pub fn timeout(&self, delta: u32) -> u64 {
+        self.block.value() + delta as u64
+    }
+}
+
 pub async fn create_cosmos_query_client(rpc: &str) -> CosmosQueryClient {
     use cosmos_sdk_proto::cosmos::auth::v1beta1::query_client::*;
     use cosmos_sdk_proto::cosmos::auth::v1beta1::*;

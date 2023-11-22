@@ -15,7 +15,7 @@ use cosmrs::{
     tx::{self, Fee, SignerInfo},
     AccountId,
 };
-use cw_mantis_order::{OrderItem, OrderSubMsg};
+use cw_mantis_order::{Cow, OrderItem, OrderSubMsg, SolutionSubMsg};
 use mantis_node::{
     mantis::{
         args::*,
@@ -198,6 +198,7 @@ async fn solve(
     write: &mut CosmWasmWriteClient,
     order_contract: &String,
     cvm_contract: &String,
+    tip: &Tip,
 ) {
     let query = cw_mantis_order::QueryMsg::GetAllOrders {};
     let all_orders: Vec<OrderItem> = smart_query(order_contract, query, read).await;
@@ -242,7 +243,18 @@ async fn solve(
         let mut solution = Solution::new(orders.value.clone());
         solution = solution.match_orders(optimal_price);
         solution.print();
-
-        
+        let cows = solution.orders.value.into_iter().map(|x| {
+            let filled = x.amount_filled.ceil().to_u128().expect("u128");
+            Cow {
+                order_id: x.id,
+                cow_amount: filled,
+                given: filled,
+            }
+        });
+        let result = SolutionSubMsg {
+            cows: cows.collect(),
+            route: None,
+            timeout: tip.timeout(12),
+        };
     }
 }
