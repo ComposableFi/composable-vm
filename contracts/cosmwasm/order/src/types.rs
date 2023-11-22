@@ -33,7 +33,7 @@ pub struct OrderItem {
 impl OrderItem {
     pub fn fill(&mut self, wanted_transfer: Uint128) {
         // was given more or exact wanted - user happy
-        if wanted_transfer >= self.msg.wants.amount {
+        if wanted_transfer >= self.msg.wants.amount || self.msg.wants.amount == 0 {
             self.given.amount = <_>::default();
             self.msg.wants.amount = <_>::default();
         } else {

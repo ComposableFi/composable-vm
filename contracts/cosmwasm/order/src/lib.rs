@@ -32,7 +32,7 @@ pub struct OrderContract<'a> {
     pub orders: Map<'a, u128, OrderItem>,
     /// (a,b,solver)
     pub solutions:
-        IndexedMap<'a, &'a (Denom, Denom, SolverAddress), SolutionItem, SolutionIndexes<'a>>,
+        IndexedMap<'a, &'a (Denom, Denom, SolverAddress), SolutionItem, SolutionIndexes<'a>> ,
     pub next_order_id: Item<'a, u128>,
     /// address for CVM contact to send routes to
     pub cvm_address: Item<'a, String>,
@@ -320,7 +320,7 @@ impl OrderContract<'_> {
                     return Err(err);
                 }
             } else if let Ok(alternative_transfers) = alternative_transfers {
-                if a_total_in * b_total_in > a_in * b_in {
+                if a_total_in.saturating_mul(b_total_in) >= a_in.saturating_mul(b_in) {
                     a_in = a_total_in;
                     b_in = b_total_in;
                     all_orders = alternative_all_orders;
