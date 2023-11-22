@@ -144,6 +144,12 @@ impl SolvedOrder {
         Ok(Self { order, solution })
     }
 
+    pub fn pair(&self) -> Pair {
+        let mut pair = (self.order.given.denom.clone(), self.order.msg.wants.denom.clone());
+        pair.sort_selection();
+        pair
+    } 
+
     pub fn cross_chain(&self) -> u128 {
         self.order.msg.wants.amount.u128() - self.solution.cow_amount.u128()
     }

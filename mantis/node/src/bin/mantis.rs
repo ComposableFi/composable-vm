@@ -276,7 +276,7 @@ async fn solve(
                 let auth_info = simulate_and_set_fee(signing_key, &tip.account).await;
                 let msg = cw_mantis_order::ExecMsg::Solve { msg: solution };
                 let msg = to_exec_signed(signing_key, order_contract.clone(), msg);
-                tx_broadcast_single_signed_msg(
+                let result = tx_broadcast_single_signed_msg(
                     msg.to_any().expect("proto"),
                     auth_info,
                     rpc,
@@ -284,6 +284,7 @@ async fn solve(
                     tip,
                 )
                 .await;
+                println!("result: {:?}", result);
             }
         }
     }

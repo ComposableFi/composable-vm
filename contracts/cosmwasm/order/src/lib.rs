@@ -313,7 +313,6 @@ impl OrderContract<'_> {
 
             let alternative_transfers = solves_cows_via_bank(
                 &alternative_all_orders.clone(),
-                a.clone(),
                 a_total_in,
                 b_total_in,
             );
@@ -473,7 +472,6 @@ fn order_created(order_id: u128, order: &OrderItem) -> Event {
 /// and return proper action to handle settling funds locally according solution
 fn solves_cows_via_bank(
     all_orders: &Vec<SolvedOrder>,
-    a: String,
     a_total_in: u128,
     b_total_in: u128,
 ) -> Result<Vec<CowFilledOrder>, StdError> {
@@ -489,7 +487,7 @@ fn solves_cows_via_bank(
 
         // so if not enough was deposited as was taken from original orders, it will fail - so
         // solver cannot rob the bank
-        if filled_wanted.denom == a {
+        if order.pair().0 == filled_wanted.denom {
             a_total_in -= BigRational::from_integer(cowed.u128().into());
         } else {
             b_total_in -= BigRational::from_integer(cowed.u128().into());

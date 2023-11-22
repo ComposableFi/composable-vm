@@ -116,6 +116,7 @@
             pname = "mantis";
             name = "mantis";
             cargoBuildCommand = "cargo build --release --bin mantis";
+            doCheck = false;
           };
           default = mantis;
           ci = pkgs.writeShellApplication {

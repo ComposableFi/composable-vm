@@ -137,7 +137,7 @@ pub async fn tx_broadcast_single_signed_msg(
     rpc: &str,
     signing_key: &cosmrs::crypto::secp256k1::SigningKey,
     tip: &Tip,
-) {
+) -> cosmrs::rpc::endpoint::broadcast::tx_commit::Response {
     let tx_body = tx::Body::new(vec![msg], "", Height::try_from(tip.timeout(100)).unwrap());
 
     let sign_doc = SignDoc::new(
@@ -148,7 +148,7 @@ pub async fn tx_broadcast_single_signed_msg(
     )
     .unwrap();
 
-    sign_and_tx_tendermint(rpc, sign_doc, signing_key).await;
+    sign_and_tx_tendermint(rpc, sign_doc, signing_key).await
 }
 
 /// simulates tx and ensure fees are within limits
