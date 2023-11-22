@@ -102,6 +102,11 @@
               rust.rustc
               devour-flake
             ];
+            shellHook = ''
+              if [[ -f ./.env ]]; then
+                source ./.env
+              fi
+            '';
           };
         formatter = pkgs.alejandra;
         packages = rec {
