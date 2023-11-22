@@ -349,6 +349,7 @@ impl OrderContract<'_> {
             solution_item.block_added,
         )?;
 
+        self.solutions.clear(ctx.deps.storage);
         let solution_chosen = Event::new("mantis-solution-chosen")
             .add_attribute("token_a", ab.clone().0)
             .add_attribute("token_b", ab.clone().1)
@@ -364,8 +365,7 @@ impl OrderContract<'_> {
         }
         Ok(response
             .add_event(solution_upserted)
-            .add_event(solution_chosen)
-            .add_messages(transfers))
+            .add_event(solution_chosen))
     }
 
     fn merge_solution_with_orders(
