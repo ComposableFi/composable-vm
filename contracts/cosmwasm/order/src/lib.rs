@@ -290,8 +290,8 @@ impl OrderContract<'_> {
             .debug(&format!("mantis::solutions::current {:?}", all_solutions));
 
         // pick up optimal solution with solves with bank
-        let mut a_in = 0;
-        let mut b_in = 0;
+        let mut a_in = 0u128;
+        let mut b_in = 0u128;
         let (a, b) = ab.clone();
         let mut transfers = vec![];
         let mut solution_item: SolutionItem = possible_solution;
