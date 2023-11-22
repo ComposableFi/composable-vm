@@ -482,7 +482,7 @@ fn solves_cows_via_bank(
         if order.pair().0 == filled_wanted.denom {
             a_total_in = a_total_in.checked_sub(cowed.u128()).ok_or_else(|| {
                 StdError::generic_err(format!(
-                    "a underflow: {} - {}",
+                    "a underflow: {} {}",
                     a_total_in,
                     cowed.u128().to_string()
                 ))
@@ -490,7 +490,7 @@ fn solves_cows_via_bank(
         } else {
             b_total_in = b_total_in.checked_sub(cowed.u128()).ok_or_else(|| {
                 StdError::generic_err(format!(
-                    "b underflow: {} - {}",
+                    "b underflow: {} {}",
                     b_total_in,
                     cowed.u128().to_string()
                 ))

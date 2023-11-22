@@ -37,9 +37,10 @@ impl OrderItem {
             self.given.amount = <_>::default();
             self.msg.wants.amount = <_>::default();
         } else {
-            self.msg.wants.amount = self.msg.wants.amount - wanted_transfer;
+            self.msg.wants.amount = self.msg.wants.amount.checked_sub(wanted_transfer).expect("proven above via comparison");
             let given_reduction = wanted_transfer * self.given.amount / self.msg.wants.amount;
-            self.given.amount = self.given.amount - given_reduction;
+            
+            self.given.amount = self.given.amount.checked_sub(given_reduction).expect("proven above via ratio");
         }
     }
 }

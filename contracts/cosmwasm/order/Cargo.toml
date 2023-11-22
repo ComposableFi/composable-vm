@@ -21,10 +21,7 @@ cw-storage-plus = { version = "^1.2.0", features = [
 itertools = { workspace = true, features = [
   "use_std",
 ], default-features = false }
-num-rational = { version = "0.4.1", default-features = false, features = [
-  "num-bigint-std",
-  "std",
-] }
+
 num-integer = { version = "^0.1.45", default-features = false, features = [
   "std",
 ] }
@@ -36,3 +33,9 @@ cvm = { path = "../../../crates/cvm", default-features = false, features = [
 ] }
 
 tuples ={ workspace = true }
+
+[dev-dependencies]
+num-rational = { version = "0.4.1", default-features = false, features = [
+  "num-bigint-std",
+  "std",
+] }
