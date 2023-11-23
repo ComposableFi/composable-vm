@@ -68,7 +68,7 @@ async fn main() {
             };
         };
 
-        if std::time::Instant::now().elapsed().as_millis() % 10000 == 0 {
+        if std::time::Instant::now().elapsed().as_millis() % 100000 == 0 {
             let tip = get_latest_block_and_account_by_key(
                 &args.rpc_centauri,
                 &args.grpc_centauri,
