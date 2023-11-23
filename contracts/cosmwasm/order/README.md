@@ -36,4 +36,8 @@ When bidder joins, percentage averaged appropriately, with always larger bid for
 For each accepted route, Solver is delegated with relevant amount to withdraw.
 
 
+### Data model
+
+
+
 
