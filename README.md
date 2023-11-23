@@ -41,6 +41,6 @@ https://github.com/ComposableFi/composable/tree/main/docs/docs/technology/mantis
 16. test assets on osmosis
 17. NEUTRON CVM adapter
 17. NEUTRON CVM devnet test
-17. NEUTRON CVM mainnet test
+17. NEUTRON CVM mainnet testP
 17. NEUTRON CVM test joe assets
 18. redeplo solver with fixes
