@@ -48,3 +48,6 @@ https://github.com/ComposableFi/composable/tree/main/docs/docs/technology/mantis
 18. redeplo solver with fixes
 19. update final Google docs
 20. "publish" bruno paper
+21. elimniate what was done from https://github.com/ComposableFi/cvm-old
+22. MOVE TS generator HERE
+23. Publush from Composable REPO or ENV repo, move JSONs here too
