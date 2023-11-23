@@ -37,10 +37,14 @@ https://github.com/ComposableFi/composable/tree/main/docs/docs/technology/mantis
 12. query CVM for mapping of assets
 13. in and out data for bruno algortihm
 14. fix cross chain movements integration, imrove tracking code
+15. teh docs
 15. deploy/redeploy/reredeploy with fixes
 16. test assets on osmosis
 17. NEUTRON CVM adapter
 17. NEUTRON CVM devnet test
 17. NEUTRON CVM mainnet testP
 17. NEUTRON CVM test joe assets
+18. tech docs
 18. redeplo solver with fixes
+19. update final Google docs
+20. "publish" bruno paper
