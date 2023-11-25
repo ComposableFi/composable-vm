@@ -203,6 +203,7 @@ impl OrderContract<'_> {
         program
     }
 
+    #[no_panic]
     fn traverse_spawns(spawns: Vec<Spawn<ExchangeRoute>>) -> Vec<cvm::shared::XcInstruction> {
         let mut result = vec![];
         for spawn in spawns {
@@ -464,6 +465,7 @@ fn order_created(order_id: u128, order: &OrderItem) -> Event {
 /// given all orders amounts aggregated into common pool,
 /// ensure that solution does not violates this pull
 /// and return proper action to handle settling funds locally according solution
+#[no_panic]
 fn solves_cows_via_bank(
     all_orders: &Vec<SolvedOrder>,
     mut a_total_in: u128,

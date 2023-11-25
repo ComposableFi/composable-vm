@@ -328,3 +328,5 @@ cython_debug/
 # Built Visual Studio Code Extensions
 *.vsix
 .vscode/settings.json
+
+**/schema/**

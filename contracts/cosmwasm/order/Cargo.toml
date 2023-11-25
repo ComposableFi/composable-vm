@@ -32,6 +32,7 @@ cvm = { path = "../../../crates/cvm", default-features = false, features = [
   "json-schema",
 ] }
 
+no-panic = {workspace = true}
 tuples ={ workspace = true }
 
 [dev-dependencies]

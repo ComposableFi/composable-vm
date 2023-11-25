@@ -31,6 +31,7 @@ pub struct OrderItem {
 }
 
 impl OrderItem {
+    #[no_panic]
     pub fn fill(&mut self, wanted_transfer: Uint128) {
         // was given more or exact wanted - user happy or user was given all before, do not give more
         if wanted_transfer >= self.msg.wants.amount || self.msg.wants.amount.u128() == <_>::default() {
