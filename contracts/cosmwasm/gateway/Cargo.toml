@@ -14,7 +14,7 @@ workspace = true
 
 [features]
 library = []
-std = ["cw-xc-executor/std", "xc-core/std"]
+std = ["cw-xc-executor/std", "cvm-runtime/std"]
 default = ["std"]
 
 [dependencies]
@@ -34,7 +34,8 @@ thiserror = { workspace = true }
 cw-xc-executor = { path = "../executor", features = [
   "library",
 ], default-features = false }
-xc-core = { path = "../../../lib/core", features = [
+
+cvm-runtime = { path = "../../../crates/cvm-runtime", features = [
   "cosmwasm",
 ], default-features = false }
 prost = { workspace = true, default-features = false }

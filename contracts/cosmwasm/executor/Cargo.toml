@@ -11,7 +11,7 @@ crate-type = ["cdylib", "rlib"]
 
 [features]
 library = []
-std = ["xc-core/std", "dep:cosmwasm-schema", "dep:serde_json"]
+std = ["cvm-runtime/std", "dep:cosmwasm-schema", "dep:serde_json"]
 default = ["std"]
 
 [dependencies]
@@ -30,6 +30,6 @@ serde-json-wasm = { workspace = true }
 serde-cw-value = { workspace = true }
 thiserror = { workspace = true }
 prost = { workspace = true, features = ["prost-derive"] }
-xc-core = { path = "../../../lib/core", features = [
+cvm-runtime = { path = "../../../crates/cvm-runtime", features = [
   "cosmwasm",
 ], default-features = false }

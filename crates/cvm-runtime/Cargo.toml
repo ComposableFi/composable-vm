@@ -2,7 +2,8 @@
 authors = ["Composable Developers"]
 edition = "2021"
 homepage = "https://composable.finance"
-name = "xc-core"
+name = "cvm-runtime"
+description = "CVM runner on various chains"
 version = "0.1.0"
 
 [dependencies]
@@ -44,7 +45,6 @@ xcm = ["dep:xcm"]
 cosmwasm = ["cw-storage-plus", "cw20"]
 substrate = ["xcm"]
 std = [
-  "cosmwasm-std/std",
   "cw-storage-plus/std",
   "dep:cosmwasm-schema",
   "dep:schemars",
