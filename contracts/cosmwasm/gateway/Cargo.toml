@@ -18,14 +18,14 @@ std = ["cw-xc-executor/std", "xc-core/std"]
 default = ["std"]
 
 [dependencies]
-enumn = { version = "0.1.12" }
-bech32-no_std = { workspace = true, features = ["strict"] }
+enumn = { workspace = true }
+bech32 = { workspace = true, features = ["strict"] }
 cosmwasm-std = { workspace = true, features = ["ibc3", "stargate"] }
 cw-storage-plus = { workspace = true }
 cw-utils = { workspace = true }
 cw2 = { workspace = true }
 cw20 = { workspace = true }
-ibc-rs-scale = { workspace = true, features = ["parity-scale-codec", "serde"] }
+ibc = { workspace = true, features = ["parity-scale-codec", "serde", "schema"] }
 schemars = { workspace = true }
 serde = { workspace = true }
 serde-json-wasm = { workspace = true }

@@ -6,14 +6,14 @@ name = "xc-core"
 version = "0.1.0"
 
 [dependencies]
-bech32-no_std = { workspace = true, features = ["strict"] }
+bech32 = { workspace = true, features = ["strict"] }
 cosmwasm-schema = { workspace = true, optional = true }
 cosmwasm-std = { workspace = true, features = ["ibc3"] }
 cw-storage-plus = { workspace = true, optional = true }
 cw20 = { workspace = true, optional = true }
 derive_more.workspace = true
 hex = { workspace = true, features = ["alloc"] }
-ibc-rs-scale = { workspace = true, features = ["serde", "parity-scale-codec"] }
+ibc = { workspace = true, features = ["serde", "parity-scale-codec"] }
 num = { workspace = true }
 parity-scale-codec = { workspace = true }
 prost = { workspace = true, features = ["prost-derive"] }
@@ -49,8 +49,8 @@ std = [
   "dep:cosmwasm-schema",
   "dep:schemars",
   "ibc-proto/std",
-  "ibc-rs-scale/schema",
-  "ibc-rs-scale/std",
+  "ibc/schema",
+  "ibc/std",
   "serde-cw-value/schema",
   "serde-cw-value/std",
   "serde-json-wasm/std",

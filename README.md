@@ -6,11 +6,6 @@ For `issues`:
 
 https://github.com/ComposableFi/composable/
 
-For `tech question and talks`:
-
-https://discord.com/channels/828751308060098601/1162324949277622333
-
-https://discord.com/channels/828751308060098601/1163404253537247283
 
 For `higher level docs`:
 
