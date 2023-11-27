@@ -2,7 +2,7 @@ use crate::prelude::*;
 
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, Eq, prost::Message, Serialize, Deserialize)]
-#[cfg_attr(feature = "std", derive(schemars::JsonSchema))]
+#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 pub struct MsgSwapExactAmountIn {
 	#[prost(string, tag = "1")]
 	pub sender: String,
@@ -20,7 +20,7 @@ impl MsgSwapExactAmountIn {
 
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, Eq, prost::Message, Serialize, Deserialize)]
-#[cfg_attr(feature = "std", derive(schemars::JsonSchema))]
+#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 pub struct SwapAmountInRoute {
 	#[prost(uint64, tag = "1")]
 	#[serde(alias = "poolID")]

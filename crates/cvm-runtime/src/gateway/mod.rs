@@ -11,12 +11,12 @@ use crate::{
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "snake_case")]
-#[cfg_attr(feature = "std", derive(schemars::JsonSchema))]
+#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 pub struct MigrateMsg {}
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, derive_more::From)]
 #[serde(rename_all = "snake_case")]
-#[cfg_attr(feature = "std", derive(schemars::JsonSchema))]
+#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 pub enum ExecuteMsg {
 	Config(ConfigSubMsg),
 
@@ -46,7 +46,7 @@ pub enum ExecuteMsg {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "snake_case")]
-#[cfg_attr(feature = "std", derive(schemars::JsonSchema))]
+#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 pub enum ShortcutSubMsg {
 	Transfer {
 		/// assets from there
@@ -63,13 +63,13 @@ pub enum ShortcutSubMsg {
 /// Definition of a program to be executed including its context.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "snake_case")]
-#[cfg_attr(feature = "std", derive(schemars::JsonSchema))]
+#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 pub struct ExecuteProgramMsg<Assets = Option<Funds<crate::shared::Displayed<u128>>>> {
 	/// The program salt.
 	/// If JSON, than hex encoded non prefixed lower case string.
 	/// If not specified, uses no salt.
 	#[serde(serialize_with = "hex::serialize", deserialize_with = "hex::deserialize")]
-	#[cfg_attr(feature = "std", schemars(schema_with = "String::json_schema"))]
+	#[cfg_attr(feature = "json-schema", schemars(schema_with = "String::json_schema"))]
 	#[serde(skip_serializing_if = "Vec::is_empty", default)]
 	pub salt: Vec<u8>,
 	/// The program.
@@ -88,7 +88,7 @@ pub type BridgeExecuteProgramMsg = ExecuteProgramMsg<Funds<crate::shared::Displa
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "snake_case")]
-#[cfg_attr(feature = "std", derive(schemars::JsonSchema))]
+#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 pub struct BridgeForwardMsg {
 	pub executor_origin: InterpreterOrigin,
 	/// target network
@@ -110,7 +110,7 @@ pub struct BridgeForwardMsg {
 /// to be validated.
 #[cfg(feature = "cosmwasm")]
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-#[cfg_attr(feature = "std", derive(schemars::JsonSchema))]
+#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 #[serde(transparent)]
 pub struct Gateway {
 	address: cosmwasm_std::Addr,

@@ -76,17 +76,17 @@ impl ExecuteMsg {
 // see pallet-xcm interface for data encoding for now
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "snake_case")]
-#[cfg_attr(feature = "std", derive(schemars::JsonSchema, cosmwasm_schema::QueryResponses))]
+#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema, cosmwasm_schema::QueryResponses))]
 pub enum ExecuteMsg {
-	#[cfg_attr(feature = "std", returns(core::result::Result<(),String>))]
+	#[cfg_attr(feature = "json-schema", returns(core::result::Result<(),String>))]
 	Send { dest: Binary, message: Binary },
-	#[cfg_attr(feature = "std", returns(core::result::Result<(),String>))]
+	#[cfg_attr(feature = "json-schema", returns(core::result::Result<(),String>))]
 	ReserveTransferAssets { dest: Binary, beneficiary: Binary, assets: Binary, fee_asset_item: u32 },
-	#[cfg_attr(feature = "std", returns(core::result::Result<(),String>))]
+	#[cfg_attr(feature = "json-schema", returns(core::result::Result<(),String>))]
 	TeleportAssets { dest: Binary, beneficiary: Binary, assets: Binary, fee_asset_item: u32 },
-	#[cfg_attr(feature = "std", returns(core::result::Result<(),String>))]
+	#[cfg_attr(feature = "json-schema", returns(core::result::Result<(),String>))]
 	Execute { message: Binary, max_weight: u64 },
-	#[cfg_attr(feature = "std", returns(core::result::Result<(),String>))]
+	#[cfg_attr(feature = "json-schema", returns(core::result::Result<(),String>))]
 	LimitedReserveTransferAssets {
 		dest: Binary,
 		beneficiary: Binary,
@@ -94,7 +94,7 @@ pub enum ExecuteMsg {
 		fee_asset_item: u32,
 		weight_limit: u64,
 	},
-	#[cfg_attr(feature = "std", returns(core::result::Result<(),String>))]
+	#[cfg_attr(feature = "json-schema", returns(core::result::Result<(),String>))]
 	LimitedTeleportAssets {
 		dest: Binary,
 		beneficiary: Binary,

@@ -21,7 +21,7 @@ use self::ics20::{
 /// All information here is not secured until compared with existing secured data.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "snake_case")]
-#[cfg_attr(feature = "std", derive(schemars::JsonSchema))]
+#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 pub struct XcMessageData {
 	pub from_network_id: NetworkId,
 	pub packet: XcPacket,
@@ -30,14 +30,14 @@ pub struct XcMessageData {
 /// Message type for `sudo` entry_point
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "snake_case")]
-#[cfg_attr(feature = "std", derive(schemars::JsonSchema))]
+#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 pub enum SudoMsg {
 	#[serde(rename = "ibc_lifecycle_complete")]
 	IBCLifecycleComplete(IBCLifecycleComplete),
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[cfg_attr(feature = "std", derive(schemars::JsonSchema))]
+#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 #[serde(rename_all = "snake_case")]
 pub enum TransportTrackerId {
 	/// Allows to identify results of IBC packets
@@ -46,7 +46,7 @@ pub enum TransportTrackerId {
 
 /// route is used to describe how to send a full program packet to another network
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[cfg_attr(feature = "std", derive(schemars::JsonSchema))]
+#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 #[serde(rename_all = "snake_case")]
 pub struct IbcIcs20ProgramRoute {
 	pub from_network: NetworkId,
@@ -152,7 +152,7 @@ pub fn to_cosmwasm_message<T>(
 
 /// Information associated with an IBC channel.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[cfg_attr(feature = "std", derive(schemars::JsonSchema))]
+#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 pub struct ChannelInfo {
 	/// id of this channel
 	pub id: ChannelId,
@@ -163,7 +163,7 @@ pub struct ChannelInfo {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-#[cfg_attr(feature = "std", derive(schemars::JsonSchema))]
+#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 pub enum IbcIcs20Sender {
 	SubstratePrecompile(Addr),
 	CosmosStargateIbcApplicationsTransferV1MsgTransfer,

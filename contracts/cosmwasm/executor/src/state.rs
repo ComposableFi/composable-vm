@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 use xc_core::InterpreterOrigin;
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[cfg_attr(feature = "std", derive(schemars::JsonSchema))]
+#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 pub struct Config {
 	pub gateway_address: xc_core::gateway::Gateway,
 	pub interpreter_origin: InterpreterOrigin,
@@ -28,7 +28,7 @@ pub const RESULT_REGISTER: Item<Result<SubMsgResponse, String>> = Item::new("res
 pub const TIP_REGISTER: Item<Addr> = Item::new("tip_register");
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[cfg_attr(feature = "std", derive(schemars::JsonSchema))]
+#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 pub struct State {
 	pub result_register: Result<SubMsgResponse, String>,
 	pub ip_register: u16,

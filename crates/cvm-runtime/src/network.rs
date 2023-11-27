@@ -6,14 +6,14 @@ use parity_scale_codec::{Decode, Encode};
 use scale_info::TypeInfo;
 
 /// The interpreter origin, composite of a user origin and a salt.
-#[cfg_attr(feature = "std", derive(schemars::JsonSchema))]
+#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 #[derive(
 	Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Encode, Decode, TypeInfo, Serialize, Deserialize,
 )]
 pub struct InterpreterOrigin {
 	pub user_origin: UserOrigin,
 	#[serde(with = "hex")]
-	#[cfg_attr(feature = "std", schemars(with = "String"))]
+	#[cfg_attr(feature = "json-schema", schemars(with = "String"))]
 	pub salt: Vec<u8>,
 }
 
@@ -26,7 +26,7 @@ impl Display for InterpreterOrigin {
 }
 
 /// The origin of a user, which consist of the composite, origin network and origin network user id.
-#[cfg_attr(feature = "std", derive(schemars::JsonSchema))]
+#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 #[derive(
 	Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Encode, Decode, TypeInfo, Serialize, Deserialize,
 )]
@@ -44,14 +44,14 @@ impl Display for UserOrigin {
 
 /// Arbitrary `User` type that represent the identity of a user on a given network, usually a public
 /// key.
-#[cfg_attr(feature = "std", derive(schemars::JsonSchema))]
+#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 #[derive(
 	Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Encode, Decode, TypeInfo, Serialize, Deserialize,
 )]
 #[repr(transparent)]
 pub struct UserId(
 	#[serde(with = "hex")]
-	#[cfg_attr(feature = "std", schemars(with = "String"))]
+	#[cfg_attr(feature = "json-schema", schemars(with = "String"))]
 	pub Vec<u8>,
 );
 
@@ -83,7 +83,7 @@ impl AsRef<[u8]> for UserId {
 /// Newtype for XCVM networks ID. Must be unique for each network and must never change.
 /// This ID is an opaque, arbitrary type from the XCVM protocol and no assumption must be made on
 /// how it is computed.
-#[cfg_attr(feature = "std", derive(schemars::JsonSchema))]
+#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 #[derive(
 	Copy,
 	Clone,

@@ -8,7 +8,7 @@ use parity_scale_codec::{Decode, Encode};
 use scale_info::TypeInfo;
 use serde::{Deserialize, Serialize};
 
-#[cfg_attr(feature = "std", derive(schemars::JsonSchema))]
+#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 #[derive(Clone, PartialEq, Eq, Debug, Encode, Decode, TypeInfo, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum BindingValue {
@@ -18,7 +18,7 @@ pub enum BindingValue {
 	AssetAmount(AssetId, Amount),
 }
 
-#[cfg_attr(feature = "std", derive(schemars::JsonSchema))]
+#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 #[derive(Copy, Clone, PartialEq, Eq, Debug, Encode, Decode, TypeInfo, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum Register {
@@ -41,7 +41,7 @@ pub type Bindings = Vec<(u32, BindingValue)>;
 /// Ordered Bindings: (Index, Binding)
 pub type OrderedBindings = BTreeMap<u32, BindingValue>;
 
-#[cfg_attr(feature = "std", derive(schemars::JsonSchema))]
+#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 #[derive(Clone, PartialEq, Eq, Debug, Encode, Decode, TypeInfo, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum Destination<Account> {
@@ -52,7 +52,7 @@ pub enum Destination<Account> {
 /// Base XCVM instructions.
 /// This set will remain as small as possible, expressiveness must come on `top` of the base
 /// instructions.
-#[cfg_attr(feature = "std", derive(schemars::JsonSchema))]
+#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 #[derive(Clone, PartialEq, Eq, Debug, Encode, Decode, TypeInfo, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum Instruction<Payload, Account, Assets> {
@@ -84,7 +84,7 @@ pub enum Instruction<Payload, Account, Assets> {
 		/// Different salt allows to split funds into different virtual wallets
 		/// So same salt shares assets on set of derived accounts on chains program executes.
 		#[serde(serialize_with = "hex::serialize", deserialize_with = "hex::deserialize")]
-		#[cfg_attr(feature = "std", schemars(schema_with = "String::json_schema"))]
+		#[cfg_attr(feature = "json-schema", schemars(schema_with = "String::json_schema"))]
 		#[serde(skip_serializing_if = "Vec::is_empty", default)]
 		salt: Vec<u8>,
 		assets: Assets,

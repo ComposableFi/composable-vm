@@ -14,7 +14,7 @@ use serde::{Deserialize, Serialize};
 /// Newtype for XCVM assets ID. Must be unique for each asset and must never change.
 /// This ID is an opaque, arbitrary type from the XCVM protocol and no assumption must be made on
 /// how it is computed.
-#[cfg_attr(feature = "std", derive(schemars::JsonSchema))]
+#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 #[derive(
 	Copy,
 	Clone,
@@ -88,7 +88,7 @@ impl cw_storage_plus::KeyDeserialize for AssetId {
 }
 
 /// See https://en.wikipedia.org/wiki/Linear_equation#Slope%E2%80%93intercept_form_or_Gradient-intercept_form
-#[cfg_attr(feature = "std", derive(schemars::JsonSchema))]
+#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 #[derive(
 	Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Encode, Decode, TypeInfo, Serialize, Deserialize,
 )]
@@ -236,7 +236,7 @@ impl From<u128> for Amount {
 }
 
 /// a set of assets with non zero balances
-#[cfg_attr(feature = "std", derive(schemars::JsonSchema))]
+#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 #[derive(
 	Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Encode, Decode, TypeInfo, Serialize, Deserialize,
 )]

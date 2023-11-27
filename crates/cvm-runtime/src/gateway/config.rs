@@ -15,26 +15,26 @@ pub const IBC_VERSION: &str = "xcvm-v0";
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "snake_case")]
-#[cfg_attr(feature = "std", derive(schemars::JsonSchema))]
+#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 pub struct OsmosisIbcHooks {
 	pub callback: bool,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "snake_case")]
-#[cfg_attr(feature = "std", derive(schemars::JsonSchema))]
+#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 pub struct PFM {}
 
 /// if chain has IBC SDK callbacks enabled
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "snake_case")]
-#[cfg_attr(feature = "std", derive(schemars::JsonSchema))]
+#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 pub struct Adr08IbcCallbacks {}
 
 /// what features/modules/version enabled/installed/configured
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "snake_case")]
-#[cfg_attr(feature = "std", derive(schemars::JsonSchema))]
+#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 pub struct Ics20Features {
 	/// if it is exists, chain has that enabled
 	pub wasm_hooks: Option<OsmosisIbcHooks>,
@@ -75,7 +75,7 @@ impl From<PrefixedDenom> for ForeignAssetId {
 /// given prefix you may form accounts from 32 bit addresses or partially identify chains
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "snake_case")]
-#[cfg_attr(feature = "std", derive(schemars::JsonSchema))]
+#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 pub enum Prefix {
 	SS58(u16),
 	Bech(String),
@@ -85,7 +85,7 @@ pub enum Prefix {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "snake_case")]
-#[cfg_attr(feature = "std", derive(schemars::JsonSchema))]
+#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 pub struct ForceNetworkToNetworkMsg {
 	pub from: NetworkId,
 	pub to: NetworkId,
@@ -96,7 +96,7 @@ pub struct ForceNetworkToNetworkMsg {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "snake_case")]
-#[cfg_attr(feature = "std", derive(schemars::JsonSchema))]
+#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 pub struct NetworkItem {
 	pub network_id: NetworkId,
 	/// something which will be receiver on other side
@@ -109,7 +109,7 @@ pub struct NetworkItem {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "snake_case")]
-#[cfg_attr(feature = "std", derive(schemars::JsonSchema))]
+#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 pub struct Ics20Channel {
 	/// specific per chain way to send IBC ICS 20 assets
 	pub sender: IbcIcs20Sender,
@@ -118,14 +118,14 @@ pub struct Ics20Channel {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "snake_case")]
-#[cfg_attr(feature = "std", derive(schemars::JsonSchema))]
+#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 pub struct IbcChannels {
 	pub ics20: Option<Ics20Channel>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "snake_case")]
-#[cfg_attr(feature = "std", derive(schemars::JsonSchema))]
+#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 pub struct IbcEnabled {
 	pub channels: Option<IbcChannels>,
 }
@@ -133,7 +133,7 @@ pub struct IbcEnabled {
 /// we need both, so we can unwrap
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "snake_case")]
-#[cfg_attr(feature = "std", derive(schemars::JsonSchema))]
+#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 pub struct IcsPair {
 	pub source: ChannelId,
 	pub sink: ChannelId,
@@ -143,7 +143,7 @@ pub struct IcsPair {
 /// very small, assumed messages are arriving fast enough, like less than hours
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Encode, Decode)]
 #[serde(rename_all = "snake_case")]
-#[cfg_attr(feature = "std", derive(schemars::JsonSchema))]
+#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 pub enum RelativeTimeout {
 	/// Timeout is relative to the current block timestamp of counter party
 	Seconds(u16),
@@ -160,7 +160,7 @@ impl RelativeTimeout {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "snake_case")]
-#[cfg_attr(feature = "std", derive(schemars::JsonSchema))]
+#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 pub struct OtherNetworkItem {
 	pub ics_20: Option<IcsPair>,
 	/// default timeout to use for direct send
@@ -184,7 +184,7 @@ pub struct OtherNetworkItem {
 /// `Force` message sets the data unconditionally.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "snake_case")]
-#[cfg_attr(feature = "std", derive(schemars::JsonSchema))]
+#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 pub enum ConfigSubMsg {
 	/// Permissioned message (gov or admin) to force set information about network contract is
 	/// executed. Network can be any network or this network (so it overrides some this network
@@ -224,12 +224,12 @@ pub enum ConfigSubMsg {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "snake_case")]
-#[cfg_attr(feature = "std", derive(schemars::JsonSchema))]
+#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 pub struct InstantiateMsg(pub HereItem);
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "snake_case")]
-#[cfg_attr(feature = "std", derive(schemars::JsonSchema))]
+#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 pub struct HereItem {
 	/// Network ID of this network where contract is deployed
 	pub network_id: NetworkId,
@@ -240,7 +240,7 @@ pub struct HereItem {
 /// when message is sent to other side, we should identify receiver of some kind
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "snake_case")]
-#[cfg_attr(feature = "std", derive(schemars::JsonSchema))]
+#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 pub enum GatewayId {
 	CosmWasm {
 		contract: Addr,
@@ -257,7 +257,7 @@ pub enum GatewayId {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "snake_case")]
-#[cfg_attr(feature = "std", derive(schemars::JsonSchema))]
+#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 
 pub struct AssetItem {
 	pub asset_id: AssetId,
@@ -276,7 +276,7 @@ impl AssetItem {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "snake_case")]
-#[cfg_attr(feature = "std", derive(schemars::JsonSchema))]
+#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 pub struct BridgeAsset {
 	pub location_on_network: ForeignAssetId,
 }
@@ -288,7 +288,7 @@ pub struct BridgeAsset {
 /// solve other chain route it can)
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "snake_case")]
-#[cfg_attr(feature = "std", derive(schemars::JsonSchema))]
+#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 pub enum AssetReference {
 	Native { denom: String },
 	Cw20 { contract: Addr },

@@ -3,59 +3,59 @@ use serde::{Deserialize, Serialize};
 use xc_core::{service::dex::ExchangeId, shared, InterpreterOrigin, NetworkId, UserId};
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[cfg_attr(feature = "std", derive(schemars::JsonSchema))]
+#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 #[serde(rename = "cvm.executor.exchange.succeeded")]
 pub struct CvmInterpreterExchangeSucceeded {
 	pub exchange_id: ExchangeId,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[cfg_attr(feature = "std", derive(schemars::JsonSchema))]
+#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 #[serde(rename = "cvm.executor.exchange.started")]
 pub struct CvmInterpreterExchangeStarted {
 	pub exchange_id: ExchangeId,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[cfg_attr(feature = "std", derive(schemars::JsonSchema))]
+#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 #[serde(rename = "cvm.executor.execution.started")]
 pub struct CvmInterpreterExecutionStarted {}
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[cfg_attr(feature = "std", derive(schemars::JsonSchema))]
+#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 #[serde(rename = "cvm.executor.instantiated")]
 pub struct CvmInterpreterInstantiated {
 	pub interpreter_origin: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[cfg_attr(feature = "std", derive(schemars::JsonSchema))]
+#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 #[serde(rename = "cvm.executor.transferred")]
 pub struct CvmInterpreterTransferred {}
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[cfg_attr(feature = "std", derive(schemars::JsonSchema))]
+#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 #[serde(rename = "cvm.executor.owner.added")]
 pub struct CvmInterpreterOwnerAdded {
 	pub owner: Vec<Addr>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[cfg_attr(feature = "std", derive(schemars::JsonSchema))]
+#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 #[serde(rename = "cvm.executor.owner.removed")]
 pub struct CvmInterpreterOwnerRemoved {
 	pub owner: Vec<Addr>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[cfg_attr(feature = "std", derive(schemars::JsonSchema))]
+#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 #[serde(rename = "cvm.executor.execution.failed")]
 pub struct CvmInterpreterExchangeFailed {
 	pub reason: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[cfg_attr(feature = "std", derive(schemars::JsonSchema))]
+#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 #[serde(rename = "cvm.executor.instruction.spawned")]
 pub struct CvmInterpreterInstructionSpawned {
 	pub origin_network_id: NetworkId,
@@ -63,37 +63,37 @@ pub struct CvmInterpreterInstructionSpawned {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[cfg_attr(feature = "std", derive(schemars::JsonSchema))]
+#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 #[serde(rename = "cvm.executor.self.failed")]
 pub struct CvmInterpreterSelfFailed {
 	pub reason: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[cfg_attr(feature = "std", derive(schemars::JsonSchema))]
+#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 #[serde(rename = "cvm.executor.crosschain.failed")]
 pub struct CvmInterpreterCrosschainFailed {
 	pub reason: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[cfg_attr(feature = "std", derive(schemars::JsonSchema))]
+#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 #[serde(rename = "cvm.executor.instruction.call.initiated")]
 pub struct CvmInterpreterInstructionCallInitiated {}
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[cfg_attr(feature = "std", derive(schemars::JsonSchema))]
+#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 #[serde(rename = "cvm.executor.step.executed")]
 pub struct CvmInterpreterStepExecuted {
 	#[serde(serialize_with = "hex::serialize", deserialize_with = "hex::deserialize")]
-	#[cfg_attr(feature = "std", schemars(schema_with = "String::json_schema"))]
+	#[cfg_attr(feature = "json-schema", schemars(schema_with = "String::json_schema"))]
 	#[serde(skip_serializing_if = "Vec::is_empty", default)]
 	pub tag: Vec<u8>,
 }
 
 /// used to generate schema, so that each events schema is available in one place
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[cfg_attr(feature = "std", derive(schemars::JsonSchema))]
+#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 pub enum CvmInterpreter {
 	StepExecuted(CvmInterpreterStepExecuted),
 	SelfFailed(CvmInterpreterSelfFailed),

@@ -27,7 +27,7 @@ pub fn decode_base64<S: AsRef<str>, T: DeserializeOwned>(encoded: S) -> StdResul
 /// But it will also decode/reencode best effort.
 /// Inner must be either base64 or hex encoded or contain only characters from these.
 /// Added with helper per chain to get final address to use.
-#[cfg_attr(feature = "std", derive(schemars::JsonSchema))]
+#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 #[cfg_attr(
 	feature = "scale",
 	derive(parity_scale_codec::Encode, parity_scale_codec::Decode, scale_info::TypeInfo)
@@ -70,8 +70,8 @@ impl XcAddr {
 				return Ok(addr.into_string())
 			}
 		}
-		if let Ok((_, addr, _)) = bech32_no_std::decode(&self.0) {
-			use bech32_no_std::FromBase32;
+		if let Ok((_, addr, _)) = bech32::decode(&self.0) {
+			use bech32::FromBase32;
 			if let Ok(addr) = Vec::from_base32(&addr) {
 				if let Ok(addr) = api.addr_humanize(&CanonicalAddr(Binary(addr))) {
 					return Ok(addr.into_string())
@@ -115,7 +115,7 @@ impl core::fmt::Debug for XcAddr {
 /// let decoded = serde_json_wasm::from_str::<Foo>(r#"{"value":"42"}"#).unwrap();
 /// assert_eq!(Displayed(42), decoded.value);
 /// ```
-#[cfg_attr(feature = "std", derive(schemars::JsonSchema))]
+#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 #[derive(
 	Copy,
 	Clone,

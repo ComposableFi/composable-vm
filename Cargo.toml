@@ -3,6 +3,17 @@ members = ["crates/*", "contracts/cosmwasm/*", "mantis/node"]
 resolver = "2"
 
 
+[workspace.lints.rust]
+unsafe = "deny"
+unused_imports = "warn"
+unused_must_use = "warn"
+bad_style = "warn"
+trivial_casts = "warn"
+
+[workspace.lints.clippy]
+todo = "warn"
+let_unit_value = "allow"
+
 [workspace.dependencies]
 derive_more = { version = "0.99.17", default-features = false, features = [
     "add",

@@ -20,7 +20,7 @@ parity-scale-codec = { workspace = true }
 prost = { workspace = true, features = ["prost-derive"] }
 scale-info = { workspace = true, features = ["derive"] }
 schemars = { workspace = true, optional = true }
-serde = { workspace = true, features = ["alloc"] }
+serde = { workspace = true, features = ["alloc", "derive"] }
 serde-json-wasm = { workspace = true, default-features = false }
 sha2 = { workspace = true }
 strum.workspace = true
@@ -50,7 +50,7 @@ json-schema = [  "serde-cw-value/schema",
   "dep:schemars",
   "ibc/schema",
   "eth-primitive-types/json-schema",
-  
+  "serde-cw-value/schema",
 ]
 
 std = [
