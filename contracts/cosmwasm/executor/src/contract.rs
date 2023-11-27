@@ -196,8 +196,8 @@ fn interpret_exchange(
 
 	let amount: Coin = deps.querier.query_balance(&sender, asset.denom())?;
 	let amount = give.1.apply(amount.amount.u128())?;
-	let give: ibc_apps::cosmos::Coin =
-		ibc_apps::cosmos::Coin { denom: asset.denom(), amount: amount.to_string() };
+	let give: ibc_apps_more::cosmos::Coin =
+		ibc_apps_more::cosmos::Coin { denom: asset.denom(), amount: amount.to_string() };
 
 	let asset = gateway_address
 		.get_asset_by_id(deps.querier, want.0)
@@ -208,10 +208,10 @@ fn interpret_exchange(
 	}
 
 	let want = if want.1.is_absolute() {
-		ibc_apps::cosmos::Coin { denom: asset.denom(), amount: want.1.intercept.to_string() }
+		ibc_apps_more::cosmos::Coin { denom: asset.denom(), amount: want.1.intercept.to_string() }
 	} else {
 		// use https://github.com/osmosis-labs/osmosis/blob/main/cosmwasm/contracts/swaprouter/src/msg.rs to allow slippage
-		ibc_apps::cosmos::Coin { denom: asset.denom(), amount: "1".to_string() }
+		ibc_apps_more::cosmos::Coin { denom: asset.denom(), amount: "1".to_string() }
 	};
 
 	let response = match exchange.exchange {

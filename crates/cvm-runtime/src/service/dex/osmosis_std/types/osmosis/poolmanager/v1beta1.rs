@@ -9,7 +9,7 @@ pub struct MsgSwapExactAmountIn {
 	#[prost(message, repeated, tag = "2")]
 	pub routes: Vec<SwapAmountInRoute>,
 	#[prost(message, optional, tag = "3")]
-	pub token_in: ::core::option::Option<ibc_apps::cosmos::Coin>,
+	pub token_in: ::core::option::Option<ibc_apps_more::cosmos::Coin>,
 	#[prost(string, tag = "4")]
 	pub token_out_min_amount: String,
 }

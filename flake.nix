@@ -76,7 +76,7 @@
             '';
           };
 
-        cw-mantis-order = makeCosmwasmContract "cw-mantis-order" rust "--no-default-features";
+        cw-mantis-order = makeCosmwasmContract "cw-mantis-order" rust "--no-default-features --features=std";
       in {
         _module.args.pkgs = import self.inputs.nixpkgs {
           inherit system;

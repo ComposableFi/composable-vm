@@ -13,8 +13,8 @@ workspace = true
 
 [features]
 library = []
-std = ["cw-xc-executor/std", "cvm-runtime/std", "ibc-apps/std"]
-json-schema = ["ibc-apps/json-schema"]
+std = ["cw-xc-executor/std", "cvm-runtime/std", "ibc-apps-more/std"]
+json-schema = ["ibc-apps-more/json-schema"]
 default = ["std"]
 
 [dependencies]
@@ -39,4 +39,4 @@ cvm-runtime = { path = "../../../crates/cvm-runtime", features = [
   "cosmwasm",
 ], default-features = false }
 prost = { workspace = true, default-features = false }
-ibc-apps = { workspace = true, default-features = false, features = ["cosmwasm"] }
+ibc-apps-more= { workspace = true, default-features = false, features = ["cosmwasm"] }

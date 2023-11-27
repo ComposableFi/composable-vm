@@ -8,7 +8,7 @@ use cosmwasm_std::{Api, BlockInfo, CosmosMsg, Deps, IbcEndpoint, StdResult};
 
 use ibc::core::host::types::identifiers::{ChannelId, ConnectionId, PortId};
 
-use ibc_apps::{
+use ibc_apps_more::{
     hook::{Callback, SendMemo},
     memo::Memo,
 };

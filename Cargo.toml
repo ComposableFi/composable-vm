@@ -90,4 +90,4 @@ thiserror = { version = "^1.0.50", default-features = false, package = "thiserro
 xcm = { version = "^5.0.0", default-features = false, package = "staging-xcm" }
 cw-utils = { version = "^1.0.3", default-features = false }
 cw2 = { version = "^1.1.2", default-features = false }
-ibc-apps = { git = "https://github.com/ComposableFi/ibc-rs-apps.git", branch = "main", default-features = false }
+ibc-apps-more= { git = "https://github.com/ComposableFi/ibc-rs-apps.git", branch = "main", default-features = false }

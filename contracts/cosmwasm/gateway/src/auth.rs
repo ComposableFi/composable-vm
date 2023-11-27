@@ -74,7 +74,7 @@ impl Auth<policy::WasmHook> {
 
 		let channel = this_to_other.ics_20.ok_or(ContractError::ICS20NotFound)?.source;
 		let hash_of_channel_and_sender =
-			ibc_apps::hook::derive_intermediate_sender(
+			ibc_apps_more::hook::derive_intermediate_sender(
 				&channel, &sender, &prefix,
 			)?;
 		deps.api.debug(&format!(

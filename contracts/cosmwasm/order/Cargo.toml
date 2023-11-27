@@ -29,12 +29,14 @@ num-integer = { workspace = true, default-features = false, features = [
 cvm-runtime = { path = "../../../crates/cvm-runtime", default-features = false, features = [
   "std",
   "cosmwasm",
-  "std",
-  "json-schema",
 ] }
 
 no-panic = {workspace = true}
 tuples ={ workspace = true }
+
+[features]
+std = ["cvm-runtime/std"]
+json-schema = ["cvm-runtime/json-schema"]
 
 [dev-dependencies]
 num-rational = { workspace = true, default-features = false, features = [

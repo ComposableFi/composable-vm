@@ -35,7 +35,7 @@ primitive-types = { version = "^0.12.2", features = [
   "serde_no_std",
 ], default-features = false }
 
-ibc-apps = { workspace = true, default-features = false }
+ibc-apps-more= { workspace = true, default-features = false }
 
 [build-dependencies]
 prost-build = { workspace = true }
@@ -43,11 +43,11 @@ prost-build = { workspace = true }
 [features]
 default = ["std"]
 xcm = ["dep:xcm"]
-cosmwasm = ["cw-storage-plus", "cw20", "ibc-apps/cosmwasm"]
+cosmwasm = ["cw-storage-plus", "cw20", "ibc-apps-more/cosmwasm"]
 substrate = ["xcm"]
 json-schema = [
   "serde-cw-value/schema",
-  "ibc-apps/json-schema",
+  "ibc-apps-more/json-schema",
   "dep:cosmwasm-schema",
   "dep:schemars",
   "ibc/schema",
@@ -57,9 +57,7 @@ json-schema = [
 
 std = [
   "ibc-proto/std",
-  "ibc/std",
   "serde-cw-value/std",
   "serde-json-wasm/std",
   "num/std",
-  "primitive-types/std",
 ]
