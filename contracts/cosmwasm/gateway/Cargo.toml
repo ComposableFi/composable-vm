@@ -2,7 +2,7 @@
 description = "CVM Gateway contract"
 edition = "2021"
 name = "cw-xc-gateway"
-repository = "https://github.com/ComposableFi/composable"
+repository = "https://github.com/ComposableFi/cvm"
 version = "0.1.0"
 
 [lib]
@@ -14,18 +14,22 @@ workspace = true
 [features]
 library = []
 std = ["cw-xc-executor/std", "cvm-runtime/std", "ibc-apps-more/std"]
-json-schema = ["ibc-apps-more/json-schema"]
+json-schema = ["ibc-apps-more/json-schema", "ibc/schema", "cw-xc-executor/json-schema"]
 default = ["std"]
 
 [dependencies]
 enumn = { workspace = true }
 bech32 = { workspace = true, features = ["strict"] }
-cosmwasm-std = { workspace = true, features = ["ibc3", "stargate", "cosmwasm_1_3"] }
+cosmwasm-std = { workspace = true, features = [
+  "ibc3",
+  "stargate",
+  "cosmwasm_1_3",
+] }
 cw-storage-plus = { workspace = true }
 cw-utils = { workspace = true }
 cw2 = { workspace = true }
 cw20 = { workspace = true }
-ibc = { workspace = true, features = ["parity-scale-codec", "serde", "schema"] }
+ibc = { workspace = true, features = ["parity-scale-codec", "serde"] }
 schemars = { workspace = true }
 serde = { workspace = true }
 serde-json-wasm = { workspace = true }
@@ -39,4 +43,6 @@ cvm-runtime = { path = "../../../crates/cvm-runtime", features = [
   "cosmwasm",
 ], default-features = false }
 prost = { workspace = true, default-features = false }
-ibc-apps-more= { workspace = true, default-features = false, features = ["cosmwasm"] }
+ibc-apps-more = { workspace = true, default-features = false, features = [
+  "cosmwasm",
+] }

@@ -56,7 +56,7 @@ pub struct MigrateMsg {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema, QueryResponses))]
+#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema, cosmwasm_schema::QueryResponses))]
 #[serde(rename_all = "snake_case")]
 pub enum QueryMsg {
 	/// Get a specific register

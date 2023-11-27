@@ -2,15 +2,15 @@
 description = "CVM Executor contract"
 edition = "2021"
 name = "cw-xc-executor"
-repository = "https://github.com/ComposableFi/composable"
-version = "0.2.0"
+repository = "https://github.com/ComposableFi/cvm"
+version = "0.3.0"
 
 [lib]
 crate-type = ["cdylib", "rlib"]
 
 [features]
 library = []
-json-shema = ["ibc-apps-more/json-schema"]
+json-schema = ["ibc-apps-more/json-schema", "cvm-runtime/json-schema"]
 std = ["cvm-runtime/std", "dep:cosmwasm-schema", "ibc-apps-more/std"]
 default = ["std"]
 
