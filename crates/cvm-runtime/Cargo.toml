@@ -13,7 +13,7 @@ cosmwasm-std = { workspace = true, features = ["ibc3"] }
 cw-storage-plus = { workspace = true, optional = true }
 cw20 = { workspace = true, optional = true }
 derive_more.workspace = true
-hex = { workspace = true, features = ["alloc"] }
+hex = { workspace = true, features = ["alloc", "serde"] }
 ibc = { workspace = true, features = ["serde", "parity-scale-codec"] }
 num = { workspace = true }
 parity-scale-codec = { workspace = true }
@@ -43,7 +43,7 @@ prost-build = { workspace = true }
 [features]
 default = ["std"]
 xcm = ["dep:xcm"]
-cosmwasm = ["cw-storage-plus", "cw20"]
+cosmwasm = ["cw-storage-plus", "cw20", "ibc-apps/cosmwasm"]
 substrate = ["xcm"]
 json-schema = [
   "serde-cw-value/schema",

@@ -76,8 +76,6 @@ impl<'a> Prefixer<'a> for AssetId {
 impl cw_storage_plus::KeyDeserialize for AssetId {
 	type Output = <u128 as cw_storage_plus::KeyDeserialize>::Output;
 
-	const KEY_ELEMS: u16 = 1;
-
 	fn from_vec(value: Vec<u8>) -> cosmwasm_std::StdResult<Self::Output> {
 		<u128 as cw_storage_plus::KeyDeserialize>::from_vec(value)
 	}

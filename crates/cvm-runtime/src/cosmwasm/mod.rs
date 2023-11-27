@@ -99,8 +99,6 @@ impl KeyDeserialize for InterpreterOrigin {
 	fn from_vec(value: Vec<u8>) -> StdResult<Self::Output> {
 		<(u32, Vec<u8>, Vec<u8>) as KeyDeserialize>::from_vec(value)
 	}
-
-	const KEY_ELEMS: u16 = 1;
 }
 
 impl<'a> PrimaryKey<'a> for UserOrigin {
@@ -124,8 +122,6 @@ impl KeyDeserialize for UserOrigin {
 	fn from_vec(value: Vec<u8>) -> StdResult<Self::Output> {
 		<(u32, Vec<u8>) as KeyDeserialize>::from_vec(value)
 	}
-
-	const KEY_ELEMS: u16 = 1;
 }
 
 impl<'a> PrimaryKey<'a> for UserId {
@@ -151,7 +147,6 @@ impl KeyDeserialize for UserId {
 		<Vec<u8> as KeyDeserialize>::from_vec(value)
 	}
 
-	const KEY_ELEMS: u16 = 1;
 }
 
 impl<'a> PrimaryKey<'a> for NetworkId {
@@ -175,8 +170,6 @@ impl KeyDeserialize for NetworkId {
 	fn from_vec(value: Vec<u8>) -> StdResult<Self::Output> {
 		<u32 as KeyDeserialize>::from_vec(value)
 	}
-
-	const KEY_ELEMS: u16 = 1;
 }
 
 #[derive(Debug, Serialize, Deserialize)]

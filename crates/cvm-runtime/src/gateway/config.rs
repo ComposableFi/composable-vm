@@ -1,5 +1,5 @@
 use cosmwasm_std::{BlockInfo, IbcTimeout};
-use ibc::core::ics24_host::identifier::ChannelId;
+use ibc::core::host::types::identifiers::ChannelId;
 
 use crate::{
 	prelude::*,
@@ -45,21 +45,21 @@ pub struct Ics20Features {
 #[allow(clippy::large_enum_variant)]
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Encode, Decode)]
 #[serde(rename_all = "snake_case")]
-#[cfg_attr(all(feature = "std", not(feature = "substrate")), derive(JsonSchema))]
+#[cfg_attr(all(feature = "json-schema", not(feature = "xcm")), derive(JsonSchema))]
 pub enum ForeignAssetId {
 	IbcIcs20(PrefixedDenom),
-	#[cfg(feature = "substrate")]
+	#[cfg(feature = "xcm")]
 	Xcm(xcm::VersionedMultiLocation),
 }
 
-#[cfg(feature = "substrate")]
+#[cfg(feature = "xcm")]
 impl parity_scale_codec::MaxEncodedLen for ForeignAssetId {
 	fn max_encoded_len() -> usize {
 		2048
 	}
 }
 
-#[cfg(feature = "substrate")]
+#[cfg(feature = "xcm")]
 impl From<xcm::VersionedMultiLocation> for ForeignAssetId {
 	fn from(this: xcm::VersionedMultiLocation) -> Self {
 		Self::Xcm(this)

@@ -1,12 +1,9 @@
-#[cfg(feature = "std")]
-use cosmwasm_schema::write_api;
-
-#[cfg(feature = "std")]
-use xc_core::gateway;
-
-#[cfg(feature = "std")]
+#[cfg(feature = "json-schema")]
 #[allow(clippy::disallowed_methods)]
 fn main() {
+	use cosmwasm_schema::write_api;
+	use cvm_runtime::gateway;
+
 	write_api! {
 		instantiate: gateway::InstantiateMsg,
 		query: gateway::QueryMsg,
@@ -14,5 +11,5 @@ fn main() {
 	}
 }
 
-#[cfg(not(feature = "std"))]
+#[cfg(not(feature = "json-schema"))]
 fn main() {}

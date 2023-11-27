@@ -32,7 +32,6 @@ extern crate alloc;
 mod abstraction;
 mod asset;
 mod bridge;
-pub mod cosmos;
 #[cfg(feature = "cosmwasm")]
 pub mod cosmwasm;
 pub mod gateway;
