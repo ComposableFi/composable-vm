@@ -199,7 +199,7 @@ impl Gateway {
 	) -> cosmwasm_std::StdResult<R> {
 		let query = cosmwasm_std::WasmQuery::Smart {
 			contract_addr: self.address().into(),
-			msg: cosmwasm_std::to_binary(&query)?,
+			msg: cosmwasm_std::to_json_binary(&query)?,
 		};
 		querier.query(&query.into())
 	}

@@ -1,5 +1,5 @@
 use crate::{prelude::*, AssetId};
-use cosmwasm_std::{from_binary, to_binary, Api, Binary, CanonicalAddr, StdError, StdResult};
+use cosmwasm_std::{from_binary, to_json_binary, Api, Binary, CanonicalAddr, StdError, StdResult};
 use serde::{de::DeserializeOwned, Serialize};
 
 pub type Salt = Vec<u8>;
@@ -13,7 +13,7 @@ pub type XcPacket = crate::Packet<XcProgram>;
 pub type XcProgram = crate::Program<Vec<XcInstruction>>;
 
 pub fn encode_base64<T: Serialize>(x: &T) -> StdResult<String> {
-	Ok(to_binary(x)?.to_base64())
+	Ok(to_json_binary(x)?.to_base64())
 }
 
 pub fn decode_base64<S: AsRef<str>, T: DeserializeOwned>(encoded: S) -> StdResult<T> {

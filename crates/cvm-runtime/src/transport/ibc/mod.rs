@@ -4,7 +4,7 @@ use crate::{
     shared::XcPacket,
     AssetId, NetworkId,
 };
-use cosmwasm_std::{to_binary, Api, BlockInfo, CosmosMsg, Deps, IbcEndpoint, StdResult, WasmMsg};
+use cosmwasm_std::{to_json_binary, Api, BlockInfo, CosmosMsg, Deps, IbcEndpoint, StdResult, WasmMsg};
 
 use ibc::core::host::types::identifiers::{ChannelId, ConnectionId, PortId};
 

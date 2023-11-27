@@ -1,4 +1,4 @@
-use cosmwasm_std::{to_binary, Addr, Binary, Order, StdError, StdResult, Storage, SubMsgResponse};
+use cosmwasm_std::{to_json_binary, Addr, Binary, Order, StdError, StdResult, Storage, SubMsgResponse};
 use cw_storage_plus::{Item, Map};
 use serde::{Deserialize, Serialize};
 use cvm_runtime::InterpreterOrigin;
@@ -40,7 +40,7 @@ impl TryInto<Binary> for State {
 	type Error = StdError;
 
 	fn try_into(self) -> StdResult<Binary> {
-		to_binary(&self)
+		to_json_binary(&self)
 	}
 }
 

@@ -9,7 +9,7 @@ use alloc::borrow::Cow;
 #[cfg(not(feature = "library"))]
 use cosmwasm_std::entry_point;
 use cosmwasm_std::{
-	ensure, ensure_eq, to_binary, wasm_execute, Addr, BankMsg, Binary, Coin, CosmosMsg, Deps,
+	ensure, ensure_eq, to_json_binary, wasm_execute, Addr, BankMsg, Binary, Coin, CosmosMsg, Deps,
 	DepsMut, Env, MessageInfo, QueryRequest, Reply, Response, StdError, StdResult, SubMsg,
 	SubMsgResult, WasmQuery,
 };
@@ -456,13 +456,13 @@ pub fn interpret_transfer(
 #[cfg_attr(not(feature = "library"), entry_point)]
 pub fn query(deps: Deps, env: Env, msg: QueryMsg) -> StdResult<Binary> {
 	match msg {
-		QueryMsg::Register(Register::Ip) => Ok(to_binary(&IP_REGISTER.load(deps.storage)?)?),
+		QueryMsg::Register(Register::Ip) => Ok(to_json_binary(&IP_REGISTER.load(deps.storage)?)?),
 		QueryMsg::Register(Register::Result) =>
-			Ok(to_binary(&RESULT_REGISTER.load(deps.storage)?)?),
-		QueryMsg::Register(Register::This) => Ok(to_binary(&env.contract.address)?),
+			Ok(to_json_binary(&RESULT_REGISTER.load(deps.storage)?)?),
+		QueryMsg::Register(Register::This) => Ok(to_json_binary(&env.contract.address)?),
 		QueryMsg::Register(Register::Carry(_)) =>
 			Err(StdError::generic_err("Carry register is not implemented yet")),
-		QueryMsg::Register(Register::Tip) => Ok(to_binary(&TIP_REGISTER.load(deps.storage)?)?),
+		QueryMsg::Register(Register::Tip) => Ok(to_json_binary(&TIP_REGISTER.load(deps.storage)?)?),
 		QueryMsg::State() => Ok(state::read(deps.storage)?.try_into()?),
 	}
 }
@@ -532,7 +532,7 @@ fn apply_amount_to_cw20_balance<A: Into<String> + Clone>(
 	let balance_response =
 		deps.querier.query::<BalanceResponse>(&QueryRequest::Wasm(WasmQuery::Smart {
 			contract_addr: contract.clone().into(),
-			msg: to_binary(&Cw20QueryMsg::Balance { address: self_address.into() })?,
+			msg: to_json_binary(&Cw20QueryMsg::Balance { address: self_address.into() })?,
 		}))?;
 
 	balance.apply(balance_response.balance.into()).map_err(ContractError::from)
