@@ -67,7 +67,7 @@ rand_distr = "^0.4.3"
 strum = "^0.25"
 strum_macros = "^0.25"
 tuples = { version = "^1.14.0" }
-serde-cw-value = { version = "^0.7.0", default-features = false }
+serde-cw-value = { git = "https://github.com/dzmitry-lahoda-forks/serde-cw-value.git", branch = "dz/3", default-features = false }
 
 no-panic = "^0.1"
 scale-info = { version = "^2.10.0", default-features = false }

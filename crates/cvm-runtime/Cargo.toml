@@ -44,18 +44,20 @@ default = ["std"]
 xcm = ["dep:xcm"]
 cosmwasm = ["cw-storage-plus", "cw20"]
 substrate = ["xcm"]
-std = [
-  "cw-storage-plus/std",
-  "dep:cosmwasm-schema",
+json-schema = [  "serde-cw-value/schema",
+
+"dep:cosmwasm-schema",
   "dep:schemars",
-  "ibc-proto/std",
   "ibc/schema",
+  "eth-primitive-types/json-schema",
+  
+]
+
+std = [
+  "ibc-proto/std",
   "ibc/std",
-  "serde-cw-value/schema",
   "serde-cw-value/std",
   "serde-json-wasm/std",
-  "cw20/std",
   "num/std",
   "eth-primitive-types/std",
-  "eth-primitive-types/json-schema",
 ]
