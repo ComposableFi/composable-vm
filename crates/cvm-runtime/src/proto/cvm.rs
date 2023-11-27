@@ -2,7 +2,6 @@
 //! representation understood by each chain.
 pub use alloc::{
 	boxed::Box,
-	collections::VecDeque,
 	string::{String, ToString},
 	vec,
 	vec::Vec,
@@ -20,7 +19,7 @@ pub type CVMPacket<TAbiEncoded, TAccount, TAssets> =
 	crate::Packet<CVMProgram<TAbiEncoded, TAccount, TAssets>>;
 
 pub type CVMProgram<TAbiEncoded, TAccount, TAssets> =
-	crate::Program<VecDeque<crate::Instruction<TAbiEncoded, TAccount, TAssets>>>;
+	crate::Program<Vec<crate::Instruction<TAbiEncoded, TAccount, TAssets>>>;
 
 impl<TAbiEncoded, TAccount, TAssets> super::Isomorphism
 	for CVMPacket<TAbiEncoded, TAccount, TAssets>

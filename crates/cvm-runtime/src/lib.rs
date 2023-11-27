@@ -47,17 +47,17 @@ pub mod shared;
 pub mod transport;
 
 pub use crate::{
-	asset::*, bridge::*, instruction::*, network::*, packet::*, program::*, protocol::*,
+	asset::*, bridge::*, instruction::*, network::*, packet::*, program::*, protocol::*, service::dex::ExchangeId,
 };
-use alloc::collections::VecDeque;
 use core::marker::PhantomData;
+use alloc::collections::VecDeque;
 use prelude::*;
 
 /// Strongly typed network builder originating on `CurrentNetwork` network.
 #[derive(Clone)]
 pub struct ProgramBuilder<CurrentNetwork, Account, Assets> {
 	pub tag: Vec<u8>,
-	pub instructions: VecDeque<Instruction<Vec<u8>, Account, Assets>>,
+	pub instructions: Vec<Instruction<Vec<u8>, Account, Assets>>,
 	pub _marker: PhantomData<CurrentNetwork>,
 }
 
@@ -67,7 +67,7 @@ where
 	CurrentNetwork::EncodedCall: Into<Vec<u8>>,
 {
 	pub fn new(tag: impl Into<Vec<u8>>) -> Self {
-		ProgramBuilder { tag: tag.into(), instructions: VecDeque::new(), _marker: PhantomData }
+		ProgramBuilder { tag: tag.into(), instructions: Vec::new(), _marker: PhantomData }
 	}
 
 	pub fn transfer(
@@ -76,7 +76,7 @@ where
 		assets: impl Into<Assets>,
 	) -> Self {
 		self.instructions
-			.push_back(Instruction::Transfer { to: to.into(), assets: assets.into() });
+			.push(Instruction::Transfer { to: to.into(), assets: assets.into() });
 		self
 	}
 
@@ -99,7 +99,7 @@ where
 		// We need to recreate the builder to mutate the phantom marker.
 		let mut builder =
 			ProgramBuilder { tag: self.tag, instructions: self.instructions, _marker: PhantomData };
-		builder.instructions.push_back(Instruction::Spawn {
+		builder.instructions.push(Instruction::Spawn {
 			salt: salt.into(),
 			assets: assets.into(),
 			network_id: SpawningNetwork::ID,
@@ -111,7 +111,7 @@ where
 
 	pub fn call_raw(mut self, encoded: CurrentNetwork::EncodedCall) -> Self {
 		self.instructions
-			.push_back(Instruction::Call { bindings: Vec::new(), encoded: encoded.into() });
+			.push(Instruction::Call { bindings: Vec::new(), encoded: encoded.into() });
 		self
 	}
 
@@ -122,7 +122,7 @@ where
 		protocol.serialize().map(|encoded_call| self.call_raw(encoded_call))
 	}
 
-	pub fn build(self) -> Program<VecDeque<Instruction<Vec<u8>, Account, Assets>>> {
+	pub fn build(self) -> Program<Vec<Instruction<Vec<u8>, Account, Assets>>> {
 		Program { tag: self.tag, instructions: self.instructions }
 	}
 }
@@ -204,7 +204,7 @@ mod tests {
 			program,
 			Program {
 				tag: "Main program".as_bytes().to_vec(),
-				instructions: VecDeque::from([
+				instructions: Vec::from([
 					// Protocol 1 on picasso
 					Instruction::Call { bindings: vec![], encoded: vec![202, 254, 190, 239] },
 					// Move to ethereum
@@ -214,7 +214,7 @@ mod tests {
 						assets: Funds::default(),
 						program: Program {
 							tag: Default::default(),
-							instructions: VecDeque::from([
+							instructions: Vec::from([
 								// Protocol 2 on eth
 								Instruction::Call {
 									bindings: vec![],

@@ -1,7 +1,7 @@
 use crate::{service::dex::ExchangeId, Amount, AssetId, Program};
 use alloc::{
 	borrow::Cow,
-	collections::{BTreeMap, VecDeque},
+	collections::{BTreeMap},
 	vec::Vec,
 };
 use parity_scale_codec::{Decode, Encode};
@@ -88,7 +88,7 @@ pub enum Instruction<Payload, Account, Assets> {
 		#[serde(skip_serializing_if = "Vec::is_empty", default)]
 		salt: Vec<u8>,
 		assets: Assets,
-		program: Program<VecDeque<Self>>,
+		program: Program<Vec<Self>>,
 	},
 	Exchange {
 		exchange_id: ExchangeId,

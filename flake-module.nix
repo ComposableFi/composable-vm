@@ -47,7 +47,6 @@
         };
         cvm-deps = crane.nightly.buildDepsOnly (systemCommonRust.common-attrs
           // {
-            SKIP_WASM_BUILD = 1;
             src = systemCommonRust.rustSrc;
           });
 

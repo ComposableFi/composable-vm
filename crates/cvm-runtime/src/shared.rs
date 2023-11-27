@@ -10,7 +10,7 @@ pub type XcBalanceFilter = crate::asset::Amount;
 pub type XcFundsFilter = crate::Funds<XcBalanceFilter>;
 pub type XcInstruction = crate::Instruction<Vec<u8>, XcAddr, XcFundsFilter>;
 pub type XcPacket = crate::Packet<XcProgram>;
-pub type XcProgram = crate::Program<VecDeque<XcInstruction>>;
+pub type XcProgram = crate::Program<Vec<XcInstruction>>;
 
 pub fn encode_base64<T: Serialize>(x: &T) -> StdResult<String> {
 	Ok(to_binary(x)?.to_base64())

@@ -1548,11 +1548,11 @@ dependencies = [
 
 [[package]]
 name = "ibc"
-version = "0.48.0"
+version = "0.48.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "41ab298c549e7753d0717e3a3126b03cc24fa4fe49e65613e776dddfcdf2c051"
+checksum = "429b6aca6624a9364878e28c90311438c2621a8270942d80732b2651ac38ac74"
 dependencies = [
- "ibc-apps 0.48.0",
+ "ibc-apps 0.48.1",
  "ibc-clients",
  "ibc-core",
  "ibc-core-host-cosmos",
@@ -1562,9 +1562,9 @@ dependencies = [
 
 [[package]]
 name = "ibc-app-transfer"
-version = "0.48.0"
+version = "0.48.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "162b0d3034ab807ac9002e66d3d159aaf333e22b24d3d23132a9889d50ee85a8"
+checksum = "b177b343385d9654d99be4709b5ed1574d41f91dfa4044b2d26d688be4179d7c"
 dependencies = [
  "ibc-app-transfer-types",
  "ibc-core",
@@ -1573,9 +1573,9 @@ dependencies = [
 
 [[package]]
 name = "ibc-app-transfer-types"
-version = "0.48.0"
+version = "0.48.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "59c553e3071b449845c9939d62dacb8fff617af9f518d4a0e1b2c7e1d63b4799"
+checksum = "95f92a3eda225e5c86e7bb6501c95986583ac541c4369d3c528349d81390f947"
 dependencies = [
  "derive_more",
  "displaydoc",
@@ -1592,7 +1592,7 @@ dependencies = [
 [[package]]
 name = "ibc-apps"
 version = "0.1.0"
-source = "git+https://github.com/ComposableFi/ibc-rs-apps.git?branch=main#ffa88ea1ce019f9f673bf2fb7787a3961240146e"
+source = "git+https://github.com/ComposableFi/ibc-rs-apps.git?branch=main#f467e1f222a30925dba26f61e125a444643b3d2e"
 dependencies = [
  "bech32",
  "cosmwasm-std",
@@ -1608,18 +1608,18 @@ dependencies = [
 
 [[package]]
 name = "ibc-apps"
-version = "0.48.0"
+version = "0.48.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "56bd1e34c4b78465352a3b2fb31b39fee52a655cf72ddb2d3064e186c5c1c784"
+checksum = "f4be40d55ed2dea9f2d05b902a3586f20850c723e4bdbfc4fb0ebe7a66ca5e40"
 dependencies = [
  "ibc-app-transfer",
 ]
 
 [[package]]
 name = "ibc-client-tendermint"
-version = "0.48.0"
+version = "0.48.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b1e5db84d883307b4b0f3eb8691c5dc22023ca1f38bbcec044e0b8d1d8771575"
+checksum = "119aa5873214228bf69bded3f20022b9ae1bc35b6841d295afcd73e53db05ccf"
 dependencies = [
  "ibc-client-tendermint-types",
  "ibc-core-client",
@@ -1635,9 +1635,9 @@ dependencies = [
 
 [[package]]
 name = "ibc-client-tendermint-types"
-version = "0.48.0"
+version = "0.48.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b7439de85d536f7c4fda5fad2fa647dc5365df36731a56cbabddd4fcbafd99a3"
+checksum = "6f21679016931b332b295a761e65cc122dc6fbfb98444148b681ad3aaa474665"
 dependencies = [
  "bytes",
  "displaydoc",
@@ -1657,18 +1657,18 @@ dependencies = [
 
 [[package]]
 name = "ibc-clients"
-version = "0.48.0"
+version = "0.48.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4d7732fccd3997e8d74cc840424f4ca6c671714bbc6575597927f9f97238e5b8"
+checksum = "685c660323e93107a136aa3dbc412b7fa2eafd315c2fe71184096a43800f8ca5"
 dependencies = [
  "ibc-client-tendermint",
 ]
 
 [[package]]
 name = "ibc-core"
-version = "0.48.0"
+version = "0.48.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8693850a90f813c346915883b4fbb7377bcbdf8143a0a29c98444802eaf04823"
+checksum = "100d9d0aa67432c5078a8a1c818e3fc990a193be6d35ed0abeda5b340d16c1da"
 dependencies = [
  "ibc-core-channel",
  "ibc-core-client",
@@ -1682,9 +1682,9 @@ dependencies = [
 
 [[package]]
 name = "ibc-core-channel"
-version = "0.48.0"
+version = "0.48.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "03a965e72216804e41fd5566da0a65227ef7db2386596d780bf79d3de3066c10"
+checksum = "7ebaa37629ac029f914dfe552ab5dad01ddb240ec885ed0ae68221cbea4e9bfc"
 dependencies = [
  "ibc-core-channel-types",
  "ibc-core-client",
@@ -1699,9 +1699,9 @@ dependencies = [
 
 [[package]]
 name = "ibc-core-channel-types"
-version = "0.48.0"
+version = "0.48.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9eca05ff7bd71553277cdec514eb4fe53f2661a233fe257b375f5696717987e2"
+checksum = "aa2ba72c56c411b1e0ce6dc3f5e1fa1de9e6c84891f425b7be8a9e1705964378"
 dependencies = [
  "derive_more",
  "displaydoc",
@@ -1723,9 +1723,9 @@ dependencies = [
 
 [[package]]
 name = "ibc-core-client"
-version = "0.48.0"
+version = "0.48.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4c5d4f8273cfbee64ed263a6decf22b847622f5e347071e8d702815efe8ce9c7"
+checksum = "06c4fac8e05201795073dee8c93d5afe9dfeac9aec2412b4a2b0c5f0d1e1d725"
 dependencies = [
  "ibc-core-client-context",
  "ibc-core-client-types",
@@ -1738,9 +1738,9 @@ dependencies = [
 
 [[package]]
 name = "ibc-core-client-context"
-version = "0.48.0"
+version = "0.48.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b6bc00ad737c324667ee6db5cac8e50f905990301af1ceb09e91a8036d46604c"
+checksum = "6b82abd9489021730d59ab2d00e9438d3711e8e78ecba4d083b64f833301682b"
 dependencies = [
  "derive_more",
  "displaydoc",
@@ -1757,9 +1757,9 @@ dependencies = [
 
 [[package]]
 name = "ibc-core-client-types"
-version = "0.48.0"
+version = "0.48.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "df4200665a61e661462bdc6df2f51b516a72fa9926b77c72ae30e219fe62c0a9"
+checksum = "bafdbf6db5dab4c8ad610b6940e23b4f8abd0a6ac5e8e2801415a95defd4a583"
 dependencies = [
  "derive_more",
  "displaydoc",
@@ -1778,9 +1778,9 @@ dependencies = [
 
 [[package]]
 name = "ibc-core-commitment-types"
-version = "0.48.0"
+version = "0.48.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "38b9d0a4061c78513d119be17229f282d18927af709f452bf45b009ae17f31fb"
+checksum = "ed4256b0216fc49024bac7e01c61b9bb055e31914ffe9ce6f468d7ce496a9357"
 dependencies = [
  "derive_more",
  "displaydoc",
@@ -1797,9 +1797,9 @@ dependencies = [
 
 [[package]]
 name = "ibc-core-connection"
-version = "0.48.0"
+version = "0.48.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c794161826db2919571cc09fd01d7dd6c13525a2961a9782b30f9c400edfeddf"
+checksum = "48e237b70b9ba0177a4e59ac9048fffac2ac44c334703cc0ae403ad221450850"
 dependencies = [
  "ibc-core-client",
  "ibc-core-connection-types",
@@ -1811,9 +1811,9 @@ dependencies = [
 
 [[package]]
 name = "ibc-core-connection-types"
-version = "0.48.0"
+version = "0.48.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9144d454548d69a27fbc367a566deefa834776f4da373151fd05ffab73c5dcdf"
+checksum = "ca841416fa29626423917099092f3698ae2735074cb3fe42936ddf6b2ccbf2f7"
 dependencies = [
  "derive_more",
  "displaydoc",
@@ -1833,9 +1833,9 @@ dependencies = [
 
 [[package]]
 name = "ibc-core-handler"
-version = "0.48.0"
+version = "0.48.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "475613783e56f479b9f538eb819658026e2bff4a5e9b2e9153d3a74653158135"
+checksum = "a47e5e5a006aa0fc87ec3f5fb1e0ef6dd5aeea5079fa927d799d526c44329987"
 dependencies = [
  "ibc-core-channel",
  "ibc-core-client",
@@ -1849,9 +1849,9 @@ dependencies = [
 
 [[package]]
 name = "ibc-core-handler-types"
-version = "0.48.0"
+version = "0.48.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e1d6f7765092e964b86d42d62577ab4c787f780b90ca0fd4155ff625b690e758"
+checksum = "9e3d59a8a5eb2069530c42783b4fef63472a89e0e9242334351df1bb58aaf542"
 dependencies = [
  "derive_more",
  "displaydoc",
@@ -1874,9 +1874,9 @@ dependencies = [
 
 [[package]]
 name = "ibc-core-host"
-version = "0.48.0"
+version = "0.48.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6f252181fce4168aea203306834f9b980a0a851f35d38924a602ee4bc41b537b"
+checksum = "7aa63c895c0e5a75e42fe859b8fd4250c12bfa8b9c6b114f94c927ecfad38a03"
 dependencies = [
  "derive_more",
  "displaydoc",
@@ -1894,9 +1894,9 @@ dependencies = [
 
 [[package]]
 name = "ibc-core-host-cosmos"
-version = "0.48.0"
+version = "0.48.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "331bbd587252ee66e3e2b2374ce0de49c770368aadd17ec294dbe48693201035"
+checksum = "1a325862af6c20b0df3d27c072a2d802a7232dc1666214d738cdfbd9a9c99720"
 dependencies = [
  "derive_more",
  "displaydoc",
@@ -1921,9 +1921,9 @@ dependencies = [
 
 [[package]]
 name = "ibc-core-host-types"
-version = "0.48.0"
+version = "0.48.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6fd5c93e73d803782703d8df8a396dce47417cdfa48343cc6a7478ac44a4bf14"
+checksum = "616955da310febbe93c0569a2feebd9f57cafed3eee5a56b0c3bb953a75f6089"
 dependencies = [
  "derive_more",
  "displaydoc",
@@ -1936,9 +1936,9 @@ dependencies = [
 
 [[package]]
 name = "ibc-core-router"
-version = "0.48.0"
+version = "0.48.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ad1a17624b6b1b9d32414134238824ae51b18b48c897aa28d803774f2660a836"
+checksum = "31fe115da73e0616bdb44400fa6b11ca251648d070c4ff419d58e27804d30243"
 dependencies = [
  "derive_more",
  "displaydoc",
@@ -1952,9 +1952,9 @@ dependencies = [
 
 [[package]]
 name = "ibc-core-router-types"
-version = "0.48.0"
+version = "0.48.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7c53a524536c613aca984279fc5509feb869755ef4a26d162d766644d4fbd476"
+checksum = "4d1fbb0bbbdeafa7ac989ba1693ed46d22e0e3eb0bdae478544e31157a4fdba6"
 dependencies = [
  "derive_more",
  "displaydoc",
@@ -1985,9 +1985,9 @@ dependencies = [
 
 [[package]]
 name = "ibc-primitives"
-version = "0.48.0"
+version = "0.48.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fb71fbcf4de3e5a3948834ee38c824830b97a08e8c3953d1213bbb3b4ea91a42"
+checksum = "d5edea4685267fd68514c87e7aa3a62712340c4cff6903f088a9ab571428a08a"
 dependencies = [
  "derive_more",
  "displaydoc",
@@ -2177,9 +2177,9 @@ checksum = "af150ab688ff2122fcef229be89cb50dd66af9e01a4ff320cc137eecc9bacc38"
 
 [[package]]
 name = "js-sys"
-version = "0.3.65"
+version = "0.3.66"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "54c0c35952f67de54bb584e9fd912b3023117cbafc0a77d8f3dee1fb5f572fe8"
+checksum = "cee9c64da59eae3b50095c18d3e74f8b73c0b86d2792824ff01bbce68ba229ca"
 dependencies = [
  "wasm-bindgen",
 ]
@@ -4465,9 +4465,9 @@ checksum = "9c8d87e72b64a3b4db28d11ce29237c246188f4f51057d65a7eab63b7987e423"
 
 [[package]]
 name = "wasm-bindgen"
-version = "0.2.88"
+version = "0.2.89"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7daec296f25a1bae309c0cd5c29c4b260e510e6d813c286b19eaadf409d40fce"
+checksum = "0ed0d4f68a3015cc185aff4db9506a015f4b96f95303897bfa23f846db54064e"
 dependencies = [
  "cfg-if",
  "wasm-bindgen-macro",
@@ -4475,9 +4475,9 @@ dependencies = [
 
 [[package]]
 name = "wasm-bindgen-backend"
-version = "0.2.88"
+version = "0.2.89"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e397f4664c0e4e428e8313a469aaa58310d302159845980fd23b0f22a847f217"
+checksum = "1b56f625e64f3a1084ded111c4d5f477df9f8c92df113852fa5a374dbda78826"
 dependencies = [
  "bumpalo",
  "log",
@@ -4490,9 +4490,9 @@ dependencies = [
 
 [[package]]
 name = "wasm-bindgen-futures"
-version = "0.4.38"
+version = "0.4.39"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9afec9963e3d0994cac82455b2b3502b81a7f40f9a0d32181f7528d9f4b43e02"
+checksum = "ac36a15a220124ac510204aec1c3e5db8a22ab06fd6706d881dc6149f8ed9a12"
 dependencies = [
  "cfg-if",
  "js-sys",
@@ -4502,9 +4502,9 @@ dependencies = [
 
 [[package]]
 name = "wasm-bindgen-macro"
-version = "0.2.88"
+version = "0.2.89"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5961017b3b08ad5f3fe39f1e79877f8ee7c23c5e5fd5eb80de95abc41f1f16b2"
+checksum = "0162dbf37223cd2afce98f3d0785506dcb8d266223983e4b5b525859e6e182b2"
 dependencies = [
  "quote",
  "wasm-bindgen-macro-support",
@@ -4512,9 +4512,9 @@ dependencies = [
 
 [[package]]
 name = "wasm-bindgen-macro-support"
-version = "0.2.88"
+version = "0.2.89"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c5353b8dab669f5e10f5bd76df26a9360c748f054f862ff5f3f8aae0c7fb3907"
+checksum = "f0eb82fcb7930ae6219a7ecfd55b217f5f0893484b7a13022ebb2b2bf20b5283"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -4525,9 +4525,9 @@ dependencies = [
 
 [[package]]
 name = "wasm-bindgen-shared"
-version = "0.2.88"
+version = "0.2.89"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0d046c5d029ba91a1ed14da14dca44b68bf2f124cfbaf741c54151fdb3e0750b"
+checksum = "7ab9b36309365056cd639da3134bf87fa8f3d86008abf99e612384a6eecd459f"
 
 [[package]]
 name = "web-sys"

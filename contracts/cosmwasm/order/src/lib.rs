@@ -14,8 +14,8 @@ use cosmwasm_schema::{cw_serde, schemars};
 use cosmwasm_std::{
     wasm_execute, Addr, BankMsg, Coin, Event, Order, StdError, Storage, Uint128, Uint64,
 };
-use cvm::{
-    instruction::ExchangeId,
+use cvm_runtime::{
+    ExchangeId,
     shared::{XcInstruction, XcProgram},
 };
 use cw_storage_plus::{Index, IndexList, IndexedMap, Item, Map, MultiIndex};
@@ -26,7 +26,7 @@ use sylvia::{
     types::{ExecCtx, InstantiateCtx, QueryCtx},
 };
 
-use cvm::network::NetworkId;
+use cvm_runtime::NetworkId;
 
 pub struct OrderContract<'a> {
     pub orders: Map<'a, u128, OrderItem>,
@@ -176,7 +176,7 @@ impl OrderContract<'_> {
         );
 
         let cvm = Self::traverse_route(msg.route);
-        let cvm = cvm::gateway::ExecuteMsg::ExecuteProgram(cvm::gateway::ExecuteProgramMsg {
+        let cvm = cvm_runtime::gateway::ExecuteMsg::ExecuteProgram(cvm_runtime::gateway::ExecuteProgramMsg {
             salt: vec![],
             program: cvm,
             assets: <_>::default(),
@@ -188,7 +188,7 @@ impl OrderContract<'_> {
     }
 
     /// converts high level route to CVM program
-    fn traverse_route(route: ExchangeRoute) -> cvm::shared::XcProgram {
+    fn traverse_route(route: ExchangeRoute) -> cvm_runtime::shared::XcProgram {
         let mut program = XcProgram {
             tag: b"may be use solution id and some chain for tracking".to_vec(),
             instructions: vec![],
@@ -204,7 +204,7 @@ impl OrderContract<'_> {
     }
 
     #[no_panic]
-    fn traverse_spawns(spawns: Vec<Spawn<ExchangeRoute>>) -> Vec<cvm::shared::XcInstruction> {
+    fn traverse_spawns(spawns: Vec<Spawn<ExchangeRoute>>) -> Vec<cvm_runtime::shared::XcInstruction> {
         let mut result = vec![];
         for spawn in spawns {
             let spawn = if let Some(execute) = spawn.execute {
@@ -231,7 +231,7 @@ impl OrderContract<'_> {
         result
     }
 
-    fn traverse_exchanges(_exchanges: Vec<Exchange>) -> Vec<cvm::shared::XcInstruction> {
+    fn traverse_exchanges(_exchanges: Vec<Exchange>) -> Vec<cvm_runtime::shared::XcInstruction> {
         // here map each exchange to CVM instruction
         // for each pool get its denom, and do swaps
         vec![]

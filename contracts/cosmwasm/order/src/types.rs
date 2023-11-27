@@ -1,5 +1,5 @@
 use cosmwasm_std::{ensure, BankMsg, Event, OverflowError, StdError, StdResult, Uint64};
-use cvm::{instruction::ExchangeId, network::NetworkId};
+use cvm_runtime::{ExchangeId, NetworkId};
 
 use crate::prelude::*;
 
