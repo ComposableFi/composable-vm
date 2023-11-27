@@ -1,4 +1,4 @@
-use xc_core::{
+use cvm_runtime::{
 	gateway::{config::AssetReference, AssetItem},
 	AssetId, NetworkId,
 };

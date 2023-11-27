@@ -17,7 +17,7 @@ use cw2::set_contract_version;
 use cw20::{BalanceResponse, Cw20Contract, Cw20ExecuteMsg, Cw20QueryMsg};
 use cw_utils::ensure_from_older_version;
 use num::Zero;
-use xc_core::{
+use cvm_runtime::{
 	apply_bindings,
 	gateway::{AssetReference, BridgeExecuteProgramMsg, BridgeForwardMsg},
 	service::dex::{
@@ -36,7 +36,7 @@ const EXCHANGE_ID: u64 = 3;
 #[cfg_attr(not(feature = "library"), entry_point)]
 pub fn instantiate(deps: DepsMut, _env: Env, info: MessageInfo, msg: InstantiateMsg) -> Result {
 	set_contract_version(deps.storage, CONTRACT_NAME, CONTRACT_VERSION)?;
-	let gateway_address = xc_core::gateway::Gateway::addr_validate(deps.api, &msg.gateway_address)?;
+	let gateway_address = cvm_runtime::gateway::Gateway::addr_validate(deps.api, &msg.gateway_address)?;
 	let config = Config { gateway_address, interpreter_origin: msg.interpreter_origin };
 	CONFIG.save(deps.storage, &config)?;
 	OWNERS.save(deps.storage, info.sender, &())?;
@@ -45,7 +45,6 @@ pub fn instantiate(deps: DepsMut, _env: Env, info: MessageInfo, msg: Instantiate
 
 #[cfg_attr(not(feature = "library"), entry_point)]
 pub fn execute(deps: DepsMut, env: Env, info: MessageInfo, msg: ExecuteMsg) -> Result {
-	// Only owners can execute entrypoints of the interpreter
 	let token = ensure_owner(deps.as_ref(), &env.contract.address, info.sender.clone())?;
 	match msg {
 		ExecuteMsg::Execute { tip, program } => initiate_execution(token, deps, env, tip, program),
@@ -138,7 +137,9 @@ pub fn handle_execute_step(
 	env: Env,
 	Step { tip, instruction_pointer, mut program }: Step,
 ) -> Result {
-	Ok(if let Some(instruction) = program.instructions.pop_front() {
+	
+	Ok(if !program.instructions.is_empty()  {
+		let instruction = program.instructions.remove(0);
 		deps.api.debug(&format!("cvm::executor::execute:: {:?}", &instruction));
 		let response = match instruction {
 			Instruction::Transfer { to, assets } =>
@@ -176,12 +177,12 @@ fn interpret_exchange(
 	sender: Addr,
 ) -> Result {
 	let Config { gateway_address, .. } = CONFIG.load(deps.storage)?;
-	let exchange: xc_core::service::dex::ExchangeItem = gateway_address
+	let exchange: cvm_runtime::service::dex::ExchangeItem = gateway_address
 		.get_exchange_by_id(deps.querier, exchange_id)
 		.map_err(ContractError::ExchangeNotFound)?;
 
 	use prost::Message;
-	use xc_core::service::dex::{
+	use cvm_runtime::service::dex::{
 		osmosis_std::types::osmosis::poolmanager::v1beta1::MsgSwapExactAmountIn, ExchangeType::*,
 	};
 	ensure_eq!(give.0.len(), 1, ContractError::OnlySingleAssetExchangeIsSupportedByPool);
@@ -196,8 +197,8 @@ fn interpret_exchange(
 
 	let amount: Coin = deps.querier.query_balance(&sender, asset.denom())?;
 	let amount = give.1.apply(amount.amount.u128())?;
-	let give: xc_core::cosmos::Coin =
-		xc_core::cosmos::Coin { denom: asset.denom(), amount: amount.to_string() };
+	let give: ibc_apps::cosmos::Coin =
+		ibc_apps::cosmos::Coin { denom: asset.denom(), amount: amount.to_string() };
 
 	let asset = gateway_address
 		.get_asset_by_id(deps.querier, want.0)
@@ -208,10 +209,10 @@ fn interpret_exchange(
 	}
 
 	let want = if want.1.is_absolute() {
-		xc_core::cosmos::Coin { denom: asset.denom(), amount: want.1.intercept.to_string() }
+		ibc_apps::cosmos::Coin { denom: asset.denom(), amount: want.1.intercept.to_string() }
 	} else {
 		// use https://github.com/osmosis-labs/osmosis/blob/main/cosmwasm/contracts/swaprouter/src/msg.rs to allow slippage
-		xc_core::cosmos::Coin { denom: asset.denom(), amount: "1".to_string() }
+		ibc_apps::cosmos::Coin { denom: asset.denom(), amount: "1".to_string() }
 	};
 
 	let response = match exchange.exchange {
@@ -257,7 +258,7 @@ pub fn interpret_call(
 	// we hacky using json, but we always know ABI encoding dependng on chain we
 	// run on send to
 	let cosmos_msg: CosmosMsg = serde_json_wasm::from_slice::<
-		xc_core::cosmwasm::FlatCosmosMsg<serde_cw_value::Value>,
+		cvm_runtime::cosmwasm::FlatCosmosMsg<serde_cw_value::Value>,
 	>(&payload)
 	.map_err(|_| ContractError::InvalidCallPayload)?
 	.try_into()
@@ -273,7 +274,7 @@ struct BindingResolver<'a> {
 	env: &'a Env,
 	instruction_pointer: u16,
 	tip: &'a Addr,
-	gateway: xc_core::gateway::Gateway,
+	gateway: cvm_runtime::gateway::Gateway,
 }
 
 impl<'a> BindingResolver<'a> {
@@ -309,7 +310,7 @@ impl<'a> BindingResolver<'a> {
 		})
 	}
 
-	fn resolve_asset(&'a self, asset_id: xc_core::AssetId) -> Result<Cow<'a, [u8]>> {
+	fn resolve_asset(&'a self, asset_id: cvm_runtime::AssetId) -> Result<Cow<'a, [u8]>> {
 		let reference = self.gateway.get_asset_by_id(self.deps.querier, asset_id)?;
 		let value = match reference.local {
 			AssetReference::Cw20 { contract } => contract.into_string(),
@@ -321,7 +322,7 @@ impl<'a> BindingResolver<'a> {
 
 	fn resolve_asset_amount(
 		&'a self,
-		asset_id: xc_core::AssetId,
+		asset_id: cvm_runtime::AssetId,
 		balance: &Amount,
 	) -> Result<Cow<'a, [u8]>> {
 		let reference = self.gateway.get_asset_by_id(self.deps.querier, asset_id)?;

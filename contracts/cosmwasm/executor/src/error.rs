@@ -1,11 +1,11 @@
 use cosmwasm_std::{Response, StdError};
 use thiserror::Error;
-use xc_core::LateBindingError;
+use cvm_runtime::LateBindingError;
 
 pub type Result<T = Response, E = ContractError> = core::result::Result<T, E>;
 
-impl From<xc_core::ArithmeticError> for ContractError {
-	fn from(_: xc_core::ArithmeticError) -> Self {
+impl From<cvm_runtime::ArithmeticError> for ContractError {
+	fn from(_: cvm_runtime::ArithmeticError) -> Self {
 		ContractError::InvalidProgram
 	}
 }

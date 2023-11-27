@@ -1,10 +1,10 @@
 use cosmwasm_std::{Deps, StdResult};
 use cw_storage_plus::Item;
-use xc_core::InterpreterOrigin;
+use cvm_runtime::InterpreterOrigin;
 
 use crate::prelude::*;
 
-pub type InterpreterId = xc_core::shared::Displayed<u128>;
+pub type InterpreterId = cvm_runtime::shared::Displayed<u128>;
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]

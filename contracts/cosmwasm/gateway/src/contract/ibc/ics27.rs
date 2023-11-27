@@ -18,8 +18,8 @@ use cosmwasm_std::{
 	IbcChannelOpenResponse, IbcMsg, IbcOrder, IbcPacketAckMsg, IbcPacketReceiveMsg,
 	IbcPacketTimeoutMsg, IbcReceiveResponse, MessageInfo, Response, SubMsg,
 };
-use ibc::core::ics24_host::identifier::{ChannelId, ConnectionId};
-use xc_core::{
+use ibc::core::host::types::identifiers::{ChannelId, ConnectionId};
+use cvm_runtime::{
 	proto::Isomorphism, shared::XcPacket, transport::ibc::ChannelInfo, CallOrigin, XCVMAck,
 };
 
@@ -36,7 +36,7 @@ pub fn ibc_channel_open(
 		IbcChannelOpenMsg::OpenTry { channel, counterparty_version } =>
 			(channel, Some(counterparty_version)),
 	};
-	const IBC_VERSION: &str = xc_core::gateway::IBC_VERSION;
+	const IBC_VERSION: &str = cvm_runtime::gateway::IBC_VERSION;
 	if version.is_some() && version.as_deref() != Some(IBC_VERSION) {
 		Err(ContractError::InvalidIbcVersion(version.unwrap()))
 	} else if channel.order != IbcOrder::Unordered {

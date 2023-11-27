@@ -1,5 +1,5 @@
 use crate::{prelude::*, state, state::State};
-use xc_core::{shared::*, InterpreterOrigin, Register};
+use cvm_runtime::{shared::*, InterpreterOrigin, Register};
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]

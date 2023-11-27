@@ -874,6 +874,7 @@ dependencies = [
  "cw2",
  "cw20",
  "hex",
+ "ibc-apps 0.1.0",
  "num",
  "prost",
  "schemars",
@@ -897,6 +898,7 @@ dependencies = [
  "cw20",
  "enumn",
  "ibc",
+ "ibc-apps 0.1.0",
  "prost",
  "schemars",
  "serde",
@@ -1592,7 +1594,7 @@ dependencies = [
 [[package]]
 name = "ibc-apps"
 version = "0.1.0"
-source = "git+https://github.com/ComposableFi/ibc-rs-apps.git?branch=main#f467e1f222a30925dba26f61e125a444643b3d2e"
+source = "git+https://github.com/ComposableFi/ibc-rs-apps.git?branch=main#7c1f4ea26705c7028348d90a62ae77e186bc4b5a"
 dependencies = [
  "bech32",
  "cosmwasm-std",

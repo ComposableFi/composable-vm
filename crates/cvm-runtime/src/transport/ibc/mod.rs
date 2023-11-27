@@ -24,15 +24,6 @@ pub struct XcMessageData {
     pub packet: XcPacket,
 }
 
-/// Message type for `sudo` entry_point
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[serde(rename_all = "snake_case")]
-#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
-pub enum SudoMsg {
-    #[serde(rename = "ibc_lifecycle_complete")]
-    IBCLifecycleComplete(IBCLifecycleComplete),
-}
-
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 #[serde(rename_all = "snake_case")]

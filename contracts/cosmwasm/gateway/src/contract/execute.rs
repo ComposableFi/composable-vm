@@ -15,7 +15,7 @@ use cosmwasm_std::{
 };
 use cw20::{Cw20Contract, Cw20ExecuteMsg};
 
-use xc_core::{
+use cvm_runtime::{
 	gateway::{BridgeExecuteProgramMsg, ConfigSubMsg},
 	CallOrigin, Funds, InterpreterOrigin,
 };
@@ -247,7 +247,7 @@ pub(crate) fn handle_execute_program_privilleged(
 
 		// Secondly, call itself again with the same parameters, so that this functions goes
 		// into `Ok` state and properly executes the interpreter
-		let execute_program = xc_core::gateway::BridgeExecuteProgramMsg {
+		let execute_program = cvm_runtime::gateway::BridgeExecuteProgramMsg {
 			salt: interpreter_origin.salt,
 			program,
 			assets,
@@ -267,7 +267,7 @@ pub(crate) fn handle_execute_program_privilleged(
 fn send_funds_to_interpreter(
 	deps: Deps,
 	interpreter_address: Addr,
-	funds: Funds<xc_core::shared::Displayed<u128>>,
+	funds: Funds<cvm_runtime::shared::Displayed<u128>>,
 ) -> Result {
 	let mut response = Response::new();
 	let interpreter_address = interpreter_address.into_string();

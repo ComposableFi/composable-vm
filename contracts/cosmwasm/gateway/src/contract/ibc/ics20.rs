@@ -7,7 +7,7 @@ use cosmwasm_std::{
 	ensure_eq, wasm_execute, Binary, BlockInfo, Coin, Deps, DepsMut, Env, MessageInfo, Response,
 	Storage, SubMsg,
 };
-use xc_core::{
+use cvm_runtime::{
 	gateway::{AssetItem, ExecuteMsg, ExecuteProgramMsg, GatewayId},
 	shared::{XcFunds, XcPacket, XcProgram},
 	transport::ibc::{to_cosmwasm_message, IbcIcs20ProgramRoute, XcMessageData},
@@ -30,7 +30,7 @@ pub(crate) fn handle_bridge_forward(
 	_: auth::Executor,
 	deps: DepsMut,
 	info: MessageInfo,
-	msg: xc_core::gateway::BridgeForwardMsg,
+	msg: cvm_runtime::gateway::BridgeForwardMsg,
 	block: BlockInfo,
 ) -> Result {
 	deps.api.debug(&format!(
@@ -125,13 +125,13 @@ pub(crate) fn handle_bridge_forward(
 pub struct IbcIcs20TransferShortcutRoute {
 	pub source: ChannelId,
 	pub denom: String,
-	pub sending: xc_core::transport::ibc::IbcIcs20Sender,
+	pub sending: cvm_runtime::transport::ibc::IbcIcs20Sender,
 }
 
 /// this method return route in case program can be just transfer
 pub fn ibc_ics_20_transfer_shortcut(
 	deps: Deps,
-	msg: &xc_core::gateway::BridgeForwardMsg,
+	msg: &cvm_runtime::gateway::BridgeForwardMsg,
 ) -> Result<IbcIcs20TransferShortcutRoute, ContractError> {
 	let storage = deps.storage;
 	let this = load_this(storage)?;
@@ -167,7 +167,7 @@ pub fn ibc_ics_20_transfer_shortcut(
 /// starts on this network only
 pub fn get_this_route(
 	storage: &dyn Storage,
-	to: xc_core::NetworkId,
+	to: cvm_runtime::NetworkId,
 	this_asset_id: AssetId,
 ) -> Result<IbcIcs20ProgramRoute, ContractError> {
 	let this = load_this(storage)?;
@@ -246,7 +246,7 @@ pub(crate) fn ics20_message_hook(
 }
 
 fn ensure_anonymous(program: &XcProgram) -> Result<()> {
-	use xc_core::Instruction::*;
+	use cvm_runtime::Instruction::*;
 	for ix in &program.instructions {
 		match ix {
 			Transfer { .. } => {},

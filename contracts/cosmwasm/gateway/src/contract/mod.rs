@@ -12,10 +12,11 @@ use crate::{
 use cosmwasm_std::{DepsMut, Env, MessageInfo, Reply, Response, SubMsgResponse, SubMsgResult};
 use cw2::set_contract_version;
 use cw_utils::ensure_from_older_version;
-use xc_core::{
-	transport::ibc::{ics20::MsgTransferResponse, TransportTrackerId},
+use cvm_runtime::{
+	transport::ibc::{TransportTrackerId},
 	XCVMAck,
 };
+use ::ibc::apps::transfer::types::proto::transfer::v1::MsgTransferResponse;
 
 use self::ibc::make_ibc_failure_event;
 

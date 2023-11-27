@@ -2,6 +2,6 @@
 pub use alloc::format;
 pub use cosmwasm_std::{to_binary, Addr};
 pub use cw_storage_plus::Map;
-pub use ibc::core::ics24_host::identifier::{ChannelId, ConnectionId};
+pub use ibc::core::host::types::identifiers::{ChannelId, ConnectionId};
 pub use serde::{Deserialize, Serialize};
-pub use xc_core::{gateway::config::*, shared::Displayed};
+pub use cvm_runtime::{gateway::config::*, shared::Displayed};

@@ -1,5 +1,4 @@
 [package]
-authors = ["Composable Developers"]
 description = "CVM Executor contract"
 edition = "2021"
 name = "cw-xc-executor"
@@ -11,7 +10,8 @@ crate-type = ["cdylib", "rlib"]
 
 [features]
 library = []
-std = ["cvm-runtime/std", "dep:cosmwasm-schema"]
+json-shema = ["ibc-apps/json-schema"]
+std = ["cvm-runtime/std", "dep:cosmwasm-schema", "ibc-apps/std"]
 default = ["std"]
 
 [dependencies]
@@ -32,3 +32,4 @@ prost = { workspace = true, features = ["prost-derive"] }
 cvm-runtime = { path = "../../../crates/cvm-runtime", features = [
   "cosmwasm",
 ], default-features = false }
+ibc-apps = { workspace = true, default-features = false, features = ["cosmwasm"] }

@@ -102,7 +102,7 @@ impl core::fmt::Debug for XcAddr {
 /// `Display` and `FromStr` traits.
 ///
 /// ```
-/// # use xc_core::shared::Displayed;
+/// # use cvm_runtime::shared::Displayed;
 ///
 /// #[derive(serde::Serialize, serde::Deserialize)]
 /// struct Foo {

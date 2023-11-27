@@ -6,9 +6,10 @@ pub mod xcvm;
 use crate::prelude::*;
 
 use cosmwasm_std::{StdResult, Storage};
+use cvm_runtime::gateway::NetworkItem;
 use cw_storage_plus::Item;
 
-use xc_core::NetworkId;
+use cvm_runtime::NetworkId;
 
 const CONFIG: Item<HereItem> = Item::new("this");
 

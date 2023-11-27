@@ -10,7 +10,7 @@ use crate::{
 	},
 };
 use cosmwasm_std::{Deps, DepsMut};
-use xc_core::{AssetId, NetworkId};
+use cvm_runtime::{AssetId, NetworkId};
 
 /// Adds a new asset to the registry; errors out if asset already exists.
 pub(crate) fn force_asset(_: auth::Admin, deps: DepsMut, msg: AssetItem) -> Result<BatchResponse> {

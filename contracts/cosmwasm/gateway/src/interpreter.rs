@@ -7,11 +7,11 @@ use crate::{
 	state,
 };
 use cosmwasm_std::{
-	to_binary, Deps, DepsMut, Reply, Response, StdError, StdResult, SubMsg, WasmMsg,
+	to_json_binary, Deps, DepsMut, Reply, Response, StdError, StdResult, SubMsg, WasmMsg, 
 };
 
 use cw_xc_executor::events::CvmInterpreterInstantiated;
-use xc_core::{CallOrigin, InterpreterOrigin};
+use cvm_runtime::{CallOrigin, InterpreterOrigin};
 
 use crate::{auth, prelude::*};
 
@@ -52,7 +52,7 @@ pub fn instantiate(
 	let instantiate_msg = WasmMsg::Instantiate2 {
 		admin: Some(admin.clone().into_string()),
 		code_id: interpreter_code_id,
-		msg: to_binary(&cw_xc_executor::msg::InstantiateMsg {
+		msg: to_json_binary(&cw_xc_executor::msg::InstantiateMsg {
 			gateway_address: admin.into_string(),
 			interpreter_origin: interpreter_origin.clone(),
 		})?,
@@ -60,7 +60,7 @@ pub fn instantiate(
 		// and label has some unknown limits  (including usage of special characters)
 		label: format!("cvm_executor_{}", &next_interpreter_id),
 		// salt limit is 64 characters
-		salt: to_binary(&salt)?,
+		salt: to_json_binary(&salt)?,
 	};
 	let interpreter_instantiate_submessage =
 		SubMsg::reply_on_success(instantiate_msg, ReplyId::InstantiateInterpreter.into());
@@ -102,7 +102,7 @@ pub(crate) fn handle_instantiate_reply(deps: DepsMut, msg: Reply) -> StdResult<R
 		.ok_or_else(|| StdError::not_found("no data is returned from 'cvm_executor'"))?
 		.value;
 	let interpreter_origin =
-		xc_core::shared::decode_base64::<_, InterpreterOrigin>(interpreter_origin.as_str())?;
+		cvm_runtime::shared::decode_base64::<_, InterpreterOrigin>(interpreter_origin.as_str())?;
 
 	let interpreter_id: u128 =
 		state::interpreter::INTERPRETERS_COUNT.load(deps.storage).unwrap_or_default() + 1;

@@ -4,7 +4,7 @@ use crate::{
 	msg, network, state,
 };
 use cosmwasm_std::{Deps, Env, MessageInfo};
-use xc_core::{gateway::OtherNetworkItem, NetworkId};
+use cvm_runtime::{gateway::OtherNetworkItem, NetworkId};
 
 /// Authorisation token indicating call is authorised according to policy
 /// `T`.
@@ -74,7 +74,7 @@ impl Auth<policy::WasmHook> {
 
 		let channel = this_to_other.ics_20.ok_or(ContractError::ICS20NotFound)?.source;
 		let hash_of_channel_and_sender =
-			xc_core::transport::ibc::ics20::hook::derive_intermediate_sender(
+			ibc_apps::hook::derive_intermediate_sender(
 				&channel, &sender, &prefix,
 			)?;
 		deps.api.debug(&format!(
@@ -89,7 +89,7 @@ impl Auth<policy::Interpreter> {
 	pub(crate) fn authorise(
 		deps: Deps,
 		info: &MessageInfo,
-		interpreter_origin: xc_core::InterpreterOrigin,
+		interpreter_origin: cvm_runtime::InterpreterOrigin,
 	) -> Result<Self> {
 		let interpreter_address = state::interpreter::get_by_origin(deps, interpreter_origin)
 			.map(|int| int.address)

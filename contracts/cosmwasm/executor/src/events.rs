@@ -1,6 +1,6 @@
 use cosmwasm_std::{Addr, Event};
 use serde::{Deserialize, Serialize};
-use xc_core::{service::dex::ExchangeId, shared, InterpreterOrigin, NetworkId, UserId};
+use cvm_runtime::{service::dex::ExchangeId, shared, InterpreterOrigin, NetworkId, UserId};
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]

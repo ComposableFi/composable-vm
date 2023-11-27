@@ -1,4 +1,5 @@
-//! converts XCVM programs to relevant carriers representation
+//! converts CVM programs to relevant carriers representation
+
 pub mod ibc;
 
 #[cfg(feature = "xcm")]

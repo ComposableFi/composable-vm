@@ -1,5 +1,4 @@
 [package]
-authors = ["Composable Developers"]
 description = "CVM Gateway contract"
 edition = "2021"
 name = "cw-xc-gateway"
@@ -14,13 +13,14 @@ workspace = true
 
 [features]
 library = []
-std = ["cw-xc-executor/std", "cvm-runtime/std"]
+std = ["cw-xc-executor/std", "cvm-runtime/std", "ibc-apps/std"]
+json-schema = ["ibc-apps/json-schema"]
 default = ["std"]
 
 [dependencies]
 enumn = { workspace = true }
 bech32 = { workspace = true, features = ["strict"] }
-cosmwasm-std = { workspace = true, features = ["ibc3", "stargate"] }
+cosmwasm-std = { workspace = true, features = ["ibc3", "stargate", "cosmwasm_1_3"] }
 cw-storage-plus = { workspace = true }
 cw-utils = { workspace = true }
 cw2 = { workspace = true }
@@ -39,3 +39,4 @@ cvm-runtime = { path = "../../../crates/cvm-runtime", features = [
   "cosmwasm",
 ], default-features = false }
 prost = { workspace = true, default-features = false }
+ibc-apps = { workspace = true, default-features = false, features = ["cosmwasm"] }

@@ -1,7 +1,7 @@
 #![cfg_attr(not(test), deny(clippy::disallowed_methods, clippy::disallowed_types))]
 extern crate alloc;
 
-pub use xc_core::gateway as msg;
+pub use cvm_runtime::gateway as msg;
 
 pub mod assets;
 pub mod auth;

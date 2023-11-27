@@ -1,7 +1,7 @@
 use cosmwasm_std::{IbcOrder, Response, StdError};
-use ibc::core::ics24_host::identifier::IdentifierError;
+use ibc::core::host::types::error::IdentifierError;
 use thiserror::Error;
-use xc_core::{AssetId, NetworkId};
+use cvm_runtime::{AssetId, NetworkId};
 
 pub type Result<T = Response, E = ContractError> = core::result::Result<T, E>;
 
@@ -40,7 +40,7 @@ pub enum ContractError {
 	#[error("Program amount not equal to host amount")]
 	ProgramAmountNotEqualToHostAmount,
 	#[error("{0}")]
-	Protobuf(xc_core::proto::DecodeError),
+	Protobuf(cvm_runtime::proto::DecodeError),
 	#[error("An invalid ACK was provided, this MUST be impossible.")]
 	InvalidAck,
 	#[error("An unknown reply ID was provided, this MUST be impossible.")]
@@ -52,7 +52,7 @@ pub enum ContractError {
 	#[error("Route not found.")]
 	RouteNotFound,
 	#[error("{0}")]
-	Bech32(bech32_no_std::Error),
+	Bech32(bech32::Error),
 	#[error("{0}")]
 	Serde(#[from] serde_json_wasm::ser::Error),
 	#[error("Assets non transferrable")]
@@ -88,14 +88,14 @@ pub enum ContractError {
 	AccountInProgramIsNotMappableToThisChain,
 }
 
-impl From<xc_core::proto::DecodeError> for ContractError {
-	fn from(value: xc_core::proto::DecodeError) -> Self {
+impl From<cvm_runtime::proto::DecodeError> for ContractError {
+	fn from(value: cvm_runtime::proto::DecodeError) -> Self {
 		Self::Protobuf(value)
 	}
 }
 
-impl From<bech32_no_std::Error> for ContractError {
-	fn from(value: bech32_no_std::Error) -> Self {
+impl From<bech32::Error> for ContractError {
+	fn from(value: bech32::Error) -> Self {
 		Self::Bech32(value)
 	}
 }
