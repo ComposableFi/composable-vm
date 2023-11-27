@@ -31,10 +31,11 @@ ibc-proto = { workspace = true, default-features = false, features = [
 ] }
 serde-cw-value = { workspace = true, default-features = false }
 xcm = { workspace = true, default-features = false, optional = true }
-# forked for schema support, pr sent
-eth-primitive-types = { package = "primitive-types", git = "https://github.com/dzmitry-lahoda-forks/parity-common", features = [
+primitive-types = { version = "^0.12.2", features = [
   "serde_no_std",
-], default-features = false, rev = "db97e88283f15c11a848448440705c65dd2a56ec" }
+], default-features = false }
+
+ibc-apps = { workspace = true, default-features = false }
 
 [build-dependencies]
 prost-build = { workspace = true }
@@ -44,12 +45,13 @@ default = ["std"]
 xcm = ["dep:xcm"]
 cosmwasm = ["cw-storage-plus", "cw20"]
 substrate = ["xcm"]
-json-schema = [  "serde-cw-value/schema",
-
-"dep:cosmwasm-schema",
+json-schema = [
+  "serde-cw-value/schema",
+  "ibc-apps/json-schema",
+  "dep:cosmwasm-schema",
   "dep:schemars",
   "ibc/schema",
-  "eth-primitive-types/json-schema",
+  "primitive-types/json-schema",
   "serde-cw-value/schema",
 ]
 
@@ -59,5 +61,5 @@ std = [
   "serde-cw-value/std",
   "serde-json-wasm/std",
   "num/std",
-  "eth-primitive-types/std",
+  "primitive-types/std",
 ]

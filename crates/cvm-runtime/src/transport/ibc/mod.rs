@@ -1,6 +1,3 @@
-pub mod ics20;
-pub mod picasso;
-
 use crate::{
 	gateway::{self, GatewayId, RelativeTimeout},
 	prelude::*,
@@ -9,9 +6,9 @@ use crate::{
 };
 use cosmwasm_std::{to_binary, Api, BlockInfo, CosmosMsg, Deps, IbcEndpoint, StdResult, WasmMsg};
 
-use ibc_rs_scale::core::ics24_host::identifier::{ChannelId, ConnectionId, PortId};
+use ibc::core::ics24_host::identifier::{ChannelId, ConnectionId, PortId};
 
-use self::ics20::{
+use ibc_apps::{
 	hook::{Callback, IBCLifecycleComplete},
 	Memo, SendMemo,
 };

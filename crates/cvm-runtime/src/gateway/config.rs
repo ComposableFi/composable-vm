@@ -1,5 +1,5 @@
 use cosmwasm_std::{BlockInfo, IbcTimeout};
-use ibc_rs_scale::core::ics24_host::identifier::ChannelId;
+use ibc::core::ics24_host::identifier::ChannelId;
 
 use crate::{
 	prelude::*,
@@ -8,7 +8,7 @@ use crate::{
 	AssetId, NetworkId,
 };
 
-type EthAddress = eth_primitive_types::H160;
+type EthAddress = primitive_types::H160;
 
 /// Version of IBC channels used by the gateway.
 pub const IBC_VERSION: &str = "xcvm-v0";

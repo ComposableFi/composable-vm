@@ -18,7 +18,7 @@ use cosmwasm_std::{
 	IbcChannelOpenResponse, IbcMsg, IbcOrder, IbcPacketAckMsg, IbcPacketReceiveMsg,
 	IbcPacketTimeoutMsg, IbcReceiveResponse, MessageInfo, Response, SubMsg,
 };
-use ibc_rs_scale::core::ics24_host::identifier::{ChannelId, ConnectionId};
+use ibc::core::ics24_host::identifier::{ChannelId, ConnectionId};
 use xc_core::{
 	proto::Isomorphism, shared::XcPacket, transport::ibc::ChannelInfo, CallOrigin, XCVMAck,
 };

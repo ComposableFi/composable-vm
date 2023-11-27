@@ -1,5 +1,5 @@
 use cosmwasm_std::{IbcOrder, Response, StdError};
-use ibc_rs_scale::core::ics24_host::identifier::IdentifierError;
+use ibc::core::ics24_host::identifier::IdentifierError;
 use thiserror::Error;
 use xc_core::{AssetId, NetworkId};
 

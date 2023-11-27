@@ -11,11 +11,10 @@ crate-type = ["cdylib", "rlib"]
 
 [features]
 library = []
-std = ["cvm-runtime/std", "dep:cosmwasm-schema", "dep:serde_json"]
+std = ["cvm-runtime/std", "dep:cosmwasm-schema"]
 default = ["std"]
 
 [dependencies]
-serde_json = { workspace = true, optional = true }
 cosmwasm-std = { workspace = true }
 cw-storage-plus = { workspace = true }
 cosmwasm-schema = { workspace = true, optional = true }

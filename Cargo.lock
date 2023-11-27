@@ -784,10 +784,11 @@ dependencies = [
  "derive_more",
  "hex",
  "ibc",
+ "ibc-apps 0.1.0",
  "ibc-proto 0.39.1",
  "num",
  "parity-scale-codec",
- "primitive-types 0.12.1",
+ "primitive-types",
  "prost",
  "prost-build",
  "scale-info",
@@ -1220,17 +1221,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "fixed-hash"
-version = "0.8.0"
-source = "git+https://github.com/dzmitry-lahoda-forks/parity-common?rev=db97e88283f15c11a848448440705c65dd2a56ec#db97e88283f15c11a848448440705c65dd2a56ec"
-dependencies = [
- "byteorder",
- "rand",
- "rustc-hex",
- "static_assertions",
-]
-
-[[package]]
 name = "fixedbitset"
 version = "0.4.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1559,7 +1549,7 @@ version = "0.48.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "41ab298c549e7753d0717e3a3126b03cc24fa4fe49e65613e776dddfcdf2c051"
 dependencies = [
- "ibc-apps",
+ "ibc-apps 0.48.0",
  "ibc-clients",
  "ibc-core",
  "ibc-core-host-cosmos",
@@ -1589,11 +1579,25 @@ dependencies = [
  "ibc-core",
  "ibc-proto 0.38.0",
  "parity-scale-codec",
- "primitive-types 0.12.2",
+ "primitive-types",
  "scale-info",
  "schemars",
  "serde",
- "uint 0.9.5 (registry+https://github.com/rust-lang/crates.io-index)",
+ "uint",
+]
+
+[[package]]
+name = "ibc-apps"
+version = "0.1.0"
+source = "git+https://github.com/ComposableFi/ibc-rs-apps.git?branch=main#ae788fd3e5501bb6520098191d44107c7298fb9a"
+dependencies = [
+ "bech32",
+ "ibc",
+ "schemars",
+ "serde",
+ "serde-cw-value 0.7.0 (git+https://github.com/dzmitry-lahoda-forks/serde-cw-value.git?branch=dz/3)",
+ "serde-json-wasm 1.0.0",
+ "sha2 0.10.8",
 ]
 
 [[package]]
@@ -2071,26 +2075,10 @@ dependencies = [
 ]
 
 [[package]]
-name = "impl-codec"
-version = "0.6.0"
-source = "git+https://github.com/dzmitry-lahoda-forks/parity-common?rev=db97e88283f15c11a848448440705c65dd2a56ec#db97e88283f15c11a848448440705c65dd2a56ec"
-dependencies = [
- "parity-scale-codec",
-]
-
-[[package]]
 name = "impl-serde"
 version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ebc88fc67028ae3db0c853baa36269d398d5f45b6982f95549ff5def78c935cd"
-dependencies = [
- "serde",
-]
-
-[[package]]
-name = "impl-serde"
-version = "0.4.0"
-source = "git+https://github.com/dzmitry-lahoda-forks/parity-common?rev=db97e88283f15c11a848448440705c65dd2a56ec#db97e88283f15c11a848448440705c65dd2a56ec"
 dependencies = [
  "serde",
 ]
@@ -2680,27 +2668,16 @@ dependencies = [
 
 [[package]]
 name = "primitive-types"
-version = "0.12.1"
-source = "git+https://github.com/dzmitry-lahoda-forks/parity-common?rev=db97e88283f15c11a848448440705c65dd2a56ec#db97e88283f15c11a848448440705c65dd2a56ec"
-dependencies = [
- "fixed-hash 0.8.0 (git+https://github.com/dzmitry-lahoda-forks/parity-common?rev=db97e88283f15c11a848448440705c65dd2a56ec)",
- "impl-codec 0.6.0 (git+https://github.com/dzmitry-lahoda-forks/parity-common?rev=db97e88283f15c11a848448440705c65dd2a56ec)",
- "impl-serde 0.4.0 (git+https://github.com/dzmitry-lahoda-forks/parity-common?rev=db97e88283f15c11a848448440705c65dd2a56ec)",
- "schemars",
- "uint 0.9.5 (git+https://github.com/dzmitry-lahoda-forks/parity-common?rev=db97e88283f15c11a848448440705c65dd2a56ec)",
-]
-
-[[package]]
-name = "primitive-types"
 version = "0.12.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0b34d9fd68ae0b74a41b21c03c2f62847aa0ffea044eee893b4c140b37e244e2"
 dependencies = [
- "fixed-hash 0.8.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "impl-codec 0.6.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "impl-serde 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "fixed-hash",
+ "impl-codec",
+ "impl-serde",
  "scale-info",
- "uint 0.9.5 (registry+https://github.com/rust-lang/crates.io-index)",
+ "schemars",
+ "uint",
 ]
 
 [[package]]
@@ -3575,12 +3552,12 @@ dependencies = [
  "bs58",
  "hash-db",
  "hash256-std-hasher",
- "impl-serde 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "impl-serde",
  "log",
  "merlin",
  "parity-scale-codec",
  "paste",
- "primitive-types 0.12.2",
+ "primitive-types",
  "scale-info",
  "schnorrkel",
  "secrecy",
@@ -3640,7 +3617,7 @@ dependencies = [
  "bytes",
  "impl-trait-for-tuples",
  "parity-scale-codec",
- "primitive-types 0.12.2",
+ "primitive-types",
  "sp-externalities",
  "sp-runtime-interface-proc-macro",
  "sp-std",
@@ -3675,7 +3652,7 @@ version = "17.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "016f20812cc51bd479cc88d048c35d44cd3adde4accdb159d49d6050f2953595"
 dependencies = [
- "impl-serde 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "impl-serde",
  "parity-scale-codec",
  "ref-cast",
  "serde",
@@ -4374,17 +4351,6 @@ name = "uint"
 version = "0.9.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "76f64bba2c53b04fcab63c01a7d7427eadc821e3bc48c34dc9ba29c501164b52"
-dependencies = [
- "byteorder",
- "crunchy",
- "hex",
- "static_assertions",
-]
-
-[[package]]
-name = "uint"
-version = "0.9.5"
-source = "git+https://github.com/dzmitry-lahoda-forks/parity-common?rev=db97e88283f15c11a848448440705c65dd2a56ec#db97e88283f15c11a848448440705c65dd2a56ec"
 dependencies = [
  "byteorder",
  "crunchy",

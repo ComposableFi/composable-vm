@@ -1,6 +1,6 @@
 use crate::{error::ContractError, state};
 use cosmwasm_std::{entry_point, wasm_execute, Coin, DepsMut, Env, Event, Response};
-use ibc_rs_scale::core::ics24_host::identifier::ChannelId;
+use ibc::core::ics24_host::identifier::ChannelId;
 use xc_core::transport::ibc::{ics20::hook::IBCLifecycleComplete, SudoMsg};
 
 #[cfg_attr(not(feature = "library"), entry_point)]
