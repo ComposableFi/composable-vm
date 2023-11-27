@@ -13,9 +13,8 @@ use cosmwasm_std::{
 	DepsMut, Env, MessageInfo, QueryRequest, Reply, Response, StdError, StdResult, SubMsg,
 	SubMsgResult, WasmQuery,
 };
-use cw2::set_contract_version;
+use cw2::{set_contract_version, ensure_from_older_version};
 use cw20::{BalanceResponse, Cw20Contract, Cw20ExecuteMsg, Cw20QueryMsg};
-use cw_utils::ensure_from_older_version;
 use num::Zero;
 use cvm_runtime::{
 	apply_bindings,

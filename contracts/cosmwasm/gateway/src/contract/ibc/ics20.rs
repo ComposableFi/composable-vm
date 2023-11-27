@@ -39,7 +39,7 @@ pub(crate) fn handle_bridge_forward(
 	));
 
 	ensure_eq!(msg.msg.assets.0.len(), 1, ContractError::ProgramCannotBeHandledByDestination);
-	let (local_asset, amount) = msg.msg.assets.0.get(0).expect("proved above");
+	let (local_asset, amount) = msg.msg.assets.0.first().expect("proved above");
 
 	let (msg, event) = if let Ok(transfer_shortcut) =
 		ibc_ics_20_transfer_shortcut(deps.as_ref(), &msg)

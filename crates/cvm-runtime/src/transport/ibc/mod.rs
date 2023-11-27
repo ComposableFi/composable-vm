@@ -4,12 +4,12 @@ use crate::{
     shared::XcPacket,
     AssetId, NetworkId,
 };
-use cosmwasm_std::{to_json_binary, Api, BlockInfo, CosmosMsg, Deps, IbcEndpoint, StdResult, WasmMsg};
+use cosmwasm_std::{Api, BlockInfo, CosmosMsg, Deps, IbcEndpoint, StdResult};
 
 use ibc::core::host::types::identifiers::{ChannelId, ConnectionId, PortId};
 
 use ibc_apps::{
-    hook::{Callback, IBCLifecycleComplete, SendMemo},
+    hook::{Callback, SendMemo},
     memo::Memo,
 };
 
@@ -79,7 +79,7 @@ pub fn to_cosmwasm_message<T>(
     let memo = serde_json_wasm::to_string(&memo).expect("any memo can be to string");
     api.debug(&format!("cvm::gateway::ibc::ics20::memo {}", &memo));
     match route.ibc_ics_20_sender {
-        IbcIcs20Sender::SubstratePrecompile(addr) => {
+        IbcIcs20Sender::SubstratePrecompile(_addr) => {
             unimplemented!("pallet-cosmwasm development was frozen")
         }
         IbcIcs20Sender::CosmosStargateIbcApplicationsTransferV1MsgTransfer => {

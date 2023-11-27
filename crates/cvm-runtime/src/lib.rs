@@ -50,7 +50,7 @@ pub use crate::{
 	asset::*, bridge::*, instruction::*, network::*, packet::*, program::*, protocol::*, service::dex::ExchangeId,
 };
 use core::marker::PhantomData;
-use alloc::collections::VecDeque;
+
 use prelude::*;
 
 /// Strongly typed network builder originating on `CurrentNetwork` network.

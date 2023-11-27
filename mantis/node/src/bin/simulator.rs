@@ -1,4 +1,4 @@
-use std::process::exit;
+
 
 use mantis_node::solver::types::OrderType;
 use mantis_node::solver::{orderbook::OrderList, solution::Solution, types::Order};

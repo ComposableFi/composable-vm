@@ -120,7 +120,7 @@ pub async fn sign_and_tx_tendermint(
     signing_key: &cosmrs::crypto::secp256k1::SigningKey,
 ) -> cosmrs::rpc::endpoint::broadcast::tx_commit::Response {
     let rpc_client: cosmrs::rpc::HttpClient = cosmrs::rpc::HttpClient::new(rpc).unwrap();
-    let tx_raw = sign_doc.sign(&signing_key).expect("signed");
+    let tx_raw = sign_doc.sign(signing_key).expect("signed");
     let result = tx_raw
         .broadcast_commit(&rpc_client)
         .await

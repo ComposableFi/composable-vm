@@ -10,15 +10,14 @@ use store::*;
 pub use types::*;
 
 pub use crate::sv::{ExecMsg, QueryMsg};
-use cosmwasm_schema::{cw_serde, schemars};
+use cosmwasm_schema::{schemars};
 use cosmwasm_std::{
-    wasm_execute, Addr, BankMsg, Coin, Event, Order, StdError, Storage, Uint128, Uint64,
+    wasm_execute, Addr, BankMsg, Coin, Event, Order, StdError, Storage,
 };
 use cvm_runtime::{
-    ExchangeId,
     shared::{XcInstruction, XcProgram},
 };
-use cw_storage_plus::{Index, IndexList, IndexedMap, Item, Map, MultiIndex};
+use cw_storage_plus::{Index, IndexList, IndexedMap, Item, Map};
 use sylvia::{
     contract,
     cw_std::{ensure, Response, StdResult},
@@ -26,7 +25,7 @@ use sylvia::{
     types::{ExecCtx, InstantiateCtx, QueryCtx},
 };
 
-use cvm_runtime::NetworkId;
+
 
 pub struct OrderContract<'a> {
     pub orders: Map<'a, u128, OrderItem>,
@@ -78,8 +77,7 @@ impl OrderContract<'_> {
         // for now we just use bank for ics20 tokens
         let funds = ctx
             .info
-            .funds
-            .get(0)
+            .funds.first()
             .expect("there are some funds in order");
 
         // just save order under incremented id
@@ -156,8 +154,8 @@ impl OrderContract<'_> {
     pub fn cancel(
         &self,
         _ctx: ExecCtx,
-        _orders: Vec<OrderId>,
-        _solution: Option<Addr>,
+        orders: Vec<OrderId>,
+        solution: Option<Addr>,
     ) -> StdResult<Response> {
         todo!("remove order and send event")
     }
@@ -272,7 +270,7 @@ impl OrderContract<'_> {
         let solution_upserted = Event::new("mantis-solution-upserted")
             .add_attribute("token_a", ab.clone().0)
             .add_attribute("token_b", ab.clone().1)
-            .add_attribute("solver_address", &ctx.info.sender.to_string());
+            .add_attribute("solver_address", ctx.info.sender.to_string());
         ctx.deps.api.debug(&format!(
             "mantis::solution::upserted {:?}",
             &solution_upserted
@@ -353,7 +351,7 @@ impl OrderContract<'_> {
         let solution_chosen = Event::new("mantis-solution-chosen")
             .add_attribute("token_a", ab.clone().0)
             .add_attribute("token_b", ab.clone().1)
-            .add_attribute("solver_address", &ctx.info.sender.to_string())
+            .add_attribute("solver_address", ctx.info.sender.to_string())
             .add_attribute("total_transfers", transfers.len().to_string());
 
         ctx.deps
@@ -452,14 +450,14 @@ impl OrderContract<'_> {
 }
 
 fn order_created(order_id: u128, order: &OrderItem) -> Event {
-    let order_created = Event::new("mantis-order-created")
+    
+    Event::new("mantis-order-created")
         .add_attribute("order_id", order_id.to_string())
         .add_attribute("order_given_amount", order.given.amount.to_string())
         .add_attribute("order_given_denom", order.given.denom.to_string())
         .add_attribute("order_owner", order.owner.to_string())
         .add_attribute("order_wants_amount", order.msg.wants.amount.to_string())
-        .add_attribute("order_wants_denom", order.msg.wants.denom.to_string());
-    order_created
+        .add_attribute("order_wants_denom", order.msg.wants.denom.to_string())
 }
 
 /// given all orders amounts aggregated into common pool,
@@ -486,7 +484,7 @@ fn solves_cows_via_bank(
                 StdError::generic_err(format!(
                     "a underflow: {} {}",
                     a_total_in,
-                    cowed.u128().to_string()
+                    cowed.u128()
                 ))
             })?;
         } else {
@@ -494,7 +492,7 @@ fn solves_cows_via_bank(
                 StdError::generic_err(format!(
                     "b underflow: {} {}",
                     b_total_in,
-                    cowed.u128().to_string()
+                    cowed.u128()
                 ))
             })?;
         };

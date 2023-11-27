@@ -1,5 +1,5 @@
 use crate::{prelude::*, AssetId};
-use cosmwasm_std::{from_binary, to_json_binary, Api, Binary, CanonicalAddr, StdError, StdResult};
+use cosmwasm_std::{from_json, to_json_binary, Api, Binary, CanonicalAddr, StdError, StdResult};
 use serde::{de::DeserializeOwned, Serialize};
 
 pub type Salt = Vec<u8>;
@@ -17,7 +17,7 @@ pub fn encode_base64<T: Serialize>(x: &T) -> StdResult<String> {
 }
 
 pub fn decode_base64<S: AsRef<str>, T: DeserializeOwned>(encoded: S) -> StdResult<T> {
-	from_binary::<T>(&Binary::from_base64(encoded.as_ref())?)
+	from_json::<T>(&Binary::from_base64(encoded.as_ref())?)
 }
 
 /// A wrapper around any address on any chain.

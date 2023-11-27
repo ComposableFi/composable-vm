@@ -1,4 +1,4 @@
-#[cfg(feature = "std")]
+#[cfg(feature = "json-schema")]
 #[allow(clippy::disallowed_methods)]
 fn main() {
 	use cosmwasm_schema::write_api;
@@ -20,8 +20,8 @@ fn main() {
 
 	let path = out_dir.join(concat!("events", ".json"));
 
-	write(&path, serde_json::to_string_pretty(&events).unwrap()).unwrap();
+	write(&path, serde_json_wasm::to_string_pretty(&events).unwrap()).unwrap();
 }
 
-#[cfg(not(feature = "std"))]
+#[cfg(not(feature = "json-schema"))]
 fn main() {}

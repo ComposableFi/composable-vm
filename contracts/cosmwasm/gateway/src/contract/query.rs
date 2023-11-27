@@ -1,4 +1,4 @@
-use crate::{assets, error::Result, exchange, msg, prelude::*};
+use crate::{assets, error::Result, exchange, msg};
 
 use cosmwasm_std::{Binary, Deps, Env, to_json_binary};
 

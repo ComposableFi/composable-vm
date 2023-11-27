@@ -212,8 +212,8 @@ impl CvmInterpreterTransferred {
 }
 
 impl CvmInterpreterInstantiated {
-	pub const NAME: &str = "cvm.executor.instantiated";
-	pub const INTERPRETER_ORIGIN: &str = "interpreter_origin";
+	pub const NAME: &'static str = "cvm.executor.instantiated";
+	pub const INTERPRETER_ORIGIN: &'static str = "interpreter_origin";
 	pub fn new(interpreter_origin: &InterpreterOrigin) -> Event {
 		Event::new(Self::NAME).add_attribute(
 			Self::INTERPRETER_ORIGIN,
