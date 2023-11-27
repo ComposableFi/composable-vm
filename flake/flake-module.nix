@@ -47,7 +47,7 @@
         };
         cvm-deps = crane.nightly.buildDepsOnly (systemCommonRust.common-attrs
           // {
-            src = systemCommonRust.rustSrc;
+            src = ../.;
           });
 
         build-cvm-json-schema-ts = pkgs.writeShellApplication {

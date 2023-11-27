@@ -32,6 +32,7 @@
   }:
     flake-parts.lib.mkFlake {inherit inputs;} {
       imports = [
+
       ];
 
       systems = ["x86_64-linux" "aarch64-linux" "aarch64-darwin" "x86_64-darwin"];
@@ -57,7 +58,7 @@
         makeCosmwasmContract = name: rust: std-config: let
           binaryName = "${builtins.replaceStrings ["-"] ["_"] name}.wasm";
         in
-          rust.buildPackage {
+          rust.buildPackage ( rust-attrs // {
             src = rust-src;
             pnameSuffix = "-${name}";
             nativeBuildInputs = [
@@ -73,9 +74,18 @@
               # --signext-lowering is needed to support blockchains runnning CosmWasm < 1.3. It can be removed eventually
               wasm-opt target/wasm32-unknown-unknown/release/${binaryName} -o $out/lib/${binaryName} -Os --signext-lowering
               cosmwasm-check $out/lib/${binaryName}
-            '';
-          };
+            '';  
+          });
 
+        rust-attrs = {
+          doCheck = false;
+            checkPhase = "true";
+            cargoCheckCommand = "true";
+            NIX_BUILD_FLAKE = "true";
+            PROTOC = "${pkgs.protobuf}/bin/protoc";
+            RUST_BACKTRACE = "full";
+            CARGO_PROFILE_RELEASE_BUILD_OVERRIDE_DEBUG=true;
+        } ;
         cw-mantis-order = makeCosmwasmContract "cw-mantis-order" rust "--no-default-features --features=std";
       in {
         _module.args.pkgs = import self.inputs.nixpkgs {
@@ -111,14 +121,12 @@
         formatter = pkgs.alejandra;
         packages = rec {
           inherit cw-mantis-order;
-          mantis = rust.buildPackage {
+          mantis = rust.buildPackage ( rust-attrs //{
             src = rust-src;
             pname = "mantis";
             name = "mantis";
             cargoBuildCommand = "cargo build --release --bin mantis";
-            doCheck = false;
-            checkPhase = "true";
-          };
+          });
           default = mantis;
           ci = pkgs.writeShellApplication {
             name = "nix-build-all";

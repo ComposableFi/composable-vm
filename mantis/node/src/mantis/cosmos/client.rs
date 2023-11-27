@@ -102,7 +102,7 @@ pub async fn get_latest_block_and_account_by_key(
 }
 
 /// latest chain state
-async fn get_latest_block(rpc: &str) -> cosmrs::tendermint::block::Height {
+pub async fn get_latest_block(rpc: &str) -> cosmrs::tendermint::block::Height {
     use cosmrs::tendermint::block::Height;
     let rpc_client: cosmrs::rpc::HttpClient = cosmrs::rpc::HttpClient::new(rpc).unwrap();
     let status = rpc_client

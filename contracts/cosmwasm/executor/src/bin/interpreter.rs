@@ -20,7 +20,7 @@ fn main() {
 
 	let path = out_dir.join(concat!("events", ".json"));
 
-	write(&path, serde_json_wasm::to_string_pretty(&events).unwrap()).unwrap();
+	write(&path, serde_json_wasm::to_string(&events).unwrap()).unwrap();
 }
 
 #[cfg(not(feature = "json-schema"))]

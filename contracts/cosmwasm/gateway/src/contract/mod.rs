@@ -11,7 +11,7 @@ use crate::{
 
 use cosmwasm_std::{DepsMut, Env, MessageInfo, Reply, Response, SubMsgResponse, SubMsgResult};
 use cw2::set_contract_version;
-use cw_utils::ensure_from_older_version;
+use cw2::ensure_from_older_version;
 use cvm_runtime::{
 	transport::ibc::{TransportTrackerId},
 	XCVMAck,

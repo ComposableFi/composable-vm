@@ -93,7 +93,7 @@ impl<Id: Copy + PartialEq + Debug> Solution<Id> {
             OrderList::resolve_predominant(&mut sell_orders, &mut buy_orders, price);
         }
 
-        /// for now retaining "bad" design when solution has no price, there should no be solution without, will fix after testing correctness
+        // for now retaining "bad" design when solution has no price, there should no be solution without, will fix after testing correctness
         let matched = OrderList {
             value: [buy_orders.value, sell_orders.value]
                 .concat()
