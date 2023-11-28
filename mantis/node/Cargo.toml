@@ -7,27 +7,27 @@ edition = "2021"
 name = "mantis"
 
 [dependencies]
-cw-mantis-order = { path = "../../contracts/cosmwasm/order" }
+bip32 = { workspace = true }
 clap = { workspace = true, features = ["derive"] }
-cosmrs = { workspace = true}
-bip32 = { workspace = true}
-
-
-tokio = { workspace = true, features = ["full"] }
 cosmos-sdk-proto = { workspace = true, features = ["grpc-transport"] }
-tonic = { workspace = true }
+cosmrs = { workspace = true }
+cosmwasm-std = { workspace = true }
+cw-mantis-order = { path = "../../contracts/cosmwasm/order", features = [
+    "json-schema",
+    "std",
+] }
+derive_more = { workspace = true }
+itertools = { workspace = true }
+num-traits = { workspace = true }
+prost-types = { workspace = true }
 rand = { workspace = true, default-features = false }
+rand_distr = { workspace = true }
 rust_decimal = { workspace = true }
 rust_decimal_macros = { workspace = true }
-rand_distr = { workspace = true }
+serde = { workspace = true }
+serde-json-wasm = { workspace = true }
 strum = { workspace = true }
 strum_macros = { workspace = true }
-itertools = { workspace = true }
-derive_more = { workspace = true }
-serde-json-wasm = { workspace = true }
+tokio = { workspace = true, features = ["full"] }
+tonic = { workspace = true }
 tuples = { workspace = true }
-cosmwasm-std = {workspace = true}
-
-serde ={ workspace = true }
-prost-types = {workspace = true}
-num-traits =  {workspace = true}
