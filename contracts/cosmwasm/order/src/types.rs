@@ -1,5 +1,5 @@
 use cosmwasm_std::{BankMsg, Event, StdResult, Uint64};
-use cvm_runtime::{ExchangeId, NetworkId};
+use cvm_runtime::{ExchangeId, NetworkId, shared::XcProgram};
 
 use crate::prelude::*;
 
@@ -108,7 +108,7 @@ pub struct SolutionSubMsg {
 #[cw_serde]
 pub struct RouteSubMsg {
     pub all_orders: Vec<SolvedOrder>,
-    pub route: ExchangeRoute,
+    pub route: XcProgram,
 }
 
 /// how much of order to be solved by CoW.
@@ -175,36 +175,6 @@ impl SolvedOrder {
     pub fn owner(&self) -> &Addr {
         &self.order.owner
     }
-}
-
-/// Route which may spawn on the way.
-#[cw_serde]
-pub struct ExchangeRoute {
-    // on this chain
-    pub exchanges: Vec<Exchange>,
-    pub spawns: Vec<Spawn<ExchangeRoute>>,
-}
-
-/// Purely transfer route.
-#[cw_serde]
-pub struct TransferRoute {
-    pub spawn: Vec<Spawn<TransferRoute>>,
-}
-
-/// Abstracted out route of underlying encoding on specific transport.
-/// In the end of route, amount is always put onto user CVM executor.
-#[cw_serde]
-pub struct Spawn<Route> {
-    pub to_chain: NetworkId,
-    pub carry: Vec<Uint128>,
-    pub execute: Option<Route>,
-}
-
-#[cw_serde]
-pub struct Exchange {
-    pub pool_id: ExchangeId,
-    pub give: Uint128,
-    pub want_min: Uint128,
 }
 
 /// when solution is applied to order item,

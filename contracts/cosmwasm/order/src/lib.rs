@@ -172,68 +172,21 @@ impl OrderContract<'_> {
         ctx.deps.api.debug(
             "so here we add route execution tracking to storage and map route to CVM program",
         );
-
-        let cvm = Self::traverse_route(msg.route);
+    
         let cvm = cvm_runtime::gateway::ExecuteMsg::ExecuteProgram(cvm_runtime::gateway::ExecuteProgramMsg {
-            salt: vec![],
-            program: cvm,
-            assets: <_>::default(),
+            salt: vec![], // derived from solution owner and block - which is id
+            program: msg.route, // traversed to set  
+            assets: <_>::default(), // collecting all assets remaining from orders
             tip: None,
         });
         let contract = self.cvm_address.load(ctx.deps.storage)?;
         let cvm = wasm_execute(contract, &cvm, vec![])?;
+        // in success handler of msg we start tracking solution
+        // in failure handler we move all funds to users back        
         Ok(Response::default().add_message(cvm))
     }
 
-    /// converts high level route to CVM program
-    fn traverse_route(route: ExchangeRoute) -> cvm_runtime::shared::XcProgram {
-        let mut program = XcProgram {
-            tag: b"may be use solution id and some chain for tracking".to_vec(),
-            instructions: vec![],
-        };
 
-        let mut exchanges = Self::traverse_exchanges(route.exchanges);
-        program.instructions.append(&mut exchanges);
-
-        let mut spawns = Self::traverse_spawns(route.spawns);
-        program.instructions.append(&mut spawns);
-
-        program
-    }
-
-    #[no_panic]
-    fn traverse_spawns(spawns: Vec<Spawn<ExchangeRoute>>) -> Vec<cvm_runtime::shared::XcInstruction> {
-        let mut result = vec![];
-        for spawn in spawns {
-            let spawn = if let Some(execute) = spawn.execute {
-                let program = Self::traverse_route(execute);
-                XcInstruction::Spawn {
-                    network_id: spawn.to_chain,
-                    salt: b"solution".to_vec(),
-                    assets: <_>::default(), // map spawn.carry to CVM assets
-                    program,
-                }
-            } else {
-                XcInstruction::Spawn {
-                    network_id: spawn.to_chain,
-                    salt: b"solution".to_vec(),
-                    assets: <_>::default(), // map spawn.carry to CVM assets
-                    program: XcProgram {
-                        tag: b"solution".to_vec(),
-                        instructions: vec![], // we really just do final transfer
-                    },
-                }
-            };
-            result.push(spawn);
-        }
-        result
-    }
-
-    fn traverse_exchanges(_exchanges: Vec<Exchange>) -> Vec<cvm_runtime::shared::XcInstruction> {
-        // here map each exchange to CVM instruction
-        // for each pool get its denom, and do swaps
-        vec![]
-    }
 
     /// Provides solution for set of orders.
     /// All fully

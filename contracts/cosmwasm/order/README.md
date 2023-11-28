@@ -36,8 +36,10 @@ When bidder joins, percentage averaged appropriately, with always larger bid for
 For each accepted route, Solver is delegated with relevant amount to withdraw.
 
 
-### Data model
+## Data model
 
+Order has numeric incremental identifier per pair of tokens.
 
+Solution has owner per pair as identifier.
 
-
+If solution requires multiblock tracking for execution its id added with block solution was accepted.
