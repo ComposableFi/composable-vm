@@ -10,7 +10,7 @@ crate-type = ["cdylib", "rlib"]
 cosmwasm-std = { workspace = true, features = [
   "iterator",
 ], default-features = false }
-cw-controllers = { workspace= true, default-features = false}
+cw-controllers = { workspace = true, default-features = false }
 sylvia = { workspace = true, default-features = false }
 schemars = { workspace = true, default-features = false, optional = true }
 cosmwasm-schema = { workspace = true, default-features = false }
@@ -22,16 +22,14 @@ itertools = { workspace = true, features = [
   "use_std",
 ], default-features = false }
 
-num-integer = { workspace = true, default-features = false, features = [
-  "std",
-] }
+num-integer = { workspace = true, default-features = false, features = ["std"] }
 
-cvm-runtime = { path = "../../../crates/cvm-runtime", default-features = false, features = [ 
+cvm-runtime = { path = "../../../crates/cvm-runtime", default-features = false, features = [
   "cosmwasm",
 ] }
 
-no-panic = {workspace = true}
-tuples ={ workspace = true }
+no-panic = { workspace = true }
+tuples = { workspace = true }
 
 [features]
 std = ["cvm-runtime/std"]
