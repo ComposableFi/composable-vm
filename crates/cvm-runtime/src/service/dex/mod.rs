@@ -1,14 +1,14 @@
 use crate::{prelude::*, NetworkId};
 
 pub mod osmosis_std;
-
 pub type ExchangeId = crate::shared::Displayed<u128>;
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 #[serde(rename_all = "snake_case")]
 pub enum ExchangeType {
-    OsmosisCrossChainSwap {
+    #[cfg(feature = "cosmwasm")]
+    OsmosisPoolManagerModuleV1Beta1 {
         pool_id: u64,
         token_a: String,
         token_b: String,

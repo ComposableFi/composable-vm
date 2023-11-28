@@ -40,4 +40,6 @@ cvm-runtime = { path = "../../../crates/cvm-runtime", features = [
 ibc-apps-more = { workspace = true, default-features = false, features = [
   "cosmwasm",
 ] }
+osmosis-std = { workspace = true, default-features = false }
 
+astroport-router = { workspace = true, default-features = false }

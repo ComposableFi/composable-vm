@@ -871,6 +871,7 @@ dependencies = [
 name = "cw-cvm-executor"
 version = "0.3.0"
 dependencies = [
+ "astroport-router",
  "cosmwasm-schema",
  "cosmwasm-std",
  "cvm-runtime",
@@ -881,6 +882,7 @@ dependencies = [
  "hex",
  "ibc-apps-more",
  "num",
+ "osmosis-std",
  "prost 0.12.3",
  "schemars",
  "serde",

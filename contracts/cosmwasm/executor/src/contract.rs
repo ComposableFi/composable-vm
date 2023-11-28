@@ -16,9 +16,7 @@ use cosmwasm_std::{
 use cvm_runtime::{
     apply_bindings,
     gateway::{AssetReference, BridgeExecuteProgramMsg, BridgeForwardMsg},
-    service::dex::{
-        osmosis_std::types::osmosis::poolmanager::v1beta1::SwapAmountInRoute, ExchangeId,
-    },
+    service::dex::ExchangeId,
     shared, Amount, BindingValue, Destination, Funds, Instruction, NetworkId, Register,
 };
 use cw2::{ensure_from_older_version, set_contract_version};
@@ -224,9 +222,7 @@ fn interpret_exchange(
         .get_exchange_by_id(deps.querier, exchange_id)
         .map_err(ContractError::ExchangeNotFound)?;
 
-    use cvm_runtime::service::dex::{
-        osmosis_std::types::osmosis::poolmanager::v1beta1::MsgSwapExactAmountIn, ExchangeType::*,
-    };
+    use cvm_runtime::service::dex::ExchangeType::*;
     use prost::Message;
     ensure_eq!(
         give.0.len(),
@@ -275,20 +271,24 @@ fn interpret_exchange(
     };
 
     let response = match exchange.exchange {
-        OsmosisCrossChainSwap { pool_id, .. } => {
+        OsmosisPoolManagerModuleV1Beta1 { pool_id, .. } => {
+            use cvm_runtime::service::dex::osmosis_std::types::osmosis::poolmanager::v1beta1::*;
+            use prost::Message;
             let msg = MsgSwapExactAmountIn {
                 routes: vec![SwapAmountInRoute {
                     pool_id,
                     token_out_denom: want.denom,
                 }],
+
                 sender: sender.to_string(),
                 token_in: Some(give),
                 token_out_min_amount: want.amount,
             };
+
             deps.api
                 .debug(&format!("cvm::executor::execute::exchange {:?}", &msg));
             let msg = CosmosMsg::Stargate {
-                type_url: MsgSwapExactAmountIn::PROTO_MESSAGE_URL.to_string(),
+                type_url: MsgSwapExactAmountIn::TYPE_URL.to_string(),
                 value: Binary::from(msg.encode_to_vec()),
             };
             let msg = SubMsg::reply_always(msg, EXCHANGE_ID);

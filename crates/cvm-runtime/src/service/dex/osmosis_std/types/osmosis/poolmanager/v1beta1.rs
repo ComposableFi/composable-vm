@@ -15,7 +15,7 @@ pub struct MsgSwapExactAmountIn {
 }
 
 impl MsgSwapExactAmountIn {
-    pub const PROTO_MESSAGE_URL: &'static str = "/osmosis.poolmanager.v1beta1.MsgSwapExactAmountIn";
+    pub const TYPE_URL: &'static str = "/osmosis.poolmanager.v1beta1.MsgSwapExactAmountIn";
 }
 
 #[allow(clippy::derive_partial_eq_without_eq)]
@@ -30,5 +30,5 @@ pub struct SwapAmountInRoute {
 }
 
 impl SwapAmountInRoute {
-    pub const PROTO_MESSAGE_URL: &'static str = "/osmosis.poolmanager.v1beta1.SwapAmountInRoute";
+    pub const TYPE_URL: &'static str = "/osmosis.poolmanager.v1beta1.SwapAmountInRoute";
 }
