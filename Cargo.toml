@@ -94,3 +94,4 @@ ibc-apps = { git = "https://github.com/dzmitry-lahoda-forks/ibc-rs.git", branch 
 ibc-core = { git = "https://github.com/dzmitry-lahoda-forks/ibc-rs.git", branch = "dz/14", default-features = false, features = ["serde"] }
 ibc-primitives = { git = "https://github.com/dzmitry-lahoda-forks/ibc-rs.git", branch = "dz/14", default-features = false, features = ["serde"] }
 primitive-types     = { git= "https://github.com/dzmitry-lahoda-forks/parity-common.git", branch = "dz/3", default-features = false, features = ["serde_no_std"] }
+neutron-sdk = { version = "^0.7.0", default-features = false }
