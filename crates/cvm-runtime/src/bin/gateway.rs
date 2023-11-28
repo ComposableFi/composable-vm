@@ -1,4 +1,4 @@
-#[cfg(feature = "json-schema")]
+#[cfg(all(feature = "json-schema", not(target_arch = "wasm32")))]
 #[allow(clippy::disallowed_methods)]
 fn main() {
 	use cosmwasm_schema::write_api;
@@ -11,5 +11,6 @@ fn main() {
 	}
 }
 
-#[cfg(not(feature = "json-schema"))]
+#[cfg(not(all(feature = "json-schema", not(target_arch = "wasm32"))))]
+
 fn main() {}

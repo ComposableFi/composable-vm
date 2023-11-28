@@ -93,3 +93,4 @@ ibc-apps-more= { git = "https://github.com/ComposableFi/ibc-apps-more-rs.git", b
 ibc-apps = { git = "https://github.com/dzmitry-lahoda-forks/ibc-rs.git", branch = "dz/13", default-features = false, features = ["serde"] }
 ibc-core = { git = "https://github.com/dzmitry-lahoda-forks/ibc-rs.git", branch = "dz/13", default-features = false, features = ["serde"] }
 ibc-primitives = { git = "https://github.com/dzmitry-lahoda-forks/ibc-rs.git", branch = "dz/13", default-features = false, features = ["serde"] }
+primitive-types     = { git= "https://github.com/dzmitry-lahoda-forks/parity-common.git", branch = "dz/3", default-features = false, features = ["serde_no_std"] }

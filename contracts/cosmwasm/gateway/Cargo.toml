@@ -1,7 +1,7 @@
 [package]
 description = "CVM Gateway contract"
 edition = "2021"
-name = "cw-xc-gateway"
+name = "cw-cvm-gateway"
 repository = "https://github.com/ComposableFi/cvm"
 version = "0.1.0"
 
@@ -14,7 +14,7 @@ workspace = true
 [features]
 library = []
 std = [
-  "cw-xc-executor/std",
+  "cw-cvm-executor/std",
   "cvm-runtime/std",
   "ibc-apps-more/std",
   "ibc-apps/std",
@@ -23,7 +23,7 @@ std = [
 ]
 json-schema = [
   "ibc-apps-more/json-schema",
-  "cw-xc-executor/json-schema",
+  "cw-cvm-executor/json-schema",
   "ibc-apps/schema",
   "ibc-core/schema",
   "ibc-primitives/schema",
@@ -49,7 +49,7 @@ serde = { workspace = true }
 serde-json-wasm = { workspace = true }
 thiserror = { workspace = true }
 
-cw-xc-executor = { path = "../executor", features = [
+cw-cvm-executor = { path = "../executor", features = [
   "library",
 ], default-features = false }
 

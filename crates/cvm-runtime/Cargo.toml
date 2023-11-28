@@ -32,7 +32,7 @@ ibc-proto = { workspace = true, default-features = false, features = [
 ] }
 serde-cw-value = { workspace = true, default-features = false }
 xcm = { workspace = true, default-features = false, optional = true }
-primitive-types = { version = "^0.12.2", features = [
+primitive-types = { workspace= true, features = [
   "serde_no_std",
 ], default-features = false }
 

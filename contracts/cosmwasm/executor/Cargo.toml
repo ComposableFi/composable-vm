@@ -1,7 +1,7 @@
 [package]
 description = "CVM Executor contract"
 edition = "2021"
-name = "cw-xc-executor"
+name = "cw-cvm-executor"
 repository = "https://github.com/ComposableFi/cvm"
 version = "0.3.0"
 
