@@ -1,5 +1,5 @@
 use cosmwasm_std::{BlockInfo, IbcTimeout};
-use ibc::core::host::types::identifiers::ChannelId;
+use ibc_core::host::types::identifiers::ChannelId;
 
 use crate::{
 	prelude::*,
@@ -8,7 +8,7 @@ use crate::{
 	AssetId, NetworkId,
 };
 
-type EthAddress = primitive_types::H160;
+type EthAddress = [u8; 20];
 
 /// Version of IBC channels used by the gateway.
 pub const IBC_VERSION: &str = "xcvm-v0";
@@ -300,7 +300,7 @@ impl AssetReference {
 		match self {
 			AssetReference::Native { denom } => denom.clone(),
 			AssetReference::Cw20 { contract } => ["cw20:", contract.as_str()].concat(),
-			AssetReference::Erc20 { contract } => ["erc20:", &contract.to_string()].concat(),
+			AssetReference::Erc20 { contract } => ["erc20:", hex::encode(&contract).as_ref()].concat(),
 		}
 	}
 }
@@ -318,7 +318,7 @@ impl cw_storage_plus::PrimaryKey<'_> for AssetReference {
 		let (tag, value) = match self {
 			AssetReference::Native { denom } => (0, denom.as_bytes()),
 			AssetReference::Cw20 { contract } => (1, contract.as_bytes()),
-			AssetReference::Erc20 { contract } => (2, contract.as_bytes()),
+			AssetReference::Erc20 { contract } => (2, contract.as_ref()),
 		};
 		vec![Key::Val8([tag]), Key::Ref(value)]
 	}

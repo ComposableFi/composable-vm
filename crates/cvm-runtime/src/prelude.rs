@@ -16,4 +16,4 @@ pub use cosmwasm_schema::{QueryResponses};
 #[cfg(feature = "json-schema")]
 pub use schemars::JsonSchema;
 
-pub use ibc::apps::transfer::types::PrefixedDenom;
+pub use ibc_apps::transfer::types::PrefixedDenom;

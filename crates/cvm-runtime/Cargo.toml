@@ -14,7 +14,8 @@ cw-storage-plus = { workspace = true, optional = true }
 cw20 = { workspace = true, optional = true }
 derive_more.workspace = true
 hex = { workspace = true, features = ["alloc", "serde"] }
-ibc = { workspace = true, features = ["serde", "parity-scale-codec"] }
+ibc-apps = { workspace = true, features = ["serde", "parity-scale-codec"] }
+ibc-core = { workspace = true, features = ["serde", "parity-scale-codec"] }
 num = { workspace = true }
 parity-scale-codec = { workspace = true }
 prost = { workspace = true, features = ["prost-derive"] }
@@ -35,7 +36,7 @@ primitive-types = { version = "^0.12.2", features = [
   "serde_no_std",
 ], default-features = false }
 
-ibc-apps-more= { workspace = true, default-features = false }
+ibc-apps-more = { workspace = true, default-features = false }
 
 [build-dependencies]
 prost-build = { workspace = true }
@@ -50,7 +51,8 @@ json-schema = [
   "ibc-apps-more/json-schema",
   "dep:cosmwasm-schema",
   "dep:schemars",
-  "ibc/schema",
+  "ibc-apps/schema",
+  "ibc-core/schema",
   "primitive-types/json-schema",
   "serde-cw-value/schema",
 ]
@@ -59,5 +61,7 @@ std = [
   "ibc-proto/std",
   "serde-cw-value/std",
   "serde-json-wasm/std",
+  "ibc-apps/schema",
+  "ibc-core/schema",
   "num/std",
 ]

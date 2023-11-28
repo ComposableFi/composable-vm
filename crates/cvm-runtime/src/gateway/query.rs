@@ -6,9 +6,10 @@ use crate::{
 
 use super::{AssetItem, AssetReference};
 
+
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "snake_case")]
-#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema, QueryResponses))]
+#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema,  cosmwasm_schema::QueryResponses))]
 pub enum QueryMsg {
 	/// Returns [`AssetReference`] for an asset with given id.
 	#[cfg_attr(feature = "json-schema", returns(GetAssetResponse))]

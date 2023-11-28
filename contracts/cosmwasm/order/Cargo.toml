@@ -26,8 +26,7 @@ num-integer = { workspace = true, default-features = false, features = [
   "std",
 ] }
 
-cvm-runtime = { path = "../../../crates/cvm-runtime", default-features = false, features = [
-  "std",
+cvm-runtime = { path = "../../../crates/cvm-runtime", default-features = false, features = [ 
   "cosmwasm",
 ] }
 
