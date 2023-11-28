@@ -783,9 +783,9 @@ dependencies = [
  "cw20",
  "derive_more",
  "hex",
- "ibc-apps 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
+ "ibc-apps",
  "ibc-apps-more",
- "ibc-core 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
+ "ibc-core",
  "ibc-proto 0.39.1",
  "num",
  "parity-scale-codec",
@@ -853,10 +853,10 @@ dependencies = [
  "cw2",
  "cw20",
  "enumn",
- "ibc-apps 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
+ "ibc-apps",
  "ibc-apps-more",
- "ibc-core 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
- "ibc-primitives 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
+ "ibc-core",
+ "ibc-primitives",
  "prost",
  "schemars",
  "serde",
@@ -1559,34 +1559,24 @@ dependencies = [
 [[package]]
 name = "ibc-app-transfer"
 version = "0.48.1"
-source = "git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13#a1dac42a261ac1c168d8e0d8ed6768b696018322"
-dependencies = [
- "ibc-app-transfer-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
- "ibc-core 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
- "serde-json-wasm 1.0.0",
-]
-
-[[package]]
-name = "ibc-app-transfer"
-version = "0.48.1"
 source = "git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14#1f7bdc66c02299266bc140d5b17eb30722afa6c2"
 dependencies = [
- "ibc-app-transfer-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
- "ibc-core 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
+ "ibc-app-transfer-types",
+ "ibc-core",
  "serde-json-wasm 1.0.0",
 ]
 
 [[package]]
 name = "ibc-app-transfer-types"
 version = "0.48.1"
-source = "git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13#a1dac42a261ac1c168d8e0d8ed6768b696018322"
+source = "git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14#1f7bdc66c02299266bc140d5b17eb30722afa6c2"
 dependencies = [
  "derive_more",
  "displaydoc",
- "ibc-core 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
+ "ibc-core",
  "ibc-proto 0.38.0",
  "parity-scale-codec",
- "primitive-types 0.12.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "primitive-types 0.12.2 (git+https://github.com/dzmitry-lahoda-forks/parity-common.git?branch=dz/3)",
  "scale-info",
  "schemars",
  "serde",
@@ -1594,34 +1584,11 @@ dependencies = [
 ]
 
 [[package]]
-name = "ibc-app-transfer-types"
-version = "0.48.1"
-source = "git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14#1f7bdc66c02299266bc140d5b17eb30722afa6c2"
-dependencies = [
- "derive_more",
- "displaydoc",
- "ibc-core 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
- "ibc-proto 0.38.0",
- "primitive-types 0.12.2 (git+https://github.com/dzmitry-lahoda-forks/parity-common.git?branch=dz/3)",
- "schemars",
- "serde",
- "uint 0.9.5 (registry+https://github.com/rust-lang/crates.io-index)",
-]
-
-[[package]]
-name = "ibc-apps"
-version = "0.48.1"
-source = "git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13#a1dac42a261ac1c168d8e0d8ed6768b696018322"
-dependencies = [
- "ibc-app-transfer 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
-]
-
-[[package]]
 name = "ibc-apps"
 version = "0.48.1"
 source = "git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14#1f7bdc66c02299266bc140d5b17eb30722afa6c2"
 dependencies = [
- "ibc-app-transfer 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
+ "ibc-app-transfer",
 ]
 
 [[package]]
@@ -1632,9 +1599,9 @@ dependencies = [
  "bech32",
  "cosmwasm-std",
  "hex",
- "ibc-apps 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
- "ibc-core 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
- "ibc-primitives 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
+ "ibc-apps",
+ "ibc-core",
+ "ibc-primitives",
  "prost",
  "schemars",
  "serde",
@@ -1646,47 +1613,16 @@ dependencies = [
 [[package]]
 name = "ibc-core"
 version = "0.48.1"
-source = "git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13#a1dac42a261ac1c168d8e0d8ed6768b696018322"
-dependencies = [
- "ibc-core-channel 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
- "ibc-core-client 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
- "ibc-core-commitment-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
- "ibc-core-connection 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
- "ibc-core-handler 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
- "ibc-core-host 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
- "ibc-core-router 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
- "ibc-primitives 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
-]
-
-[[package]]
-name = "ibc-core"
-version = "0.48.1"
 source = "git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14#1f7bdc66c02299266bc140d5b17eb30722afa6c2"
 dependencies = [
- "ibc-core-channel 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
- "ibc-core-client 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
- "ibc-core-commitment-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
- "ibc-core-connection 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
- "ibc-core-handler 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
- "ibc-core-host 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
- "ibc-core-router 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
- "ibc-primitives 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
-]
-
-[[package]]
-name = "ibc-core-channel"
-version = "0.48.1"
-source = "git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13#a1dac42a261ac1c168d8e0d8ed6768b696018322"
-dependencies = [
- "ibc-core-channel-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
- "ibc-core-client 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
- "ibc-core-commitment-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
- "ibc-core-connection 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
- "ibc-core-handler-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
- "ibc-core-host 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
- "ibc-core-router 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
- "ibc-primitives 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
- "prost",
+ "ibc-core-channel",
+ "ibc-core-client",
+ "ibc-core-commitment-types",
+ "ibc-core-connection",
+ "ibc-core-handler",
+ "ibc-core-host",
+ "ibc-core-router",
+ "ibc-primitives",
 ]
 
 [[package]]
@@ -1694,29 +1630,29 @@ name = "ibc-core-channel"
 version = "0.48.1"
 source = "git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14#1f7bdc66c02299266bc140d5b17eb30722afa6c2"
 dependencies = [
- "ibc-core-channel-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
- "ibc-core-client 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
- "ibc-core-commitment-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
- "ibc-core-connection 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
- "ibc-core-handler-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
- "ibc-core-host 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
- "ibc-core-router 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
- "ibc-primitives 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
+ "ibc-core-channel-types",
+ "ibc-core-client",
+ "ibc-core-commitment-types",
+ "ibc-core-connection",
+ "ibc-core-handler-types",
+ "ibc-core-host",
+ "ibc-core-router",
+ "ibc-primitives",
  "prost",
 ]
 
 [[package]]
 name = "ibc-core-channel-types"
 version = "0.48.1"
-source = "git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13#a1dac42a261ac1c168d8e0d8ed6768b696018322"
+source = "git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14#1f7bdc66c02299266bc140d5b17eb30722afa6c2"
 dependencies = [
  "derive_more",
  "displaydoc",
- "ibc-core-client-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
- "ibc-core-commitment-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
- "ibc-core-connection-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
- "ibc-core-host-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
- "ibc-primitives 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
+ "ibc-core-client-types",
+ "ibc-core-commitment-types",
+ "ibc-core-connection-types",
+ "ibc-core-host-types",
+ "ibc-primitives",
  "ibc-proto 0.38.0",
  "parity-scale-codec",
  "prost",
@@ -1729,70 +1665,17 @@ dependencies = [
 ]
 
 [[package]]
-name = "ibc-core-channel-types"
-version = "0.48.1"
-source = "git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14#1f7bdc66c02299266bc140d5b17eb30722afa6c2"
-dependencies = [
- "derive_more",
- "displaydoc",
- "ibc-core-client-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
- "ibc-core-commitment-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
- "ibc-core-connection-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
- "ibc-core-host-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
- "ibc-primitives 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
- "ibc-proto 0.38.0",
- "prost",
- "schemars",
- "serde",
- "sha2 0.10.8",
- "subtle-encoding",
- "tendermint",
-]
-
-[[package]]
-name = "ibc-core-client"
-version = "0.48.1"
-source = "git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13#a1dac42a261ac1c168d8e0d8ed6768b696018322"
-dependencies = [
- "ibc-core-client-context 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
- "ibc-core-client-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
- "ibc-core-commitment-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
- "ibc-core-handler-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
- "ibc-core-host 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
- "ibc-primitives 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
- "prost",
-]
-
-[[package]]
 name = "ibc-core-client"
 version = "0.48.1"
 source = "git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14#1f7bdc66c02299266bc140d5b17eb30722afa6c2"
 dependencies = [
- "ibc-core-client-context 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
- "ibc-core-client-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
- "ibc-core-commitment-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
- "ibc-core-handler-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
- "ibc-core-host 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
- "ibc-primitives 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
+ "ibc-core-client-context",
+ "ibc-core-client-types",
+ "ibc-core-commitment-types",
+ "ibc-core-handler-types",
+ "ibc-core-host",
+ "ibc-primitives",
  "prost",
-]
-
-[[package]]
-name = "ibc-core-client-context"
-version = "0.48.1"
-source = "git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13#a1dac42a261ac1c168d8e0d8ed6768b696018322"
-dependencies = [
- "derive_more",
- "displaydoc",
- "ibc-core-client-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
- "ibc-core-commitment-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
- "ibc-core-handler-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
- "ibc-core-host-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
- "ibc-derive 0.4.0 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
- "ibc-primitives 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
- "prost",
- "subtle-encoding",
- "tendermint",
 ]
 
 [[package]]
@@ -1802,33 +1685,13 @@ source = "git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14#1f
 dependencies = [
  "derive_more",
  "displaydoc",
- "ibc-core-client-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
- "ibc-core-commitment-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
- "ibc-core-handler-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
- "ibc-core-host-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
- "ibc-derive 0.4.0 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
- "ibc-primitives 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
+ "ibc-core-client-types",
+ "ibc-core-commitment-types",
+ "ibc-core-handler-types",
+ "ibc-core-host-types",
+ "ibc-derive",
+ "ibc-primitives",
  "prost",
- "subtle-encoding",
- "tendermint",
-]
-
-[[package]]
-name = "ibc-core-client-types"
-version = "0.48.1"
-source = "git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13#a1dac42a261ac1c168d8e0d8ed6768b696018322"
-dependencies = [
- "derive_more",
- "displaydoc",
- "ibc-core-commitment-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
- "ibc-core-host-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
- "ibc-primitives 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
- "ibc-proto 0.38.0",
- "parity-scale-codec",
- "prost",
- "scale-info",
- "schemars",
- "serde",
  "subtle-encoding",
  "tendermint",
 ]
@@ -1840,11 +1703,13 @@ source = "git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14#1f
 dependencies = [
  "derive_more",
  "displaydoc",
- "ibc-core-commitment-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
- "ibc-core-host-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
- "ibc-primitives 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
+ "ibc-core-commitment-types",
+ "ibc-core-host-types",
+ "ibc-primitives",
  "ibc-proto 0.38.0",
+ "parity-scale-codec",
  "prost",
+ "scale-info",
  "schemars",
  "serde",
  "subtle-encoding",
@@ -1854,11 +1719,11 @@ dependencies = [
 [[package]]
 name = "ibc-core-commitment-types"
 version = "0.48.1"
-source = "git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13#a1dac42a261ac1c168d8e0d8ed6768b696018322"
+source = "git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14#1f7bdc66c02299266bc140d5b17eb30722afa6c2"
 dependencies = [
  "derive_more",
  "displaydoc",
- "ibc-primitives 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
+ "ibc-primitives",
  "ibc-proto 0.38.0",
  "ics23",
  "parity-scale-codec",
@@ -1870,66 +1735,16 @@ dependencies = [
 ]
 
 [[package]]
-name = "ibc-core-commitment-types"
-version = "0.48.1"
-source = "git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14#1f7bdc66c02299266bc140d5b17eb30722afa6c2"
-dependencies = [
- "derive_more",
- "displaydoc",
- "ibc-primitives 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
- "ibc-proto 0.38.0",
- "ics23",
- "prost",
- "schemars",
- "serde",
- "subtle-encoding",
-]
-
-[[package]]
-name = "ibc-core-connection"
-version = "0.48.1"
-source = "git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13#a1dac42a261ac1c168d8e0d8ed6768b696018322"
-dependencies = [
- "ibc-core-client 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
- "ibc-core-connection-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
- "ibc-core-handler-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
- "ibc-core-host 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
- "ibc-primitives 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
- "prost",
-]
-
-[[package]]
 name = "ibc-core-connection"
 version = "0.48.1"
 source = "git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14#1f7bdc66c02299266bc140d5b17eb30722afa6c2"
 dependencies = [
- "ibc-core-client 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
- "ibc-core-connection-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
- "ibc-core-handler-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
- "ibc-core-host 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
- "ibc-primitives 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
+ "ibc-core-client",
+ "ibc-core-connection-types",
+ "ibc-core-handler-types",
+ "ibc-core-host",
+ "ibc-primitives",
  "prost",
-]
-
-[[package]]
-name = "ibc-core-connection-types"
-version = "0.48.1"
-source = "git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13#a1dac42a261ac1c168d8e0d8ed6768b696018322"
-dependencies = [
- "derive_more",
- "displaydoc",
- "ibc-core-client-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
- "ibc-core-commitment-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
- "ibc-core-host-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
- "ibc-primitives 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
- "ibc-proto 0.38.0",
- "parity-scale-codec",
- "prost",
- "scale-info",
- "schemars",
- "serde",
- "subtle-encoding",
- "tendermint",
 ]
 
 [[package]]
@@ -1939,12 +1754,14 @@ source = "git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14#1f
 dependencies = [
  "derive_more",
  "displaydoc",
- "ibc-core-client-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
- "ibc-core-commitment-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
- "ibc-core-host-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
- "ibc-primitives 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
+ "ibc-core-client-types",
+ "ibc-core-commitment-types",
+ "ibc-core-host-types",
+ "ibc-primitives",
  "ibc-proto 0.38.0",
+ "parity-scale-codec",
  "prost",
+ "scale-info",
  "schemars",
  "serde",
  "subtle-encoding",
@@ -1954,55 +1771,16 @@ dependencies = [
 [[package]]
 name = "ibc-core-handler"
 version = "0.48.1"
-source = "git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13#a1dac42a261ac1c168d8e0d8ed6768b696018322"
-dependencies = [
- "ibc-core-channel 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
- "ibc-core-client 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
- "ibc-core-commitment-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
- "ibc-core-connection 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
- "ibc-core-handler-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
- "ibc-core-host 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
- "ibc-core-router 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
- "ibc-primitives 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
-]
-
-[[package]]
-name = "ibc-core-handler"
-version = "0.48.1"
 source = "git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14#1f7bdc66c02299266bc140d5b17eb30722afa6c2"
 dependencies = [
- "ibc-core-channel 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
- "ibc-core-client 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
- "ibc-core-commitment-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
- "ibc-core-connection 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
- "ibc-core-handler-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
- "ibc-core-host 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
- "ibc-core-router 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
- "ibc-primitives 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
-]
-
-[[package]]
-name = "ibc-core-handler-types"
-version = "0.48.1"
-source = "git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13#a1dac42a261ac1c168d8e0d8ed6768b696018322"
-dependencies = [
- "derive_more",
- "displaydoc",
- "ibc-core-channel-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
- "ibc-core-client-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
- "ibc-core-commitment-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
- "ibc-core-connection-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
- "ibc-core-host-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
- "ibc-core-router-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
- "ibc-primitives 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
- "ibc-proto 0.38.0",
- "parity-scale-codec",
- "prost",
- "scale-info",
- "schemars",
- "serde",
- "subtle-encoding",
- "tendermint",
+ "ibc-core-channel",
+ "ibc-core-client",
+ "ibc-core-commitment-types",
+ "ibc-core-connection",
+ "ibc-core-handler-types",
+ "ibc-core-host",
+ "ibc-core-router",
+ "ibc-primitives",
 ]
 
 [[package]]
@@ -2012,126 +1790,14 @@ source = "git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14#1f
 dependencies = [
  "derive_more",
  "displaydoc",
- "ibc-core-channel-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
- "ibc-core-client-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
- "ibc-core-commitment-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
- "ibc-core-connection-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
- "ibc-core-host-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
- "ibc-core-router-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
- "ibc-primitives 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
+ "ibc-core-channel-types",
+ "ibc-core-client-types",
+ "ibc-core-commitment-types",
+ "ibc-core-connection-types",
+ "ibc-core-host-types",
+ "ibc-core-router-types",
+ "ibc-primitives",
  "ibc-proto 0.38.0",
- "prost",
- "schemars",
- "serde",
- "subtle-encoding",
- "tendermint",
-]
-
-[[package]]
-name = "ibc-core-host"
-version = "0.48.1"
-source = "git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13#a1dac42a261ac1c168d8e0d8ed6768b696018322"
-dependencies = [
- "derive_more",
- "displaydoc",
- "ibc-core-channel-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
- "ibc-core-client-context 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
- "ibc-core-client-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
- "ibc-core-commitment-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
- "ibc-core-connection-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
- "ibc-core-handler-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
- "ibc-core-host-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
- "ibc-primitives 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
- "prost",
- "subtle-encoding",
-]
-
-[[package]]
-name = "ibc-core-host"
-version = "0.48.1"
-source = "git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14#1f7bdc66c02299266bc140d5b17eb30722afa6c2"
-dependencies = [
- "derive_more",
- "displaydoc",
- "ibc-core-channel-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
- "ibc-core-client-context 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
- "ibc-core-client-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
- "ibc-core-commitment-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
- "ibc-core-connection-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
- "ibc-core-handler-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
- "ibc-core-host-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
- "ibc-primitives 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
- "prost",
- "subtle-encoding",
-]
-
-[[package]]
-name = "ibc-core-host-types"
-version = "0.48.1"
-source = "git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13#a1dac42a261ac1c168d8e0d8ed6768b696018322"
-dependencies = [
- "derive_more",
- "displaydoc",
- "ibc-primitives 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
- "parity-scale-codec",
- "scale-info",
- "schemars",
- "serde",
-]
-
-[[package]]
-name = "ibc-core-host-types"
-version = "0.48.1"
-source = "git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14#1f7bdc66c02299266bc140d5b17eb30722afa6c2"
-dependencies = [
- "derive_more",
- "displaydoc",
- "ibc-primitives 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
- "schemars",
- "serde",
-]
-
-[[package]]
-name = "ibc-core-router"
-version = "0.48.1"
-source = "git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13#a1dac42a261ac1c168d8e0d8ed6768b696018322"
-dependencies = [
- "derive_more",
- "displaydoc",
- "ibc-core-channel-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
- "ibc-core-host-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
- "ibc-core-router-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
- "ibc-primitives 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
- "prost",
- "subtle-encoding",
-]
-
-[[package]]
-name = "ibc-core-router"
-version = "0.48.1"
-source = "git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14#1f7bdc66c02299266bc140d5b17eb30722afa6c2"
-dependencies = [
- "derive_more",
- "displaydoc",
- "ibc-core-channel-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
- "ibc-core-host-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
- "ibc-core-router-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
- "ibc-primitives 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
- "prost",
- "subtle-encoding",
-]
-
-[[package]]
-name = "ibc-core-router-types"
-version = "0.48.1"
-source = "git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13#a1dac42a261ac1c168d8e0d8ed6768b696018322"
-dependencies = [
- "derive_more",
- "displaydoc",
- "ibc-core-host-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
- "ibc-primitives 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13)",
- "ibc-proto 0.38.0",
- "ics23",
  "parity-scale-codec",
  "prost",
  "scale-info",
@@ -2142,32 +1808,71 @@ dependencies = [
 ]
 
 [[package]]
+name = "ibc-core-host"
+version = "0.48.1"
+source = "git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14#1f7bdc66c02299266bc140d5b17eb30722afa6c2"
+dependencies = [
+ "derive_more",
+ "displaydoc",
+ "ibc-core-channel-types",
+ "ibc-core-client-context",
+ "ibc-core-client-types",
+ "ibc-core-commitment-types",
+ "ibc-core-connection-types",
+ "ibc-core-handler-types",
+ "ibc-core-host-types",
+ "ibc-primitives",
+ "prost",
+ "subtle-encoding",
+]
+
+[[package]]
+name = "ibc-core-host-types"
+version = "0.48.1"
+source = "git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14#1f7bdc66c02299266bc140d5b17eb30722afa6c2"
+dependencies = [
+ "derive_more",
+ "displaydoc",
+ "ibc-primitives",
+ "parity-scale-codec",
+ "scale-info",
+ "schemars",
+ "serde",
+]
+
+[[package]]
+name = "ibc-core-router"
+version = "0.48.1"
+source = "git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14#1f7bdc66c02299266bc140d5b17eb30722afa6c2"
+dependencies = [
+ "derive_more",
+ "displaydoc",
+ "ibc-core-channel-types",
+ "ibc-core-host-types",
+ "ibc-core-router-types",
+ "ibc-primitives",
+ "prost",
+ "subtle-encoding",
+]
+
+[[package]]
 name = "ibc-core-router-types"
 version = "0.48.1"
 source = "git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14#1f7bdc66c02299266bc140d5b17eb30722afa6c2"
 dependencies = [
  "derive_more",
  "displaydoc",
- "ibc-core-host-types 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
- "ibc-primitives 0.48.1 (git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14)",
+ "ibc-core-host-types",
+ "ibc-primitives",
  "ibc-proto 0.38.0",
  "ics23",
+ "parity-scale-codec",
  "prost",
+ "scale-info",
  "schemars",
  "serde",
  "subtle-encoding",
  "tendermint",
-]
-
-[[package]]
-name = "ibc-derive"
-version = "0.4.0"
-source = "git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13#a1dac42a261ac1c168d8e0d8ed6768b696018322"
-dependencies = [
- "darling",
- "proc-macro2",
- "quote",
- "syn 2.0.39",
 ]
 
 [[package]]
@@ -2184,7 +1889,7 @@ dependencies = [
 [[package]]
 name = "ibc-primitives"
 version = "0.48.1"
-source = "git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/13#a1dac42a261ac1c168d8e0d8ed6768b696018322"
+source = "git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14#1f7bdc66c02299266bc140d5b17eb30722afa6c2"
 dependencies = [
  "derive_more",
  "displaydoc",
@@ -2192,21 +1897,6 @@ dependencies = [
  "parity-scale-codec",
  "prost",
  "scale-info",
- "schemars",
- "serde",
- "tendermint",
- "time",
-]
-
-[[package]]
-name = "ibc-primitives"
-version = "0.48.1"
-source = "git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14#1f7bdc66c02299266bc140d5b17eb30722afa6c2"
-dependencies = [
- "derive_more",
- "displaydoc",
- "ibc-proto 0.38.0",
- "prost",
  "schemars",
  "serde",
  "tendermint",

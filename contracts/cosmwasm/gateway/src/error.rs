@@ -1,5 +1,5 @@
 use cosmwasm_std::{IbcOrder, Response, StdError};
-use ibc::core::host::types::error::IdentifierError;
+use ibc_core::host::types::error::IdentifierError;
 use thiserror::Error;
 use cvm_runtime::{AssetId, NetworkId};
 

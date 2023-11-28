@@ -90,7 +90,7 @@ xcm = { version = "^5.0.0", default-features = false, package = "staging-xcm" }
 cw-utils = { version = "^1.0.3", default-features = false }
 cw2 = { version = "^1.1.2", default-features = false }
 ibc-apps-more= { git = "https://github.com/ComposableFi/ibc-apps-more-rs.git", branch = "main", default-features = false }
-ibc-apps = { git = "https://github.com/dzmitry-lahoda-forks/ibc-rs.git", branch = "dz/13", default-features = false, features = ["serde"] }
-ibc-core = { git = "https://github.com/dzmitry-lahoda-forks/ibc-rs.git", branch = "dz/13", default-features = false, features = ["serde"] }
-ibc-primitives = { git = "https://github.com/dzmitry-lahoda-forks/ibc-rs.git", branch = "dz/13", default-features = false, features = ["serde"] }
+ibc-apps = { git = "https://github.com/dzmitry-lahoda-forks/ibc-rs.git", branch = "dz/14", default-features = false, features = ["serde"] }
+ibc-core = { git = "https://github.com/dzmitry-lahoda-forks/ibc-rs.git", branch = "dz/14", default-features = false, features = ["serde"] }
+ibc-primitives = { git = "https://github.com/dzmitry-lahoda-forks/ibc-rs.git", branch = "dz/14", default-features = false, features = ["serde"] }
 primitive-types     = { git= "https://github.com/dzmitry-lahoda-forks/parity-common.git", branch = "dz/3", default-features = false, features = ["serde_no_std"] }

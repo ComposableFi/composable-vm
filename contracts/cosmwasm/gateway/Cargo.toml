@@ -37,7 +37,7 @@ bech32 = { workspace = true, features = ["strict"] }
 cosmwasm-std = { workspace = true, features = [
   "ibc3",
   "stargate",
-  "cosmwasm_1_3",
+  "cosmwasm_1_2",
 ] }
 cw-storage-plus = { workspace = true }
 cw-utils = { workspace = true }

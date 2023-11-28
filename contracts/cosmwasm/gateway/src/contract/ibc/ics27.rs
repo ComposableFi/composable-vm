@@ -1,7 +1,5 @@
 //! ics27 integration to do txes
-
 use std::str::FromStr;
-
 use crate::{
 	auth,
 	contract::ReplyId,
@@ -18,7 +16,7 @@ use cosmwasm_std::{
 	IbcChannelOpenResponse, IbcMsg, IbcOrder, IbcPacketAckMsg, IbcPacketReceiveMsg,
 	IbcPacketTimeoutMsg, IbcReceiveResponse, MessageInfo, Response, SubMsg,
 };
-use ibc::core::host::types::identifiers::{ChannelId, ConnectionId};
+use ibc_core::host::types::identifiers::{ChannelId, ConnectionId};
 use cvm_runtime::{
 	proto::Isomorphism, shared::XcPacket, transport::ibc::ChannelInfo, CallOrigin, XCVMAck,
 };
