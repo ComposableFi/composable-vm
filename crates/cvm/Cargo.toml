@@ -11,6 +11,6 @@ default = ["std"]
 cosmwasm = []
 json-schema = [
 ]
-
+cosmos = []
 std = [
 ]

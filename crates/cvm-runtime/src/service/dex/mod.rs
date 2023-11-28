@@ -7,8 +7,14 @@ pub type ExchangeId = crate::shared::Displayed<u128>;
 #[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 #[serde(rename_all = "snake_case")]
 pub enum ExchangeType {
-    #[cfg(feature = "cosmwasm")]
+    #[cfg(all(feature = "cosmwasm", feature = "cosmos"))]
     OsmosisPoolManagerModuleV1Beta1 {
+        pool_id: u64,
+        token_a: String,
+        token_b: String,
+    },
+    #[cfg(feature = "cosmwasm")]
+    AstroportRouterContract {
         pool_id: u64,
         token_a: String,
         token_b: String,

@@ -36,10 +36,11 @@ thiserror = { workspace = true }
 prost = { workspace = true, features = ["prost-derive"] }
 cvm-runtime = { path = "../../../crates/cvm-runtime", features = [
   "cosmwasm",
+  "cosmos",
 ], default-features = false }
 ibc-apps-more = { workspace = true, default-features = false, features = [
   "cosmwasm",
 ] }
 osmosis-std = { workspace = true, default-features = false }
 
-astroport-router = { workspace = true, default-features = false }
+astroport = { workspace = true, default-features = false }
