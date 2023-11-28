@@ -10,38 +10,38 @@ pub struct Zero;
 pub struct Succ<T>(PhantomData<T>);
 
 mod _priv {
-	pub trait Sealed {}
-	impl Sealed for super::Zero {}
-	impl<X> Sealed for super::Succ<X> {}
+    pub trait Sealed {}
+    impl Sealed for super::Zero {}
+    impl<X> Sealed for super::Succ<X> {}
 }
 
 pub trait Nat: _priv::Sealed {
-	const VALUE: u32;
+    const VALUE: u32;
 }
 
 impl Nat for Zero {
-	const VALUE: u32 = 0;
+    const VALUE: u32 = 0;
 }
 
 impl<X: Nat> Nat for Succ<X> {
-	const VALUE: u32 = 1 + X::VALUE;
+    const VALUE: u32 = 1 + X::VALUE;
 }
 
 /// Compile time indexing of an element of type `T` inside a structure of type `U`
 pub trait IndexOf<T, U> {
-	const INDEX: u32;
+    const INDEX: u32;
 }
 
 /// Base case
 impl<T, U> IndexOf<T, Zero> for (T, U) {
-	const INDEX: u32 = Zero::VALUE;
+    const INDEX: u32 = Zero::VALUE;
 }
 
 /// Inductive case
 impl<T, U, V, X> IndexOf<T, Succ<X>> for (U, V)
 where
-	X: Nat,
-	V: IndexOf<T, X>,
+    X: Nat,
+    V: IndexOf<T, X>,
 {
-	const INDEX: u32 = <Succ<X>>::VALUE;
+    const INDEX: u32 = <Succ<X>>::VALUE;
 }

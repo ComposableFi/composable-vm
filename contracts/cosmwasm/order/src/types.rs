@@ -1,5 +1,5 @@
 use cosmwasm_std::{BankMsg, Event, StdResult, Uint64};
-use cvm_runtime::{ExchangeId, NetworkId, shared::XcProgram};
+use cvm_runtime::{shared::XcProgram, AssetId, ExchangeId, NetworkId};
 
 use crate::prelude::*;
 
@@ -34,13 +34,20 @@ impl OrderItem {
     #[no_panic]
     pub fn fill(&mut self, wanted_transfer: Uint128) {
         // was given more or exact wanted - user happy or user was given all before, do not give more
-        if wanted_transfer >= self.msg.wants.amount || self.msg.wants.amount.u128() == <_>::default() {
+        if wanted_transfer >= self.msg.wants.amount
+            || self.msg.wants.amount.u128() == <_>::default()
+        {
             self.given.amount = <_>::default();
             self.msg.wants.amount = <_>::default();
         } else {
-            self.msg.wants.amount = self.msg.wants.amount.checked_sub(wanted_transfer).expect("proven above via comparison");
+            self.msg.wants.amount = self
+                .msg
+                .wants
+                .amount
+                .checked_sub(wanted_transfer)
+                .expect("proven above via comparison");
             let given_reduction = wanted_transfer * self.given.amount / self.msg.wants.amount;
-                        
+
             self.given.amount = self.given.amount.saturating_sub(given_reduction);
         }
     }
@@ -68,7 +75,7 @@ pub struct OrderSubMsg {
     /// but additionally with attached transfer route Alice picked.  
     /// ```
     /// This allow to to CoWs for assets not on this chain.
-    pub transfer: Option<TransferRoute>,
+    pub transfer: Option<AssetId>,
     /// how much blocks to wait for solution, if none, then cleaned up
     pub timeout: Block,
     /// if ok with partial fill, what is the minimum amount
@@ -98,7 +105,7 @@ pub struct SolutionSubMsg {
     /// must adhere Connection.fork_join_supported, for now it is always false (it restrict set of
     /// routes possible)
     #[serde(skip_serializing_if = "Option::is_none", default)]
-    pub route: Option<ExchangeRoute>,
+    pub route: Option<XcProgram>,
 
     /// after some time, solver will not commit to success
     pub timeout: Block,
@@ -147,10 +154,13 @@ impl SolvedOrder {
     }
 
     pub fn pair(&self) -> Pair {
-        let mut pair = (self.order.given.denom.clone(), self.order.msg.wants.denom.clone());
+        let mut pair = (
+            self.order.given.denom.clone(),
+            self.order.msg.wants.denom.clone(),
+        );
         pair.sort_selection();
         pair
-    } 
+    }
 
     pub fn cross_chain(&self) -> u128 {
         self.order.msg.wants.amount.u128() - self.solution.cow_amount.u128()

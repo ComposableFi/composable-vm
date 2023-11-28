@@ -20,6 +20,7 @@ std = [
   "ibc-apps/std",
   "ibc-core/std",
   "ibc-primitives/std",
+  "thiserror/std",
 ]
 json-schema = [
   "ibc-apps-more/json-schema",

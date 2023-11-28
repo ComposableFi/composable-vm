@@ -65,7 +65,13 @@ ibc-proto = { version = "^0.39.1", default-features = false }
 serde-json-wasm = { version = "^1.0.0", default-features = false }
 
 clap = { version = "^4.4.8", features = ["derive"] }
-cosmrs = { version = "^0.15.0", features = ["cosmwasm", "rpc", "grpc", "bip32", "dev"] }
+cosmrs = { version = "^0.15.0", features = [
+    "cosmwasm",
+    "rpc",
+    "grpc",
+    "bip32",
+    "dev",
+] }
 tokio = { version = "^1.34.0", features = ["full"] }
 cosmos-sdk-proto = { version = "^0.20.0", features = ["grpc-transport"] }
 tonic = { version = "^0.10.2" }
@@ -81,17 +87,30 @@ serde-cw-value = { git = "https://github.com/dzmitry-lahoda-forks/serde-cw-value
 no-panic = "^0.1"
 scale-info = { version = "^2.10.0", default-features = false }
 prost = { version = "^0.12.3", default-features = false }
-bip32 = { version = "^0.5.1", default-features = false, features = ["alloc", "secp256k1", "mnemonic", "bip39"] }
-prost-types = { version = "^0.12.3", default-features = false }   
+bip32 = { version = "^0.5.1", default-features = false, features = [
+    "alloc",
+    "secp256k1",
+    "mnemonic",
+    "bip39",
+] }
+prost-types = { version = "^0.12.3", default-features = false }
 sha2 = { version = "^0.10.8", default-features = false }
 num-traits = { version = "^0.2.17", default-features = false }
 thiserror = { version = "^1.0.50", default-features = false, package = "thiserror-core" }
 xcm = { version = "^5.0.0", default-features = false, package = "staging-xcm" }
 cw-utils = { version = "^1.0.3", default-features = false }
 cw2 = { version = "^1.1.2", default-features = false }
-ibc-apps-more= { git = "https://github.com/ComposableFi/ibc-apps-more-rs.git", branch = "main", default-features = false }
-ibc-apps = { git = "https://github.com/dzmitry-lahoda-forks/ibc-rs.git", branch = "dz/14", default-features = false, features = ["serde"] }
-ibc-core = { git = "https://github.com/dzmitry-lahoda-forks/ibc-rs.git", branch = "dz/14", default-features = false, features = ["serde"] }
-ibc-primitives = { git = "https://github.com/dzmitry-lahoda-forks/ibc-rs.git", branch = "dz/14", default-features = false, features = ["serde"] }
-primitive-types     = { git= "https://github.com/dzmitry-lahoda-forks/parity-common.git", branch = "dz/3", default-features = false, features = ["serde_no_std"] }
+ibc-apps-more = { git = "https://github.com/ComposableFi/ibc-apps-more-rs.git", branch = "main", default-features = false }
+ibc-apps = { git = "https://github.com/dzmitry-lahoda-forks/ibc-rs.git", branch = "dz/14", default-features = false, features = [
+    "serde",
+] }
+ibc-core = { git = "https://github.com/dzmitry-lahoda-forks/ibc-rs.git", branch = "dz/14", default-features = false, features = [
+    "serde",
+] }
+ibc-primitives = { git = "https://github.com/dzmitry-lahoda-forks/ibc-rs.git", branch = "dz/14", default-features = false, features = [
+    "serde",
+] }
+primitive-types = { git = "https://github.com/dzmitry-lahoda-forks/parity-common.git", branch = "dz/3", default-features = false, features = [
+    "serde_no_std",
+] }
 neutron-sdk = { version = "^0.7.0", default-features = false }

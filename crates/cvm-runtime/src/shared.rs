@@ -13,11 +13,11 @@ pub type XcPacket = crate::Packet<XcProgram>;
 pub type XcProgram = crate::Program<Vec<XcInstruction>>;
 
 pub fn encode_base64<T: Serialize>(x: &T) -> StdResult<String> {
-	Ok(to_json_binary(x)?.to_base64())
+    Ok(to_json_binary(x)?.to_base64())
 }
 
 pub fn decode_base64<S: AsRef<str>, T: DeserializeOwned>(encoded: S) -> StdResult<T> {
-	from_json::<T>(&Binary::from_base64(encoded.as_ref())?)
+    from_json::<T>(&Binary::from_base64(encoded.as_ref())?)
 }
 
 /// A wrapper around any address on any chain.
@@ -29,71 +29,75 @@ pub fn decode_base64<S: AsRef<str>, T: DeserializeOwned>(encoded: S) -> StdResul
 /// Added with helper per chain to get final address to use.
 #[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 #[cfg_attr(
-	feature = "scale",
-	derive(parity_scale_codec::Encode, parity_scale_codec::Decode, scale_info::TypeInfo)
+    feature = "scale",
+    derive(
+        parity_scale_codec::Encode,
+        parity_scale_codec::Decode,
+        scale_info::TypeInfo
+    )
 )]
 #[derive(
-	Clone,
-	PartialEq,
-	Eq,
-	Hash,
-	derive_more::Deref,
-	derive_more::From,
-	derive_more::Into,
-	serde::Deserialize,
-	serde::Serialize,
+    Clone,
+    PartialEq,
+    Eq,
+    Hash,
+    derive_more::Deref,
+    derive_more::From,
+    derive_more::Into,
+    serde::Deserialize,
+    serde::Serialize,
 )]
 #[into(owned, ref, ref_mut)]
 #[repr(transparent)]
 pub struct XcAddr(String);
 
 impl From<XcAddr> for Vec<u8> {
-	fn from(value: XcAddr) -> Self {
-		value.0.into_bytes()
-	}
+    fn from(value: XcAddr) -> Self {
+        value.0.into_bytes()
+    }
 }
 
 impl TryFrom<Vec<u8>> for XcAddr {
-	type Error = StdError;
+    type Error = StdError;
 
-	fn try_from(value: Vec<u8>) -> Result<Self, Self::Error> {
-		Ok(Self(String::from_utf8(value)?))
-	}
+    fn try_from(value: Vec<u8>) -> Result<Self, Self::Error> {
+        Ok(Self(String::from_utf8(value)?))
+    }
 }
 
 impl XcAddr {
-	/// idea that whatever user plugs into, it works, really for adoption
-	/// sure for Ethereum he must plug exact binary address, but for others it's just a string
-	pub fn encode_cosmwasm(&self, api: &dyn Api) -> Result<String, StdError> {
-		if let Ok(addr) = Binary::from_base64(&self.0) {
-			if let Ok(addr) = api.addr_humanize(&CanonicalAddr(addr)) {
-				return Ok(addr.into_string())
-			}
-		}
-		if let Ok((_, addr, _)) = bech32::decode(&self.0) {
-			use bech32::FromBase32;
-			if let Ok(addr) = Vec::from_base32(&addr) {
-				if let Ok(addr) = api.addr_humanize(&CanonicalAddr(Binary(addr))) {
-					return Ok(addr.into_string())
-				}
-			}
-		}
+    /// idea that whatever user plugs into, it works, really for adoption
+    /// sure for Ethereum he must plug exact binary address, but for others it's just a string
+    pub fn encode_cosmwasm(&self, api: &dyn Api) -> Result<String, StdError> {
+        if let Ok(addr) = Binary::from_base64(&self.0) {
+            if let Ok(addr) = api.addr_humanize(&CanonicalAddr(addr)) {
+                return Ok(addr.into_string());
+            }
+        }
+        if let Ok((_, addr, _)) = bech32::decode(&self.0) {
+            use bech32::FromBase32;
+            if let Ok(addr) = Vec::from_base32(&addr) {
+                if let Ok(addr) = api.addr_humanize(&CanonicalAddr(Binary(addr))) {
+                    return Ok(addr.into_string());
+                }
+            }
+        }
 
-		// here we will do CW on Substrate if that will be needed, but not prio
-		Err(StdError::generic_err("Failed to ensure XcAddr encoding"))
-	}
+        // here we will do CW on Substrate if that will be needed, but not prio
+        Err(StdError::generic_err("Failed to ensure XcAddr encoding"))
+    }
 }
 
 impl core::fmt::Display for XcAddr {
-	fn fmt(&self, fmtr: &mut core::fmt::Formatter) -> core::fmt::Result {
-		core::fmt::Display::fmt(&self.0, fmtr)
-	}
+    fn fmt(&self, fmtr: &mut core::fmt::Formatter) -> core::fmt::Result {
+        core::fmt::Display::fmt(&self.0, fmtr)
+    }
 }
 
 impl core::fmt::Debug for XcAddr {
-	fn fmt(&self, fmtr: &mut core::fmt::Formatter) -> core::fmt::Result {
-		core::fmt::Debug::fmt(&self.0, fmtr)
-	}
+    fn fmt(&self, fmtr: &mut core::fmt::Formatter) -> core::fmt::Result {
+        core::fmt::Debug::fmt(&self.0, fmtr)
+    }
 }
 
 /// A wrapper around a type which is serde-serialised as a string.
@@ -117,60 +121,60 @@ impl core::fmt::Debug for XcAddr {
 /// ```
 #[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 #[derive(
-	Copy,
-	Clone,
-	Default,
-	PartialEq,
-	Eq,
-	PartialOrd,
-	Ord,
-	Hash,
-	scale_info::TypeInfo,
-	derive_more::Deref,
-	derive_more::From,
+    Copy,
+    Clone,
+    Default,
+    PartialEq,
+    Eq,
+    PartialOrd,
+    Ord,
+    Hash,
+    scale_info::TypeInfo,
+    derive_more::Deref,
+    derive_more::From,
 )]
 #[repr(transparent)]
 pub struct Displayed<T>(pub T);
 
 impl<T: FromStr> FromStr for Displayed<T> {
-	type Err = <T as FromStr>::Err;
+    type Err = <T as FromStr>::Err;
 
-	fn from_str(s: &str) -> Result<Self, Self::Err> {
-		T::from_str(s).map(Displayed)
-	}
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        T::from_str(s).map(Displayed)
+    }
 }
 
 impl<T> parity_scale_codec::WrapperTypeEncode for Displayed<T> {}
 impl<T> parity_scale_codec::WrapperTypeDecode for Displayed<T> {
-	type Wrapped = T;
+    type Wrapped = T;
 }
 
 impl<T: core::fmt::Display> core::fmt::Display for Displayed<T> {
-	fn fmt(&self, fmtr: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-		core::fmt::Display::fmt(&self.0, fmtr)
-	}
+    fn fmt(&self, fmtr: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        core::fmt::Display::fmt(&self.0, fmtr)
+    }
 }
 
 impl<T: core::fmt::Display> core::fmt::Debug for Displayed<T> {
-	fn fmt(&self, fmtr: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-		core::fmt::Display::fmt(&self.0, fmtr)
-	}
+    fn fmt(&self, fmtr: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        core::fmt::Display::fmt(&self.0, fmtr)
+    }
 }
 
 impl<T: core::fmt::Display> serde::Serialize for Displayed<T> {
-	fn serialize<S: serde::Serializer>(&self, ser: S) -> Result<S::Ok, S::Error> {
-		ser.collect_str(&self.0)
-	}
+    fn serialize<S: serde::Serializer>(&self, ser: S) -> Result<S::Ok, S::Error> {
+        ser.collect_str(&self.0)
+    }
 }
 
 impl<'de, T> serde::Deserialize<'de> for Displayed<T>
 where
-	T: core::str::FromStr,
-	<T as core::str::FromStr>::Err: core::fmt::Display,
+    T: core::str::FromStr,
+    <T as core::str::FromStr>::Err: core::fmt::Display,
 {
-	fn deserialize<D: serde::Deserializer<'de>>(de: D) -> Result<Self, D::Error> {
-		de.deserialize_str(DisplayedVisitor::<T>(Default::default()))
-	}
+    fn deserialize<D: serde::Deserializer<'de>>(de: D) -> Result<Self, D::Error> {
+        de.deserialize_str(DisplayedVisitor::<T>(Default::default()))
+    }
 }
 
 /// Serde Visitor helper for deserialising [`Displayed`] type.
@@ -178,18 +182,18 @@ struct DisplayedVisitor<V>(core::marker::PhantomData<V>);
 
 impl<'de, T> serde::de::Visitor<'de> for DisplayedVisitor<T>
 where
-	T: core::str::FromStr,
-	<T as core::str::FromStr>::Err: core::fmt::Display,
+    T: core::str::FromStr,
+    <T as core::str::FromStr>::Err: core::fmt::Display,
 {
-	type Value = Displayed<T>;
+    type Value = Displayed<T>;
 
-	fn expecting(&self, fmt: &mut core::fmt::Formatter) -> core::fmt::Result {
-		fmt.write_str("a string")
-	}
+    fn expecting(&self, fmt: &mut core::fmt::Formatter) -> core::fmt::Result {
+        fmt.write_str("a string")
+    }
 
-	fn visit_str<E: serde::de::Error>(self, s: &str) -> Result<Self::Value, E> {
-		T::from_str(s).map(Displayed).map_err(E::custom)
-	}
+    fn visit_str<E: serde::de::Error>(self, s: &str) -> Result<Self::Value, E> {
+        T::from_str(s).map(Displayed).map_err(E::custom)
+    }
 }
 
 macro_rules! impl_conversions {
@@ -260,7 +264,7 @@ impl_conversions!(cosmwasm_std::Uint128 = Displayed<u128>,
 impl_conversions!(crate::proto::pb::common::Uint128 = Displayed<u128>);
 
 impl<T: core::cmp::PartialEq> core::cmp::PartialEq<T> for Displayed<T> {
-	fn eq(&self, rhs: &T) -> bool {
-		self.0 == *rhs
-	}
+    fn eq(&self, rhs: &T) -> bool {
+        self.0 == *rhs
+    }
 }

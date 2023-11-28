@@ -1,13 +1,15 @@
-use cosmwasm_std::{to_json_binary, Addr, Binary, Order, StdError, StdResult, Storage, SubMsgResponse};
+use cosmwasm_std::{
+    to_json_binary, Addr, Binary, Order, StdError, StdResult, Storage, SubMsgResponse,
+};
+use cvm_runtime::InterpreterOrigin;
 use cw_storage_plus::{Item, Map};
 use serde::{Deserialize, Serialize};
-use cvm_runtime::InterpreterOrigin;
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 pub struct Config {
-	pub gateway_address: cvm_runtime::gateway::Gateway,
-	pub interpreter_origin: InterpreterOrigin,
+    pub gateway_address: cvm_runtime::gateway::Gateway,
+    pub interpreter_origin: InterpreterOrigin,
 }
 
 /// The interpreter configuration.
@@ -30,28 +32,28 @@ pub const TIP_REGISTER: Item<Addr> = Item::new("tip_register");
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 pub struct State {
-	pub result_register: Result<SubMsgResponse, String>,
-	pub ip_register: u16,
-	pub owners: Vec<Addr>,
-	pub config: Config,
+    pub result_register: Result<SubMsgResponse, String>,
+    pub ip_register: u16,
+    pub owners: Vec<Addr>,
+    pub config: Config,
 }
 
 impl TryInto<Binary> for State {
-	type Error = StdError;
+    type Error = StdError;
 
-	fn try_into(self) -> StdResult<Binary> {
-		to_json_binary(&self)
-	}
+    fn try_into(self) -> StdResult<Binary> {
+        to_json_binary(&self)
+    }
 }
 
 pub(crate) fn read(storage: &dyn Storage) -> StdResult<State> {
-	Ok(State {
-		result_register: RESULT_REGISTER.load(storage)?,
-		ip_register: IP_REGISTER.load(storage).unwrap_or(0),
-		owners: OWNERS
-			.range(storage, None, None, Order::Ascending)
-			.map(|e| e.map(|(k, _)| k))
-			.collect::<StdResult<Vec<_>>>()?,
-		config: CONFIG.load(storage)?,
-	})
+    Ok(State {
+        result_register: RESULT_REGISTER.load(storage)?,
+        ip_register: IP_REGISTER.load(storage).unwrap_or(0),
+        owners: OWNERS
+            .range(storage, None, None, Order::Ascending)
+            .map(|e| e.map(|(k, _)| k))
+            .collect::<StdResult<Vec<_>>>()?,
+        config: CONFIG.load(storage)?,
+    })
 }

@@ -1,6 +1,6 @@
 use cvm_runtime::{
-	gateway::{config::AssetReference, AssetItem},
-	AssetId, NetworkId,
+    gateway::{config::AssetReference, AssetItem},
+    AssetId, NetworkId,
 };
 
 use crate::prelude::*;

@@ -11,7 +11,12 @@ crate-type = ["cdylib", "rlib"]
 [features]
 library = []
 json-schema = ["ibc-apps-more/json-schema", "cvm-runtime/json-schema"]
-std = ["cvm-runtime/std", "dep:cosmwasm-schema", "ibc-apps-more/std"]
+std = [
+  "cvm-runtime/std",
+  "dep:cosmwasm-schema",
+  "ibc-apps-more/std",
+  "thiserror/std",
+]
 default = ["std"]
 
 [dependencies]
@@ -32,4 +37,6 @@ prost = { workspace = true, features = ["prost-derive"] }
 cvm-runtime = { path = "../../../crates/cvm-runtime", features = [
   "cosmwasm",
 ], default-features = false }
-ibc-apps-more= { workspace = true, default-features = false, features = ["cosmwasm"] }
+ibc-apps-more = { workspace = true, default-features = false, features = [
+  "cosmwasm",
+] }

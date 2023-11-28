@@ -1,6 +1,6 @@
 use crate::{
-	error::{ContractError, Result},
-	state::OWNERS,
+    error::{ContractError, Result},
+    state::OWNERS,
 };
 use cosmwasm_std::{Addr, Deps};
 
@@ -12,9 +12,9 @@ pub struct Authenticated(());
 /// interpreter.
 /// Any operation executing against the interpreter must pass this check.
 pub fn ensure_owner(deps: Deps, self_addr: &Addr, sender: Addr) -> Result<Authenticated> {
-	if sender == self_addr || OWNERS.has(deps.storage, sender) {
-		Ok(Authenticated(()))
-	} else {
-		Err(ContractError::NotAuthorized)
-	}
+    if sender == self_addr || OWNERS.has(deps.storage, sender) {
+        Ok(Authenticated(()))
+    } else {
+        Err(ContractError::NotAuthorized)
+    }
 }

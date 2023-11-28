@@ -10,13 +10,9 @@ use store::*;
 pub use types::*;
 
 pub use crate::sv::{ExecMsg, QueryMsg};
-use cosmwasm_schema::{schemars};
-use cosmwasm_std::{
-    wasm_execute, Addr, BankMsg, Coin, Event, Order, StdError, Storage,
-};
-use cvm_runtime::{
-    shared::{XcInstruction, XcProgram},
-};
+use cosmwasm_schema::schemars;
+use cosmwasm_std::{wasm_execute, Addr, BankMsg, Coin, Event, Order, StdError, Storage};
+use cvm_runtime::shared::{XcInstruction, XcProgram};
 use cw_storage_plus::{Index, IndexList, IndexedMap, Item, Map};
 use sylvia::{
     contract,
@@ -25,13 +21,11 @@ use sylvia::{
     types::{ExecCtx, InstantiateCtx, QueryCtx},
 };
 
-
-
 pub struct OrderContract<'a> {
     pub orders: Map<'a, u128, OrderItem>,
     /// (a,b,solver)
     pub solutions:
-        IndexedMap<'a, &'a (Denom, Denom, SolverAddress), SolutionItem, SolutionIndexes<'a>> ,
+        IndexedMap<'a, &'a (Denom, Denom, SolverAddress), SolutionItem, SolutionIndexes<'a>>,
     pub next_order_id: Item<'a, u128>,
     /// address for CVM contact to send routes to
     pub cvm_address: Item<'a, String>,
@@ -77,7 +71,8 @@ impl OrderContract<'_> {
         // for now we just use bank for ics20 tokens
         let funds = ctx
             .info
-            .funds.first()
+            .funds
+            .first()
             .expect("there are some funds in order");
 
         // just save order under incremented id
@@ -172,21 +167,21 @@ impl OrderContract<'_> {
         ctx.deps.api.debug(
             "so here we add route execution tracking to storage and map route to CVM program",
         );
-    
-        let cvm = cvm_runtime::gateway::ExecuteMsg::ExecuteProgram(cvm_runtime::gateway::ExecuteProgramMsg {
-            salt: vec![], // derived from solution owner and block - which is id
-            program: msg.route, // traversed to set  
-            assets: <_>::default(), // collecting all assets remaining from orders
-            tip: None,
-        });
+
+        let cvm = cvm_runtime::gateway::ExecuteMsg::ExecuteProgram(
+            cvm_runtime::gateway::ExecuteProgramMsg {
+                salt: vec![],           // derived from solution owner and block - which is id
+                program: msg.route,     // traversed to set
+                assets: <_>::default(), // collecting all assets remaining from orders
+                tip: None,
+            },
+        );
         let contract = self.cvm_address.load(ctx.deps.storage)?;
         let cvm = wasm_execute(contract, &cvm, vec![])?;
         // in success handler of msg we start tracking solution
-        // in failure handler we move all funds to users back        
+        // in failure handler we move all funds to users back
         Ok(Response::default().add_message(cvm))
     }
-
-
 
     /// Provides solution for set of orders.
     /// All fully
@@ -403,7 +398,6 @@ impl OrderContract<'_> {
 }
 
 fn order_created(order_id: u128, order: &OrderItem) -> Event {
-    
     Event::new("mantis-order-created")
         .add_attribute("order_id", order_id.to_string())
         .add_attribute("order_given_amount", order.given.amount.to_string())
@@ -434,19 +428,11 @@ fn solves_cows_via_bank(
         // solver cannot rob the bank
         if order.pair().0 == filled_wanted.denom {
             a_total_in = a_total_in.checked_sub(cowed.u128()).ok_or_else(|| {
-                StdError::generic_err(format!(
-                    "a underflow: {} {}",
-                    a_total_in,
-                    cowed.u128()
-                ))
+                StdError::generic_err(format!("a underflow: {} {}", a_total_in, cowed.u128()))
             })?;
         } else {
             b_total_in = b_total_in.checked_sub(cowed.u128()).ok_or_else(|| {
-                StdError::generic_err(format!(
-                    "b underflow: {} {}",
-                    b_total_in,
-                    cowed.u128()
-                ))
+                StdError::generic_err(format!("b underflow: {} {}", b_total_in, cowed.u128()))
             })?;
         };
 
