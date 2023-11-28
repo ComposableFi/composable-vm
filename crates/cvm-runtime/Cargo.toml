@@ -36,6 +36,12 @@ primitive-types = { workspace = true, features = [
   "serde_no_std",
 ], default-features = false }
 
+
+osmosis-std = { workspace = true, default-features = false }
+
+astroport-router = { workspace = true, default-features = false }
+
+
 ibc-apps-more = { workspace = true, default-features = false }
 
 [build-dependencies]

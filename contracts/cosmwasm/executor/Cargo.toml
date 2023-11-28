@@ -40,3 +40,4 @@ cvm-runtime = { path = "../../../crates/cvm-runtime", features = [
 ibc-apps-more = { workspace = true, default-features = false, features = [
   "cosmwasm",
 ] }
+

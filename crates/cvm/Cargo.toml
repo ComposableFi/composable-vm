@@ -1,0 +1,16 @@
+[package]
+edition = "2021"
+name = "cvm"
+version = "0.1.0"
+
+[dependencies]
+cosmwasm-std = { workspace = true, features = ["ibc3"] }
+
+[features]
+default = ["std"]
+cosmwasm = []
+json-schema = [
+]
+
+std = [
+]
