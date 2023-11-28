@@ -104,31 +104,30 @@
             cw-cvm-gateway
             cw-mantis-order
           ];
+        };
+        cosmwasm-json-schema-ts = pkgs.writeShellApplication {
+          name = "cosmwasm-json-schema-ts";
+          runtimeInputs = with pkgs; [
+            rust
+            nodejs
+            nodePackages.npm
+          ];
+          text = ''
+            echo "generating TypeScript types and client definitions from JSON schema of CosmWasm contracts"
+            cd code/cvm
+            npm install
+            rm --recursive --force dist
 
-          cosmwasm-json-schema-ts = pkgs.writeShellApplication {
-            name = "cosmwasm-json-schema-ts";
-            runtimeInputs = with pkgs; [
-              rust
-              nodejs
-              nodePackages.npm
-            ];
-            text = ''
-              echo "generating TypeScript types and client definitions from JSON schema of CosmWasm contracts"
-              cd code/cvm
-              npm install
-              rm --recursive --force dist
+            rm --recursive --force schema
+            cargo run --bin order --package cw-mantis-order
+            npm run build-cw-mantis-order
 
-              rm --recursive --force schema
-              cargo run --bin order --package cw-mantis-order
-              npm run build-cw-mantis-order
+            rm --recursive --force schema
+            cargo run --bin gateway --package xc-core
+            npm run build-xc-core
 
-              rm --recursive --force schema
-              cargo run --bin gateway --package xc-core
-              npm run build-xc-core
-
-              npm publish
-            '';
-          };
+            npm publish
+          '';
         };
       in {
         _module.args.pkgs = import self.inputs.nixpkgs {
