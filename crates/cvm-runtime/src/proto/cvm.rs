@@ -304,7 +304,7 @@ super::define_conversion! {
         use pb::program::binding_value::Type;
         Ok(match binding_value.r#type.non_empty()? {
             Type::Register(reg) => {
-                let reg = pb::program::Register::from_i32(reg).ok_or(())?;
+                let reg = pb::program::Register::try_from(reg).map_err(|_| ())?;
                 Self::Register(reg.into())
             },
             Type::AssetId(asset_id) => Self::Asset(asset_id.into()),

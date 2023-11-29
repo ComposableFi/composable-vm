@@ -11,7 +11,7 @@ use cosmwasm_std::entry_point;
 use cosmwasm_std::{
     ensure, ensure_eq, to_json_binary, wasm_execute, Addr, BankMsg, Binary, Coin, CosmosMsg, Deps,
     DepsMut, Env, MessageInfo, QueryRequest, Reply, Response, StdError, StdResult, SubMsg,
-    SubMsgResult, WasmQuery, WasmMsg, to_binary,
+    SubMsgResult, WasmQuery, WasmMsg,
 };
 use cvm_runtime::{
     apply_bindings,
@@ -298,7 +298,7 @@ fn interpret_exchange(
                 .add_submessage(msg)
         }
         AstroportRouterContract {
-            pool_id,
+            address,
             token_a,
             token_b,
         } => {
@@ -324,8 +324,8 @@ fn interpret_exchange(
                 max_spread,
             };
             let msg = CosmosMsg::Wasm(WasmMsg::Execute {
-                contract_addr: pool_id.to_string(),
-                msg: to_binary(&msg)?,
+                contract_addr: address.to_string(),
+                msg: to_json_binary(&msg)?,
                 funds: vec![give.try_into().expect("coin")],
             });
             let msg = SubMsg::reply_always(msg, EXCHANGE_ID);

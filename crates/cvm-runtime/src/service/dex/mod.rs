@@ -15,7 +15,7 @@ pub enum ExchangeType {
     },
     #[cfg(feature = "cosmwasm")]
     AstroportRouterContract {
-        pool_id: u64,
+        address: Addr,
         token_a: String,
         token_b: String,
     },
