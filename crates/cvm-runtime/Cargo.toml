@@ -36,10 +36,6 @@ primitive-types = { workspace = true, features = [
   "serde_no_std",
 ], default-features = false }
 
-
-
-
-
 ibc-apps-more = { workspace = true, default-features = false }
 
 [build-dependencies]
