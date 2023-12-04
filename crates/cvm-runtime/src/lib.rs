@@ -47,9 +47,9 @@ mod prelude;
 mod program;
 pub mod proto;
 mod protocol;
-pub mod service;
 pub mod shared;
 pub mod transport;
+pub mod exchange;
 
 pub use crate::{
     asset::*, bridge::*, instruction::*, network::*, packet::*, program::*, protocol::*,

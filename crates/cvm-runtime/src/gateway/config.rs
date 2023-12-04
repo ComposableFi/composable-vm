@@ -3,7 +3,6 @@ use ibc_core::host::types::identifiers::ChannelId;
 
 use crate::{
     prelude::*,
-    service::dex::ExchangeItem,
     transport::ibc::{ChannelInfo, IbcIcs20Sender},
     AssetId, NetworkId,
 };

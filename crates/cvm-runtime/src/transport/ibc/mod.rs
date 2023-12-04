@@ -52,6 +52,7 @@ pub struct IbcIcs20ProgramRoute {
 }
 
 /// send to target chain with cosmwasm receiver
+#[cfg(feature = "cosmwasm")]
 pub fn to_cosmwasm_message<T>(
     _deps: Deps,
     api: &dyn Api,

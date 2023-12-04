@@ -821,7 +821,6 @@ dependencies = [
 name = "cvm-runtime"
 version = "0.1.0"
 dependencies = [
- "astroport",
  "bech32",
  "cosmwasm-schema",
  "cosmwasm-std",
@@ -834,7 +833,6 @@ dependencies = [
  "ibc-core",
  "ibc-proto 0.39.1",
  "num",
- "osmosis-std",
  "parity-scale-codec",
  "primitive-types 0.12.2 (git+https://github.com/dzmitry-lahoda-forks/parity-common.git?branch=dz/3)",
  "prost 0.12.3",
@@ -848,6 +846,15 @@ dependencies = [
  "staging-xcm",
  "strum",
  "thiserror-core",
+]
+
+[[package]]
+name = "cvm-runtime-exchage"
+version = "0.1.0"
+dependencies = [
+ "astroport",
+ "cosmwasm-std",
+ "osmosis-std",
 ]
 
 [[package]]

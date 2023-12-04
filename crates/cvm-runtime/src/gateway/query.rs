@@ -1,7 +1,6 @@
 use crate::{
     prelude::*,
-    service::dex::{ExchangeId, ExchangeItem},
-    AssetId, NetworkId,
+    AssetId, NetworkId, exchange::ExchangeItem,
 };
 
 use super::{AssetItem, AssetReference};
