@@ -170,6 +170,8 @@ impl OrderContract<'_> {
     /// 6. raw call dispatches amounts, and unlocks orders
     /// 7. please note that orders still can be solved cow while in cross chain
     
+    /// if there is solution, all funds from solution moved here and combined with funds in request
+    /// than solution removed from storage, funds patched to receivers and tracking closed
     #[msg(exec)]
     pub fn finalize(&self, ctx: ExecCtx, solution: SolutionHash) -> StdResult<Response> {
         todo!()
@@ -190,7 +192,7 @@ impl OrderContract<'_> {
 
         let cvm = cvm_runtime::gateway::ExecuteMsg::ExecuteProgram(
             cvm_runtime::gateway::ExecuteProgramMsg {
-                salt: vec![],           // derived from solution owner and block - which is id
+                salt: vec![],           // derived from solutffzion owner and block - which is id
                 program: msg.route,     // traversed to set
                 assets: <_>::default(), // collecting all assets remaining from orders
                 tip: None,
