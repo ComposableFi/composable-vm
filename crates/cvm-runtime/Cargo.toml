@@ -34,7 +34,7 @@ strum.workspace = { workspace = true }
 thiserror = { workspace = true }
 ibc-proto = { workspace = true, default-features = false, features = ["serde"] }
 serde-cw-value = { workspace = true, default-features = false }
-xcm = { workspace = true, default-features = false, optional = true }
+# xcm = { workspace = true, default-features = false, optional = true }
 # primitive-types = { workspace = true, features = [
 #   "serde_no_std",
 # ], default-features = false }
@@ -46,7 +46,7 @@ prost-build = { workspace = true }
 
 [features]
 default = ["std"]
-xcm = ["dep:xcm"]
+# xcm = ["dep:xcm"]
 paroty-scale-codec = [
   "parity-scale-codec",
   "ibc-proto/parity-scale-codec",
@@ -56,7 +56,7 @@ paroty-scale-codec = [
 ]
 cosmos = []
 cosmwasm = ["cw-storage-plus", "cw20", "ibc-apps-more/cosmwasm"]
-substrate = ["xcm"]
+# substrate = ["xcm"]
 json-schema = [
   "serde-cw-value/schema",
   "ibc-apps-more/json-schema",

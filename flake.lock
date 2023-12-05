@@ -179,16 +179,15 @@
         "wasmvm_1_beta7-src": "wasmvm_1_beta7-src"
       },
       "locked": {
-        "lastModified": 1701737562,
-        "narHash": "sha256-JEgM/+DOuqmVL4a/Er4/b3b8JA+RV8SBOrslNsgX6n0=",
-        "owner": "dzmitry-lahoda-forks",
+        "lastModified": 1701457684,
+        "narHash": "sha256-Tx3WsOM9scTXDHFyL5vNcQnCmT7Mx0dYg1Nmz8cFwt4=",
+        "owner": "informalsystems",
         "repo": "cosmos.nix",
-        "rev": "991515ef29866f342769e10a8ae37b2155aac3bc",
+        "rev": "c0bb979a518aa08ba064112a85e03fbc7a7d2869",
         "type": "github"
       },
       "original": {
-        "owner": "dzmitry-lahoda-forks",
-        "ref": "dz/17",
+        "owner": "informalsystems",
         "repo": "cosmos.nix",
         "type": "github"
       }
@@ -922,21 +921,6 @@
         "type": "github"
       }
     },
-    "nix-std_2": {
-      "locked": {
-        "lastModified": 1701658249,
-        "narHash": "sha256-KIt1TUuBvldhaVRta010MI5FeQlB8WadjqljybjesN0=",
-        "owner": "chessai",
-        "repo": "nix-std",
-        "rev": "715db541ffff4194620e48d210b76f73a74b5b5d",
-        "type": "github"
-      },
-      "original": {
-        "owner": "chessai",
-        "repo": "nix-std",
-        "type": "github"
-      }
-    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1674990008,
@@ -1079,7 +1063,6 @@
         "crane": "crane",
         "devour-flake": "devour-flake",
         "flake-parts": "flake-parts_2",
-        "nix-std": "nix-std_2",
         "nixpkgs": "nixpkgs_2",
         "rust-overlay": "rust-overlay"
       }

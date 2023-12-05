@@ -12,11 +12,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     cosmos = {
-      url = "github:dzmitry-lahoda-forks/cosmos.nix/dz/17";
+      url = "github:informalsystems/cosmos.nix";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.rust-overlay.follows = "rust-overlay";
     };
-    nix-std.url = "github:chessai/nix-std";
+
     devour-flake = {
       url = "github:srid/devour-flake";
       flake = false;
@@ -28,8 +28,6 @@
     , self
     , crane
     , devour-flake
-    , cosmos
-    , nix-std
     , ...
     }:
     flake-parts.lib.mkFlake { inherit inputs; } {
@@ -65,35 +63,36 @@
           rust =
             (self.inputs.crane.mkLib pkgs).overrideToolchain
               rust-toolchain;
-          defaultRustPlatform = pkgs.makeRustPlatform {
-            cargo = rust-toolchain;
-            rustc = rust-toolchain;
-          };
-
           makeCosmwasmContract = name: rust: std-config:
-            (cosmos.lib
-              {
-                inherit pkgs; cosmwasm-check = inputs.cosmos.packages.${system}.cosmwasm-check;
-              }
-            ).buildCosmwasmContract
-              ({
-                pname = name;
-                name = name;
-                src = rust-src;
-                rustPlatform = defaultRustPlatform;
-                buildNoDefaultFeatures = true;
-                buildFeatures = std-config;
-                cargoLock = {
-                  lockFile = "${rust-src}/Cargo.lock";
-                  outputHashes = {
-                    "fixed-hash-0.8.0" = "sha256-KvkVqJZ5kvkKWXTYgG7+Ksz8aLhGZ1BG5zkM44fVNT4=";
-                    "ibc-app-transfer-0.48.1" = "sha256-KvkVqJZ5kvkKWXTYgG7+Ksz8aLhGZ1BG5zkM44fVNT4=";
-                    "ibc-apps-more-0.1.0" = "sha256-KvkVqJZ5kvkKWXTYgG7+Ksz8aLhGZ1BG5zkM44fVNT4=";
-                    "serde-cw-value-0.7.0" = "sha256-KvkVqJZ5kvkKWXTYgG7+Ksz8aLhGZ1BG5zkM44fVNT4=";
-                  };
-                };
-              } // rust-attrs
-              );
+            let
+              binaryName = "${builtins.replaceStrings ["-"] ["_"] name}.wasm";
+              maxWasmSizeBytes = 819200;
+            in
+            rust.buildPackage (rust-attrs
+              // {
+              src = rust-src;
+              pnameSuffix = "-${name}";
+              nativeBuildInputs = [
+                pkgs.binaryen
+                self.inputs.cosmos.packages.${system}.cosmwasm-check
+              ];
+              pname = name;
+              cargoBuildCommand = "cargo build --target wasm32-unknown-unknown --profile release --package ${name} ${std-config}";
+              RUSTFLAGS = "-C link-arg=-s";
+              installPhaseCommand = ''
+                mkdir --parents $out/lib
+                # from CosmWasm/rust-optimizer
+                # --signext-lowering is needed to support blockchains runnning CosmWasm < 1.3. It can be removed eventually
+                wasm-opt target/wasm32-unknown-unknown/release/${binaryName} -o $out/lib/${binaryName} -Os --signext-lowering
+                cosmwasm-check $out/lib/${binaryName}
+                SIZE=$(stat --format=%s "$out/lib/${binaryName}")
+                if [[ "$SIZE" -gt ${builtins.toString maxWasmSizeBytes} ]]; then
+                  echo "Wasm file size is $SIZE, which is larger than the maximum allowed size of ${builtins.toString maxWasmSizeBytes} bytes."
+                  echo "Either reduce size or increase maxWasmSizeBytes if you know what you are doing."
+                  exit 1
+                fi
+              '';
+            });
 
           rust-attrs = {
             doCheck = false;
@@ -104,9 +103,9 @@
             CARGO_PROFILE_RELEASE_BUILD_OVERRIDE_DEBUG = true;
             buildInputs = [ pkgs.protobuf ];
           };
-          cw-cvm-gateway = makeCosmwasmContract "cw-cvm-gateway" rust [ "std" ];
-          cw-cvm-executor = makeCosmwasmContract "cw-cvm-executor" rust [ "std" ];
-          cw-mantis-order = makeCosmwasmContract "cw-mantis-order" rust [ "std" ];
+          cw-cvm-gateway = makeCosmwasmContract "cw-cvm-gateway" rust "--no-default-features --features=std,json-schema";
+          cw-cvm-executor = makeCosmwasmContract "cw-cvm-executor" rust "--no-default-features --features=std,json-schema";
+          cw-mantis-order = makeCosmwasmContract "cw-mantis-order" rust "--no-default-features --features=std,json-schema";
           cosmwasm-contracts = pkgs.symlinkJoin {
             name = "cosmwasm-contracts";
             paths = [
