@@ -43,7 +43,7 @@ fn handle_transport_failure(
         )
         .as_str(),
     );
-    let msg = cw_cvm_executor::msg::ExecuteMsg::SetErr { reason };
+    let msg = cvm_runtime::executor::ExecuteMsg::SetErr { reason };
     let bridge_msg =
         crate::state::tracking::get_interpreter_track(deps.storage, channel.as_str(), sequence)?;
     let interpreter =

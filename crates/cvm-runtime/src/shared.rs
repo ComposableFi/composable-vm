@@ -12,7 +12,7 @@ pub type XcInstruction = crate::Instruction<Vec<u8>, XcAddr, XcFundsFilter>;
 pub type XcPacket = crate::Packet<XcProgram>;
 pub type XcProgram = crate::Program<Vec<XcInstruction>>;
 
-pub fn encode_base64<T: Serialize>(x: &T) -> StdResult<String> {
+pub fn to_json_base64<T: Serialize>(x: &T) -> StdResult<String> {
     Ok(to_json_binary(x)?.to_base64())
 }
 
@@ -27,7 +27,7 @@ pub fn decode_base64<S: AsRef<str>, T: DeserializeOwned>(encoded: S) -> StdResul
 /// But it will also decode/reencode best effort.
 /// Inner must be either base64 or hex encoded or contain only characters from these.
 /// Added with helper per chain to get final address to use.
-#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
+#[cfg_attr(all(feature = "json-schema", not(target_arch = "wasm32")), derive(schemars::JsonSchema))]
 #[cfg_attr(
     feature = "scale",
     derive(
@@ -119,7 +119,7 @@ impl core::fmt::Debug for XcAddr {
 /// let decoded = serde_json_wasm::from_str::<Foo>(r#"{"value":"42"}"#).unwrap();
 /// assert_eq!(Displayed(42), decoded.value);
 /// ```
-#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
+#[cfg_attr(all(feature = "json-schema", not(target_arch = "wasm32")), derive(schemars::JsonSchema))]
 #[derive(
     Copy,
     Clone,

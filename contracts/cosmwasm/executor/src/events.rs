@@ -1,5 +1,5 @@
 use cosmwasm_std::{Addr, Event};
-use cvm_runtime::{service::dex::ExchangeId, shared, InterpreterOrigin, NetworkId, UserId};
+use cvm_runtime::{exchange::ExchangeId, shared, InterpreterOrigin, NetworkId, UserId};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -21,12 +21,6 @@ pub struct CvmInterpreterExchangeStarted {
 #[serde(rename = "cvm.executor.execution.started")]
 pub struct CvmInterpreterExecutionStarted {}
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
-#[serde(rename = "cvm.executor.instantiated")]
-pub struct CvmInterpreterInstantiated {
-    pub interpreter_origin: String,
-}
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
@@ -214,16 +208,7 @@ impl CvmInterpreterTransferred {
     }
 }
 
-impl CvmInterpreterInstantiated {
-    pub const NAME: &'static str = "cvm.executor.instantiated";
-    pub const INTERPRETER_ORIGIN: &'static str = "interpreter_origin";
-    pub fn new(interpreter_origin: &InterpreterOrigin) -> Event {
-        Event::new(Self::NAME).add_attribute(
-            Self::INTERPRETER_ORIGIN,
-            shared::encode_base64(interpreter_origin).expect("origin is managed by"),
-        )
-    }
-}
+
 
 impl CvmInterpreterExchangeSucceeded {
     pub fn new(exchange_id: ExchangeId) -> Event {

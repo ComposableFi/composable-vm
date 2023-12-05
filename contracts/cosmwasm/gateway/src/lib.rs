@@ -10,7 +10,7 @@ pub mod contract;
 pub mod error;
 pub mod events;
 pub mod exchange;
-pub mod interpreter;
+pub mod executor;
 mod network;
 mod prelude;
 pub mod state;

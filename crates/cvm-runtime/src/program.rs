@@ -2,7 +2,7 @@ use crate::prelude::*;
 use parity_scale_codec::{Decode, Encode};
 use scale_info::TypeInfo;
 
-#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
+#[cfg_attr(all(feature = "json-schema", not(target_arch = "wasm32")), derive(schemars::JsonSchema))]
 #[derive(Clone, PartialEq, Eq, Debug, Encode, Decode, TypeInfo, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub struct Program<Instructions> {
@@ -12,7 +12,7 @@ pub struct Program<Instructions> {
         serialize_with = "hex::serialize",
         deserialize_with = "hex::deserialize"
     )]
-    #[cfg_attr(feature = "json-schema", schemars(schema_with = "String::json_schema"))]
+    #[cfg_attr(all(feature = "json-schema", not(target_arch = "wasm32")), schemars(schema_with = "String::json_schema"))]
     #[serde(skip_serializing_if = "Vec::is_empty", default)]
     pub tag: Vec<u8>,
     /// list of instructions to be executed

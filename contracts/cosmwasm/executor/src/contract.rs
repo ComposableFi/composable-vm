@@ -16,7 +16,7 @@ use cosmwasm_std::{
 use cvm_runtime::{
     apply_bindings,
     gateway::{AssetReference, BridgeExecuteProgramMsg, BridgeForwardMsg},
-    service::dex::ExchangeId,
+    exchange::*,
     shared, Amount, BindingValue, Destination, Funds, Instruction, NetworkId, Register,
 };
 use cw2::{ensure_from_older_version, set_contract_version};
@@ -218,122 +218,16 @@ fn interpret_exchange(
     let Config {
         gateway_address, ..
     } = CONFIG.load(deps.storage)?;
-    let exchange: cvm_runtime::service::dex::ExchangeItem = gateway_address
+    let exchange: cvm_runtime::exchange::ExchangeItem = gateway_address
         .get_exchange_by_id(deps.querier, exchange_id)
         .map_err(ContractError::ExchangeNotFound)?;
 
-    use cvm_runtime::service::dex::ExchangeType::*;
-    use prost::Message;
-    ensure_eq!(
-        give.0.len(),
-        1,
-        ContractError::OnlySingleAssetExchangeIsSupportedByPool
-    );
-    ensure_eq!(
-        want.0.len(),
-        1,
-        ContractError::OnlySingleAssetExchangeIsSupportedByPool
-    );
 
-    let give = give.0[0].clone();
-    let want = want.0[0].clone();
+    let response = do_exchange(give, want, gateway_address, deps, sender, &exchange_id, exchange)?;
 
-    let asset = gateway_address
-        .get_asset_by_id(deps.querier, give.0)
-        .map_err(ContractError::AssetNotFound)?;
-
-    let amount: Coin = deps.querier.query_balance(&sender, asset.denom())?;
-    let amount = give.1.apply(amount.amount.u128())?;
-    let give: ibc_apps_more::cosmos::Coin = ibc_apps_more::cosmos::Coin {
-        denom: asset.denom(),
-        amount: amount.to_string(),
-    };
-
-    let want_asset = gateway_address
-        .get_asset_by_id(deps.querier, want.0)
-        .map_err(ContractError::AssetNotFound)?;
-
-    if want.1.is_absolute() && want.1.is_ratio() {
-        return Err(ContractError::CannotDefineBothSlippageAndLimitAtSameTime);
-    }
-
-    let response = Response::default()
-    .add_attribute("exchange_id", exchange_id.to_string());
-    let response = match exchange.exchange {
-        OsmosisPoolManagerModuleV1Beta1 { pool_id, .. } => {
-            let want = if want.1.is_absolute() {
-                ibc_apps_more::cosmos::Coin {
-                    denom: want_asset.denom(),
-                    amount: want.1.intercept.to_string(),
-                }
-            } else {
-                // use https://github.com/osmosis-labs/osmosis/blob/main/cosmwasm/contracts/swaprouter/src/msg.rs to allow slippage
-                ibc_apps_more::cosmos::Coin {
-                    denom: want_asset.denom(),
-                    amount: "1".to_string(),
-                }
-            };
-
-            use cvm_runtime::service::dex::osmosis_std::types::osmosis::poolmanager::v1beta1::*;
-            use prost::Message;
-            let msg = MsgSwapExactAmountIn {
-                routes: vec![SwapAmountInRoute {
-                    pool_id,
-                    token_out_denom: want.denom,
-                }],
-
-                sender: sender.to_string(),
-                token_in: Some(give),
-                token_out_min_amount: want.amount,
-            };
-
-            deps.api
-                .debug(&format!("cvm::executor::execute::exchange {:?}", &msg));
-            let msg = CosmosMsg::Stargate {
-                type_url: MsgSwapExactAmountIn::TYPE_URL.to_string(),
-                value: Binary::from(msg.encode_to_vec()),
-            };
-            let msg = SubMsg::reply_always(msg, EXCHANGE_ID);
-            response
-                .add_submessage(msg)
-        }
-        AstroportRouterContract {
-            address,
-            token_a,
-            token_b,
-        } => {
-            use astroport::{asset::*, router::*};
-            let (minimum_receive, max_spread) = if want.1.is_absolute() {
-                (Some(want.1.intercept.into()), None)
-            } else {
-                (
-                    None,
-                    Some(cosmwasm_std::Decimal::from_ratio(
-                        (Amount::MAX_PARTS - want.1.slope.0) as u128,
-                        Amount::MAX_PARTS,
-                    )),
-                )
-            };
-            let msg = ExecuteMsg::ExecuteSwapOperations {
-                operations: vec![SwapOperation::AstroSwap {
-                    offer_asset_info: AssetInfo::NativeToken { denom: give.denom.clone() },
-                    ask_asset_info: AssetInfo::NativeToken { denom: want_asset.denom() },
-                }],
-                to: None,
-                minimum_receive,
-                max_spread,
-            };
-            let msg = CosmosMsg::Wasm(WasmMsg::Execute {
-                contract_addr: address.to_string(),
-                msg: to_json_binary(&msg)?,
-                funds: vec![give.try_into().expect("coin")],
-            });
-            let msg = SubMsg::reply_always(msg, EXCHANGE_ID);
-            response.add_submessage(msg)
-        }
-    };
     Ok(response.add_event(CvmInterpreterExchangeStarted::new(exchange_id)))
 }
+
 
 /// Interpret the `Call` instruction
 /// * `encoded`: JSON-encoded `LateCall` as bytes

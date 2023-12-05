@@ -14,7 +14,6 @@ workspace = true
 [features]
 library = []
 std = [
-  "cw-cvm-executor/std",
   "cvm-runtime/std",
   "ibc-apps-more/std",
   "ibc-apps/std",
@@ -24,11 +23,11 @@ std = [
 ]
 json-schema = [
   "ibc-apps-more/json-schema",
-  "cw-cvm-executor/json-schema",
   "ibc-apps/schema",
   "ibc-core/schema",
   "ibc-primitives/schema",
   "cvm-runtime/json-schema",
+  "dep:schemars",
 ]
 default = ["std"]
 
@@ -41,18 +40,13 @@ cosmwasm-std = { workspace = true, features = [
   "cosmwasm_1_2",
 ] }
 cw-storage-plus = { workspace = true }
-cw-utils = { workspace = true }
 cw2 = { workspace = true }
 cw20 = { workspace = true }
 
-schemars = { workspace = true }
+schemars = { workspace = true, optional = true}
 serde = { workspace = true }
 serde-json-wasm = { workspace = true }
 thiserror = { workspace = true }
-
-cw-cvm-executor = { path = "../executor", features = [
-  "library",
-], default-features = false }
 
 cvm-runtime = { path = "../../../crates/cvm-runtime", features = [
   "cosmwasm",

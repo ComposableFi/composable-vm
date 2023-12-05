@@ -59,7 +59,7 @@ pub fn reply(deps: DepsMut, _env: Env, msg: Reply) -> Result<Response> {
     if let Some(reply_id) = ReplyId::n(msg.id) {
         return match reply_id {
             ReplyId::InstantiateInterpreter => {
-                crate::interpreter::handle_instantiate_reply(deps, msg).map_err(ContractError::from)
+                crate::executor::handle_instantiate_reply(deps, msg).map_err(ContractError::from)
             }
             ReplyId::TransportSent => handle_transfer_sent(deps, msg),
             ReplyId::ExecProgram => handle_exec_reply(msg),

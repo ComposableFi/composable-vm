@@ -4,7 +4,7 @@ use crate::{NetworkId, UserOrigin};
 
 /// The Origin that executed the XCVM operation.
 /// Origin was verified to satisfy security semantics for execution.
-#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
+#[cfg_attr(all(feature = "json-schema", not(target_arch = "wasm32")), derive(schemars::JsonSchema))]
 #[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
 pub enum CallOrigin {
     Remote { user_origin: UserOrigin },
