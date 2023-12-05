@@ -1,13 +1,24 @@
-pub fn do_exchange(
+pub mod error;
+mod osmosis_std;
+
+use cosmwasm_std::{
+    ensure_eq, to_json_binary, Addr, Binary, Coin, CosmosMsg, DepsMut, Response, SubMsg, WasmMsg,
+};
+use cvm_runtime::{Amount, ExchangeId, ExchangeItem, Funds};
+use error::ContractError;
+use osmosis_std::types::osmosis::poolmanager::v1beta1::MsgSwapExactAmountIn;
+
+pub fn exchange(
     give: Funds,
     want: Funds,
     gateway_address: cvm_runtime::gateway::Gateway,
     deps: &mut DepsMut<'_>,
     sender: Addr,
-    exchange_id: &_,
-    exchange: !,
+    exchange_id: &ExchangeId,
+    exchange: ExchangeItem,
+    response_id: u64,
 ) -> Result<Response, ContractError> {
-    use cvm_runtime::service::dex::ExchangeType::*;
+    use cvm_runtime::exchange::ExchangeType::*;
     use prost::Message;
     ensure_eq!(
         give.0.len(),
@@ -52,7 +63,7 @@ pub fn do_exchange(
                 }
             };
 
-            use cvm_runtime::service::dex::osmosis_std::types::osmosis::poolmanager::v1beta1::*;
+            use crate::osmosis_std::types::osmosis::poolmanager::v1beta1::*;
             use prost::Message;
             let msg = MsgSwapExactAmountIn {
                 routes: vec![SwapAmountInRoute {
@@ -71,7 +82,7 @@ pub fn do_exchange(
                 type_url: MsgSwapExactAmountIn::TYPE_URL.to_string(),
                 value: Binary::from(msg.encode_to_vec()),
             };
-            let msg = SubMsg::reply_always(msg, EXCHANGE_ID);
+            let msg = SubMsg::reply_always(msg, response_id);
             response.add_submessage(msg)
         }
         AstroportRouterContract {
@@ -109,7 +120,7 @@ pub fn do_exchange(
                 msg: to_json_binary(&msg)?,
                 funds: vec![give.try_into().expect("coin")],
             });
-            let msg = SubMsg::reply_always(msg, EXCHANGE_ID);
+            let msg = SubMsg::reply_always(msg, response_id);
             response.add_submessage(msg)
         }
     };

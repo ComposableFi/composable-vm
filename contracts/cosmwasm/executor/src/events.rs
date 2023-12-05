@@ -1,5 +1,8 @@
 use cosmwasm_std::{Addr, Event};
-use cvm_runtime::{exchange::ExchangeId, shared, InterpreterOrigin, NetworkId, UserId};
+use cvm_runtime::{
+    exchange::ExchangeId, executor::CvmInterpreterInstantiated, shared, InterpreterOrigin,
+    NetworkId, UserId,
+};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]

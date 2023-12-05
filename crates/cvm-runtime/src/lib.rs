@@ -44,7 +44,7 @@ pub mod gateway;
 mod instruction;
 mod network;
 mod packet;
-mod prelude;
+pub mod prelude;
 mod program;
 pub mod proto;
 mod protocol;

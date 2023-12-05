@@ -2,7 +2,7 @@ use crate::{
     authenticate::{ensure_owner, Authenticated},
     error::{ContractError, Result},
     events::*,
-    msg::{ExecuteMsg, InstantiateMsg, MigrateMsg, QueryMsg, Step},
+    msg::{MigrateMsg, QueryMsg},
     state::{self, Config, CONFIG, IP_REGISTER, OWNERS, RESULT_REGISTER, TIP_REGISTER},
 };
 use alloc::borrow::Cow;
@@ -13,9 +13,11 @@ use cosmwasm_std::{
     DepsMut, Env, MessageInfo, QueryRequest, Reply, Response, StdError, StdResult, SubMsg,
     SubMsgResult, WasmMsg, WasmQuery,
 };
+use cvm_runtime::executor::*;
 use cvm_runtime::{
     apply_bindings,
     exchange::*,
+    executor::{CvmInterpreterInstantiated, InstantiateMsg},
     gateway::{AssetReference, BridgeExecuteProgramMsg, BridgeForwardMsg},
     shared, Amount, BindingValue, Destination, Funds, Instruction, NetworkId, Register,
 };
@@ -31,7 +33,12 @@ const SELF_CALL_ID: u64 = 2;
 const EXCHANGE_ID: u64 = 3;
 
 #[cfg_attr(not(feature = "library"), entry_point)]
-pub fn instantiate(deps: DepsMut, _env: Env, info: MessageInfo, msg: InstantiateMsg) -> Result {
+pub fn instantiate(
+    deps: DepsMut,
+    _env: Env,
+    info: MessageInfo,
+    msg: cvm_runtime::executor::InstantiateMsg,
+) -> Result {
     set_contract_version(deps.storage, CONTRACT_NAME, CONTRACT_VERSION)?;
     let gateway_address =
         cvm_runtime::gateway::Gateway::addr_validate(deps.api, &msg.gateway_address)?;
@@ -45,8 +52,14 @@ pub fn instantiate(deps: DepsMut, _env: Env, info: MessageInfo, msg: Instantiate
 }
 
 #[cfg_attr(not(feature = "library"), entry_point)]
-pub fn execute(deps: DepsMut, env: Env, info: MessageInfo, msg: ExecuteMsg) -> Result {
+pub fn execute(
+    deps: DepsMut,
+    env: Env,
+    info: MessageInfo,
+    msg: cvm_runtime::executor::ExecuteMsg,
+) -> Result {
     let token = ensure_owner(deps.as_ref(), &env.contract.address, info.sender.clone())?;
+    use cvm_runtime::executor::*;
     match msg {
         ExecuteMsg::Execute { tip, program } => initiate_execution(token, deps, env, tip, program),
 
@@ -178,7 +191,7 @@ pub fn handle_execute_step(
                 exchange_id,
                 give,
                 want,
-            } => interpret_exchange(
+            } => execute_exchange(
                 &mut deps,
                 give,
                 want,
@@ -208,7 +221,7 @@ pub fn handle_execute_step(
     })
 }
 
-fn interpret_exchange(
+fn execute_exchange(
     deps: &mut DepsMut,
     give: Funds,
     want: Funds,
@@ -222,7 +235,7 @@ fn interpret_exchange(
         .get_exchange_by_id(deps.querier, exchange_id)
         .map_err(ContractError::ExchangeNotFound)?;
 
-    let response = do_exchange(
+    let response = cvm_runtime_exchange::exchange(
         give,
         want,
         gateway_address,
@@ -230,6 +243,7 @@ fn interpret_exchange(
         sender,
         &exchange_id,
         exchange,
+        EXCHANGE_ID,
     )?;
 
     Ok(response.add_event(CvmInterpreterExchangeStarted::new(exchange_id)))
@@ -323,7 +337,7 @@ impl<'a> BindingResolver<'a> {
         let value = match reference.local {
             AssetReference::Cw20 { contract } => contract.into_string(),
             AssetReference::Native { denom } => denom,
-            AssetReference::Erc20 { contract } => contract.to_string(),
+            // AssetReference::Erc20 { contract } => contract.to_string(),
         };
         Ok(Cow::Owned(value.into()))
     }
@@ -349,8 +363,7 @@ impl<'a> BindingResolver<'a> {
                 balance
                     .apply(coin.amount.into())
                     .map_err(|_| ContractError::ArithmeticError)?
-            }
-            AssetReference::Erc20 { .. } => Err(ContractError::AssetUnsupportedOnThisNetwork)?,
+            } // AssetReference::Erc20 { .. } => Err(ContractError::AssetUnsupportedOnThisNetwork)?,
         };
         Ok(Cow::Owned(amount.to_string().into_bytes()))
     }
@@ -390,7 +403,7 @@ pub fn interpret_spawn(
                 contract,
                 &env.contract.address,
             ),
-            AssetReference::Erc20 { .. } => Err(ContractError::AssetUnsupportedOnThisNetwork)?,
+            // AssetReference::Erc20 { .. } => Err(ContractError::AssetUnsupportedOnThisNetwork)?,
         }?;
 
         if !transfer_amount.is_zero() {
@@ -411,8 +424,7 @@ pub fn interpret_spawn(
                         recipient: gateway.address().into(),
                         amount: transfer_amount.into(),
                     })?)
-                }
-                AssetReference::Erc20 { .. } => Err(ContractError::AssetUnsupportedOnThisNetwork)?,
+                } // AssetReference::Erc20 { .. } => Err(ContractError::AssetUnsupportedOnThisNetwork)?,
             };
         }
     }
@@ -480,8 +492,7 @@ pub fn interpret_transfer(
                     recipient: recipient.clone(),
                     amount: transfer_amount.into(),
                 })?)
-            }
-            AssetReference::Erc20 { .. } => Err(ContractError::AssetUnsupportedOnThisNetwork)?,
+            } // AssetReference::Erc20 { .. } => Err(ContractError::AssetUnsupportedOnThisNetwork)?,
         };
     }
 

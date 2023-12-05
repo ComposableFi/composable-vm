@@ -15,6 +15,9 @@ todo = "warn"
 let_unit_value = "allow"
 
 [workspace.dependencies]
+
+cvm-runtime = { path = "./crates/cvm-runtime", default-features = false}
+cvm-runtime-exchange = { path = "./crates/cvm-runtime-exchange", default-features = false}
 derive_more = { version = "0.99.17", default-features = false, features = [
     "add",
     "add_assign",

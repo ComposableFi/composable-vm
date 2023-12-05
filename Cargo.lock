@@ -725,12 +725,18 @@ dependencies = [
 ]
 
 [[package]]
-name = "cvm-runtime-exchage"
+name = "cvm-runtime-exchange"
 version = "0.1.0"
 dependencies = [
  "astroport",
  "cosmwasm-std",
+ "cvm-runtime",
+ "ibc-apps-more",
  "osmosis-std",
+ "prost 0.12.3",
+ "schemars",
+ "serde",
+ "thiserror-core",
 ]
 
 [[package]]
@@ -756,6 +762,7 @@ dependencies = [
  "cosmwasm-schema",
  "cosmwasm-std",
  "cvm-runtime",
+ "cvm-runtime-exchange",
  "cw-storage-plus 1.2.0",
  "cw-utils 1.0.3",
  "cw2 1.1.2",

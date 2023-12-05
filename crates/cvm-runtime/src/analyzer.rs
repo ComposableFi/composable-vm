@@ -7,3 +7,8 @@
 //! 4. Centauri -> transfer -> Cosmos Hub -> transfer -> Osmosis (swap) => PFM enabled transfer with CVM wasm hook
 //! 5. Centauri -> transfer -> Cosmos Hub -> transfer -> Osmosis (swap) -> transfer -> Neutron => PFM enabled transfer with CVM wasm hook and after usual transfer
 //! 6. Centauri -> transfer -> Cosmos Hub -> transfer -> Osmosis (swap) -> transfer -> Neutron(swap) => PFM enabled transfer with CVM wasm hook and after one more CVM hop
+//!
+//! Solutions sorted by price and cheapest one selected.
+//!
+//! I think because this one will produce dead branches(along with heap garbage), should searchers do that offchain and provide hint for execution?
+//! It seems under researched.

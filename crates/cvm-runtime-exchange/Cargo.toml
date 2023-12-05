@@ -1,22 +1,32 @@
 [package]
 edition = "2021"
-name = "cvm-runtime-exchage"
+name = "cvm-runtime-exchange"
 version = "0.1.0"
 
 [dependencies]
 cosmwasm-std = { workspace = true, features = ["ibc3"] }
 osmosis-std = { workspace = true, default-features = false }
-
+cvm-runtime = { workspace = true, default-features = false }
 astroport = { workspace = true, default-features = false }
-
-
+prost = { workspace = true, default-features = false}
+serde = { workspace = true, default-features = false}
+ibc-apps-more = { workspace = true, default-features = false}
+schemars ={ workspace = true, default-features = false, optional = true}
+thiserror = { workspace = true, default-features = false}
 [features]
-default = ["std"]
+default = [
+    "std",
+    "ibc-apps-more/std",
+    ]
 cosmwasm = []
 json-schema = [
+    "cvm-runtime/json-schema",
+    "ibc-apps-more/json-schema",
+    "dep:schemars",
 ]
 cosmos = []
 std = [
+    "cvm-runtime/std",
 ]
 
 
