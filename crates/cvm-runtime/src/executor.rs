@@ -6,7 +6,7 @@ use crate::InterpreterOrigin;
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[cfg_attr(
-    all(feature = "json-schema", not(target_arch = "wasm32")),
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
     derive(schemars::JsonSchema)
 )]
 #[serde(rename_all = "snake_case")]
@@ -19,7 +19,7 @@ pub struct InstantiateMsg {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[cfg_attr(
-    all(feature = "json-schema", not(target_arch = "wasm32")),
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
     derive(schemars::JsonSchema)
 )]
 #[serde(rename_all = "snake_case")]
@@ -37,7 +37,7 @@ pub struct Step {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[cfg_attr(
-    all(feature = "json-schema", not(target_arch = "wasm32")),
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
     derive(schemars::JsonSchema)
 )]
 #[serde(rename_all = "snake_case")]

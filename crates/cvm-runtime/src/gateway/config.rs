@@ -16,7 +16,7 @@ pub const IBC_VERSION: &str = "xcvm-v0";
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "snake_case")]
 #[cfg_attr(
-    all(feature = "json-schema", not(target_arch = "wasm32")),
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
     derive(schemars::JsonSchema)
 )]
 pub struct OsmosisIbcHooks {
@@ -26,7 +26,7 @@ pub struct OsmosisIbcHooks {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "snake_case")]
 #[cfg_attr(
-    all(feature = "json-schema", not(target_arch = "wasm32")),
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
     derive(schemars::JsonSchema)
 )]
 pub struct PFM {}
@@ -35,7 +35,7 @@ pub struct PFM {}
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "snake_case")]
 #[cfg_attr(
-    all(feature = "json-schema", not(target_arch = "wasm32")),
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
     derive(schemars::JsonSchema)
 )]
 pub struct Adr08IbcCallbacks {}
@@ -44,7 +44,7 @@ pub struct Adr08IbcCallbacks {}
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "snake_case")]
 #[cfg_attr(
-    all(feature = "json-schema", not(target_arch = "wasm32")),
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
     derive(schemars::JsonSchema)
 )]
 pub struct Ics20Features {
@@ -55,14 +55,14 @@ pub struct Ics20Features {
 }
 
 #[allow(clippy::large_enum_variant)]
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, )]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 #[cfg_attr(
     all(
-        all(feature = "json-schema", not(target_arch = "wasm32")),
+        feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
         not(feature = "xcm")
     ),
-    derive(JsonSchema)
+    derive(schemars::JsonSchema)
 )]
 pub enum ForeignAssetId {
     IbcIcs20(PrefixedDenom),
@@ -94,7 +94,7 @@ impl From<PrefixedDenom> for ForeignAssetId {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "snake_case")]
 #[cfg_attr(
-    all(feature = "json-schema", not(target_arch = "wasm32")),
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
     derive(schemars::JsonSchema)
 )]
 pub enum Prefix {
@@ -107,7 +107,7 @@ pub enum Prefix {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "snake_case")]
 #[cfg_attr(
-    all(feature = "json-schema", not(target_arch = "wasm32")),
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
     derive(schemars::JsonSchema)
 )]
 pub struct ForceNetworkToNetworkMsg {
@@ -121,7 +121,7 @@ pub struct ForceNetworkToNetworkMsg {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "snake_case")]
 #[cfg_attr(
-    all(feature = "json-schema", not(target_arch = "wasm32")),
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
     derive(schemars::JsonSchema)
 )]
 pub struct NetworkItem {
@@ -137,7 +137,7 @@ pub struct NetworkItem {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "snake_case")]
 #[cfg_attr(
-    all(feature = "json-schema", not(target_arch = "wasm32")),
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
     derive(schemars::JsonSchema)
 )]
 pub struct Ics20Channel {
@@ -149,7 +149,7 @@ pub struct Ics20Channel {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "snake_case")]
 #[cfg_attr(
-    all(feature = "json-schema", not(target_arch = "wasm32")),
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
     derive(schemars::JsonSchema)
 )]
 pub struct IbcChannels {
@@ -159,7 +159,7 @@ pub struct IbcChannels {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "snake_case")]
 #[cfg_attr(
-    all(feature = "json-schema", not(target_arch = "wasm32")),
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
     derive(schemars::JsonSchema)
 )]
 pub struct IbcEnabled {
@@ -170,7 +170,7 @@ pub struct IbcEnabled {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "snake_case")]
 #[cfg_attr(
-    all(feature = "json-schema", not(target_arch = "wasm32")),
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
     derive(schemars::JsonSchema)
 )]
 pub struct IcsPair {
@@ -180,10 +180,10 @@ pub struct IcsPair {
 
 /// relative timeout to CW/IBC-rs time.
 /// very small, assumed messages are arriving fast enough, like less than hours
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, )]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "snake_case")]
 #[cfg_attr(
-    all(feature = "json-schema", not(target_arch = "wasm32")),
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
     derive(schemars::JsonSchema)
 )]
 pub enum RelativeTimeout {
@@ -204,7 +204,7 @@ impl RelativeTimeout {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "snake_case")]
 #[cfg_attr(
-    all(feature = "json-schema", not(target_arch = "wasm32")),
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
     derive(schemars::JsonSchema)
 )]
 pub struct OtherNetworkItem {
@@ -231,7 +231,7 @@ pub struct OtherNetworkItem {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "snake_case")]
 #[cfg_attr(
-    all(feature = "json-schema", not(target_arch = "wasm32")),
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
     derive(schemars::JsonSchema)
 )]
 pub enum ConfigSubMsg {
@@ -274,7 +274,7 @@ pub enum ConfigSubMsg {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "snake_case")]
 #[cfg_attr(
-    all(feature = "json-schema", not(target_arch = "wasm32")),
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
     derive(schemars::JsonSchema)
 )]
 pub struct InstantiateMsg(pub HereItem);
@@ -282,7 +282,7 @@ pub struct InstantiateMsg(pub HereItem);
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "snake_case")]
 #[cfg_attr(
-    all(feature = "json-schema", not(target_arch = "wasm32")),
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
     derive(schemars::JsonSchema)
 )]
 pub struct HereItem {
@@ -296,7 +296,7 @@ pub struct HereItem {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "snake_case")]
 #[cfg_attr(
-    all(feature = "json-schema", not(target_arch = "wasm32")),
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
     derive(schemars::JsonSchema)
 )]
 pub enum GatewayId {
@@ -316,7 +316,7 @@ pub enum GatewayId {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "snake_case")]
 #[cfg_attr(
-    all(feature = "json-schema", not(target_arch = "wasm32")),
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
     derive(schemars::JsonSchema)
 )]
 
@@ -338,7 +338,7 @@ impl AssetItem {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "snake_case")]
 #[cfg_attr(
-    all(feature = "json-schema", not(target_arch = "wasm32")),
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
     derive(schemars::JsonSchema)
 )]
 pub struct BridgeAsset {
@@ -353,7 +353,7 @@ pub struct BridgeAsset {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "snake_case")]
 #[cfg_attr(
-    all(feature = "json-schema", not(target_arch = "wasm32")),
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
     derive(schemars::JsonSchema)
 )]
 pub enum AssetReference {

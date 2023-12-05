@@ -1,7 +1,7 @@
 use crate::prelude::*;
 
 #[cfg_attr(
-    all(feature = "json-schema", not(target_arch = "wasm32")),
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
     derive(schemars::JsonSchema)
 )]
 #[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
@@ -14,7 +14,7 @@ pub struct Program<Instructions> {
         deserialize_with = "hex::deserialize"
     )]
     #[cfg_attr(
-        all(feature = "json-schema", not(target_arch = "wasm32")),
+        feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
         schemars(schema_with = "String::json_schema")
     )]
     #[serde(skip_serializing_if = "Vec::is_empty", default)]

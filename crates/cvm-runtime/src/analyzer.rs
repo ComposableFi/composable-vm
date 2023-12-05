@@ -1,7 +1,7 @@
 //! transforms CVM program into analyzed format
-//! 
+//!
 //! Cases:
-//! 1. Centauri -> transfer -> Cosmos Hub => converted to usual IBC transfer 
+//! 1. Centauri -> transfer -> Cosmos Hub => converted to usual IBC transfer
 //! 2. Centauri -> transfer -> Cosmos Hub -> transfer -> Osmosis => PFM enabled transfer
 //! 3. Centauri -> transfer -> Cosmos Hub(local CVM op) -> transfer -> Osmosis => unroutable
 //! 4. Centauri -> transfer -> Cosmos Hub -> transfer -> Osmosis (swap) => PFM enabled transfer with CVM wasm hook

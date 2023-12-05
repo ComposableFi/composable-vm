@@ -5,7 +5,7 @@ use crate::{NetworkId, UserOrigin};
 /// The Origin that executed the XCVM operation.
 /// Origin was verified to satisfy security semantics for execution.
 #[cfg_attr(
-    all(feature = "json-schema", not(target_arch = "wasm32")),
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
     derive(schemars::JsonSchema)
 )]
 #[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]

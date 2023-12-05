@@ -58,7 +58,7 @@ impl TryFrom<&[u8]> for XCVMAck {
 }
 
 #[cfg_attr(
-    all(feature = "json-schema", not(target_arch = "wasm32")),
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
     derive(schemars::JsonSchema)
 )]
 #[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
@@ -67,7 +67,7 @@ pub struct Packet<Program> {
     /// The interpreter that was the origin of this packet.
     #[serde(with = "hex")]
     #[cfg_attr(
-        all(feature = "json-schema", not(target_arch = "wasm32")),
+        feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
         schemars(with = "String")
     )]
     pub interpreter: Vec<u8>,
@@ -76,7 +76,7 @@ pub struct Packet<Program> {
     /// The salt associated with the program.
     #[serde(with = "hex")]
     #[cfg_attr(
-        all(feature = "json-schema", not(target_arch = "wasm32")),
+        feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
         schemars(with = "String")
     )]
     pub salt: Vec<u8>,

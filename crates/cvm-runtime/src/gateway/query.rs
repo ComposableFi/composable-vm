@@ -5,26 +5,26 @@ use super::{AssetItem, AssetReference};
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "snake_case")]
 #[cfg_attr(
-    all(feature = "json-schema", not(target_arch = "wasm32")),
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
     derive(schemars::JsonSchema, cosmwasm_schema::QueryResponses)
 )]
 pub enum QueryMsg {
     /// Returns [`AssetReference`] for an asset with given id.
     #[cfg_attr(
-        all(feature = "json-schema", not(target_arch = "wasm32")),
+        feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
         returns(GetAssetResponse)
     )]
     GetAssetById { asset_id: AssetId },
 
     /// Returns [`AssetItem`] for an asset with given local reference.
     #[cfg_attr(
-        all(feature = "json-schema", not(target_arch = "wasm32")),
+        feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
         returns(GetAssetResponse)
     )]
     GetLocalAssetByReference { reference: AssetReference },
 
     #[cfg_attr(
-        all(feature = "json-schema", not(target_arch = "wasm32")),
+        feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
         returns(GetIbcIcs20RouteResponse)
     )]
     GetIbcIcs20Route {
@@ -33,7 +33,7 @@ pub enum QueryMsg {
     },
 
     #[cfg_attr(
-        all(feature = "json-schema", not(target_arch = "wasm32")),
+        feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
         returns(GetExchangeResponse)
     )]
     GetExchangeById { exchange_id: ExchangeId },
@@ -43,7 +43,7 @@ pub enum QueryMsg {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "snake_case")]
 #[cfg_attr(
-    all(feature = "json-schema", not(target_arch = "wasm32")),
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
     derive(schemars::JsonSchema)
 )]
 pub struct GetAllAssetsResponse {
@@ -53,7 +53,7 @@ pub struct GetAllAssetsResponse {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "snake_case")]
 #[cfg_attr(
-    all(feature = "json-schema", not(target_arch = "wasm32")),
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
     derive(schemars::JsonSchema)
 )]
 pub struct GetExchangeResponse {
@@ -63,7 +63,7 @@ pub struct GetExchangeResponse {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "snake_case")]
 #[cfg_attr(
-    all(feature = "json-schema", not(target_arch = "wasm32")),
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
     derive(schemars::JsonSchema)
 )]
 pub struct GetIbcIcs20RouteResponse {
@@ -73,7 +73,7 @@ pub struct GetIbcIcs20RouteResponse {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "snake_case")]
 #[cfg_attr(
-    all(feature = "json-schema", not(target_arch = "wasm32")),
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
     derive(schemars::JsonSchema)
 )]
 pub struct GetAssetResponse {

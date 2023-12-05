@@ -42,12 +42,10 @@ cosmwasm-std = { workspace = true, features = [
 cw-storage-plus = { workspace = true }
 cw2 = { workspace = true }
 cw20 = { workspace = true }
-
 schemars = { workspace = true, optional = true}
 serde = { workspace = true }
 serde-json-wasm = { workspace = true }
 thiserror = { workspace = true }
-
 cvm-runtime = { path = "../../../crates/cvm-runtime", features = [
   "cosmwasm",
 ], default-features = false }

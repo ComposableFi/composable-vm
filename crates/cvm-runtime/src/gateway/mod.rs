@@ -12,7 +12,7 @@ use crate::{
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "snake_case")]
 #[cfg_attr(
-    all(feature = "json-schema", not(target_arch = "wasm32")),
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
     derive(schemars::JsonSchema)
 )]
 pub struct MigrateMsg {}
@@ -20,7 +20,7 @@ pub struct MigrateMsg {}
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, derive_more::From)]
 #[serde(rename_all = "snake_case")]
 #[cfg_attr(
-    all(feature = "json-schema", not(target_arch = "wasm32")),
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
     derive(schemars::JsonSchema)
 )]
 pub enum ExecuteMsg {
@@ -53,7 +53,7 @@ pub enum ExecuteMsg {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "snake_case")]
 #[cfg_attr(
-    all(feature = "json-schema", not(target_arch = "wasm32")),
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
     derive(schemars::JsonSchema)
 )]
 pub enum ShortcutSubMsg {
@@ -73,7 +73,7 @@ pub enum ShortcutSubMsg {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "snake_case")]
 #[cfg_attr(
-    all(feature = "json-schema", not(target_arch = "wasm32")),
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
     derive(schemars::JsonSchema)
 )]
 pub struct ExecuteProgramMsg<Assets = Option<Funds<crate::shared::Displayed<u128>>>> {
@@ -85,7 +85,7 @@ pub struct ExecuteProgramMsg<Assets = Option<Funds<crate::shared::Displayed<u128
         deserialize_with = "hex::deserialize"
     )]
     #[cfg_attr(
-        all(feature = "json-schema", not(target_arch = "wasm32")),
+        feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
         schemars(schema_with = "String::json_schema")
     )]
     #[serde(skip_serializing_if = "Vec::is_empty", default)]
@@ -107,7 +107,7 @@ pub type BridgeExecuteProgramMsg = ExecuteProgramMsg<Funds<crate::shared::Displa
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "snake_case")]
 #[cfg_attr(
-    all(feature = "json-schema", not(target_arch = "wasm32")),
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
     derive(schemars::JsonSchema)
 )]
 pub struct BridgeForwardMsg {
@@ -132,7 +132,7 @@ pub struct BridgeForwardMsg {
 #[cfg(feature = "cosmwasm")]
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[cfg_attr(
-    all(feature = "json-schema", not(target_arch = "wasm32")),
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
     derive(schemars::JsonSchema)
 )]
 #[serde(transparent)]

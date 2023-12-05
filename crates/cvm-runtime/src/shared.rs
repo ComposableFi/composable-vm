@@ -28,7 +28,7 @@ pub fn decode_base64<S: AsRef<str>, T: DeserializeOwned>(encoded: S) -> StdResul
 /// Inner must be either base64 or hex encoded or contain only characters from these.
 /// Added with helper per chain to get final address to use.
 #[cfg_attr(
-    all(feature = "json-schema", not(target_arch = "wasm32")),
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
     derive(schemars::JsonSchema)
 )]
 #[cfg_attr(
@@ -123,7 +123,7 @@ impl core::fmt::Debug for XcAddr {
 /// assert_eq!(Displayed(42), decoded.value);
 /// ```
 #[cfg_attr(
-    all(feature = "json-schema", not(target_arch = "wasm32")),
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
     derive(schemars::JsonSchema)
 )]
 #[derive(

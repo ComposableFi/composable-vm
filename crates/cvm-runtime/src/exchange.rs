@@ -4,7 +4,7 @@ pub type ExchangeId = crate::shared::Displayed<u128>;
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[cfg_attr(
-    all(feature = "json-schema", not(target_arch = "wasm32")),
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
     derive(schemars::JsonSchema)
 )]
 #[serde(rename_all = "snake_case")]
@@ -26,7 +26,7 @@ pub enum ExchangeType {
 /// allows to execute Exchange instruction
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[cfg_attr(
-    all(feature = "json-schema", not(target_arch = "wasm32")),
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
     derive(schemars::JsonSchema)
 )]
 #[serde(rename_all = "snake_case")]

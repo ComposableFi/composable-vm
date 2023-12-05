@@ -13,22 +13,10 @@ use serde::{Deserialize, Serialize};
 /// This ID is an opaque, arbitrary type from the XCVM protocol and no assumption must be made on
 /// how it is computed.
 #[cfg_attr(
-    all(feature = "json-schema", not(target_arch = "wasm32")),
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
     derive(schemars::JsonSchema)
 )]
-#[derive(
-    Copy,
-    Clone,
-    PartialEq,
-    Eq,
-    PartialOrd,
-    Ord,
-    Debug,
-    Hash,
-
-    Serialize,
-    Deserialize,
-)]
+#[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Hash, Serialize, Deserialize)]
 #[repr(transparent)]
 pub struct AssetId(pub Displayed<u128>);
 
@@ -86,12 +74,10 @@ impl cw_storage_plus::KeyDeserialize for AssetId {
 
 /// See https://en.wikipedia.org/wiki/Linear_equation#Slope%E2%80%93intercept_form_or_Gradient-intercept_form
 #[cfg_attr(
-    all(feature = "json-schema", not(target_arch = "wasm32")),
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
     derive(schemars::JsonSchema)
 )]
-#[derive(
-    Clone, PartialEq, Eq, PartialOrd, Ord, Debug,  Serialize, Deserialize,
-)]
+#[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub struct Amount {
     /// absolute amount, optional, default is 0
@@ -107,7 +93,7 @@ fn is_default<T: Default + PartialEq>(value: &T) -> bool {
 }
 
 /// Arithmetic errors.
-#[derive(Eq, PartialEq, Clone, Copy,  Debug,  Serialize, Deserialize)]
+#[derive(Eq, PartialEq, Clone, Copy, Debug, Serialize, Deserialize)]
 pub enum ArithmeticError {
     /// Underflow.
     Underflow,
@@ -270,12 +256,10 @@ impl From<u128> for Amount {
 
 /// a set of assets with non zero balances
 #[cfg_attr(
-    all(feature = "json-schema", not(target_arch = "wasm32")),
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
     derive(schemars::JsonSchema)
 )]
-#[derive(
-    Clone, PartialEq, Eq, PartialOrd, Ord, Debug,  Serialize, Deserialize,
-)]
+#[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 #[repr(transparent)]
 pub struct Funds<T = Amount>(pub Vec<(AssetId, T)>);
 

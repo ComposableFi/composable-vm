@@ -3,10 +3,10 @@ use alloc::{borrow::Cow, collections::BTreeMap, vec::Vec};
 use serde::{Deserialize, Serialize};
 
 #[cfg_attr(
-    all(feature = "json-schema", not(target_arch = "wasm32")),
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
     derive(schemars::JsonSchema)
 )]
-#[derive(Clone, PartialEq, Eq, Debug,  Serialize, Deserialize)]
+#[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum BindingValue {
     Register(Register),
@@ -16,10 +16,10 @@ pub enum BindingValue {
 }
 
 #[cfg_attr(
-    all(feature = "json-schema", not(target_arch = "wasm32")),
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
     derive(schemars::JsonSchema)
 )]
-#[derive(Copy, Clone, PartialEq, Eq, Debug,  Serialize, Deserialize)]
+#[derive(Copy, Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum Register {
     /// Instruction pointer
@@ -42,10 +42,10 @@ pub type Bindings = Vec<(u32, BindingValue)>;
 pub type OrderedBindings = BTreeMap<u32, BindingValue>;
 
 #[cfg_attr(
-    all(feature = "json-schema", not(target_arch = "wasm32")),
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
     derive(schemars::JsonSchema)
 )]
-#[derive(Clone, PartialEq, Eq, Debug,  Serialize, Deserialize)]
+#[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum Destination<Account> {
     Account(Account),
@@ -56,10 +56,10 @@ pub enum Destination<Account> {
 /// This set will remain as small as possible, expressiveness must come on `top` of the base
 /// instructions.
 #[cfg_attr(
-    all(feature = "json-schema", not(target_arch = "wasm32")),
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
     derive(schemars::JsonSchema)
 )]
-#[derive(Clone, PartialEq, Eq, Debug,  Serialize, Deserialize)]
+#[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum Instruction<Payload, Account, Assets> {
     /// Transfer some [`Assets`] from the current program to the [`to`] account.
@@ -94,7 +94,7 @@ pub enum Instruction<Payload, Account, Assets> {
             deserialize_with = "hex::deserialize"
         )]
         #[cfg_attr(
-            all(feature = "json-schema", not(target_arch = "wasm32")),
+            feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
             schemars(schema_with = "String::json_schema")
         )]
         #[serde(skip_serializing_if = "Vec::is_empty", default)]

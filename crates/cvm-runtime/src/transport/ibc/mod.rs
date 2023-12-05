@@ -19,7 +19,7 @@ use ibc_apps_more::{
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "snake_case")]
 #[cfg_attr(
-    all(feature = "json-schema", not(target_arch = "wasm32")),
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
     derive(schemars::JsonSchema)
 )]
 pub struct XcMessageData {
@@ -29,7 +29,7 @@ pub struct XcMessageData {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[cfg_attr(
-    all(feature = "json-schema", not(target_arch = "wasm32")),
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
     derive(schemars::JsonSchema)
 )]
 #[serde(rename_all = "snake_case")]
@@ -44,7 +44,7 @@ pub enum TransportTrackerId {
 /// route is used to describe how to send a full program packet to another network
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[cfg_attr(
-    all(feature = "json-schema", not(target_arch = "wasm32")),
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
     derive(schemars::JsonSchema)
 )]
 #[serde(rename_all = "snake_case")]
