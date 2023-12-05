@@ -1,6 +1,12 @@
-
-
-pub fn do_exchange(give: Funds, want: Funds, gateway_address: cvm_runtime::gateway::Gateway, deps: &mut DepsMut<'_>, sender: Addr, exchange_id: &_, exchange: !) -> Result<Response, ContractError> {
+pub fn do_exchange(
+    give: Funds,
+    want: Funds,
+    gateway_address: cvm_runtime::gateway::Gateway,
+    deps: &mut DepsMut<'_>,
+    sender: Addr,
+    exchange_id: &_,
+    exchange: !,
+) -> Result<Response, ContractError> {
     use cvm_runtime::service::dex::ExchangeType::*;
     use prost::Message;
     ensure_eq!(
@@ -30,8 +36,7 @@ pub fn do_exchange(give: Funds, want: Funds, gateway_address: cvm_runtime::gatew
     if want.1.is_absolute() && want.1.is_ratio() {
         return Err(ContractError::CannotDefineBothSlippageAndLimitAtSameTime);
     }
-    let response = Response::default()
-    .add_attribute("exchange_id", exchange_id.to_string());
+    let response = Response::default().add_attribute("exchange_id", exchange_id.to_string());
     let response = match exchange.exchange {
         OsmosisPoolManagerModuleV1Beta1 { pool_id, .. } => {
             let want = if want.1.is_absolute() {
@@ -67,8 +72,7 @@ pub fn do_exchange(give: Funds, want: Funds, gateway_address: cvm_runtime::gatew
                 value: Binary::from(msg.encode_to_vec()),
             };
             let msg = SubMsg::reply_always(msg, EXCHANGE_ID);
-            response
-                .add_submessage(msg)
+            response.add_submessage(msg)
         }
         AstroportRouterContract {
             address,
@@ -89,8 +93,12 @@ pub fn do_exchange(give: Funds, want: Funds, gateway_address: cvm_runtime::gatew
             };
             let msg = ExecuteMsg::ExecuteSwapOperations {
                 operations: vec![SwapOperation::AstroSwap {
-                    offer_asset_info: AssetInfo::NativeToken { denom: give.denom.clone() },
-                    ask_asset_info: AssetInfo::NativeToken { denom: want_asset.denom() },
+                    offer_asset_info: AssetInfo::NativeToken {
+                        denom: give.denom.clone(),
+                    },
+                    ask_asset_info: AssetInfo::NativeToken {
+                        denom: want_asset.denom(),
+                    },
                 }],
                 to: None,
                 minimum_receive,

@@ -21,7 +21,6 @@ pub struct CvmInterpreterExchangeStarted {
 #[serde(rename = "cvm.executor.execution.started")]
 pub struct CvmInterpreterExecutionStarted {}
 
-
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 #[serde(rename = "cvm.executor.transferred")]
@@ -207,8 +206,6 @@ impl CvmInterpreterTransferred {
         Event::new("cvm.executor.transferred")
     }
 }
-
-
 
 impl CvmInterpreterExchangeSucceeded {
     pub fn new(exchange_id: ExchangeId) -> Event {

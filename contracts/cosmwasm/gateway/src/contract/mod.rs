@@ -13,7 +13,7 @@ use cosmwasm_std::{DepsMut, Env, MessageInfo, Reply, Response, SubMsgResponse, S
 use cvm_runtime::{transport::ibc::TransportTrackerId, XCVMAck};
 use cw2::ensure_from_older_version;
 use cw2::set_contract_version;
-use ibc_apps::transfer::types::proto::transfer::v1::MsgTransferResponse;
+use ibc_app_transfer_types::proto::transfer::v1::MsgTransferResponse;
 
 use self::ibc::make_ibc_failure_event;
 

@@ -69,7 +69,7 @@ impl Auth<policy::WasmHook> {
 
         let sender = match sender {
             msg::GatewayId::CosmWasm { contract, .. } => contract.to_string(),
-            msg::GatewayId::Evm { contract, .. } => contract.to_string(),
+            //msg::GatewayId::Evm { contract, .. } => contract.to_string(),
         };
 
         let channel = this_to_other

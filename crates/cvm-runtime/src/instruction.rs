@@ -4,7 +4,10 @@ use parity_scale_codec::{Decode, Encode};
 use scale_info::TypeInfo;
 use serde::{Deserialize, Serialize};
 
-#[cfg_attr(all(feature = "json-schema", not(target_arch = "wasm32")), derive(schemars::JsonSchema))]
+#[cfg_attr(
+    all(feature = "json-schema", not(target_arch = "wasm32")),
+    derive(schemars::JsonSchema)
+)]
 #[derive(Clone, PartialEq, Eq, Debug, Encode, Decode, TypeInfo, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum BindingValue {
@@ -14,7 +17,10 @@ pub enum BindingValue {
     AssetAmount(AssetId, Amount),
 }
 
-#[cfg_attr(all(feature = "json-schema", not(target_arch = "wasm32")), derive(schemars::JsonSchema))]
+#[cfg_attr(
+    all(feature = "json-schema", not(target_arch = "wasm32")),
+    derive(schemars::JsonSchema)
+)]
 #[derive(Copy, Clone, PartialEq, Eq, Debug, Encode, Decode, TypeInfo, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum Register {
@@ -37,7 +43,10 @@ pub type Bindings = Vec<(u32, BindingValue)>;
 /// Ordered Bindings: (Index, Binding)
 pub type OrderedBindings = BTreeMap<u32, BindingValue>;
 
-#[cfg_attr(all(feature = "json-schema", not(target_arch = "wasm32")), derive(schemars::JsonSchema))]
+#[cfg_attr(
+    all(feature = "json-schema", not(target_arch = "wasm32")),
+    derive(schemars::JsonSchema)
+)]
 #[derive(Clone, PartialEq, Eq, Debug, Encode, Decode, TypeInfo, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum Destination<Account> {
@@ -48,7 +57,10 @@ pub enum Destination<Account> {
 /// Base XCVM instructions.
 /// This set will remain as small as possible, expressiveness must come on `top` of the base
 /// instructions.
-#[cfg_attr(all(feature = "json-schema", not(target_arch = "wasm32")), derive(schemars::JsonSchema))]
+#[cfg_attr(
+    all(feature = "json-schema", not(target_arch = "wasm32")),
+    derive(schemars::JsonSchema)
+)]
 #[derive(Clone, PartialEq, Eq, Debug, Encode, Decode, TypeInfo, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum Instruction<Payload, Account, Assets> {
@@ -83,7 +95,10 @@ pub enum Instruction<Payload, Account, Assets> {
             serialize_with = "hex::serialize",
             deserialize_with = "hex::deserialize"
         )]
-        #[cfg_attr(all(feature = "json-schema", not(target_arch = "wasm32")), schemars(schema_with = "String::json_schema"))]
+        #[cfg_attr(
+            all(feature = "json-schema", not(target_arch = "wasm32")),
+            schemars(schema_with = "String::json_schema")
+        )]
         #[serde(skip_serializing_if = "Vec::is_empty", default)]
         salt: Vec<u8>,
         assets: Assets,

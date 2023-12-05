@@ -11,12 +11,12 @@ use cosmwasm_std::entry_point;
 use cosmwasm_std::{
     ensure, ensure_eq, to_json_binary, wasm_execute, Addr, BankMsg, Binary, Coin, CosmosMsg, Deps,
     DepsMut, Env, MessageInfo, QueryRequest, Reply, Response, StdError, StdResult, SubMsg,
-    SubMsgResult, WasmQuery, WasmMsg,
+    SubMsgResult, WasmMsg, WasmQuery,
 };
 use cvm_runtime::{
     apply_bindings,
-    gateway::{AssetReference, BridgeExecuteProgramMsg, BridgeForwardMsg},
     exchange::*,
+    gateway::{AssetReference, BridgeExecuteProgramMsg, BridgeForwardMsg},
     shared, Amount, BindingValue, Destination, Funds, Instruction, NetworkId, Register,
 };
 use cw2::{ensure_from_older_version, set_contract_version};
@@ -222,12 +222,18 @@ fn interpret_exchange(
         .get_exchange_by_id(deps.querier, exchange_id)
         .map_err(ContractError::ExchangeNotFound)?;
 
-
-    let response = do_exchange(give, want, gateway_address, deps, sender, &exchange_id, exchange)?;
+    let response = do_exchange(
+        give,
+        want,
+        gateway_address,
+        deps,
+        sender,
+        &exchange_id,
+        exchange,
+    )?;
 
     Ok(response.add_event(CvmInterpreterExchangeStarted::new(exchange_id)))
 }
-
 
 /// Interpret the `Call` instruction
 /// * `encoded`: JSON-encoded `LateCall` as bytes

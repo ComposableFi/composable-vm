@@ -92,13 +92,9 @@ fn handle_config_msg(
             other_asset,
         } => assets::force_asset_to_network_map(auth, deps, this_asset, other_network, other_asset),
         ConfigSubMsg::ForceNetwork(msg) => network::force_network(auth, deps, msg),
-        ConfigSubMsg::ForceInstantiate { user_origin, salt } => executor::force_instantiate(
-            auth,
-            env.contract.address.clone(),
-            deps,
-            user_origin,
-            salt,
-        ),
+        ConfigSubMsg::ForceInstantiate { user_origin, salt } => {
+            executor::force_instantiate(auth, env.contract.address.clone(), deps, user_origin, salt)
+        }
         ConfigSubMsg::Force(msgs) => {
             let mut aggregated = BatchResponse::new();
             for msg in msgs {
@@ -157,10 +153,9 @@ fn transfer_from_user(
                         recipient: self_address.to_string(),
                         amount: (*program_amount).into(),
                     })?)
-                }
-                msg::AssetReference::Erc20 { .. } => {
-                    Err(ContractError::RuntimeUnsupportedOnNetwork)?
-                }
+                } // msg::AssetReference::Erc20 { .. } => {
+                  //     Err(ContractError::RuntimeUnsupportedOnNetwork)?
+                  // }
             }
         }
         Ok((transfers, program_funds))
@@ -269,9 +264,9 @@ pub(crate) fn handle_execute_program_privilleged(
                 interpreter_code_id,
                 ..
             } => interpreter_code_id,
-            msg::GatewayId::Evm { .. } => {
-                Err(ContractError::BadlyConfiguredRouteBecauseThisChainCanSendOnlyFromCosmwasm)?
-            }
+            // msg::GatewayId::Evm { .. } => {
+            //     Err(ContractError::BadlyConfiguredRouteBecauseThisChainCanSendOnlyFromCosmwasm)?
+            // }
         };
         deps.api.debug("instantiating interpreter");
         let this = msg::Gateway::new(env.contract.address);
@@ -332,8 +327,7 @@ fn send_funds_to_interpreter(
                     recipient: interpreter_address.clone(),
                     amount: amount.into(),
                 })?
-            }
-            msg::AssetReference::Erc20 { .. } => Err(ContractError::RuntimeUnsupportedOnNetwork)?,
+            } //msg::AssetReference::Erc20 { .. } => Err(ContractError::RuntimeUnsupportedOnNetwork)?,
         };
         response = response.add_message(msg);
     }

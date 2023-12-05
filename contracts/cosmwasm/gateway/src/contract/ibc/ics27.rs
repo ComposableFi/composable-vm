@@ -19,7 +19,7 @@ use cosmwasm_std::{
 use cvm_runtime::{
     proto::Isomorphism, shared::XcPacket, transport::ibc::ChannelInfo, CallOrigin, XCVMAck,
 };
-use ibc_core::host::types::identifiers::{ChannelId, ConnectionId};
+use ibc_core_host_types::identifiers::{ChannelId, ConnectionId};
 
 use super::make_ibc_failure_event;
 

@@ -16,15 +16,15 @@ library = []
 std = [
   "cvm-runtime/std",
   "ibc-apps-more/std",
-  "ibc-apps/std",
-  "ibc-core/std",
+  "ibc-app-transfer-types/std",
+  "ibc-core-host-types/std",
   "ibc-primitives/std",
   "thiserror/std",
 ]
 json-schema = [
   "ibc-apps-more/json-schema",
-  "ibc-apps/schema",
-  "ibc-core/schema",
+  "ibc-app-transfer-types/schema",
+  "ibc-core-host-types/schema",
   "ibc-primitives/schema",
   "cvm-runtime/json-schema",
   "dep:schemars",
@@ -56,8 +56,8 @@ ibc-apps-more = { workspace = true, default-features = false, features = [
   "cosmwasm",
 ] }
 
-ibc-apps = { workspace = true, default-features = false, features = ["serde"] }
-ibc-core = { workspace = true, default-features = false, features = ["serde"] }
+ibc-app-transfer-types = { workspace = true, default-features = false, features = ["serde"] }
+ibc-core-host-types = { workspace = true, default-features = false, features = ["serde"] }
 ibc-primitives = { workspace = true, default-features = false, features = [
   "serde",
 ] }

@@ -10,7 +10,7 @@ use cosmwasm_std::{
     to_json_binary, Deps, DepsMut, Reply, Response, StdError, StdResult, SubMsg, WasmMsg,
 };
 
-use cvm_runtime::{CallOrigin, InterpreterOrigin, executor::CvmInterpreterInstantiated};
+use cvm_runtime::{executor::CvmInterpreterInstantiated, CallOrigin, InterpreterOrigin};
 
 use crate::{auth, prelude::*};
 
@@ -27,7 +27,7 @@ pub(crate) fn force_instantiate(
             interpreter_code_id,
             ..
         } => interpreter_code_id,
-        GatewayId::Evm { .. } => Err(ContractError::RuntimeUnsupportedOnNetwork)?,
+        //GatewayId::Evm { .. } => Err(ContractError::RuntimeUnsupportedOnNetwork)?,
     };
     let salt = salt.into_bytes();
 

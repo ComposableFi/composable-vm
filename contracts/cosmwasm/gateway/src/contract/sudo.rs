@@ -1,7 +1,7 @@
 use crate::{error::ContractError, state};
 use cosmwasm_std::{entry_point, wasm_execute, Coin, DepsMut, Env, Event, Response};
 use ibc_apps_more::hook::{IBCLifecycleComplete, SudoMsg};
-use ibc_core::host::types::identifiers::ChannelId;
+use ibc_core_host_types::identifiers::ChannelId;
 
 #[cfg_attr(not(feature = "library"), entry_point)]
 pub fn sudo(deps: DepsMut, env: Env, msg: SudoMsg) -> crate::error::Result {
@@ -32,7 +32,7 @@ pub fn sudo(deps: DepsMut, env: Env, msg: SudoMsg) -> crate::error::Result {
 fn handle_transport_failure(
     deps: DepsMut,
     _env: Env,
-    channel: ibc_core::host::types::identifiers::ChannelId,
+    channel: ibc_core_host_types::identifiers::ChannelId,
     sequence: u64,
     reason: String,
 ) -> Result<cosmwasm_std::Response, ContractError> {

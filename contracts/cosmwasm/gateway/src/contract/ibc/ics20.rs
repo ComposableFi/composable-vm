@@ -110,8 +110,7 @@ pub(crate) fn handle_bridge_forward(
                     contract,
                 )?;
                 (msg, event)
-            }
-            GatewayId::Evm { .. } => Err(ContractError::NotImplemented)?,
+            } // GatewayId::Evm { .. } => Err(ContractError::NotImplemented)?,
         }
     };
 
@@ -124,7 +123,10 @@ pub(crate) fn handle_bridge_forward(
 /// and program as simple as just Transfer,
 /// can use instance of this structure to route pure funds transfer
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[cfg_attr(all(feature = "json-schema", not(target_arch = "wasm32")), derive(schemars::JsonSchema))]
+#[cfg_attr(
+    all(feature = "json-schema", not(target_arch = "wasm32")),
+    derive(schemars::JsonSchema)
+)]
 #[serde(rename_all = "snake_case")]
 pub struct IbcIcs20TransferShortcutRoute {
     pub source: ChannelId,
@@ -189,9 +191,9 @@ pub fn get_this_route(
 
     let sender_gateway = match this.gateway.expect("we execute here") {
         GatewayId::CosmWasm { contract, .. } => contract,
-        GatewayId::Evm { .. } => {
-            Err(ContractError::BadlyConfiguredRouteBecauseThisChainCanSendOnlyFromCosmwasm)?
-        }
+        // GatewayId::Evm { .. } => {
+        //     Err(ContractError::BadlyConfiguredRouteBecauseThisChainCanSendOnlyFromCosmwasm)?
+        // }
     };
 
     let channel = other

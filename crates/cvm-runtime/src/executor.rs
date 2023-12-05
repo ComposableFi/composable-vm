@@ -1,11 +1,14 @@
 use cosmwasm_std::Event;
 
 use crate::prelude::*;
-use crate::InterpreterOrigin;
 use crate::shared::XcProgram;
+use crate::InterpreterOrigin;
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[cfg_attr(all(feature = "json-schema", not(target_arch = "wasm32")), derive(schemars::JsonSchema))]
+#[cfg_attr(
+    all(feature = "json-schema", not(target_arch = "wasm32")),
+    derive(schemars::JsonSchema)
+)]
 #[serde(rename_all = "snake_case")]
 pub struct InstantiateMsg {
     /// Address of the gateway.
@@ -15,7 +18,10 @@ pub struct InstantiateMsg {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[cfg_attr(all(feature = "json-schema", not(target_arch = "wasm32")), derive(schemars::JsonSchema))]
+#[cfg_attr(
+    all(feature = "json-schema", not(target_arch = "wasm32")),
+    derive(schemars::JsonSchema)
+)]
 #[serde(rename_all = "snake_case")]
 pub struct Step {
     /// Tip party facilitated bridging and execution.
@@ -29,9 +35,11 @@ pub struct Step {
     pub program: XcProgram,
 }
 
-
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[cfg_attr(all(feature = "json-schema", not(target_arch = "wasm32")), derive(schemars::JsonSchema))]
+#[cfg_attr(
+    all(feature = "json-schema", not(target_arch = "wasm32")),
+    derive(schemars::JsonSchema)
+)]
 #[serde(rename_all = "snake_case")]
 pub enum ExecuteMsg {
     /// Execute an CVM program
@@ -53,7 +61,7 @@ pub enum ExecuteMsg {
 impl CvmInterpreterInstantiated {
     pub const NAME: &'static str = "cvm.executor.instantiated";
     pub const INTERPRETER_ORIGIN: &'static str = "interpreter_origin";
-    #[cfg(feature="cosmwasm")]
+    #[cfg(feature = "cosmwasm")]
     pub fn new(interpreter_origin: &InterpreterOrigin) -> Event {
         use crate::shared::to_json_base64;
 

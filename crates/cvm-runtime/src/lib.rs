@@ -37,6 +37,8 @@ mod asset;
 mod bridge;
 #[cfg(feature = "cosmwasm")]
 pub mod cosmwasm;
+pub mod exchange;
+pub mod executor;
 pub mod gateway;
 mod instruction;
 mod network;
@@ -47,12 +49,10 @@ pub mod proto;
 mod protocol;
 pub mod shared;
 pub mod transport;
-pub mod exchange;
-pub mod executor;
 
 pub use crate::{
-    asset::*, bridge::*, instruction::*, network::*, packet::*, program::*, protocol::*,
-    exchange::*,
+    asset::*, bridge::*, exchange::*, instruction::*, network::*, packet::*, program::*,
+    protocol::*,
 };
 use core::marker::PhantomData;
 

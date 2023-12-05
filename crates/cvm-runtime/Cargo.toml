@@ -14,8 +14,8 @@ cw-storage-plus = { workspace = true, optional = true }
 cw20 = { workspace = true, optional = true }
 derive_more.workspace = true
 hex = { workspace = true, features = ["alloc", "serde"] }
-ibc-apps = { workspace = true, features = ["serde", "parity-scale-codec"] }
-ibc-core = { workspace = true, features = ["serde", "parity-scale-codec"] }
+ibc-app-transfer-types = { workspace = true, features = ["serde", "parity-scale-codec"] }
+ibc-core-host-types = { workspace = true, features = ["serde", "parity-scale-codec"] }
 num = { workspace = true }
 parity-scale-codec = { workspace = true }
 prost = { workspace = true, features = ["prost-derive"] }
@@ -24,7 +24,7 @@ schemars = { workspace = true, optional = true }
 serde = { workspace = true, features = ["alloc", "derive"] }
 serde-json-wasm = { workspace = true, default-features = false }
 sha2 = { workspace = true }
-strum.workspace = true
+strum.workspace = { workspace = true}
 thiserror = { workspace = true }
 ibc-proto = { workspace = true, default-features = false, features = [
   "serde",
@@ -32,9 +32,9 @@ ibc-proto = { workspace = true, default-features = false, features = [
 ] }
 serde-cw-value = { workspace = true, default-features = false }
 xcm = { workspace = true, default-features = false, optional = true }
-primitive-types = { workspace = true, features = [
-  "serde_no_std",
-], default-features = false }
+# primitive-types = { workspace = true, features = [
+#   "serde_no_std",
+# ], default-features = false }
 
 ibc-apps-more = { workspace = true, default-features = false }
 
@@ -52,9 +52,9 @@ json-schema = [
   "ibc-apps-more/json-schema",
   "dep:cosmwasm-schema",
   "dep:schemars",
-  "ibc-apps/schema",
-  "ibc-core/schema",
-  "primitive-types/json-schema",
+  "ibc-app-transfer-types/schema",
+  "ibc-core-host-types/schema",
+  #"primitive-types/json-schema",
   "serde-cw-value/schema",
 ]
 
@@ -62,8 +62,8 @@ std = [
   "ibc-proto/std",
   "serde-cw-value/std",
   "serde-json-wasm/std",
-  "ibc-apps/schema",
-  "ibc-core/schema",
+  "ibc-app-transfer-types/schema",
+  "ibc-core-host-types/schema",
   "num/std",
   "thiserror/std",
 ]

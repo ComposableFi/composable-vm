@@ -7,7 +7,10 @@ use crate::prelude::*;
 pub type InterpreterId = cvm_runtime::shared::Displayed<u128>;
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[cfg_attr(all(feature = "json-schema", not(target_arch = "wasm32")), derive(schemars::JsonSchema))]
+#[cfg_attr(
+    all(feature = "json-schema", not(target_arch = "wasm32")),
+    derive(schemars::JsonSchema)
+)]
 pub(crate) struct Interpreter {
     /// contract address
     pub address: Addr,
