@@ -1,3 +1,8 @@
+use crate::CowFilledOrder;
+use crate::CowSolutionCalculation;
+use crate::prelude::*;
+use crate::SolvedOrder;
+
 /// given all orders amounts aggregated into common pool,
 /// ensure that solution does not violates this pull
 /// and return proper action to handle settling funds locally according solution
@@ -6,7 +11,7 @@ pub fn solves_cows_via_bank(
     all_orders: &Vec<SolvedOrder>,
     mut a_total_in: u128,
     mut b_total_in: u128,
-) -> Result<Vec<CowFilledOrder>, StdError> {
+) -> Result<CowSolutionCalculation, StdError> {
     let mut transfers = vec![];
     for order in all_orders.iter() {
         let cowed = order.solution.cow_amount;
@@ -29,5 +34,10 @@ pub fn solves_cows_via_bank(
 
         transfers.push((filled_wanted, order.order.order_id));
     }
-    Ok(transfers)
+    let result = CowSolutionCalculation {
+        filled : transfers,
+        token_a_remaining : a_total_in,
+        token_b_remaining : b_total_in,
+    };
+    Ok(result)
 }

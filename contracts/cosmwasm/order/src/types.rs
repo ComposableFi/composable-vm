@@ -13,6 +13,12 @@ pub type Block = u64;
 /// each CoW solver locally, is just transfer from shared pair bank with referenced order
 pub type CowFilledOrder = (Coin, OrderId);
 
+pub struct CowSolutionCalculation {
+    pub token_a_remaining: Amount,
+    pub token_b_remaining: Amount,
+    pub filled: Vec<CowFilledOrder>,
+}
+
 /// each pair waits ate least this amount of blocks before being decided
 pub const BATCH_EPOCH: u32 = 1;
 

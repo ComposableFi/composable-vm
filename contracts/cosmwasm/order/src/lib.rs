@@ -7,6 +7,7 @@ mod types;
 mod events;
 mod algorithms;
 
+use algorithms::solves_cows_via_bank;
 use events::solution::*;
 use events::order::*;
 use prelude::*;
@@ -400,7 +401,7 @@ impl OrderContract<'_> {
                 amount: vec![transfer],
             };
             results.push(CowFillResult {
-                remaining : OrderItem,
+                remaining,
                 bank_msg: transfer,
                 event,
             });
