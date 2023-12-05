@@ -16,7 +16,6 @@ https://github.com/ComposableFi/composable/tree/main/docs/docs/technology/mantis
 
 ## Plan for todayS
 
-1. use native target for schema and also move dexs
 2. build generator of CVM into contract
 3. build storage for solution tacking with is own VW
 3. add block to order filled

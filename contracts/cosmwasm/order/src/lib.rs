@@ -21,6 +21,7 @@ use sylvia::{
     types::{ExecCtx, InstantiateCtx, QueryCtx},
 };
 
+
 pub struct OrderContract<'a> {
     pub orders: Map<'a, u128, OrderItem>,
     /// (a,b,solver)
@@ -397,15 +398,7 @@ impl OrderContract<'_> {
     }
 }
 
-fn order_created(order_id: u128, order: &OrderItem) -> Event {
-    Event::new("mantis-order-created")
-        .add_attribute("order_id", order_id.to_string())
-        .add_attribute("order_given_amount", order.given.amount.to_string())
-        .add_attribute("order_given_denom", order.given.denom.to_string())
-        .add_attribute("order_owner", order.owner.to_string())
-        .add_attribute("order_wants_amount", order.msg.wants.amount.to_string())
-        .add_attribute("order_wants_denom", order.msg.wants.denom.to_string())
-}
+
 
 /// given all orders amounts aggregated into common pool,
 /// ensure that solution does not violates this pull
