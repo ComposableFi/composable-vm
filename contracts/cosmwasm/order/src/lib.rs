@@ -162,7 +162,7 @@ impl OrderContract<'_> {
 
      
     /// how it works
-    /// 1. mark all orders as in execution
+    
     /// 2. add additional table with in execution orders to bind them to solution
     /// 3. solution collects assets and send them to CVM
     /// 4. expected final step of CVM to transfer back to interpreter
@@ -297,6 +297,14 @@ impl OrderContract<'_> {
 
         let mut response = Response::default();
 
+
+        let transfers = self.fill(
+            ctx.deps.storage,
+            transfers,
+            ctx.info.sender.to_string(),
+            solution_item.block_added,
+        )?;
+
         if let Some(route) = solution_item.msg.route {
             // send remaining for settlement
             let route = wasm_execute(
@@ -306,12 +314,6 @@ impl OrderContract<'_> {
             )?;
             response = response.add_message(route);
         };
-        let transfers = self.fill(
-            ctx.deps.storage,
-            transfers,
-            ctx.info.sender.to_string(),
-            solution_item.block_added,
-        )?;
 
         self.solutions.clear(ctx.deps.storage);
         let solution_chosen = mantis_solution_chosen(ab, &ctx, &transfers);
@@ -376,7 +378,7 @@ impl OrderContract<'_> {
     fn fill(
         &self,
         storage: &mut dyn Storage,
-        cows: Vec<CowFilledOrder>,
+        cows: Vec<c>,
         solver_address: String,
         solution_block_added: u64,
     ) -> StdResult<Vec<CowFillResult>> {
@@ -396,6 +398,7 @@ impl OrderContract<'_> {
                 amount: vec![transfer],
             };
             results.push(CowFillResult {
+                remaining : OrderItem,
                 bank_msg: transfer,
                 event,
             });
