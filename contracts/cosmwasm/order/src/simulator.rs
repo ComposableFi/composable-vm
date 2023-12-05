@@ -1,3 +1,5 @@
+use cvm_runtime::shared::XcProgram;
+
 use crate::CowFilledOrder;
 use crate::CowSolutionCalculation;
 use crate::prelude::*;
@@ -7,7 +9,7 @@ use crate::SolvedOrder;
 /// ensure that solution does not violates this pull
 /// and return proper action to handle settling funds locally according solution
 #[no_panic]
-pub fn solves_cows_via_bank(
+pub fn simulate_cows_via_bank(
     all_orders: &Vec<SolvedOrder>,
     mut a_total_in: u128,
     mut b_total_in: u128,
@@ -40,4 +42,13 @@ pub fn solves_cows_via_bank(
         token_b_remaining : b_total_in,
     };
     Ok(result)
+}
+
+/// Check that start and end either a/b or b/a on centauri.
+/// And checks that amounts out (a or b) is more than remaining.
+/// Solve only larger CVM for in volume, assuming other solution will be for other side sent.
+/// Produces remaining each order will receive proportional to what is given.
+fn simulate_route(storage: &mut dyn Storage, route: XcProgram, token_a_remaining: Coin, token_b_remaining: Coin, orders: Vec<SolvedOrder>) -> _ {
+    todo!()
+    
 }

@@ -1,17 +1,17 @@
 #![allow(clippy::disallowed_methods)] // does unwrap inside
 #![allow(deprecated)] // sylvia macro
 
-mod prelude;
-mod store;
-mod types;
+mod simulator;
 mod events;
-mod algorithms;
+mod prelude;
+mod state;
+mod types;
 
-use algorithms::solves_cows_via_bank;
-use events::solution::*;
+use simulator::simulate_cows_via_bank;
 use events::order::*;
+use events::solution::*;
 use prelude::*;
-use store::*;
+use state::*;
 pub use types::*;
 
 pub use crate::sv::{ExecMsg, QueryMsg};
@@ -25,7 +25,6 @@ use sylvia::{
     entry_points,
     types::{ExecCtx, InstantiateCtx, QueryCtx},
 };
-
 
 pub struct OrderContract<'a> {
     pub orders: Map<'a, u128, OrderItem>,
@@ -161,23 +160,22 @@ impl OrderContract<'_> {
         todo!("remove order and send event")
     }
 
-     
     /// how it works
-    
+
     /// 2. add additional table with in execution orders to bind them to solution
     /// 3. solution collects assets and send them to CVM
     /// 4. expected final step of CVM to transfer back to interpreter
     /// 5. and do RAW call with assets with SOLVE and 100% amounts
     /// 6. raw call dispatches amounts, and unlocks orders
     /// 7. please note that orders still can be solved cow while in cross chain
-    
+
     /// if there is solution, all funds from solution moved here and combined with funds in request
     /// than solution removed from storage, funds patched to receivers and tracking closed
     #[msg(exec)]
     pub fn finalize(&self, ctx: ExecCtx, solution: SolutionHash) -> StdResult<Response> {
         todo!()
     }
-    
+
     #[msg(exec)]
     pub fn route(&self, ctx: ExecCtx, msg: RouteSubMsg) -> StdResult<Response> {
         ensure!(
@@ -211,7 +209,7 @@ impl OrderContract<'_> {
     #[msg(exec)]
     pub fn solve(&self, ctx: ExecCtx, msg: SolutionSubMsg) -> StdResult<Response> {
         // read all orders as solver provided
-        let mut all_orders = self.merge_solution_with_orders(&msg, &ctx)?;
+        let mut all_orders = self.join_solution_with_orders(&msg, &ctx)?;
         let at_least_one = all_orders.first().expect("at least one");
 
         // normalize pair
@@ -264,7 +262,7 @@ impl OrderContract<'_> {
         let mut transfers = vec![];
         let mut solution_item: SolutionItem = possible_solution;
         for solution in all_solutions {
-            let alternative_all_orders = self.merge_solution_with_orders(&solution.msg, &ctx)?;
+            let alternative_all_orders = self.join_solution_with_orders(&solution.msg, &ctx)?;
             let a_total_in: u128 = alternative_all_orders
                 .iter()
                 .filter(|x| x.given().denom == a)
@@ -276,30 +274,46 @@ impl OrderContract<'_> {
                 .map(|x| x.given().amount.u128())
                 .sum();
 
-            let alternative_transfers =
-                solves_cows_via_bank(&alternative_all_orders.clone(), a_total_in, b_total_in);
+            let cow_part =
+                simulate_cows_via_bank(&alternative_all_orders.clone(), a_total_in, b_total_in);
 
-            ctx.deps.api.debug(&format!(
-                "mantis::solutions::alternative {:?}",
-                &alternative_transfers
-            ));
-            if let Err(err) = alternative_transfers {
+            ctx.deps
+                .api
+                .debug(&format!("mantis::solutions::alternative {:?}", &cow_part));
+            
+
+            
+            if let Err(err) = cow_part {
                 if solution.owner == ctx.info.sender {
                     return Err(err);
                 }
-            } else if let Ok(alternative_transfers) = alternative_transfers {
+            } else if let Ok(cow_part) = cow_part {
+                if let Some(route) = solution.msg.route {
+                    let cvm = simulate_route(
+                        ctx.deps.storage,
+                        route,
+                        Coin {
+                            denom: pair.0.clone(),
+                            amount: cow_part.token_a_remaining,
+                        },
+                        Coin {
+                            denom: pair.1.clone(),
+                            amount: cow_part.token_b_remaining,
+                        },
+                    );
+                    
+                }
                 if a_total_in.saturating_mul(b_total_in) >= a_in.saturating_mul(b_in) {
                     a_in = a_total_in;
                     b_in = b_total_in;
                     all_orders = alternative_all_orders;
-                    transfers = alternative_transfers;
+                    transfers = cow_part.filled;
                     solution_item = solution;
                 }
             }
         }
 
         let mut response = Response::default();
-
 
         let transfers = self.fill(
             ctx.deps.storage,
@@ -333,23 +347,7 @@ impl OrderContract<'_> {
             .add_event(solution_chosen))
     }
 
-    fn merge_solution_with_orders(
-        &self,
-        msg: &SolutionSubMsg,
-        ctx: &ExecCtx<'_>,
-    ) -> Result<Vec<SolvedOrder>, StdError> {
-        let all_orders = msg
-            .cows
-            .iter()
-            .map(|x| {
-                self.orders
-                    .load(ctx.deps.storage, x.order_id.u128())
-                    .map_err(|_| StdError::not_found("order"))
-                    .and_then(|order| SolvedOrder::new(order, x.clone()))
-            })
-            .collect::<Result<Vec<SolvedOrder>, _>>()?;
-        Ok(all_orders)
-    }
+
 
     /// Simple get all orders
     #[msg(query)]
@@ -381,7 +379,7 @@ impl OrderContract<'_> {
     fn fill(
         &self,
         storage: &mut dyn Storage,
-        cows: Vec<c>,
+        cows: Vec<CowFilledOrder>,
         solver_address: String,
         solution_block_added: u64,
     ) -> StdResult<Vec<CowFillResult>> {
@@ -409,5 +407,4 @@ impl OrderContract<'_> {
         Ok(results)
     }
 }
-
 
