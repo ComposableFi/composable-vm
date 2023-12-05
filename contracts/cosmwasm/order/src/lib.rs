@@ -4,13 +4,17 @@
 mod prelude;
 mod store;
 mod types;
+mod events;
+mod algorithms;
 
+use events::solution::*;
+use events::order::*;
 use prelude::*;
 use store::*;
 pub use types::*;
 
 pub use crate::sv::{ExecMsg, QueryMsg};
-use cosmwasm_schema::schemars;
+
 use cosmwasm_std::{wasm_execute, Addr, BankMsg, Coin, Event, Order, StdError, Storage};
 use cvm_runtime::shared::{XcInstruction, XcProgram};
 use cw_storage_plus::{Index, IndexList, IndexedMap, Item, Map};
@@ -156,6 +160,21 @@ impl OrderContract<'_> {
         todo!("remove order and send event")
     }
 
+     
+    /// how it works
+    /// 1. mark all orders as in execution
+    /// 2. add additional table with in execution orders to bind them to solution
+    /// 3. solution collects assets and send them to CVM
+    /// 4. expected final step of CVM to transfer back to interpreter
+    /// 5. and do RAW call with assets with SOLVE and 100% amounts
+    /// 6. raw call dispatches amounts, and unlocks orders
+    /// 7. please note that orders still can be solved cow while in cross chain
+    
+    #[msg(exec)]
+    pub fn finalize(&self, ctx: ExecCtx, solution: SolutionHash) -> StdResult<Response> {
+        todo!()
+    }
+    
     #[msg(exec)]
     pub fn route(&self, ctx: ExecCtx, msg: RouteSubMsg) -> StdResult<Response> {
         ensure!(
@@ -216,10 +235,8 @@ impl OrderContract<'_> {
             ),
             &possible_solution,
         )?;
-        let solution_upserted = Event::new("mantis-solution-upserted")
-            .add_attribute("token_a", ab.clone().0)
-            .add_attribute("token_b", ab.clone().1)
-            .add_attribute("solver_address", ctx.info.sender.to_string());
+        let solution_upserted = mantis_solution_upserted(&ab, &ctx);
+
         ctx.deps.api.debug(&format!(
             "mantis::solution::upserted {:?}",
             &solution_upserted
@@ -297,15 +314,11 @@ impl OrderContract<'_> {
         )?;
 
         self.solutions.clear(ctx.deps.storage);
-        let solution_chosen = Event::new("mantis-solution-chosen")
-            .add_attribute("token_a", ab.clone().0)
-            .add_attribute("token_b", ab.clone().1)
-            .add_attribute("solver_address", ctx.info.sender.to_string())
-            .add_attribute("total_transfers", transfers.len().to_string());
+        let solution_chosen = mantis_solution_chosen(ab, &ctx, &transfers);
 
         ctx.deps
             .api
-            .debug(&format!("mantis-solution-chosen: {:?}", &solution_chosen));
+            .debug(&format!("mantis::solution::chosen: {:?}", &solution_chosen));
         for transfer in transfers {
             response = response.add_message(transfer.bank_msg);
             response = response.add_event(transfer.event);
@@ -373,17 +386,10 @@ impl OrderContract<'_> {
             order.fill(transfer.amount);
             let event = if order.given.amount.is_zero() {
                 self.orders.remove(storage, order.order_id.u128());
-                Event::new("mantis-order-filled-full")
-                    .add_attribute("order_id", order.order_id.to_string())
-                    .add_attribute("solver_address", solver_address.clone())
-                    .add_attribute("solution_block_added", solution_block_added.to_string())
+                mantis_order_filled_full(&order, &solver_address, solution_block_added)
             } else {
                 self.orders.save(storage, order.order_id.u128(), &order)?;
-                Event::new("mantis-order-filled-parts")
-                    .add_attribute("order_id", order.order_id.to_string())
-                    .add_attribute("amount", transfer.amount.to_string())
-                    .add_attribute("solver_address", solver_address.clone())
-                    .add_attribute("solution_block_added", solution_block_added.to_string())
+                mantis_order_filled_parts(&order, &transfer, &solver_address, solution_block_added)
             };
             let transfer = BankMsg::Send {
                 to_address: order.owner.to_string(),
@@ -399,37 +405,3 @@ impl OrderContract<'_> {
 }
 
 
-
-/// given all orders amounts aggregated into common pool,
-/// ensure that solution does not violates this pull
-/// and return proper action to handle settling funds locally according solution
-#[no_panic]
-fn solves_cows_via_bank(
-    all_orders: &Vec<SolvedOrder>,
-    mut a_total_in: u128,
-    mut b_total_in: u128,
-) -> Result<Vec<CowFilledOrder>, StdError> {
-    let mut transfers = vec![];
-    for order in all_orders.iter() {
-        let cowed = order.solution.cow_amount;
-        let filled_wanted = Coin {
-            amount: cowed,
-            denom: order.wanted_denom().clone(),
-        };
-
-        // so if not enough was deposited as was taken from original orders, it will fail - so
-        // solver cannot rob the bank
-        if order.pair().0 == filled_wanted.denom {
-            a_total_in = a_total_in.checked_sub(cowed.u128()).ok_or_else(|| {
-                StdError::generic_err(format!("a underflow: {} {}", a_total_in, cowed.u128()))
-            })?;
-        } else {
-            b_total_in = b_total_in.checked_sub(cowed.u128()).ok_or_else(|| {
-                StdError::generic_err(format!("b underflow: {} {}", b_total_in, cowed.u128()))
-            })?;
-        };
-
-        transfers.push((filled_wanted, order.order.order_id));
-    }
-    Ok(transfers)
-}

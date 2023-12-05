@@ -222,3 +222,8 @@ pub struct CowFillResult {
 pub type Denom = String;
 pub type Pair = (Denom, Denom);
 pub type SolverAddress = String;
+
+
+pub type CrossChainSolutionId = (SolverAddress, Pair, Block);
+
+pub type SolutionHash = String;

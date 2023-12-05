@@ -5,3 +5,6 @@ pub use no_panic::no_panic;
 pub use tuples::*;
 
 pub use serde::{Deserialize, Serialize};
+
+#[cfg(feature = "json-schema")]
+pub use cosmwasm_schema::schemars;
