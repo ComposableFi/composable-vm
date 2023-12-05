@@ -1,12 +1,10 @@
 use crate::prelude::*;
-use parity_scale_codec::{Decode, Encode};
-use scale_info::TypeInfo;
 
 #[cfg_attr(
     all(feature = "json-schema", not(target_arch = "wasm32")),
     derive(schemars::JsonSchema)
 )]
-#[derive(Clone, PartialEq, Eq, Debug, Encode, Decode, TypeInfo, Serialize, Deserialize)]
+#[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub struct Program<Instructions> {
     /// In JSON, hex encoded identifiers to identify the program off chain (for example in

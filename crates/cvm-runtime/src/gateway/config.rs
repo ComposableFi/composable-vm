@@ -55,7 +55,7 @@ pub struct Ics20Features {
 }
 
 #[allow(clippy::large_enum_variant)]
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Encode, Decode)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, )]
 #[serde(rename_all = "snake_case")]
 #[cfg_attr(
     all(
@@ -180,7 +180,7 @@ pub struct IcsPair {
 
 /// relative timeout to CW/IBC-rs time.
 /// very small, assumed messages are arriving fast enough, like less than hours
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Encode, Decode)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, )]
 #[serde(rename_all = "snake_case")]
 #[cfg_attr(
     all(feature = "json-schema", not(target_arch = "wasm32")),

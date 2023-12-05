@@ -7,8 +7,6 @@ use crate::shared::Displayed;
 use core::ops::Add;
 use cosmwasm_std::{Uint128, Uint256};
 use num::Zero;
-use parity_scale_codec::{Decode, Encode};
-use scale_info::TypeInfo;
 use serde::{Deserialize, Serialize};
 
 /// Newtype for XCVM assets ID. Must be unique for each asset and must never change.
@@ -27,9 +25,7 @@ use serde::{Deserialize, Serialize};
     Ord,
     Debug,
     Hash,
-    Encode,
-    Decode,
-    TypeInfo,
+
     Serialize,
     Deserialize,
 )]
@@ -94,7 +90,7 @@ impl cw_storage_plus::KeyDeserialize for AssetId {
     derive(schemars::JsonSchema)
 )]
 #[derive(
-    Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Encode, Decode, TypeInfo, Serialize, Deserialize,
+    Clone, PartialEq, Eq, PartialOrd, Ord, Debug,  Serialize, Deserialize,
 )]
 #[serde(rename_all = "snake_case")]
 pub struct Amount {
@@ -111,7 +107,7 @@ fn is_default<T: Default + PartialEq>(value: &T) -> bool {
 }
 
 /// Arithmetic errors.
-#[derive(Eq, PartialEq, Clone, Copy, Encode, Decode, Debug, TypeInfo, Serialize, Deserialize)]
+#[derive(Eq, PartialEq, Clone, Copy,  Debug,  Serialize, Deserialize)]
 pub enum ArithmeticError {
     /// Underflow.
     Underflow,
@@ -278,7 +274,7 @@ impl From<u128> for Amount {
     derive(schemars::JsonSchema)
 )]
 #[derive(
-    Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Encode, Decode, TypeInfo, Serialize, Deserialize,
+    Clone, PartialEq, Eq, PartialOrd, Ord, Debug,  Serialize, Deserialize,
 )]
 #[repr(transparent)]
 pub struct Funds<T = Amount>(pub Vec<(AssetId, T)>);

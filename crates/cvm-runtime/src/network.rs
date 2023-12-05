@@ -1,8 +1,6 @@
 use crate::prelude::*;
 
 use alloc::vec::Vec;
-use parity_scale_codec::{Decode, Encode};
-use scale_info::TypeInfo;
 
 /// The interpreter origin, composite of a user origin and a salt.
 #[cfg_attr(
@@ -10,7 +8,7 @@ use scale_info::TypeInfo;
     derive(schemars::JsonSchema)
 )]
 #[derive(
-    Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Encode, Decode, TypeInfo, Serialize, Deserialize,
+    Clone, PartialEq, Eq, PartialOrd, Ord, Debug,  Serialize, Deserialize,
 )]
 pub struct InterpreterOrigin {
     pub user_origin: UserOrigin,
@@ -36,7 +34,7 @@ impl Display for InterpreterOrigin {
     derive(schemars::JsonSchema)
 )]
 #[derive(
-    Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Encode, Decode, TypeInfo, Serialize, Deserialize,
+    Clone, PartialEq, Eq, PartialOrd, Ord, Debug,  Serialize, Deserialize,
 )]
 pub struct UserOrigin {
     pub network_id: NetworkId,
@@ -57,7 +55,7 @@ impl Display for UserOrigin {
     derive(schemars::JsonSchema)
 )]
 #[derive(
-    Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Encode, Decode, TypeInfo, Serialize, Deserialize,
+    Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize,
 )]
 #[repr(transparent)]
 pub struct UserId(
@@ -109,9 +107,6 @@ impl AsRef<[u8]> for UserId {
     PartialOrd,
     Ord,
     Debug,
-    Encode,
-    Decode,
-    TypeInfo,
     Serialize,
     Deserialize,
 )]

@@ -135,7 +135,6 @@ impl core::fmt::Debug for XcAddr {
     PartialOrd,
     Ord,
     Hash,
-    scale_info::TypeInfo,
     derive_more::Deref,
     derive_more::From,
 )]
@@ -150,7 +149,9 @@ impl<T: FromStr> FromStr for Displayed<T> {
     }
 }
 
+#[cfg(feature = "parity-scale-codec")]
 impl<T> parity_scale_codec::WrapperTypeEncode for Displayed<T> {}
+#[cfg(feature = "parity-scale-codec")]
 impl<T> parity_scale_codec::WrapperTypeDecode for Displayed<T> {
     type Wrapped = T;
 }

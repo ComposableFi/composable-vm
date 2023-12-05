@@ -1,8 +1,7 @@
 use crate::{Funds, UserOrigin};
 use alloc::{string::String, vec::Vec};
+#[cfg(feature = "cosmwasm")]
 use cosmwasm_std::Binary;
-use parity_scale_codec::{Decode, Encode};
-use scale_info::TypeInfo;
 use serde::{Deserialize, Serialize};
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
@@ -62,7 +61,7 @@ impl TryFrom<&[u8]> for XCVMAck {
     all(feature = "json-schema", not(target_arch = "wasm32")),
     derive(schemars::JsonSchema)
 )]
-#[derive(Clone, PartialEq, Eq, Debug, Encode, Decode, TypeInfo, Serialize, Deserialize)]
+#[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub struct Packet<Program> {
     /// The interpreter that was the origin of this packet.

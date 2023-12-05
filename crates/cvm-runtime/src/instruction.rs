@@ -1,14 +1,12 @@
 use crate::{exchange::*, Amount, AssetId, Program};
 use alloc::{borrow::Cow, collections::BTreeMap, vec::Vec};
-use parity_scale_codec::{Decode, Encode};
-use scale_info::TypeInfo;
 use serde::{Deserialize, Serialize};
 
 #[cfg_attr(
     all(feature = "json-schema", not(target_arch = "wasm32")),
     derive(schemars::JsonSchema)
 )]
-#[derive(Clone, PartialEq, Eq, Debug, Encode, Decode, TypeInfo, Serialize, Deserialize)]
+#[derive(Clone, PartialEq, Eq, Debug,  Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum BindingValue {
     Register(Register),
@@ -21,7 +19,7 @@ pub enum BindingValue {
     all(feature = "json-schema", not(target_arch = "wasm32")),
     derive(schemars::JsonSchema)
 )]
-#[derive(Copy, Clone, PartialEq, Eq, Debug, Encode, Decode, TypeInfo, Serialize, Deserialize)]
+#[derive(Copy, Clone, PartialEq, Eq, Debug,  Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum Register {
     /// Instruction pointer
@@ -47,7 +45,7 @@ pub type OrderedBindings = BTreeMap<u32, BindingValue>;
     all(feature = "json-schema", not(target_arch = "wasm32")),
     derive(schemars::JsonSchema)
 )]
-#[derive(Clone, PartialEq, Eq, Debug, Encode, Decode, TypeInfo, Serialize, Deserialize)]
+#[derive(Clone, PartialEq, Eq, Debug,  Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum Destination<Account> {
     Account(Account),
@@ -61,7 +59,7 @@ pub enum Destination<Account> {
     all(feature = "json-schema", not(target_arch = "wasm32")),
     derive(schemars::JsonSchema)
 )]
-#[derive(Clone, PartialEq, Eq, Debug, Encode, Decode, TypeInfo, Serialize, Deserialize)]
+#[derive(Clone, PartialEq, Eq, Debug,  Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum Instruction<Payload, Account, Assets> {
     /// Transfer some [`Assets`] from the current program to the [`to`] account.
