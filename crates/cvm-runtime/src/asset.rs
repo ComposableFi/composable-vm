@@ -88,6 +88,19 @@ pub struct Amount {
     pub slope: Displayed<u64>,
 }
 
+/// analog of `Coin`s in IBC/CW, but with CVM numeric id and amount
+/// requires registry to map id back and forth as needed
+#[cfg_attr(
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
+    derive(schemars::JsonSchema)
+)]
+#[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub struct AbsoluteAmount {
+    pub amount: Displayed<u128>,
+    pub asset_id: AssetId,
+}
+
 fn is_default<T: Default + PartialEq>(value: &T) -> bool {
     *value == T::default()
 }

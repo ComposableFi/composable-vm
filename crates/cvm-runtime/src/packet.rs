@@ -27,6 +27,7 @@ impl XCVMAck {
     }
 }
 
+#[cfg(feature = "cosmwasm")]
 impl From<XCVMAck> for Binary {
     fn from(value: XCVMAck) -> Self {
         Binary::from(Vec::from(value))

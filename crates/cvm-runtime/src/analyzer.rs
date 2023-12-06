@@ -12,3 +12,65 @@
 //!
 //! I think because this one will produce dead branches(along with heap garbage), should searchers do that offchain and provide hint for execution?
 //! It seems under researched.
+
+use crate::{
+    shared::{Displayed, XcAddr, XcProgram},
+    AbsoluteAmount, Amount, AssetId, Instruction, NetworkId,
+};
+
+#[derive(Debug, thiserror::Error)]
+pub enum Error {
+    #[error("salt should be properly set")]
+    SaltShouldBeProperlySet,
+    #[error("final transfer amount should be absolute")]
+    AmountShouldBeAbsolute,
+}
+
+/// ensure that all `Spawns`` has specific `salt` sets
+pub fn ensure_salt(program: &XcProgram, value: &[u8]) -> Result<(), Error> {
+    for ix in program.instructions.iter() {
+        match ix {
+            Instruction::Spawn { salt, .. } if salt != value => {
+                return Err(Error::SaltShouldBeProperlySet)
+            }
+            Instruction::Spawn { program, .. } => {
+                ensure_salt(&program, value)?;
+            }
+            _ => {}
+        }
+    }
+    return Ok(());
+}
+
+pub struct AbsoluteTransfer {
+    pub to: XcAddr,
+    pub amount: AbsoluteAmount,
+}
+
+pub fn ensure_final_transfers_are_absolute(
+    program: &XcProgram,
+    value: &[u8],
+    result: &mut Vec<AbsoluteTransfer>,
+) -> Result<(), Error> {
+    for ix in program.instructions.iter() {
+        match ix {
+            Instruction::Transfer { to, assets } => match (to, assets.0.get(0)) {
+                (crate::Destination::Account(addr), Some((asset_id, amount))) => {
+                    let transfer = AbsoluteTransfer {
+                        to: addr.clone(),
+                        amount: AbsoluteAmount {
+                            amount: amount.intercept,
+                            asset_id: *asset_id,
+                        },
+                    };
+                }
+                _ => {}
+            },
+            Instruction::Spawn { program, .. } => {
+                ensure_final_transfers_are_absolute(&program, value, result)?
+            }
+            _ => {}
+        }
+    }
+    Ok(())
+}

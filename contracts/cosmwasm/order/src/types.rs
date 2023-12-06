@@ -13,6 +13,7 @@ pub type Block = u64;
 /// each CoW solver locally, is just transfer from shared pair bank with referenced order
 pub type CowFilledOrder = (Coin, OrderId);
 
+#[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
 pub struct CowSolutionCalculation {
     pub token_a_remaining: Amount,
     pub token_b_remaining: Amount,
@@ -107,6 +108,12 @@ pub struct SolutionItem {
     pub owner: Addr,
 }
 
+impl SolutionItem {
+    pub fn id(&self) -> Vec<u8> {
+        solution_id(&(self.owner.to_string(), self.pair.clone(), self.block_added))
+    }
+}
+
 /// price information will not be used on chain or deciding.
 /// it will fill orders on chain as instructed
 /// and check that max/min from orders respected
@@ -137,6 +144,7 @@ pub struct SolutionSubMsg {
 pub struct RouteSubMsg {
     pub all_orders: Vec<SolvedOrder>,
     pub route: XcProgram,
+    pub solution_id: SolutionHash,
 }
 
 /// how much of order to be solved by CoW.
@@ -229,7 +237,16 @@ pub type Denom = String;
 pub type Pair = (Denom, Denom);
 pub type SolverAddress = String;
 
+pub type CrossChainSolutionKey = (SolverAddress, Pair, Block);
 
-pub type CrossChainSolutionId = (SolverAddress, Pair, Block);
+pub type SolutionHash = Vec<u8>;
 
-pub type SolutionHash = String;
+pub fn solution_id(id: &CrossChainSolutionKey) -> SolutionHash {
+    use sha2::*;
+    let mut hash = Sha256::new();
+    hash.update(id.0.as_bytes());
+    hash.update(id.1 .0.as_bytes());
+    hash.update(id.1 .1.as_bytes());
+    hash.update(id.2.to_be_bytes());
+    hash.finalize().to_vec()
+}

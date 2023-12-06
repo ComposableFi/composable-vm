@@ -1,16 +1,16 @@
 #![allow(clippy::disallowed_methods)] // does unwrap inside
 #![allow(deprecated)] // sylvia macro
 
-mod simulator;
 mod events;
 mod prelude;
+mod simulator;
 mod state;
 mod types;
 
-use simulator::simulate_cows_via_bank;
 use events::order::*;
 use events::solution::*;
 use prelude::*;
+use simulator::simulate_cows_via_bank;
 use simulator::simulate_route;
 use state::*;
 pub use types::*;
@@ -161,20 +161,16 @@ impl OrderContract<'_> {
         todo!("remove order and send event")
     }
 
-    /// how it works
-
-    /// 2. add additional table with in execution orders to bind them to solution
-    /// 3. solution collects assets and send them to CVM
-    /// 4. expected final step of CVM to transfer back to interpreter
-    /// 5. and do RAW call with assets with SOLVE and 100% amounts
-    /// 6. raw call dispatches amounts, and unlocks orders
-    /// 7. please note that orders still can be solved cow while in cross chain
-
-
     #[msg(exec)]
     pub fn route(&self, ctx: ExecCtx, msg: RouteSubMsg) -> StdResult<Response> {
         ensure!(
-            ctx.info.sender == ctx.env.contract.address,
+            ctx.info.sender == ctx.env.contract.address
+                || ctx.info.sender
+                    == self
+                        .admin
+                        .query_admin(ctx.deps.as_ref())?
+                        .admin
+                        .unwrap_or_default(),
             StdError::GenericErr {
                 msg: "only self can call this".to_string()
             }
@@ -186,7 +182,7 @@ impl OrderContract<'_> {
 
         let cvm = cvm_runtime::gateway::ExecuteMsg::ExecuteProgram(
             cvm_runtime::gateway::ExecuteProgramMsg {
-                salt: vec![],           // derived from solutffzion owner and block - which is id
+                salt: msg.solution_id,
                 program: msg.route,     // traversed to set
                 assets: <_>::default(), // collecting all assets remaining from orders
                 tip: None,
@@ -204,7 +200,7 @@ impl OrderContract<'_> {
     #[msg(exec)]
     pub fn solve(&self, ctx: ExecCtx, msg: SolutionSubMsg) -> StdResult<Response> {
         // read all orders as solver provided
-        let mut all_orders = self.join_solution_with_orders(&msg, &ctx)?;
+        let mut all_orders = join_solution_with_orders(&self.orders, &msg, &ctx)?;
         let at_least_one = all_orders.first().expect("at least one");
 
         // normalize pair
@@ -256,8 +252,10 @@ impl OrderContract<'_> {
         let (a, b) = ab.clone();
         let mut transfers = vec![];
         let mut solution_item: SolutionItem = possible_solution;
+        let mut volume = 0u128;
         for solution in all_solutions {
-            let alternative_all_orders = self.join_solution_with_orders(&solution.msg, &ctx)?;
+            let alternative_all_orders =
+                join_solution_with_orders(&self.orders, &solution.msg, &ctx)?;
             let a_total_in: u128 = alternative_all_orders
                 .iter()
                 .filter(|x| x.given().denom == a)
@@ -275,39 +273,25 @@ impl OrderContract<'_> {
             ctx.deps
                 .api
                 .debug(&format!("mantis::solutions::alternative {:?}", &cow_part));
-            
 
-            
             if let Err(err) = cow_part {
                 if solution.owner == ctx.info.sender {
                     return Err(err);
                 }
             } else if let Ok(cow_part) = cow_part {
-                if let Some(route) = solution.msg.route {
-                    let cvm = simulate_route(
-                        ctx.deps.storage,
-                        route,
-                        Coin {
-                            denom: ab.0.clone(),
-                            amount: cow_part.token_a_remaining,
-                        },
-                        Coin {
-                            denom: ab.1.clone(),
-                            amount: cow_part.token_b_remaining,
-                        },
-                    );
-                    
-                }
-                if a_total_in.saturating_mul(b_total_in) >= a_in.saturating_mul(b_in) {
+                let new_volume = a_total_in.saturating_mul(b_total_in);
+                if new_volume >= a_in.saturating_mul(b_in) {
                     a_in = a_total_in;
                     b_in = b_total_in;
                     all_orders = alternative_all_orders;
                     transfers = cow_part.filled;
                     solution_item = solution;
+                    volume = new_volume;
                 }
             }
         }
 
+        let solution_id = solution_item.id();
         let mut response = Response::default();
 
         let transfers = self.fill(
@@ -317,18 +301,29 @@ impl OrderContract<'_> {
             solution_item.block_added,
         )?;
 
-        if let Some(route) = solution_item.msg.route {
-            // send remaining for settlement
-            let route = wasm_execute(
-                ctx.env.contract.address,
-                &ExecMsg::route(RouteSubMsg { all_orders, route }),
+        if let Some(cvm) = solution_item.msg.route {
+            let msg = wasm_execute(
+                ctx.env.contract.address.clone(),
+                &ExecMsg::route(RouteSubMsg {
+                    all_orders,
+                    route: cvm,
+                    solution_id,
+                }),
                 vec![],
             )?;
-            response = response.add_message(route);
+            response = response.add_message(msg);
         };
 
         self.solutions.clear(ctx.deps.storage);
-        let solution_chosen = mantis_solution_chosen(ab, &ctx, &transfers);
+        let solution_chosen = mantis_solution_chosen(
+            ab,
+            &ctx,
+            &transfers,
+            volume,
+            volume,
+            solution_item.owner,
+            solution_item.block_added,
+        );
 
         ctx.deps
             .api
@@ -341,8 +336,6 @@ impl OrderContract<'_> {
             .add_event(solution_upserted)
             .add_event(solution_chosen))
     }
-
-
 
     /// Simple get all orders
     #[msg(query)]
@@ -384,19 +377,28 @@ impl OrderContract<'_> {
             order.fill(transfer.amount);
             let (event, remaining) = if order.given.amount.is_zero() {
                 self.orders.remove(storage, order.order_id.u128());
-                (mantis_order_filled_full(&order, &solver_address, solution_block_added), None)
+                (
+                    mantis_order_filled_full(&order, &solver_address, solution_block_added),
+                    false,
+                )
             } else {
                 self.orders.save(storage, order.order_id.u128(), &order)?;
                 (
-                mantis_order_filled_parts(&order, &transfer, &solver_address, solution_block_added),
-                Some(order))
+                    mantis_order_filled_parts(
+                        &order,
+                        &transfer,
+                        &solver_address,
+                        solution_block_added,
+                    ),
+                    true,
+                )
             };
             let transfer = BankMsg::Send {
                 to_address: order.owner.to_string(),
                 amount: vec![transfer],
             };
             results.push(CowFillResult {
-                remaining,
+                remaining: if remaining { Some(order) } else { None },
                 bank_msg: transfer,
                 event,
             });
@@ -404,4 +406,3 @@ impl OrderContract<'_> {
         Ok(results)
     }
 }
-

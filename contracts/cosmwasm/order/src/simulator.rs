@@ -1,8 +1,9 @@
+use cosmwasm_std::Storage;
 use cvm_runtime::shared::XcProgram;
 
+use crate::prelude::*;
 use crate::CowFilledOrder;
 use crate::CowSolutionCalculation;
-use crate::prelude::*;
 use crate::SolvedOrder;
 
 /// given all orders amounts aggregated into common pool,
@@ -37,9 +38,9 @@ pub fn simulate_cows_via_bank(
         transfers.push((filled_wanted, order.order.order_id));
     }
     let result = CowSolutionCalculation {
-        filled : transfers,
-        token_a_remaining : a_total_in,
-        token_b_remaining : b_total_in,
+        filled: transfers,
+        token_a_remaining: a_total_in.into(),
+        token_b_remaining: b_total_in.into(),
     };
     Ok(result)
 }
@@ -48,7 +49,12 @@ pub fn simulate_cows_via_bank(
 /// And checks that amounts out (a or b) is more than remaining.
 /// Solve only larger CVM for in volume, assuming other solution will be for other side sent.
 /// Produces remaining each order will receive proportional to what is given.
-pub fn simulate_route(storage: &mut dyn Storage, route: XcProgram, token_a_remaining: Coin, token_b_remaining: Coin, orders: Vec<SolvedOrder>) -> _ {
+pub fn simulate_route(
+    storage: &mut dyn Storage,
+    route: XcProgram,
+    token_a_remaining: Coin,
+    token_b_remaining: Coin,
+    orders: Vec<SolvedOrder>,
+) -> Result<(), StdError> {
     todo!()
-
 }
