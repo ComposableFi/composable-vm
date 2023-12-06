@@ -24,6 +24,9 @@ pub enum ContractError {
     #[error("{0}")]
     Std(#[from] StdError),
 
+    #[error("{0}")]
+    Exchange(#[from] cvm_runtime_exchange::error::ContractError),
+
     #[error("Invalid call payload")]
     InvalidCallPayload,
 

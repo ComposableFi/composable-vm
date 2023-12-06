@@ -1,8 +1,7 @@
 use crate::{Funds, UserOrigin};
 use alloc::{string::String, vec::Vec};
+#[cfg(feature = "cosmwasm")]
 use cosmwasm_std::Binary;
-use parity_scale_codec::{Decode, Encode};
-use scale_info::TypeInfo;
 use serde::{Deserialize, Serialize};
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
@@ -58,19 +57,28 @@ impl TryFrom<&[u8]> for XCVMAck {
     }
 }
 
-#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
-#[derive(Clone, PartialEq, Eq, Debug, Encode, Decode, TypeInfo, Serialize, Deserialize)]
+#[cfg_attr(
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
+    derive(schemars::JsonSchema)
+)]
+#[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub struct Packet<Program> {
     /// The interpreter that was the origin of this packet.
     #[serde(with = "hex")]
-    #[cfg_attr(feature = "json-schema", schemars(with = "String"))]
+    #[cfg_attr(
+        feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
+        schemars(with = "String")
+    )]
     pub interpreter: Vec<u8>,
     /// The user that originated the first XCVM call.
     pub user_origin: UserOrigin,
     /// The salt associated with the program.
     #[serde(with = "hex")]
-    #[cfg_attr(feature = "json-schema", schemars(with = "String"))]
+    #[cfg_attr(
+        feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
+        schemars(with = "String")
+    )]
     pub salt: Vec<u8>,
     /// The protobuf encoded program.
     pub program: Program,

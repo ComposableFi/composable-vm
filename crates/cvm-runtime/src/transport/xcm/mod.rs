@@ -3,7 +3,8 @@ use crate::prelude::*;
 use xcm::{latest::*, VersionedMultiLocation, VersionedXcm};
 
 /// manually typed interface to contracts until
-/// https://github.com/paritytech/parity-common/pull/785
+/// https://github.com/paritytech/parity-common/pull/804
+/// https://github.com/paritytech/parity-common/pull/801
 /// https://github.com/paritytech/polkadot-sdk/pull/1454
 impl ExecuteMsg {
     pub fn send(dest: VersionedMultiLocation, message: VersionedXcm<()>) -> Self {

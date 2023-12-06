@@ -24,6 +24,17 @@ Bidders reserve amounts as rewards to pay for percentage of volume solved via th
 
 More details semantics will be described in whitepaper. including Solver operations.
 
+
+## Solution
+
+In order solution have to be accepted, it must:
+
+- all CVM programs has salt to be solution id from hash of solver address, token a denom, token b denom and block solution was added
+- transfer all amounts as absolute as CVM instruction for cross chain part
+- all COWs solved against same price
+- none of user limits violated
+- only assets from orders inside solution are used
+
 ## Implementation
 
 Current implementation is for 1 solution for one user, 1 to 1 asset, permissioned solvers without collateral.

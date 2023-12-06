@@ -1,6 +1,6 @@
 use cosmwasm_std::{IbcOrder, Response, StdError};
 use cvm_runtime::{AssetId, NetworkId};
-use ibc_core::host::types::error::IdentifierError;
+use ibc_core_host_types::error::IdentifierError;
 use thiserror::Error;
 
 pub type Result<T = Response, E = ContractError> = core::result::Result<T, E>;

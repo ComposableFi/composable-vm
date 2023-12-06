@@ -14,21 +14,20 @@ workspace = true
 [features]
 library = []
 std = [
-  "cw-cvm-executor/std",
   "cvm-runtime/std",
   "ibc-apps-more/std",
-  "ibc-apps/std",
-  "ibc-core/std",
+  "ibc-app-transfer-types/std",
+  "ibc-core-host-types/std",
   "ibc-primitives/std",
   "thiserror/std",
 ]
 json-schema = [
   "ibc-apps-more/json-schema",
-  "cw-cvm-executor/json-schema",
-  "ibc-apps/schema",
-  "ibc-core/schema",
+  "ibc-app-transfer-types/schema",
+  "ibc-core-host-types/schema",
   "ibc-primitives/schema",
   "cvm-runtime/json-schema",
+  "dep:schemars",
 ]
 default = ["std"]
 
@@ -41,19 +40,12 @@ cosmwasm-std = { workspace = true, features = [
   "cosmwasm_1_2",
 ] }
 cw-storage-plus = { workspace = true }
-cw-utils = { workspace = true }
 cw2 = { workspace = true }
 cw20 = { workspace = true }
-
-schemars = { workspace = true }
+schemars = { workspace = true, optional = true}
 serde = { workspace = true }
 serde-json-wasm = { workspace = true }
 thiserror = { workspace = true }
-
-cw-cvm-executor = { path = "../executor", features = [
-  "library",
-], default-features = false }
-
 cvm-runtime = { path = "../../../crates/cvm-runtime", features = [
   "cosmwasm",
 ], default-features = false }
@@ -62,8 +54,8 @@ ibc-apps-more = { workspace = true, default-features = false, features = [
   "cosmwasm",
 ] }
 
-ibc-apps = { workspace = true, default-features = false, features = ["serde"] }
-ibc-core = { workspace = true, default-features = false, features = ["serde"] }
+ibc-app-transfer-types = { workspace = true, default-features = false, features = ["serde"] }
+ibc-core-host-types = { workspace = true, default-features = false, features = ["serde"] }
 ibc-primitives = { workspace = true, default-features = false, features = [
   "serde",
 ] }

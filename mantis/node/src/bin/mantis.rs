@@ -15,7 +15,7 @@ use cosmrs::{
     tx::{self, Fee, SignerInfo},
     AccountId,
 };
-use cw_mantis_order::{Amount, Cow, OrderItem, OrderSubMsg, SolutionSubMsg};
+use cw_mantis_order::{Amount, OrderSolution, OrderItem, OrderSubMsg, SolutionSubMsg};
 use mantis_node::{
     mantis::{
         args::*,
@@ -255,7 +255,7 @@ async fn solve(
                 .filter(|x| x.amount_out > <_>::default())
                 .map(|x| {
                     let filled = x.amount_out.to_u128().expect("u128");
-                    Cow {
+                    OrderSolution {
                         order_id: x.id,
                         cow_amount: filled.into(),
                         given: filled.into(),

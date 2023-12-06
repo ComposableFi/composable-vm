@@ -13,6 +13,12 @@ pub type Block = u64;
 /// each CoW solver locally, is just transfer from shared pair bank with referenced order
 pub type CowFilledOrder = (Coin, OrderId);
 
+pub struct CowSolutionCalculation {
+    pub token_a_remaining: Amount,
+    pub token_b_remaining: Amount,
+    pub filled: Vec<CowFilledOrder>,
+}
+
 /// each pair waits ate least this amount of blocks before being decided
 pub const BATCH_EPOCH: u32 = 1;
 
@@ -22,7 +28,12 @@ pub const MIN_SOLUTION_COUNT: u32 = 1;
 /// parts of a whole, numerator / denominator
 pub type Ratio = (Uint64, Uint64);
 
-#[cw_serde]
+#[cfg_attr(
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
+    derive(schemars::JsonSchema)
+)]
+#[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
 pub struct OrderItem {
     pub owner: Addr,
     pub msg: OrderSubMsg,
@@ -53,7 +64,12 @@ impl OrderItem {
     }
 }
 
-#[cw_serde]
+#[cfg_attr(
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
+    derive(schemars::JsonSchema)
+)]
+#[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
 pub struct OrderSubMsg {
     /// Amount is minimum amount to get for given amount (sure user wants more than `wants` and we
     /// try to achieve that). Denom users wants to get, it can be cw20, bank or this chain CVM
@@ -99,7 +115,7 @@ pub struct SolutionItem {
 #[cw_serde]
 pub struct SolutionSubMsg {
     #[serde(skip_serializing_if = "Vec::is_empty", default)]
-    pub cows: Vec<Cow>,
+    pub cows: Vec<OrderSolution>,
     /// all CoWs ensured to be solved against one optimal price
     pub optimal_price: (u64, u64),
     /// must adhere Connection.fork_join_supported, for now it is always false (it restrict set of
@@ -112,7 +128,12 @@ pub struct SolutionSubMsg {
 }
 
 /// after cows solved, need to route remaining cross chain
-#[cw_serde]
+#[cfg_attr(
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
+    derive(schemars::JsonSchema)
+)]
+#[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
 pub struct RouteSubMsg {
     pub all_orders: Vec<SolvedOrder>,
     pub route: XcProgram,
@@ -121,35 +142,44 @@ pub struct RouteSubMsg {
 /// how much of order to be solved by CoW.
 /// difference with `Fill` to be solved by cross chain exchange
 /// aggregate pool of all orders in solution is used to give user amount he wants.
-#[cw_serde]
-pub struct Cow {
+#[cfg_attr(
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
+    derive(schemars::JsonSchema)
+)]
+#[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub struct OrderSolution {
     pub order_id: OrderId,
     /// how much of order to be solved by from bank for all aggregated cows, `want` unit
     pub cow_amount: Amount,
-    /// amount user should get after order executed in `want` unit
-    pub given: Amount,
+    /// how much to dispatch to user after routing
+    pub cross_chain: Amount,
 }
-impl Cow {
-    pub fn new(order_id: OrderId, cow_amount: Amount, given: Amount) -> Self {
-        assert!(cow_amount <= given);
+impl OrderSolution {
+    pub fn new(order_id: OrderId, cow_amount: Amount, cross_chain: Amount) -> Self {
         Self {
             order_id,
             cow_amount,
-            given,
+            cross_chain,
         }
     }
 }
 
-#[cw_serde]
+#[cfg_attr(
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
+    derive(schemars::JsonSchema)
+)]
+#[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
 pub struct SolvedOrder {
     pub order: OrderItem,
-    pub solution: Cow,
+    pub solution: OrderSolution,
 }
 
 impl SolvedOrder {
     /// if given less, it will be partial, validated via bank
     /// if given more, it is over limit - user is happy, and total verified via bank
-    pub fn new(order: OrderItem, solution: Cow) -> StdResult<Self> {
+    pub fn new(order: OrderItem, solution: OrderSolution) -> StdResult<Self> {
         Ok(Self { order, solution })
     }
 
@@ -190,6 +220,7 @@ impl SolvedOrder {
 /// when solution is applied to order item,
 /// what to ask from host to do next
 pub struct CowFillResult {
+    pub remaining: Option<OrderItem>,
     pub bank_msg: BankMsg,
     pub event: Event,
 }
@@ -197,3 +228,8 @@ pub struct CowFillResult {
 pub type Denom = String;
 pub type Pair = (Denom, Denom);
 pub type SolverAddress = String;
+
+
+pub type CrossChainSolutionId = (SolverAddress, Pair, Block);
+
+pub type SolutionHash = String;

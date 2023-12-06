@@ -10,6 +10,7 @@ crate-type = ["cdylib", "rlib"]
 cosmwasm-std = { workspace = true, features = [
   "iterator",
 ], default-features = false }
+
 cw-controllers = { workspace = true, default-features = false }
 sylvia = { workspace = true, default-features = false }
 schemars = { workspace = true, default-features = false, optional = true }
@@ -33,7 +34,7 @@ tuples = { workspace = true }
 
 [features]
 std = ["cvm-runtime/std"]
-json-schema = ["cvm-runtime/json-schema"]
+json-schema = ["cvm-runtime/json-schema", "dep:schemars"]
 
 [dev-dependencies]
 num-rational = { workspace = true, default-features = false, features = [

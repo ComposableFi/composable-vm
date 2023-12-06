@@ -1,5 +1,5 @@
 use cosmwasm_std::{Deps, DepsMut};
-use cvm_runtime::service::dex::{ExchangeId, ExchangeItem};
+use cvm_runtime::exchange::{ExchangeId, ExchangeItem};
 
 use crate::{
     auth,

@@ -33,27 +33,27 @@
 #![feature(error_in_core)]
 
 extern crate alloc;
-
-mod abstraction;
+pub mod analyzer;
 mod asset;
 mod bridge;
 #[cfg(feature = "cosmwasm")]
 pub mod cosmwasm;
+pub mod exchange;
+pub mod executor;
 pub mod gateway;
 mod instruction;
 mod network;
 mod packet;
-mod prelude;
+pub mod prelude;
 mod program;
 pub mod proto;
 mod protocol;
-pub mod service;
 pub mod shared;
 pub mod transport;
 
 pub use crate::{
-    asset::*, bridge::*, instruction::*, network::*, packet::*, program::*, protocol::*,
-    service::dex::ExchangeId,
+    asset::*, bridge::*, exchange::*, instruction::*, network::*, packet::*, program::*,
+    protocol::*,
 };
 use core::marker::PhantomData;
 

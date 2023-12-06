@@ -1,3 +1,4 @@
+//! simple operation without constraint checks and calculations
 use cw_storage_plus::MultiIndex;
 
 use crate::*;
@@ -25,4 +26,23 @@ pub fn solutions<'a>(
         ),
     };
     IndexedMap::new("solutions", indexes)
+}
+
+
+pub fn join_solution_with_orders(
+    &self,
+    msg: &SolutionSubMsg,
+    ctx: &ExecCtx<'_>,
+) -> Result<Vec<SolvedOrder>, StdError> {
+    let all_orders = msg
+        .cows
+        .iter()
+        .map(|x| {
+            self.orders
+                .load(ctx.deps.storage, x.order_id.u128())
+                .map_err(|_| StdError::not_found("order"))
+                .and_then(|order| SolvedOrder::new(order, x.clone()))
+        })
+        .collect::<Result<Vec<SolvedOrder>, _>>()?;
+    Ok(all_orders)
 }

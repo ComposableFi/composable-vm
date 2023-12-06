@@ -6,7 +6,7 @@ use crate::{
 };
 use cosmwasm_std::{Api, BlockInfo, CosmosMsg, Deps, IbcEndpoint, StdResult};
 
-use ibc_core::host::types::identifiers::{ChannelId, ConnectionId, PortId};
+use ibc_core_host_types::identifiers::{ChannelId, ConnectionId, PortId};
 
 use ibc_apps_more::{
     hook::{Callback, SendMemo},
@@ -18,14 +18,20 @@ use ibc_apps_more::{
 /// All information here is not secured until compared with existing secured data.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "snake_case")]
-#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
+#[cfg_attr(
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
+    derive(schemars::JsonSchema)
+)]
 pub struct XcMessageData {
     pub from_network_id: NetworkId,
     pub packet: XcPacket,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
+#[cfg_attr(
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
+    derive(schemars::JsonSchema)
+)]
 #[serde(rename_all = "snake_case")]
 pub enum TransportTrackerId {
     /// Allows to identify results of IBC packets
@@ -37,7 +43,10 @@ pub enum TransportTrackerId {
 
 /// route is used to describe how to send a full program packet to another network
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
+#[cfg_attr(
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
+    derive(schemars::JsonSchema)
+)]
 #[serde(rename_all = "snake_case")]
 pub struct IbcIcs20ProgramRoute {
     pub from_network: NetworkId,
@@ -52,6 +61,7 @@ pub struct IbcIcs20ProgramRoute {
 }
 
 /// send to target chain with cosmwasm receiver
+#[cfg(feature = "cosmwasm")]
 pub fn to_cosmwasm_message<T>(
     _deps: Deps,
     api: &dyn Api,

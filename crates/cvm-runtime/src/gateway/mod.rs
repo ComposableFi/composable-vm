@@ -5,18 +5,24 @@ pub use config::*;
 pub use query::*;
 
 use crate::{
-    prelude::*, transport::ibc::XcMessageData, AssetId, CallOrigin, Funds, InterpreterOrigin,
-    NetworkId,
+    exchange::*, prelude::*, transport::ibc::XcMessageData, AssetId, CallOrigin, Funds,
+    InterpreterOrigin, NetworkId,
 };
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "snake_case")]
-#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
+#[cfg_attr(
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
+    derive(schemars::JsonSchema)
+)]
 pub struct MigrateMsg {}
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, derive_more::From)]
 #[serde(rename_all = "snake_case")]
-#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
+#[cfg_attr(
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
+    derive(schemars::JsonSchema)
+)]
 pub enum ExecuteMsg {
     Config(ConfigSubMsg),
 
@@ -46,7 +52,10 @@ pub enum ExecuteMsg {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "snake_case")]
-#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
+#[cfg_attr(
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
+    derive(schemars::JsonSchema)
+)]
 pub enum ShortcutSubMsg {
     Transfer {
         /// assets from there
@@ -63,7 +72,10 @@ pub enum ShortcutSubMsg {
 /// Definition of a program to be executed including its context.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "snake_case")]
-#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
+#[cfg_attr(
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
+    derive(schemars::JsonSchema)
+)]
 pub struct ExecuteProgramMsg<Assets = Option<Funds<crate::shared::Displayed<u128>>>> {
     /// The program salt.
     /// If JSON, than hex encoded non prefixed lower case string.
@@ -72,7 +84,10 @@ pub struct ExecuteProgramMsg<Assets = Option<Funds<crate::shared::Displayed<u128
         serialize_with = "hex::serialize",
         deserialize_with = "hex::deserialize"
     )]
-    #[cfg_attr(feature = "json-schema", schemars(schema_with = "String::json_schema"))]
+    #[cfg_attr(
+        feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
+        schemars(schema_with = "String::json_schema")
+    )]
     #[serde(skip_serializing_if = "Vec::is_empty", default)]
     pub salt: Vec<u8>,
     /// The program.
@@ -91,7 +106,10 @@ pub type BridgeExecuteProgramMsg = ExecuteProgramMsg<Funds<crate::shared::Displa
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "snake_case")]
-#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
+#[cfg_attr(
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
+    derive(schemars::JsonSchema)
+)]
 pub struct BridgeForwardMsg {
     pub executor_origin: InterpreterOrigin,
     /// target network
@@ -113,7 +131,10 @@ pub struct BridgeForwardMsg {
 /// to be validated.
 #[cfg(feature = "cosmwasm")]
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
+#[cfg_attr(
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
+    derive(schemars::JsonSchema)
+)]
 #[serde(transparent)]
 pub struct Gateway {
     address: cosmwasm_std::Addr,
@@ -177,8 +198,8 @@ impl Gateway {
     pub fn get_exchange_by_id(
         &self,
         querier: cosmwasm_std::QuerierWrapper,
-        exchange_id: crate::service::dex::ExchangeId,
-    ) -> cosmwasm_std::StdResult<crate::service::dex::ExchangeItem> {
+        exchange_id: ExchangeId,
+    ) -> cosmwasm_std::StdResult<ExchangeItem> {
         let query = QueryMsg::GetExchangeById { exchange_id };
         self.do_query::<GetExchangeResponse>(querier, query)
             .map(|response| response.exchange)

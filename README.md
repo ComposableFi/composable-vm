@@ -16,11 +16,12 @@ https://github.com/ComposableFi/composable/tree/main/docs/docs/technology/mantis
 
 ## Plan for todayS
 
-1. move CVM shared code here, make it build as part of composable as include src
 2. build generator of CVM into contract
 3. build storage for solution tacking with is own VW
 3. add block to order filled
 4. put volume into solution
+5. put id into solution
+
 5. split solution contract into algorithms.rs and cw storage deps
 6. describe data model of contract
 7. finalize porting bruno solver to rust

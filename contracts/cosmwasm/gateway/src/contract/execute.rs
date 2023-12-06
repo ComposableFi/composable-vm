@@ -3,7 +3,7 @@ use crate::{
     batch::BatchResponse,
     error::{ContractError, Result},
     events::make_event,
-    exchange, interpreter, msg,
+    exchange, executor, msg,
     network::{self, load_this},
     prelude::*,
     state,
@@ -92,13 +92,9 @@ fn handle_config_msg(
             other_asset,
         } => assets::force_asset_to_network_map(auth, deps, this_asset, other_network, other_asset),
         ConfigSubMsg::ForceNetwork(msg) => network::force_network(auth, deps, msg),
-        ConfigSubMsg::ForceInstantiate { user_origin, salt } => interpreter::force_instantiate(
-            auth,
-            env.contract.address.clone(),
-            deps,
-            user_origin,
-            salt,
-        ),
+        ConfigSubMsg::ForceInstantiate { user_origin, salt } => {
+            executor::force_instantiate(auth, env.contract.address.clone(), deps, user_origin, salt)
+        }
         ConfigSubMsg::Force(msgs) => {
             let mut aggregated = BatchResponse::new();
             for msg in msgs {
@@ -157,10 +153,9 @@ fn transfer_from_user(
                         recipient: self_address.to_string(),
                         amount: (*program_amount).into(),
                     })?)
-                }
-                msg::AssetReference::Erc20 { .. } => {
-                    Err(ContractError::RuntimeUnsupportedOnNetwork)?
-                }
+                } // msg::AssetReference::Erc20 { .. } => {
+                  //     Err(ContractError::RuntimeUnsupportedOnNetwork)?
+                  // }
             }
         }
         Ok((transfers, program_funds))
@@ -247,7 +242,7 @@ pub(crate) fn handle_execute_program_privilleged(
         let response = send_funds_to_interpreter(deps.as_ref(), address.clone(), assets)?;
         let wasm_msg = wasm_execute(
             address.clone(),
-            &cw_cvm_executor::msg::ExecuteMsg::Execute {
+            &cvm_runtime::executor::ExecuteMsg::Execute {
                 tip: tip
                     .map(|x| deps.api.addr_validate(&x))
                     .ok_or(ContractError::AccountInProgramIsNotMappableToThisChain)?
@@ -269,14 +264,14 @@ pub(crate) fn handle_execute_program_privilleged(
                 interpreter_code_id,
                 ..
             } => interpreter_code_id,
-            msg::GatewayId::Evm { .. } => {
-                Err(ContractError::BadlyConfiguredRouteBecauseThisChainCanSendOnlyFromCosmwasm)?
-            }
+            // msg::GatewayId::Evm { .. } => {
+            //     Err(ContractError::BadlyConfiguredRouteBecauseThisChainCanSendOnlyFromCosmwasm)?
+            // }
         };
         deps.api.debug("instantiating interpreter");
         let this = msg::Gateway::new(env.contract.address);
 
-        let interpreter_instantiate_submessage = crate::interpreter::instantiate(
+        let interpreter_instantiate_submessage = crate::executor::instantiate(
             deps.as_ref(),
             this.address(),
             interpreter_code_id,
@@ -332,8 +327,7 @@ fn send_funds_to_interpreter(
                     recipient: interpreter_address.clone(),
                     amount: amount.into(),
                 })?
-            }
-            msg::AssetReference::Erc20 { .. } => Err(ContractError::RuntimeUnsupportedOnNetwork)?,
+            } //msg::AssetReference::Erc20 { .. } => Err(ContractError::RuntimeUnsupportedOnNetwork)?,
         };
         response = response.add_message(msg);
     }
