@@ -34,6 +34,8 @@ In order solution have to be accepted, it must:
 - all COWs solved against same price
 - none of user limits violated
 - only assets from orders inside solution are used
+- CVM must adhere Connection.fork_join_supported, for now it is always false (it restrict set routes possible)
+- Must adhere to single assets per spawn if multi assets are not supported (all for now)
 
 ## Implementation
 

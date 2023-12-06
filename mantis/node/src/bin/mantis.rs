@@ -270,7 +270,7 @@ async fn solve(
                     cows,
                     route: None,
                     timeout: tip.timeout(12),
-                    optimal_price,
+                    cow_optional_price: optimal_price,
                 };
 
                 let auth_info = simulate_and_set_fee(signing_key, &tip.account).await;

@@ -177,21 +177,18 @@ impl OrderContract<'_> {
         );
 
         ctx.deps.api.debug(
-            "so here we add route execution tracking to storage and map route to CVM program",
+            &format!("mantis::route:: so here we add route execution tracking to storage and map route to CVM program {:?}", msg)
         );
 
-        let cvm = cvm_runtime::gateway::ExecuteMsg::ExecuteProgram(
-            cvm_runtime::gateway::ExecuteProgramMsg {
-                salt: msg.solution_id,
-                program: msg.route,     // traversed to set
-                assets: <_>::default(), // collecting all assets remaining from orders
-                tip: None,
-            },
-        );
+        let cvm: cvm_runtime::gateway::ExecuteMsg =
+            cvm_runtime::gateway::ExecuteMsg::ExecuteProgram(msg.msg.msg);
+
         let contract = self.cvm_address.load(ctx.deps.storage)?;
-        let cvm = wasm_execute(contract, &cvm, vec![])?;
-        // in success handler of msg we start tracking solution
-        // in failure handler we move all funds to users back
+
+        let funds = self.drain(&ctx, msg.msg.ratio, msg.solution_id, msg.all_orders);
+
+        let cvm = wasm_execute(contract, &cvm, msg.msg.funds)?;
+
         Ok(Response::default().add_message(cvm))
     }
 
@@ -301,21 +298,21 @@ impl OrderContract<'_> {
             solution_item.block_added,
         )?;
 
-        let cross_chain_b = all_orders
+        let cross_chain_b: u128 = all_orders
             .iter()
             .filter(|x| x.given().denom != ab.0)
-            .map(|x| x.solution.cross_chain);
-        let cross_chain_a = all_orders
+            .map(|x| x.solution.cross_chain.u128()).sum();
+        let cross_chain_a: u128 = all_orders
             .iter()
             .filter(|x| x.given().denom != ab.1)
-            .map(|x| x.solution.cross_chain);
+            .map(|x| x.solution.cross_chain.u128()).sum();
 
-        if let Some(cvm) = solution_item.msg.route {
+        if let Some(msg) = solution_item.msg.route {
             let msg = wasm_execute(
                 ctx.env.contract.address.clone(),
                 &ExecMsg::route(RouteSubMsg {
                     all_orders,
-                    route: cvm,
+                    msg,
                     solution_id,
                 }),
                 vec![],
@@ -358,6 +355,16 @@ impl OrderContract<'_> {
 
     #[msg(query)]
     pub fn get_all_solutions(&self, ctx: QueryCtx) -> StdResult<Vec<SolutionItem>> {
+        self.get_solutions(ctx.deps.storage)
+    }
+
+    #[msg(query)]
+    pub fn solution_id(&self, ctx: QueryCtx, id: CrossChainSolutionKey) -> StdResult<String> {
+        solution_id(&id).map(hex::encode)
+    }
+
+    #[msg(query)]
+    pub fn get_all_drained_orders(&self, ctx: QueryCtx) -> StdResult<Vec<SolutionItem>> {
         self.get_solutions(ctx.deps.storage)
     }
 
@@ -414,5 +421,9 @@ impl OrderContract<'_> {
             });
         }
         Ok(results)
+    }
+
+    fn drain(&self, ctx: &ExecCtx<'_>, ratio: (cosmwasm_std::Uint64, cosmwasm_std::Uint64), solution_id: Vec<u8>, all_orders: Vec<SolvedOrder>) -> _ {
+        todo!()
     }
 }

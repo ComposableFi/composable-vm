@@ -1,5 +1,5 @@
-use cosmwasm_std::{BankMsg, Event, StdResult, Uint64};
-use cvm_runtime::{shared::XcProgram, AssetId, ExchangeId, NetworkId};
+use cosmwasm_std::{BankMsg, Event, StdResult, Uint64, WasmMsg};
+use cvm_runtime::{gateway::ExecuteProgramMsg, shared::XcProgram, AssetId, ExchangeId, NetworkId};
 
 use crate::prelude::*;
 
@@ -114,6 +114,18 @@ impl SolutionItem {
     }
 }
 
+#[cfg_attr(
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
+    derive(schemars::JsonSchema)
+)]
+#[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub struct CrossChainPart {
+    pub msg: ExecuteProgramMsg,
+    /// what price is used to take from orders
+    pub ratio: Ratio,
+}
+
 /// price information will not be used on chain or deciding.
 /// it will fill orders on chain as instructed
 /// and check that max/min from orders respected
@@ -124,11 +136,9 @@ pub struct SolutionSubMsg {
     #[serde(skip_serializing_if = "Vec::is_empty", default)]
     pub cows: Vec<OrderSolution>,
     /// all CoWs ensured to be solved against one optimal price
-    pub optimal_price: (u64, u64),
-    /// must adhere Connection.fork_join_supported, for now it is always false (it restrict set of
-    /// routes possible)
+    pub cow_optional_price: Ratio,
     #[serde(skip_serializing_if = "Option::is_none", default)]
-    pub route: Option<XcProgram>,
+    pub route: Option<CrossChainPart>,
 
     /// after some time, solver will not commit to success
     pub timeout: Block,
@@ -139,12 +149,23 @@ pub struct SolutionSubMsg {
     feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
     derive(schemars::JsonSchema)
 )]
-#[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, PartialEq, Eq, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub struct RouteSubMsg {
     pub all_orders: Vec<SolvedOrder>,
-    pub route: XcProgram,
+    pub msg: CrossChainPart,
     pub solution_id: SolutionHash,
+}
+
+#[cfg_attr(
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
+    derive(schemars::JsonSchema)
+)]
+#[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub struct SubWasmMsg<Payload> {
+    pub msg: Payload,
+    pub funds: Vec<Coin>,
 }
 
 /// how much of order to be solved by CoW.

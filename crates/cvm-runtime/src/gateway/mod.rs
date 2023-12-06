@@ -70,7 +70,7 @@ pub enum ShortcutSubMsg {
 }
 
 /// Definition of a program to be executed including its context.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq)]
 #[serde(rename_all = "snake_case")]
 #[cfg_attr(
     feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
