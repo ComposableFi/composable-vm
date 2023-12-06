@@ -29,6 +29,9 @@ cvm-runtime = { path = "../../../crates/cvm-runtime", default-features = false, 
   "cosmwasm",
 ] }
 
+hex = {workspace = true, default-features = false, features = ["std"] }
+sha2 = {workspace = true, default-features = false, features = ["std"] }
+
 no-panic = { workspace = true }
 tuples = { workspace = true }
 

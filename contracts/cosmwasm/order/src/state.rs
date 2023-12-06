@@ -28,9 +28,8 @@ pub fn solutions<'a>(
     IndexedMap::new("solutions", indexes)
 }
 
-
 pub fn join_solution_with_orders(
-    &self,
+    orders: &Map<'_, u128, OrderItem>,
     msg: &SolutionSubMsg,
     ctx: &ExecCtx<'_>,
 ) -> Result<Vec<SolvedOrder>, StdError> {
@@ -38,7 +37,7 @@ pub fn join_solution_with_orders(
         .cows
         .iter()
         .map(|x| {
-            self.orders
+            orders
                 .load(ctx.deps.storage, x.order_id.u128())
                 .map_err(|_| StdError::not_found("order"))
                 .and_then(|order| SolvedOrder::new(order, x.clone()))
