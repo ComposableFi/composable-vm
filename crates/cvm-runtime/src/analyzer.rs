@@ -75,7 +75,6 @@ pub fn ensure_final_transfers_are_absolute(
     Ok(())
 }
 
-
 /// returns assets from entry spawn program
 pub fn get_desired_assets(program: &XcProgram) -> Vec<AbsoluteAmount> {
     todo!()

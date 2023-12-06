@@ -29,9 +29,9 @@ use sylvia::{
 
 pub struct OrderContract<'a> {
     pub orders: Map<'a, u128, OrderItem>,
-    /// (a,b,solver)
-    pub solutions:
-        IndexedMap<'a, &'a (Denom, Denom, SolverAddress), SolutionItem, SolutionIndexes<'a>>,
+
+    pub tracked_orders: Map<'a, (u128, SolutionHash), TrackedOrderItem>,
+    pub solutions: SolutionMultiMap<'a>,
     pub next_order_id: Item<'a, u128>,
     /// address for CVM contact to send routes to
     pub cvm_address: Item<'a, String>,
@@ -41,6 +41,7 @@ pub struct OrderContract<'a> {
 impl Default for OrderContract<'_> {
     fn default() -> Self {
         Self {
+            tracked_orders: Map::new("tracked_orders"),
             orders: Map::new("orders"),
             next_order_id: Item::new("next_order_id"),
             cvm_address: Item::new("cvm_address"),
@@ -162,7 +163,7 @@ impl OrderContract<'_> {
     }
 
     #[msg(exec)]
-    pub fn route(&self, ctx: ExecCtx, msg: RouteSubMsg) -> StdResult<Response> {
+    pub fn route(&self, mut ctx: ExecCtx, msg: RouteSubMsg) -> StdResult<Response> {
         ensure!(
             ctx.info.sender == ctx.env.contract.address
                 || ctx.info.sender
@@ -185,9 +186,25 @@ impl OrderContract<'_> {
 
         let contract = self.cvm_address.load(ctx.deps.storage)?;
 
-        let funds = self.drain(&ctx, msg.msg.ratio, msg.solution_id, msg.all_orders);
+        let (a_taken, b_taken) = self.drain(
+            ctx.branch(),
+            msg.msg.ratio,
+            msg.solution_id,
+            msg.all_orders,
+            msg.pair.clone(),
+        )?;
 
-        let cvm = wasm_execute(contract, &cvm, msg.msg.funds)?;
+        let funds = vec![
+            Coin {
+                denom: msg.pair.0,
+                amount: a_taken.into(),
+            },
+            Coin {
+                denom: msg.pair.1,
+                amount: b_taken.into(),
+            },
+        ];
+        let cvm = wasm_execute(contract, &cvm, funds)?;
 
         Ok(Response::default().add_message(cvm))
     }
@@ -301,11 +318,13 @@ impl OrderContract<'_> {
         let cross_chain_b: u128 = all_orders
             .iter()
             .filter(|x| x.given().denom != ab.0)
-            .map(|x| x.solution.cross_chain.u128()).sum();
+            .map(|x| x.solution.cross_chain.u128())
+            .sum();
         let cross_chain_a: u128 = all_orders
             .iter()
             .filter(|x| x.given().denom != ab.1)
-            .map(|x| x.solution.cross_chain.u128()).sum();
+            .map(|x| x.solution.cross_chain.u128())
+            .sum();
 
         if let Some(msg) = solution_item.msg.route {
             let msg = wasm_execute(
@@ -314,6 +333,7 @@ impl OrderContract<'_> {
                     all_orders,
                     msg,
                     solution_id,
+                    pair: ab.clone(),
                 }),
                 vec![],
             )?;
@@ -355,26 +375,17 @@ impl OrderContract<'_> {
 
     #[msg(query)]
     pub fn get_all_solutions(&self, ctx: QueryCtx) -> StdResult<Vec<SolutionItem>> {
-        self.get_solutions(ctx.deps.storage)
+        get_solutions(&self.solutions, ctx.deps.storage)
     }
 
     #[msg(query)]
     pub fn solution_id(&self, ctx: QueryCtx, id: CrossChainSolutionKey) -> StdResult<String> {
-        solution_id(&id).map(hex::encode)
+        Ok(hex::encode(solution_id(&id)))
     }
 
     #[msg(query)]
     pub fn get_all_drained_orders(&self, ctx: QueryCtx) -> StdResult<Vec<SolutionItem>> {
-        self.get_solutions(ctx.deps.storage)
-    }
-
-    fn get_solutions(&self, storage: &dyn Storage) -> Result<Vec<SolutionItem>, StdError> {
-        self.solutions
-            .idx
-            .pair
-            .range(storage, None, None, Order::Ascending)
-            .map(|r| r.map(|(_, x)| x))
-            .collect()
+        todo!()
     }
 
     /// (partially) fills orders.
@@ -423,7 +434,50 @@ impl OrderContract<'_> {
         Ok(results)
     }
 
-    fn drain(&self, ctx: &ExecCtx<'_>, ratio: (cosmwasm_std::Uint64, cosmwasm_std::Uint64), solution_id: Vec<u8>, all_orders: Vec<SolvedOrder>) -> _ {
-        todo!()
+    fn drain<'a>(
+        &self,
+        ctx: ExecCtx<'a>,
+        ratio: Ratio,
+        solution_id: SolutionHash,
+        all_orders: Vec<SolvedOrder>,
+        ab: Pair,
+    ) -> Result<(u128, u128), StdError> {
+        let mut a_amount: u128 = 0;
+        let mut b_amount: u128 = 0;
+        for order in all_orders.iter() {
+            let order_id = order.order.order_id.u128();
+            let mut item: OrderItem = self.orders.load(ctx.deps.storage, order_id)?;
+            let taken = if item.given.denom == ab.0 {
+                item.given.amount.u128() * (ratio.0.u64() as u128 / ratio.1.u64() as u128)
+            } else {
+                item.given.amount.u128() * (ratio.1.u64() as u128 / ratio.0.u64() as u128)
+            };
+            if item.given.denom == ab.0 {
+                a_amount += taken;
+            } else {
+                b_amount += taken;
+            };
+
+            let promised = order.solution.cross_chain;
+            item.given.amount = item
+                .given
+                .amount
+                .checked_sub(taken.into())
+                .expect("solution does not takes more than can");
+            item.msg.wants.amount = item.msg.wants.amount.saturating_sub(promised);
+            let tracker = TrackedOrderItem {
+                order_id: item.order_id,
+                solution_id: solution_id.clone(),
+                amount_taken: taken.into(),
+                promised,
+            };
+            self.orders.save(ctx.deps.storage, order_id, &item)?;
+            self.tracked_orders.save(
+                ctx.deps.storage,
+                (order_id, solution_id.clone()),
+                &tracker,
+            )?;
+        }
+        Ok((a_amount, b_amount))
     }
 }

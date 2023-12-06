@@ -15,7 +15,7 @@ use cosmrs::{
     tx::{self, Fee, SignerInfo},
     AccountId,
 };
-use cw_mantis_order::{Amount, OrderSolution, OrderItem, OrderSubMsg, SolutionSubMsg};
+use cw_mantis_order::{Amount, OrderItem, OrderSolution, OrderSubMsg, SolutionSubMsg};
 use mantis_node::{
     mantis::{
         args::*,
@@ -258,7 +258,7 @@ async fn solve(
                     OrderSolution {
                         order_id: x.id,
                         cow_amount: filled.into(),
-                        given: filled.into(),
+                        cross_chain: 0u128.into(),
                     }
                 })
                 .collect::<Vec<_>>();
@@ -270,7 +270,7 @@ async fn solve(
                     cows,
                     route: None,
                     timeout: tip.timeout(12),
-                    cow_optional_price: optimal_price,
+                    cow_optional_price: optimal_price.into(),
                 };
 
                 let auth_info = simulate_and_set_fee(signing_key, &tip.account).await;

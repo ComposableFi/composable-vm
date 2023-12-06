@@ -136,7 +136,7 @@ pub struct SolutionSubMsg {
     #[serde(skip_serializing_if = "Vec::is_empty", default)]
     pub cows: Vec<OrderSolution>,
     /// all CoWs ensured to be solved against one optimal price
-    pub cow_optional_price: Ratio,
+    pub cow_optional_price: (u64, u64),
     #[serde(skip_serializing_if = "Option::is_none", default)]
     pub route: Option<CrossChainPart>,
 
@@ -155,6 +155,7 @@ pub struct RouteSubMsg {
     pub all_orders: Vec<SolvedOrder>,
     pub msg: CrossChainPart,
     pub solution_id: SolutionHash,
+    pub pair: Pair,
 }
 
 #[cfg_attr(
@@ -203,6 +204,20 @@ impl OrderSolution {
 pub struct SolvedOrder {
     pub order: OrderItem,
     pub solution: OrderSolution,
+}
+
+#[cfg_attr(
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
+    derive(schemars::JsonSchema)
+)]
+#[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+
+pub struct TrackedOrderItem {
+    pub order_id: OrderId,
+    pub solution_id: SolutionHash,
+    pub amount_taken: Amount,
+    pub promised: Amount,
 }
 
 impl SolvedOrder {

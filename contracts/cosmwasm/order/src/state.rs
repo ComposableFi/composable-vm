@@ -9,6 +9,10 @@ pub struct SolutionIndexes<'a> {
     pub pair: MultiIndex<'a, Pair, SolutionItem, (Denom, Denom, SolverAddress)>,
 }
 
+/// (a,b,solver)
+pub type SolutionMultiMap<'a> =
+    IndexedMap<'a, &'a (Denom, Denom, SolverAddress), SolutionItem, SolutionIndexes<'a>>;
+
 impl<'a> IndexList<SolutionItem> for SolutionIndexes<'a> {
     fn get_indexes(&'_ self) -> Box<dyn Iterator<Item = &'_ dyn Index<SolutionItem>> + '_> {
         let v: Vec<&dyn Index<SolutionItem>> = vec![&self.pair];
@@ -44,4 +48,16 @@ pub fn join_solution_with_orders(
         })
         .collect::<Result<Vec<SolvedOrder>, _>>()?;
     Ok(all_orders)
+}
+
+pub fn get_solutions(
+    solutions: &SolutionMultiMap,
+    storage: &dyn Storage,
+) -> Result<Vec<SolutionItem>, StdError> {
+    solutions
+        .idx
+        .pair
+        .range(storage, None, None, Order::Ascending)
+        .map(|r| r.map(|(_, x)| x))
+        .collect()
 }
