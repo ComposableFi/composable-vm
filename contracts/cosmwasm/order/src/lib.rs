@@ -11,6 +11,7 @@ use simulator::simulate_cows_via_bank;
 use events::order::*;
 use events::solution::*;
 use prelude::*;
+use simulator::simulate_route;
 use state::*;
 pub use types::*;
 
@@ -169,12 +170,6 @@ impl OrderContract<'_> {
     /// 6. raw call dispatches amounts, and unlocks orders
     /// 7. please note that orders still can be solved cow while in cross chain
 
-    /// if there is solution, all funds from solution moved here and combined with funds in request
-    /// than solution removed from storage, funds patched to receivers and tracking closed
-    #[msg(exec)]
-    pub fn finalize(&self, ctx: ExecCtx, solution: SolutionHash) -> StdResult<Response> {
-        todo!()
-    }
 
     #[msg(exec)]
     pub fn route(&self, ctx: ExecCtx, msg: RouteSubMsg) -> StdResult<Response> {
@@ -293,11 +288,11 @@ impl OrderContract<'_> {
                         ctx.deps.storage,
                         route,
                         Coin {
-                            denom: pair.0.clone(),
+                            denom: ab.0.clone(),
                             amount: cow_part.token_a_remaining,
                         },
                         Coin {
-                            denom: pair.1.clone(),
+                            denom: ab.1.clone(),
                             amount: cow_part.token_b_remaining,
                         },
                     );
@@ -387,12 +382,14 @@ impl OrderContract<'_> {
         for (transfer, order) in cows.into_iter() {
             let mut order: OrderItem = self.orders.load(storage, order.u128())?;
             order.fill(transfer.amount);
-            let event = if order.given.amount.is_zero() {
+            let (event, remaining) = if order.given.amount.is_zero() {
                 self.orders.remove(storage, order.order_id.u128());
-                mantis_order_filled_full(&order, &solver_address, solution_block_added)
+                (mantis_order_filled_full(&order, &solver_address, solution_block_added), None)
             } else {
                 self.orders.save(storage, order.order_id.u128(), &order)?;
-                mantis_order_filled_parts(&order, &transfer, &solver_address, solution_block_added)
+                (
+                mantis_order_filled_parts(&order, &transfer, &solver_address, solution_block_added),
+                Some(order))
             };
             let transfer = BankMsg::Send {
                 to_address: order.owner.to_string(),

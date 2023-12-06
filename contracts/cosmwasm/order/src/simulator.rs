@@ -48,7 +48,7 @@ pub fn simulate_cows_via_bank(
 /// And checks that amounts out (a or b) is more than remaining.
 /// Solve only larger CVM for in volume, assuming other solution will be for other side sent.
 /// Produces remaining each order will receive proportional to what is given.
-fn simulate_route(storage: &mut dyn Storage, route: XcProgram, token_a_remaining: Coin, token_b_remaining: Coin, orders: Vec<SolvedOrder>) -> _ {
+pub fn simulate_route(storage: &mut dyn Storage, route: XcProgram, token_a_remaining: Coin, token_b_remaining: Coin, orders: Vec<SolvedOrder>) -> _ {
     todo!()
-    
+
 }

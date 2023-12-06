@@ -1,3 +1,4 @@
+//! simple operation without constraint checks and calculations
 use cw_storage_plus::MultiIndex;
 
 use crate::*;
@@ -28,7 +29,7 @@ pub fn solutions<'a>(
 }
 
 
-fn join_solution_with_orders(
+pub fn join_solution_with_orders(
     &self,
     msg: &SolutionSubMsg,
     ctx: &ExecCtx<'_>,

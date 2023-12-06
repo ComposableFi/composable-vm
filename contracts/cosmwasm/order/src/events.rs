@@ -29,6 +29,8 @@ pub mod order {
 }
 
 pub mod solution {
+    use cosmwasm_std::Event;
+
 
     pub fn mantis_solution_chosen(ab: Pair, ctx: &ExecCtx<'_>, transfers: &Vec<CowFillResult>, cow_volume : u128, cross_chain_volume : u128) -> Event {
         let solution_chosen = Event::new("mantis-solution-chosen")
@@ -41,7 +43,7 @@ pub mod solution {
         solution_chosen
     }
 
-    fn mantis_solution_upserted(ab: &Pair, ctx: &ExecCtx<'_>) -> Event {
+    pub fn mantis_solution_upserted(ab: &Pair, ctx: &ExecCtx<'_>) -> Event {
         let solution_upserted = Event::new("mantis-solution-upserted")
             .add_attribute("token_a", ab.clone().0)
             .add_attribute("token_b", ab.clone().1)
