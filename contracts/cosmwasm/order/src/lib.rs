@@ -301,6 +301,15 @@ impl OrderContract<'_> {
             solution_item.block_added,
         )?;
 
+        let cross_chain_b = all_orders
+            .iter()
+            .filter(|x| x.given().denom != ab.0)
+            .map(|x| x.solution.cross_chain);
+        let cross_chain_a = all_orders
+            .iter()
+            .filter(|x| x.given().denom != ab.1)
+            .map(|x| x.solution.cross_chain);
+
         if let Some(cvm) = solution_item.msg.route {
             let msg = wasm_execute(
                 ctx.env.contract.address.clone(),
@@ -315,12 +324,13 @@ impl OrderContract<'_> {
         };
 
         self.solutions.clear(ctx.deps.storage);
+
         let solution_chosen = mantis_solution_chosen(
             ab,
             &ctx,
             &transfers,
             volume,
-            volume,
+            cross_chain_b * cross_chain_a,
             solution_item.owner,
             solution_item.block_added,
         );

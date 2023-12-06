@@ -238,7 +238,7 @@ pub(crate) fn handle_execute_program_privilleged(
         state::interpreter::get_by_origin(deps.as_ref(), interpreter_origin.clone()).ok();
     if let Some(state::interpreter::Interpreter { address, .. }) = interpreter {
         deps.api
-            .debug("cvm:: reusing existing interpreter and adding funds");
+            .debug("cvm::gateway::execute:: reusing existing interpreter and adding funds");
         let response = send_funds_to_interpreter(deps.as_ref(), address.clone(), assets)?;
         let wasm_msg = wasm_execute(
             address.clone(),
