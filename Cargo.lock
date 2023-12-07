@@ -2121,6 +2121,7 @@ dependencies = [
  "cosmos-sdk-proto",
  "cosmrs",
  "cosmwasm-std",
+ "cvm-runtime",
  "cw-mantis-order",
  "derive_more",
  "itertools 0.12.0",

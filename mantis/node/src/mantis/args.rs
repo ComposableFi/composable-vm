@@ -3,7 +3,7 @@ use clap::*;
 #[derive(Debug, Parser)]
 pub struct MantisArgs {
     #[command(subcommand)]
-    command: MantisCommands,
+    pub command: MantisCommands,
 }
 
 #[derive(Debug, Subcommand)]
@@ -15,7 +15,7 @@ pub enum MantisCommands {
 #[derive(Debug, Parser)]
 pub struct IdArgs {
     #[command(subcommand)]
-    command: IdCommands,
+    pub command: IdCommands,
 }
 
 #[derive(Debug, Subcommand)]
@@ -26,12 +26,12 @@ pub enum IdCommands {
 #[derive(Debug, Parser)]
 pub struct AssetArgs {
     #[command(subcommand)]
-    command: AssetCommands,
+    pub command: AssetCommands,
 }
 
 #[derive(Debug, Subcommand)]
 pub enum AssetCommands {
-    Get { network_id: u32, asset_id: u64 },
+    Gen { network_id: u32, asset_id: u64 },
 }
 
 #[derive(clap::Parser, Debug)]
@@ -69,7 +69,7 @@ pub struct SolverArgs {
     pub wallet: String,
 }
 
-impl SolverArgs {
+impl MantisArgs {
     pub fn parsed() -> Self {
         use clap::Parser;
 

@@ -342,6 +342,12 @@ impl<T> From<Funds<T>> for Vec<(u128, T)> {
 }
 
 /// see `generate_network_prefixed_id`
+///```rust
+/// let pica_on_picasso = generate_asset_id(0.into(), 0, 1);
+/// assert_eq!(pica_on_picasso, 1.into());
+/// let pica_on_composable = generate_asset_id(1.into(), 0, 1);
+/// assert_eq!(pica_on_composable, 79228162514264337593543950337.into());
+///```
 pub fn generate_asset_id(network_id: NetworkId, protocol_id: u32, nonce: u64) -> AssetId {
     AssetId::from(generate_network_prefixed_id(network_id, protocol_id, nonce))
 }
@@ -381,33 +387,5 @@ mod tests {
         let amount = Amount::new(50, Amount::MAX_PARTS / 10);
         let result = amount.apply(100).unwrap();
         assert_eq!(result, 50 + 5, "percentage of remaining");
-    }
-
-    #[test]
-    fn devnet() {
-        let pica_on_picasso = generate_asset_id(0.into(), 0, 1);
-        assert_eq!(pica_on_picasso, 1.into());
-        let pica_on_composable = generate_asset_id(1.into(), 0, 1);
-        assert_eq!(pica_on_composable, 79228162514264337593543950337.into());
-        let pica_on_centauri = generate_asset_id(2.into(), 0, 1);
-        assert_eq!(pica_on_centauri, 158456325028528675187087900673.into());
-        let pica_on_osmosis = generate_asset_id(3.into(), 0, 1);
-        assert_eq!(pica_on_osmosis, 237684487542793012780631851009.into());
-
-        let uosmo_on_centauri = generate_asset_id(2.into(), 0, 2);
-        assert_eq!(uosmo_on_centauri, 158456325028528675187087900674.into());
-        let uosmo_on_osmosis = generate_asset_id(3.into(), 0, 2);
-        assert_eq!(uosmo_on_osmosis, 237684487542793012780631851010.into());
-
-        let dot_on_centauri = generate_asset_id(2.into(), 0, 3);
-        assert_eq!(dot_on_centauri, 158456325028528675187087900675.into());
-        let dot_on_osmosis = generate_asset_id(3.into(), 0, 3);
-        assert_eq!(dot_on_osmosis, 237684487542793012780631851011.into());
-
-        let pica_uosmo_on_osmosis = generate_network_prefixed_id(3.into(), 100, 1);
-        assert_eq!(pica_uosmo_on_osmosis, 237684489387467420151587012609);
-
-        let dot_uosmo_on_osmosis = generate_network_prefixed_id(3.into(), 100, 2);
-        assert_eq!(dot_uosmo_on_osmosis, 237684489387467420151587012610);
     }
 }

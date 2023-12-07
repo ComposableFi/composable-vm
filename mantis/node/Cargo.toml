@@ -31,3 +31,4 @@ strum_macros = { workspace = true }
 tokio = { workspace = true, features = ["full"] }
 tonic = { workspace = true }
 tuples = { workspace = true }
+cvm-runtime = { workspace = true, features = ["std"] }

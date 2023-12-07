@@ -7,7 +7,7 @@ Offchain part which gets data, runs algorithms, and sends transactions back.
 Next command:
 
 ```shell
-cargo run --bin mantis --osmosis http://127.0.0.1:36657 --centauri http://127.0.0.1:26657 --neutron http://127.0.0.1:46657 --order-contract centauri1a23df5asd..a49a0  --cvm-contract centauri1a23df1123..a49a0 --simulate"1000ppica,10000pdemo,10000ptest" --wallet "kart ... dock"
+cargo run --bin mantis solve --osmosis http://127.0.0.1:36657 --centauri http://127.0.0.1:26657 --neutron http://127.0.0.1:46657 --order-contract centauri1a23df5asd..a49a0  --cvm-contract centauri1a23df1123..a49a0 --simulate"1000ppica,10000pdemo,10000ptest" --wallet "kart ... dock"
 ```
 
 ### What above command does
