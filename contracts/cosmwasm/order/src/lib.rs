@@ -370,7 +370,7 @@ impl OrderContract<'_> {
         self.orders
             .range_raw(ctx.deps.storage, None, None, Order::Ascending)
             .map(|r| r.map(|(_, order)| order))
-            .collect::<StdResult<Vec<OrderItem>>>()
+            .collect()
     }
 
     #[msg(query)]
@@ -384,8 +384,11 @@ impl OrderContract<'_> {
     }
 
     #[msg(query)]
-    pub fn get_all_drained_orders(&self, ctx: QueryCtx) -> StdResult<Vec<SolutionItem>> {
-        todo!()
+    pub fn get_all_tracked_orders(&self, ctx: QueryCtx) -> StdResult<Vec<TrackedOrderItem>> {
+        self.tracked_orders
+            .range_raw(ctx.deps.storage, None, None, Order::Ascending)
+            .map(|r| r.map(|(_, order)| order))
+            .collect()
     }
 
     /// (partially) fills orders.
