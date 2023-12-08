@@ -25,7 +25,7 @@ use cw2::{ensure_from_older_version, set_contract_version};
 use cw20::{BalanceResponse, Cw20Contract, Cw20ExecuteMsg, Cw20QueryMsg};
 use num::Zero;
 
-const CONTRACT_NAME: &str = "cvm-executor";
+const CONTRACT_NAME: &str = include_str!("contract_name.txt");
 const CONTRACT_VERSION: &str = env!("CARGO_PKG_VERSION");
 
 const CALL_ID: u64 = 1;

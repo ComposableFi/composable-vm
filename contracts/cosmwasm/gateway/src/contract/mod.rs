@@ -17,7 +17,7 @@ use ibc_app_transfer_types::proto::transfer::v1::MsgTransferResponse;
 
 use self::ibc::make_ibc_failure_event;
 
-const CONTRACT_NAME: &str = "composable:xcvm-gateway";
+const CONTRACT_NAME: &str = include_str!("contract_name.txt");
 const CONTRACT_VERSION: &str = env!("CARGO_PKG_VERSION");
 
 #[derive(PartialEq, Debug, Clone, Copy, enumn::N)]
