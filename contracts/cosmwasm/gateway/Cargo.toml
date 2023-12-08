@@ -29,7 +29,10 @@ json-schema = [
   "cvm-runtime/json-schema",
   "dep:schemars",
 ]
-default = ["std"]
+cosmos = [
+  "cvm-runtime/cosmos",
+]
+default = ["std", "cosmos"]
 
 [dependencies]
 enumn = { workspace = true }

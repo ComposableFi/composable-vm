@@ -22,7 +22,12 @@ std = [
   "thiserror/std",
   "cvm-runtime-exchange/std",
 ]
-default = ["std"]
+cosmos = [
+  "cvm-runtime/cosmos",
+  "cvm-runtime-exchange/cosmos",
+]
+
+default = ["std", "cosmos"]
 
 [dependencies]
 cvm-runtime-exchange ={ workspace = true, default-features = false }
