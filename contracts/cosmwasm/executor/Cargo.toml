@@ -31,7 +31,8 @@ default = ["std", "cosmos"]
 
 [dependencies]
 cvm-runtime-exchange ={ workspace = true, default-features = false }
-cosmwasm-std = { workspace = true }
+cosmwasm-std = { workspace = true, features = [
+  ], default-features = false}
 cw-storage-plus = { workspace = true }
 cosmwasm-schema = { workspace = true, optional = true }
 cw-utils = { workspace = true }
@@ -52,6 +53,5 @@ cvm-runtime = { path = "../../../crates/cvm-runtime", features = [
 ibc-apps-more = { workspace = true, default-features = false, features = [
   "cosmwasm",
 ] }
-osmosis-std = { workspace = true, default-features = false }
 
 astroport = { workspace = true, default-features = false }

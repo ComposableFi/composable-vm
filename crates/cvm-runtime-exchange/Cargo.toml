@@ -5,7 +5,6 @@ version = "0.1.0"
 
 [dependencies]
 cosmwasm-std = { workspace = true, features = ["ibc3"] }
-osmosis-std = { workspace = true, default-features = false }
 cvm-runtime = { workspace = true, default-features = false }
 astroport = { workspace = true, default-features = false }
 prost = { workspace = true, default-features = false}

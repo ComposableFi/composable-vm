@@ -425,15 +425,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "fd16c4719339c4530435d38e511904438d07cce7950afa3718a84ac36c10e89e"
 
 [[package]]
-name = "chrono"
-version = "0.4.31"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7f2c685bad3eb3d45a01354cedb7d5faa66194d1d58ba6e267a8de788f79db38"
-dependencies = [
- "num-traits",
-]
-
-[[package]]
 name = "clap"
 version = "4.4.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -528,8 +519,8 @@ version = "0.20.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "32560304ab4c365791fd307282f76637213d8083c1a98490c35159cd67852237"
 dependencies = [
- "prost 0.12.3",
- "prost-types 0.12.3",
+ "prost",
+ "prost-types",
  "tendermint-proto",
  "tonic",
 ]
@@ -712,7 +703,7 @@ dependencies = [
  "ibc-proto 0.39.1",
  "num",
  "parity-scale-codec",
- "prost 0.12.3",
+ "prost",
  "prost-build",
  "scale-info",
  "schemars",
@@ -732,8 +723,7 @@ dependencies = [
  "cosmwasm-std",
  "cvm-runtime",
  "ibc-apps-more",
- "osmosis-std",
- "prost 0.12.3",
+ "prost",
  "schemars",
  "serde",
  "thiserror-core",
@@ -770,8 +760,7 @@ dependencies = [
  "hex",
  "ibc-apps-more",
  "num",
- "osmosis-std",
- "prost 0.12.3",
+ "prost",
  "schemars",
  "serde",
  "serde-cw-value 0.7.0 (git+https://github.com/dzmitry-lahoda-forks/serde-cw-value.git?branch=dz/3)",
@@ -794,7 +783,7 @@ dependencies = [
  "ibc-apps-more",
  "ibc-core-host-types",
  "ibc-primitives",
- "prost 0.12.3",
+ "prost",
  "schemars",
  "serde",
  "serde-json-wasm 1.0.0",
@@ -1554,7 +1543,7 @@ dependencies = [
  "ibc-apps",
  "ibc-core",
  "ibc-primitives",
- "prost 0.12.3",
+ "prost",
  "schemars",
  "serde",
  "serde-cw-value 0.7.0 (git+https://github.com/dzmitry-lahoda-forks/serde-cw-value.git?branch=dz/3)",
@@ -1590,7 +1579,7 @@ dependencies = [
  "ibc-core-host",
  "ibc-core-router",
  "ibc-primitives",
- "prost 0.12.3",
+ "prost",
 ]
 
 [[package]]
@@ -1607,7 +1596,7 @@ dependencies = [
  "ibc-primitives",
  "ibc-proto 0.38.0",
  "parity-scale-codec",
- "prost 0.12.3",
+ "prost",
  "scale-info",
  "schemars",
  "serde",
@@ -1627,7 +1616,7 @@ dependencies = [
  "ibc-core-handler-types",
  "ibc-core-host",
  "ibc-primitives",
- "prost 0.12.3",
+ "prost",
 ]
 
 [[package]]
@@ -1643,7 +1632,7 @@ dependencies = [
  "ibc-core-host-types",
  "ibc-derive",
  "ibc-primitives",
- "prost 0.12.3",
+ "prost",
  "subtle-encoding",
  "tendermint",
 ]
@@ -1660,7 +1649,7 @@ dependencies = [
  "ibc-primitives",
  "ibc-proto 0.38.0",
  "parity-scale-codec",
- "prost 0.12.3",
+ "prost",
  "scale-info",
  "schemars",
  "serde",
@@ -1679,7 +1668,7 @@ dependencies = [
  "ibc-proto 0.38.0",
  "ics23",
  "parity-scale-codec",
- "prost 0.12.3",
+ "prost",
  "scale-info",
  "schemars",
  "serde",
@@ -1696,7 +1685,7 @@ dependencies = [
  "ibc-core-handler-types",
  "ibc-core-host",
  "ibc-primitives",
- "prost 0.12.3",
+ "prost",
 ]
 
 [[package]]
@@ -1712,7 +1701,7 @@ dependencies = [
  "ibc-primitives",
  "ibc-proto 0.38.0",
  "parity-scale-codec",
- "prost 0.12.3",
+ "prost",
  "scale-info",
  "schemars",
  "serde",
@@ -1751,7 +1740,7 @@ dependencies = [
  "ibc-primitives",
  "ibc-proto 0.38.0",
  "parity-scale-codec",
- "prost 0.12.3",
+ "prost",
  "scale-info",
  "schemars",
  "serde",
@@ -1774,7 +1763,7 @@ dependencies = [
  "ibc-core-handler-types",
  "ibc-core-host-types",
  "ibc-primitives",
- "prost 0.12.3",
+ "prost",
  "subtle-encoding",
 ]
 
@@ -1803,7 +1792,7 @@ dependencies = [
  "ibc-core-host-types",
  "ibc-core-router-types",
  "ibc-primitives",
- "prost 0.12.3",
+ "prost",
  "subtle-encoding",
 ]
 
@@ -1819,7 +1808,7 @@ dependencies = [
  "ibc-proto 0.38.0",
  "ics23",
  "parity-scale-codec",
- "prost 0.12.3",
+ "prost",
  "scale-info",
  "schemars",
  "serde",
@@ -1847,7 +1836,7 @@ dependencies = [
  "displaydoc",
  "ibc-proto 0.38.0",
  "parity-scale-codec",
- "prost 0.12.3",
+ "prost",
  "scale-info",
  "schemars",
  "serde",
@@ -1866,7 +1855,7 @@ dependencies = [
  "flex-error",
  "ics23",
  "parity-scale-codec",
- "prost 0.12.3",
+ "prost",
  "scale-info",
  "schemars",
  "serde",
@@ -1885,7 +1874,7 @@ dependencies = [
  "flex-error",
  "ics23",
  "parity-scale-codec",
- "prost 0.12.3",
+ "prost",
  "scale-info",
  "serde",
  "subtle-encoding",
@@ -1902,7 +1891,7 @@ dependencies = [
  "bytes",
  "hex",
  "informalsystems-pbjson",
- "prost 0.12.3",
+ "prost",
  "ripemd",
  "serde",
  "sha2 0.10.8",
@@ -2126,7 +2115,7 @@ dependencies = [
  "derive_more",
  "itertools 0.12.0",
  "num-traits",
- "prost-types 0.12.3",
+ "prost-types",
  "rand",
  "rand_distr",
  "rust_decimal",
@@ -2319,35 +2308,6 @@ name = "openssl-probe"
 version = "0.1.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ff011a302c396a5197692431fc1948019154afc178baf7d8e37367442a4601cf"
-
-[[package]]
-name = "osmosis-std"
-version = "0.20.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "47d7aa053bc3fad557ac90a0377688b400c395e2537f0f1de3293a15cad2e970"
-dependencies = [
- "chrono",
- "cosmwasm-std",
- "osmosis-std-derive",
- "prost 0.11.9",
- "prost-types 0.11.9",
- "schemars",
- "serde",
- "serde-cw-value 0.7.0 (registry+https://github.com/rust-lang/crates.io-index)",
-]
-
-[[package]]
-name = "osmosis-std-derive"
-version = "0.20.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c5ebdfd1bc8ed04db596e110c6baa9b174b04f6ed1ec22c666ddc5cb3fa91bd7"
-dependencies = [
- "itertools 0.10.5",
- "proc-macro2",
- "prost-types 0.11.9",
- "quote",
- "syn 1.0.109",
-]
 
 [[package]]
 name = "parity-scale-codec"
@@ -2584,22 +2544,12 @@ dependencies = [
 
 [[package]]
 name = "prost"
-version = "0.11.9"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0b82eaa1d779e9a4bc1c3217db8ffbeabaae1dca241bf70183242128d48681cd"
-dependencies = [
- "bytes",
- "prost-derive 0.11.9",
-]
-
-[[package]]
-name = "prost"
 version = "0.12.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "146c289cda302b98a28d40c8b3b90498d6e526dd24ac2ecea73e4e491685b94a"
 dependencies = [
  "bytes",
- "prost-derive 0.12.3",
+ "prost-derive",
 ]
 
 [[package]]
@@ -2616,25 +2566,12 @@ dependencies = [
  "once_cell",
  "petgraph",
  "prettyplease",
- "prost 0.12.3",
- "prost-types 0.12.3",
+ "prost",
+ "prost-types",
  "regex",
  "syn 2.0.39",
  "tempfile",
  "which",
-]
-
-[[package]]
-name = "prost-derive"
-version = "0.11.9"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e5d2d8d10f3c6ded6da8b05b5fb3b8a5082514344d56c9f871412d29b4e075b4"
-dependencies = [
- "anyhow",
- "itertools 0.10.5",
- "proc-macro2",
- "quote",
- "syn 1.0.109",
 ]
 
 [[package]]
@@ -2652,20 +2589,11 @@ dependencies = [
 
 [[package]]
 name = "prost-types"
-version = "0.11.9"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "213622a1460818959ac1181aaeb2dc9c7f63df720db7d788b3e24eacd1983e13"
-dependencies = [
- "prost 0.11.9",
-]
-
-[[package]]
-name = "prost-types"
 version = "0.12.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "193898f59edcf43c26227dcd4c8427f00d99d61e95dcde58dabd49fa291d470e"
 dependencies = [
- "prost 0.12.3",
+ "prost",
 ]
 
 [[package]]
@@ -3534,8 +3462,8 @@ dependencies = [
  "k256",
  "num-traits",
  "once_cell",
- "prost 0.12.3",
- "prost-types 0.12.3",
+ "prost",
+ "prost-types",
  "ripemd",
  "serde",
  "serde_bytes",
@@ -3574,8 +3502,8 @@ dependencies = [
  "flex-error",
  "num-derive",
  "num-traits",
- "prost 0.12.3",
- "prost-types 0.12.3",
+ "prost",
+ "prost-types",
  "serde",
  "serde_bytes",
  "subtle-encoding",
@@ -3827,7 +3755,7 @@ dependencies = [
  "hyper-timeout",
  "percent-encoding",
  "pin-project",
- "prost 0.12.3",
+ "prost",
  "tokio",
  "tokio-stream",
  "tower",

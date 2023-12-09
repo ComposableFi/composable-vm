@@ -2,6 +2,7 @@
 #[allow(clippy::disallowed_methods)]
 fn main() {
     use cosmwasm_schema::write_api;
+    use cvm_runtime::executor::*;
     use cw_cvm_executor::msg::*;
 
     write_api! {
