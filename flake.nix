@@ -51,6 +51,7 @@
               name: type:
                 !(pkgs.lib.strings.hasSuffix ".nix" name)
                 || builtins.match ".*proto$" name != null
+                || builtins.match ".*txt$" name != null
                 || craneLib.filterCargoSources name type
             ) [./.gitignore]
             ./.;
