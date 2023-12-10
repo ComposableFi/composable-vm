@@ -1,6 +1,5 @@
 # solves using convex optimization
 
-import itertools
 import numpy as np
 import cvxpy as cp
 
