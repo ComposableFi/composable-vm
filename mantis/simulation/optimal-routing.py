@@ -42,7 +42,7 @@ for token_on_center in chains[CENTER_NODE]:
     for other_chain, other_tokens in chains.items():
         if other_chain != CENTER_NODE:
             for other_token in other_tokens:
-                # Check wether the chain has the token in centuri, or the other way around
+                # Check wether the chain has the token in center, or the other way around
                 # Could cause problems if chainName == tokensName (for example OSMOSIS)
                 if other_token in token_on_center or token_on_center in other_token:
                     all_cfmms.append((token_on_center, other_token))
@@ -53,7 +53,7 @@ for token_on_center in chains[CENTER_NODE]:
 # simulate random fees
 fees.extend(np.random.uniform(0.97, 0.999) for _ in range(len(all_cfmms)))
 
-print(chains)
+print(reserves)
 
 for i, token in enumerate(all_tokens):
     print(i, token)
