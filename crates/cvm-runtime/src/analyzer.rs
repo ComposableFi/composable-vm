@@ -79,3 +79,17 @@ pub fn ensure_final_transfers_are_absolute(
 pub fn get_desired_assets(program: &XcProgram) -> Vec<AbsoluteAmount> {
     todo!()
 }
+
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn spawns_osmosis_hub_centauri() {}
+
+    #[test]
+    fn spawns_neutron_hub_osmosis_hub_centauri() {}
+
+    #[test]
+    fn atom_on_centauri_atom_on_neutron_via_hub()s {
+
+    }
+}
