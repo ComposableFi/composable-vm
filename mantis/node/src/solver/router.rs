@@ -54,4 +54,25 @@ pub fn solve(
     let count_cffms = all_cffms.len();
     let mut current_assets = ndarray::Array1::<f64>::from_elem(count_tokens, <_>::default());
     current_assets[0] = number_of_init_tokens;
+
+    let mut problem = ProblemVariables::new();
+    let mut main_expression = Expression::default();
+    let mut constraints: Vec<Constraint> = vec![];
+
+    // Build variables
+
+    let mut A: Vec<Vec<f64>> = vec![];
+    for cfmm in all_cffms.iter() {
+        let n_i = 2;
+    }
+
+    let mut deltas: Vec<Vec<VariableDefinition>> = vec![];
+    let mut lambdas: Vec<Vec<VariableDefinition>> = vec![];
+    // Binary value, indicates tx or not for given pool
+    let mut eta: Vec<VariableDefinition> = vec![];
+    for _ in all_cffms {
+        deltas.push(vec![variable(), variable()]);
+        lambdas.push(vec![variable(), variable()]);
+        eta.push(variable());
+    }
 }

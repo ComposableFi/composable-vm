@@ -59,7 +59,7 @@ def solve(
         count_cfmms, nonneg=True
     )  # Binary value, indicates tx or not for given pool
 
-    psi = cp.sum([A_i @ (L - D) for A_i, D, L in zip(A, deltas, lambdas)])
+    psi = cp.sum([A_i @ (LAMBDA - DELTA) for A_i, DELTA, LAMBDA in zip(A, deltas, lambdas)])
 
     # Objective is to trade number_of_init_tokens of asset origin_token for a maximum amount of asset objective_token
     obj = cp.Maximize(psi[all_tokens.index(obj_token)] - eta @ cfmm_tx_cost)
