@@ -1,6 +1,6 @@
-use std::collections::HashMap;
-
+use itertools::*;
 use mantis_node::solver::router::*;
+use std::collections::HashMap;
 fn main() {
     let center_node = "CENTAURI";
 
@@ -17,4 +17,12 @@ fn main() {
 
     populate_chain_dict(&mut chains, center_node.to_owned());
     println!("{:?}", chains);
+
+    let mut all_tokens = vec![];
+    let mut all_cfmms = vec![];
+    for (other_chain, other_tokens) in chains.clone() {
+        all_tokens.extend(other_tokens.clone());
+        let cfmms = other_tokens.clone().into_iter().combinations(2);
+        all_cfmms.extend(cfmms);
+    }
 }

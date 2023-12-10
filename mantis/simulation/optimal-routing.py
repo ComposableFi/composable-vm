@@ -26,7 +26,6 @@ populate_chain_dict(chains,CENTER_NODE)
 
 print("=============== chains and tokens ========================")
 print(chains)
-exit()
 
 # simulate in chain CFMMS
 for other_chain, other_tokens in chains.items():
@@ -62,6 +61,9 @@ for i, token in enumerate(all_tokens):
 for i, cfmm in enumerate(all_cfmms):
     print(i, cfmm)
 
+print("=============== solving ========================")
+
+exit()
 d, l, p, n = solve(
     all_tokens, 
     all_cfmms, 
@@ -73,6 +75,7 @@ d, l, p, n = solve(
     2000,
     OBJ_TOKEN
     )
+
 
 to_look_n: list[float] = []
 for i in range(len(all_cfmms)):

@@ -1,7 +1,7 @@
 const MIN_RESERVE: f64 = 05000.0;
 const MAX_RESERVE: f64 = 15000.0;
 
-use std::collections::HashMap;
+use std::{collections::HashMap, ops::Index};
 
 use cosmrs::tendermint::chain;
 use good_lp::*;
@@ -46,11 +46,12 @@ pub fn solve(
     fees: Vec<f64>,
     ibc_pools: u16,
     origin_token: String,
-    number_of_init_tokens: u128,
+    number_of_init_tokens: f64,
     obj_token: String,
     force_eta: Vec<f64>,
 ) {
     let count_tokens = all_tokens.len();
     let count_cffms = all_cffms.len();
-    let current_assets = ndarray::Array1::<f64>::from_elem(count_tokens, <_>::default());
+    let mut current_assets = ndarray::Array1::<f64>::from_elem(count_tokens, <_>::default());
+    current_assets[0] = number_of_init_tokens;
 }

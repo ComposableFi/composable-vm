@@ -33,7 +33,7 @@ def solve(
     fees: list[float],
     ibc_pools: int,
     origin_token: str,
-    number_of_init_tokens: int,
+    number_of_init_tokens: float,
     obj_token: str,
     force_eta: list[float] = None,
 ):
