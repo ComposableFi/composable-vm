@@ -89,7 +89,7 @@ mod tests {
     fn spawns_neutron_hub_osmosis_hub_centauri() {}
 
     #[test]
-    fn atom_on_centauri_atom_on_neutron_via_hub()s {
+    fn atom_on_centauri_atom_on_neutron_via_hub() {
 
     }
 }

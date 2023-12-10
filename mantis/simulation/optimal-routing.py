@@ -63,7 +63,6 @@ for i, cfmm in enumerate(all_cfmms):
 
 print("=============== solving ========================")
 
-exit()
 d, l, p, n = solve(
     all_tokens, 
     all_cfmms, 
@@ -76,6 +75,7 @@ d, l, p, n = solve(
     OBJ_TOKEN
     )
 
+exit()
 
 to_look_n: list[float] = []
 for i in range(len(all_cfmms)):

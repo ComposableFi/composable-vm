@@ -41,7 +41,7 @@ def solve(
     count_tokens = len(all_tokens)
     count_cfmms = len(all_cfmms)
 
-    current_assets = np.zeros(count_tokens)  # Inital assets
+    current_assets = np.zeros(count_tokens)  # Initial assets
     current_assets[all_tokens.index(origin_token)] = number_of_init_tokens
 
     A = []
@@ -51,6 +51,7 @@ def solve(
         for i, token in enumerate(cfmm):
             A_i[all_tokens.index(token), i] = 1
         A.append(A_i)
+    print(A)
 
     # Build variables
     deltas = [cp.Variable(len(l), nonneg=True) for l in all_cfmms]
@@ -60,6 +61,7 @@ def solve(
     )  # Binary value, indicates tx or not for given pool
 
     psi = cp.sum([A_i @ (LAMBDA - DELTA) for A_i, DELTA, LAMBDA in zip(A, deltas, lambdas)])
+    exit()
 
     # Objective is to trade number_of_init_tokens of asset origin_token for a maximum amount of asset objective_token
     obj = cp.Maximize(psi[all_tokens.index(obj_token)] - eta @ cfmm_tx_cost)

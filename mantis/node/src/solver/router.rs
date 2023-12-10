@@ -53,7 +53,11 @@ pub fn solve(
     let count_tokens = all_tokens.len();
     let count_cffms = all_cffms.len();
     let mut current_assets = ndarray::Array1::<f64>::from_elem(count_tokens, <_>::default());
-    current_assets[0] = number_of_init_tokens;
+
+    fn find_index<T: PartialEq>(vec: &[T], target: &T) -> usize {
+        vec.iter().position(|x| x == target).unwrap()
+    }
+    current_assets[find_index(&all_tokens, &origin_token)] = number_of_init_tokens;
 
     let mut problem = ProblemVariables::new();
     let mut main_expression = Expression::default();
@@ -61,15 +65,22 @@ pub fn solve(
 
     // Build variables
 
-    let mut A: Vec<Vec<f64>> = vec![];
+    let mut variables = variables!();
+    let mut A: Vec<Vec<Vec<f64>>> = vec![];
+
     for cfmm in all_cffms.iter() {
         let n_i = 2;
+        let mut A_i = vec![vec![0.0, 0.0]; count_tokens];
+        A_i[find_index(&all_tokens, &cfmm.0)][0] = 1.0;
+        A_i[find_index(&all_tokens, &cfmm.1)][1] = 1.0;
+        A.push(A_i);
     }
 
     let mut deltas: Vec<Vec<VariableDefinition>> = vec![];
     let mut lambdas: Vec<Vec<VariableDefinition>> = vec![];
     // Binary value, indicates tx or not for given pool
     let mut eta: Vec<VariableDefinition> = vec![];
+
     for _ in all_cffms {
         deltas.push(vec![variable(), variable()]);
         lambdas.push(vec![variable(), variable()]);
