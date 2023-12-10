@@ -151,7 +151,7 @@
           pkgs.mkShell {
             VIRTUALENV_PYTHON = "${python}/bin/python3.11";
             VIRTUAL_ENV = 1;
-            nativeBuildInputs = [python];
+            nativeBuildInputs = [python pkgs.cbc];
             buildInputs = [
               python
               devour-flake

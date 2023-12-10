@@ -7,24 +7,24 @@ edition = "2021"
 name = "mantis"
 
 [dependencies]
-bip32 = { workspace = true }
-clap = { workspace = true, features = ["derive"] }
+bip32 = { workspace = true, features = ["std"] }
+clap = { workspace = true, features = ["derive", "std"] }
 cosmos-sdk-proto = { workspace = true, features = ["grpc-transport"] }
-cosmrs = { workspace = true }
-cosmwasm-std = { workspace = true }
+cosmrs = { workspace = true, features = []}
+cosmwasm-std = { workspace = true, features = []}
 cw-mantis-order = { path = "../../contracts/cosmwasm/order", features = [
     "json-schema",
     "std",
 ] }
-derive_more = { workspace = true }
-itertools = { workspace = true }
-num-traits = { workspace = true }
+derive_more = { workspace = true, features = [] }
+itertools = { workspace = true, features = []}
+num-traits = { workspace = true, features = ["std"]}
 prost-types = { workspace = true }
 rand = { workspace = true, default-features = false }
 rand_distr = { workspace = true }
 rust_decimal = { workspace = true }
 rust_decimal_macros = { workspace = true }
-serde = { workspace = true }
+serde = { workspace = true, features = ["derive", "std"] }
 serde-json-wasm = { workspace = true }
 strum = { workspace = true }
 strum_macros = { workspace = true }
@@ -35,4 +35,4 @@ cvm-runtime = { workspace = true, features = ["std"] }
 
 
 ndarray ={ workspace = true, features = ["std", "serde"]}
-good_lp = {workspace = true, features = ["coin_cbc", "singlethread-cbc", "scip"]}
+good_lp = {workspace = true, features = ["coin_cbc", "singlethread-cbc"]}
