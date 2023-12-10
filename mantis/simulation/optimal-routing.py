@@ -1,6 +1,5 @@
 import itertools
 import numpy as np
-import cvxpy as cp
 from router import solve,populate_chain_dict
 
 
@@ -24,6 +23,10 @@ ibc_pools = 0
 tol = 1e-4
 
 populate_chain_dict(chains,CENTER_NODE)
+
+print("=============== chains and tokens ========================")
+print(chains)
+exit()
 
 # simulate in chain CFMMS
 for other_chain, other_tokens in chains.items():

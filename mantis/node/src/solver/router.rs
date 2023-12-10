@@ -3,6 +3,7 @@ const MAX_RESERVE: f64 = 15000.0;
 
 use std::collections::HashMap;
 
+use cosmrs::tendermint::chain;
 use good_lp::*;
 use itertools::*;
 use ndarray::*;
@@ -24,9 +25,15 @@ pub fn populate_chain_dict(chains: &mut HashMap<String, Vec<String>>, center_nod
         }
     }
 
-    // for (chain, tokens) in chains.iter() {
-    //     if chain != &center_node {
+    let center_tokens = chains.get(&center_node).unwrap().clone();
 
-    //     }
-    // }
+    for (chain, tokens) in chains.iter_mut() {
+        if chain != &center_node {
+            for token in center_tokens.iter() {
+                if !token.contains(chain) {
+                    tokens.push(format!("{}/{}", center_node, token));
+                }
+            }
+        }
+    }
 }
