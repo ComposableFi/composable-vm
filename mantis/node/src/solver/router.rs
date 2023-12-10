@@ -38,4 +38,19 @@ pub fn populate_chain_dict(chains: &mut HashMap<String, Vec<String>>, center_nod
     }
 }
 
-pub fn solve(all_tokens: &[str]) {}
+pub fn solve(
+    all_tokens: Vec<String>,
+    all_cffms: Vec<(String, String)>,
+    reserves: ndarray::Array1<f64>,
+    cfmm_tx_cost: Vec<f64>,
+    fees: Vec<f64>,
+    ibc_pools: u16,
+    origin_token: String,
+    number_of_init_tokens: u128,
+    obj_token: String,
+    force_eta: Vec<f64>,
+) {
+    let count_tokens = all_tokens.len();
+    let count_cffms = all_cffms.len();
+    let current_assets = ndarray::Array1::<f64>::from_elem(count_tokens, <_>::default());
+}
