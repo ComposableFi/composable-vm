@@ -83,9 +83,12 @@ pub fn get_desired_assets(program: &XcProgram) -> Vec<AbsoluteAmount> {
 #[cfg(test)]
 mod tests {
 
-    use crate::{contract::query::query, error::ContractError};
+    use std::borrow::BorrowMut;
 
-    use cosmwasm_std::testing::*;
+    use crate::{contract::query::query,contract::instantiate, error::ContractError};
+
+    use cosmwasm_std::{testing::*, Addr};
+    use cvm_runtime::gateway::{InstantiateMsg, HereItem};
 
     #[test]
     fn query_no_data() {
@@ -97,7 +100,19 @@ mod tests {
     }
 
     #[test]
-    fn spawns_osmosis_hub_centauri() {}
+    fn spawns_osmosis_hub_centauri() {
+        let mut deps = mock_dependencies();
+        let env = mock_env();
+        let info = mock_info("sender", &[]);
+        let msg = cvm_runtime::gateway::InstantiateMsg
+        (
+            HereItem {
+                network_id: 2.into(),
+                admin: Addr::unchecked("admin"),
+            }
+        );
+        crate::contract::instantiate(deps.as_mut(), env.clone(), info, msg);
+    }
 
     #[test]
     fn spawns_neutron_hub_osmosis_hub_centauri() {}
