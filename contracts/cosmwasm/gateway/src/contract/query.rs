@@ -21,6 +21,6 @@ pub fn query(deps: Deps, _env: Env, msg: msg::QueryMsg) -> Result<Binary> {
             .and_then(|route| Ok(to_json_binary(&msg::GetIbcIcs20RouteResponse { route })?)),
         GetExchangeById { exchange_id } => exchange::get_by_id(deps, exchange_id)
             .and_then(|exchange| Ok(to_json_binary(&msg::GetExchangeResponse { exchange })?)),
-        GetRoute { program } => router::get_route(deps, program),           
+        GetRoute { program } => router::get_route(deps, program),
     }
 }

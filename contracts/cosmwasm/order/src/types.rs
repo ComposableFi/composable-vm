@@ -1,4 +1,4 @@
-use cosmwasm_std::{BankMsg, Event, StdResult, Uint64, WasmMsg};
+use cosmwasm_std::{ensure, BankMsg, Event, StdResult, Uint64, WasmMsg};
 use cvm_runtime::{gateway::ExecuteProgramMsg, shared::XcProgram, AssetId, ExchangeId, NetworkId};
 
 use crate::prelude::*;
@@ -43,23 +43,27 @@ pub struct OrderItem {
 }
 
 impl OrderItem {
-    /// `wanted_transfer` - amount to fill in `wants` amounts
+    /// `wanted_fill_amount` - amount to fill in `wants` amounts
     /// reduces give amount
-    pub fn fill(&mut self, wanted_transfer: Uint128) -> StdResult<()> {
+    pub fn fill(&mut self, wanted_fill_amount: Uint128) -> StdResult<()> {
         // was given more or exact wanted - user happy or user was given all before, do not give more
-        if wanted_transfer >= self.msg.wants.amount
+        if wanted_fill_amount >= self.msg.wants.amount
             || self.msg.wants.amount.u128() == <_>::default()
         {
             self.given.amount = <_>::default();
             self.msg.wants.amount = <_>::default();
         } else {
-            let given_reduction = wanted_transfer
+            let original_given = self.given.amount;
+            let given_reduction = wanted_fill_amount
                 .checked_mul(self.given.amount)?
                 .checked_div(self.msg.wants.amount)?;
 
-            self.msg.wants.amount = self.msg.wants.amount.checked_sub(wanted_transfer)?;
-
+            self.msg.wants.amount = self.msg.wants.amount.checked_sub(wanted_fill_amount)?;
             self.given.amount = self.given.amount.saturating_sub(given_reduction);
+            ensure!(
+                self.given.amount < original_given,
+                crate::errors::amount_does_not_decrease_want()
+            );
             assert!(self.given.amount > <_>::default());
         }
         Ok(())
@@ -94,13 +98,35 @@ mod test {
         };
         order.fill(50u128.into()).unwrap();
         assert_eq!(order.given.amount, Uint128::from(50u128));
-        // assert_eq!(order.msg.wants.amount, 50u128.into());
-        // order.fill(50u128.into()).unwrap();
-        // assert_eq!(order.given.amount, 0u128.into());
-        // assert_eq!(order.msg.wants.amount, 0u128.into());
-        // order.fill(50u128.into()).unwrap();
-        // assert_eq!(order.given.amount, 0u128.into());
-        // assert_eq!(order.msg.wants.amount, 0u128.into());
+        assert_eq!(order.msg.wants.amount, Uint128::from(50u128));
+        order.fill(15u128.into()).unwrap();
+        assert_eq!(order.given.amount, Uint128::from(35u128));
+        assert_eq!(order.msg.wants.amount, Uint128::from(35u128));
+        order.fill(Uint128::from(50u128)).unwrap();
+        assert_eq!(order.given.amount, Uint128::from(0u128));
+        assert_eq!(order.msg.wants.amount, Uint128::from(0u128));
+
+        let mut order = OrderItem {
+            owner: Addr::unchecked("owner".to_string()),
+            msg: OrderSubMsg {
+                wants: Coin {
+                    denom: "wants".to_string(),
+                    amount: 2000000000u128.into(),
+                },
+                transfer: None,
+                timeout: 1,
+                min_fill: None,
+            },
+            given: Coin {
+                denom: "given".to_string(),
+                amount: 100u128.into(),
+            },
+            order_id: 1u128.into(),
+        };
+
+        assert!(order.fill(500u128.into()).is_err());
+        order.fill(50000000u128.into()).unwrap();
+        assert_eq!(order.given.amount, Uint128::from(98u128));
     }
 }
 

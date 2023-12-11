@@ -43,22 +43,22 @@ fn cows_scenarios() {
         admin: Some(Addr::unchecked("sender".to_string())),
         cvm_address: Addr::unchecked("cows only".to_string()),
     };
-    cw_mantis_order::entry_points::instantiate(deps.as_mut(), env.clone(), info.clone(), msg).unwrap();
-    
+    cw_mantis_order::entry_points::instantiate(deps.as_mut(), env.clone(), info.clone(), msg)
+        .unwrap();
+
     let msg = ExecMsg::Order {
-        msg : OrderSubMsg{
-            wants: Coin{
+        msg: OrderSubMsg {
+            wants: Coin {
                 denom: "a".to_string(),
                 amount: 20000u128.into(),
             },
             transfer: None,
             timeout: 1,
             min_fill: None,
-        }
+        },
     };
     let msg = cw_mantis_order::sv::ContractExecMsg::OrderContract(msg);
     cw_mantis_order::entry_points::execute(deps.as_mut(), env.clone(), info.clone(), msg).unwrap();
     // 2 200000
     // same by more
-    
 }

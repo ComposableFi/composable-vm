@@ -91,7 +91,7 @@ mod tests {
     use cvm_runtime::{
         executor::ExecuteMsg,
         gateway::{HereItem, InstantiateMsg},
-        shared::{XcAddr, XcFunds, XcFundsFilter, XcProgram, XcInstruction},
+        shared::{XcAddr, XcFunds, XcFundsFilter, XcInstruction, XcProgram},
         Amount, Destination, Instruction,
     };
 
@@ -138,7 +138,6 @@ mod tests {
         };
 
         // crate::contract::query::query(deps.as_ref(), env.clone(), info.clone(), msg).unwrap();
-
     }
 
     #[test]

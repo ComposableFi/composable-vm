@@ -1,6 +1,7 @@
 #![allow(clippy::disallowed_methods)] // does unwrap inside
 #![allow(deprecated)] // sylvia macro
 
+mod errors;
 mod events;
 mod prelude;
 mod simulator;

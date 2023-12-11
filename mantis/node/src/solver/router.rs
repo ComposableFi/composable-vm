@@ -1,7 +1,10 @@
 const MIN_RESERVE: f64 = 05000.0;
 const MAX_RESERVE: f64 = 15000.0;
 
-use std::{collections::HashMap, ops::{Index, AddAssign}};
+use std::{
+    collections::HashMap,
+    ops::{AddAssign, Index},
+};
 
 use cosmrs::tendermint::chain;
 use good_lp::*;
@@ -66,7 +69,7 @@ pub fn solve(
     // Build variables
 
     let mut variables = variables!();
-    
+
     let mut A: Vec<Vec<Vec<f64>>> = vec![];
 
     for cfmm in all_cffms.iter() {
@@ -87,6 +90,4 @@ pub fn solve(
         lambdas.push(vec![variable(), variable()]);
         eta.push(variable());
     }
-
-
 }

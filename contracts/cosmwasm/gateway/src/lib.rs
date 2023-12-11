@@ -14,5 +14,5 @@ pub mod exchange;
 pub mod executor;
 mod network;
 mod prelude;
-pub mod state;
 pub mod router;
+pub mod state;
