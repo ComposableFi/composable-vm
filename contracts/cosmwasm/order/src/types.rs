@@ -45,7 +45,8 @@ pub struct OrderItem {
 impl OrderItem {
     /// `wanted_fill_amount` - amount to fill in `wants` amounts
     /// reduces give amount
-    pub fn fill(&mut self, wanted_fill_amount: Uint128) -> StdResult<()> {
+    /// `optimal_price` - the price to solve agains, should be same or better than user limit
+    pub fn fill(&mut self, wanted_fill_amount: Uint128, optimal_ratio: Ratio) -> StdResult<()> {
         // was given more or exact wanted - user happy or user was given all before, do not give more
         if wanted_fill_amount >= self.msg.wants.amount
             || self.msg.wants.amount.u128() == <_>::default()
@@ -79,6 +80,7 @@ mod test {
 
     #[test]
     pub fn fill() {
+        let optimal_price = (Uint64::from(1u64), Uint64::from(1u64));
         let mut order = OrderItem {
             owner: Addr::unchecked("owner".to_string()),
             msg: OrderSubMsg {
@@ -96,13 +98,13 @@ mod test {
             },
             order_id: 1u128.into(),
         };
-        order.fill(50u128.into()).unwrap();
+        order.fill(50u128.into(), optimal_price).unwrap();
         assert_eq!(order.given.amount, Uint128::from(50u128));
         assert_eq!(order.msg.wants.amount, Uint128::from(50u128));
-        order.fill(15u128.into()).unwrap();
+        order.fill(15u128.into(), optimal_price).unwrap();
         assert_eq!(order.given.amount, Uint128::from(35u128));
         assert_eq!(order.msg.wants.amount, Uint128::from(35u128));
-        order.fill(Uint128::from(50u128)).unwrap();
+        order.fill(Uint128::from(50u128), optimal_price).unwrap();
         assert_eq!(order.given.amount, Uint128::from(0u128));
         assert_eq!(order.msg.wants.amount, Uint128::from(0u128));
 
@@ -124,8 +126,8 @@ mod test {
             order_id: 1u128.into(),
         };
 
-        assert!(order.fill(500u128.into()).is_err());
-        order.fill(50000000u128.into()).unwrap();
+        assert!(order.fill(500u128.into(), optimal_price).is_err());
+        order.fill(50000000u128.into(), optimal_price).unwrap();
         assert_eq!(order.given.amount, Uint128::from(98u128));
     }
 }
@@ -207,6 +209,10 @@ pub struct SolutionSubMsg {
 
     /// after some time, solver will not commit to success
     pub timeout: Block,
+}
+
+pub fn to_cw_ratio(ratio: (u64, u64)) -> Ratio {
+    (Uint64::from(ratio.0), Uint64::from(ratio.1))
 }
 
 /// after cows solved, need to route remaining cross chain

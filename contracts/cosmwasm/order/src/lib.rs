@@ -80,8 +80,8 @@ impl OrderContract<'_> {
         let funds = ctx
             .info
             .funds
-            .first().ok_or(errors::expected_some_funds_in_order())?;
-            
+            .first()
+            .ok_or(errors::expected_some_funds_in_order())?;
 
         // just save order under incremented id
         let order_id = self
@@ -314,6 +314,7 @@ impl OrderContract<'_> {
             transfers,
             ctx.info.sender.to_string(),
             solution_item.block_added,
+            to_cw_ratio(solution_item.msg.cow_optional_price),
         )?;
 
         let cross_chain_b: u128 = all_orders
@@ -402,11 +403,12 @@ impl OrderContract<'_> {
         cows: Vec<CowFilledOrder>,
         solver_address: String,
         solution_block_added: u64,
+        optimal_price: Ratio,
     ) -> StdResult<Vec<CowFillResult>> {
         let mut results = vec![];
         for (transfer, order) in cows.into_iter() {
             let mut order: OrderItem = self.orders.load(storage, order.u128())?;
-            order.fill(transfer.amount)?;
+            order.fill(transfer.amount, optimal_price)?;
             let (event, remaining) = if order.given.amount.is_zero() {
                 self.orders.remove(storage, order.order_id.u128());
                 (

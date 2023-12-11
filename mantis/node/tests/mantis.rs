@@ -1,7 +1,6 @@
 //! actually simulates mantis
-use cosmwasm_std::{testing::*, Addr, Coin, MessageInfo};
-use cvm_runtime::executor::ExecuteMsg;
-use cw_mantis_order::{sv::*, OrderSubMsg};
+use cosmwasm_std::{testing::*, Addr, Binary, Coin, MessageInfo};
+use cw_mantis_order::{sv::*, OrderItem, OrderSubMsg};
 use mantis_node::prelude::*;
 // let msg = cvm_runtime::gateway::InstantiateMsg(HereItem {
 //     network_id: 2.into(),
@@ -64,6 +63,15 @@ fn cows_scenarios() {
         sender: Addr::unchecked("sender"),
     };
     cw_mantis_order::entry_points::execute(deps.as_mut(), env.clone(), info.clone(), msg).unwrap();
+
+    let msg = QueryMsg::GetAllOrders {};
+    let msg = cw_mantis_order::sv::ContractQueryMsg::OrderContract(msg);
+
+    let orders: Binary =
+        cw_mantis_order::entry_points::query(deps.as_ref(), env.clone(), msg).unwrap();
+    let orders: Vec<OrderItem> = serde_json_wasm::from_slice(orders.as_slice()).unwrap();
+    let cows = mantis_node::mantis::mantis::do_cows(orders);
+    assert!(cows.is_empty());
     // 2 200000
     // same by more
 }
