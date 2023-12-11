@@ -1,6 +1,6 @@
 //! actually simulates mantis
 use cosmwasm_std::{testing::*, Addr, Binary, Coin, MessageInfo};
-use cw_mantis_order::{sv::*, OrderItem, OrderSubMsg};
+use cw_mantis_order::{sv::*, OrderItem, OrderSubMsg, SolutionSubMsg};
 use mantis_node::prelude::*;
 // let msg = cvm_runtime::gateway::InstantiateMsg(HereItem {
 //     network_id: 2.into(),
@@ -58,7 +58,7 @@ fn cows_scenarios() {
         },
     };
     let msg = cw_mantis_order::sv::ContractExecMsg::OrderContract(msg);
-    let given = Coin::new(2, "a");    
+    let given = Coin::new(2, "a");
     let info = MessageInfo {
         funds: vec![given],
         sender: Addr::unchecked("sender"),
@@ -74,7 +74,6 @@ fn cows_scenarios() {
     let cows = mantis_node::mantis::mantis::do_cows(orders);
     assert!(cows.is_empty());
 
-
     // order 2 perfect match
     let msg = ExecMsg::Order {
         msg: OrderSubMsg {
@@ -88,7 +87,7 @@ fn cows_scenarios() {
         },
     };
     let msg = cw_mantis_order::sv::ContractExecMsg::OrderContract(msg);
-    let given = Coin::new(200000u128, "b");    
+    let given = Coin::new(200000u128, "b");
     let info = MessageInfo {
         funds: vec![given],
         sender: Addr::unchecked("sender"),
@@ -101,7 +100,15 @@ fn cows_scenarios() {
     let orders: Binary =
         cw_mantis_order::entry_points::query(deps.as_ref(), env.clone(), msg).unwrap();
     let orders: Vec<OrderItem> = serde_json_wasm::from_slice(orders.as_slice()).unwrap();
-    let cows = mantis_node::mantis::mantis::do_cows(orders);
-    
-    /// settle
+    let cows_per_pair = mantis_node::mantis::mantis::do_cows(orders);
+    for (cows, cow_optional_price) in cows_per_pair {
+        let msg = ExecMsg::Solve {
+            msg: SolutionSubMsg {
+                cows,
+                cow_optional_price,
+                route: None,
+                timeout: 12,
+            },
+        };
+    }
 }
