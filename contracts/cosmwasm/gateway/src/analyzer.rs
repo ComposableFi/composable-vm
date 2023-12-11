@@ -82,6 +82,20 @@ pub fn get_desired_assets(program: &XcProgram) -> Vec<AbsoluteAmount> {
 
 #[cfg(test)]
 mod tests {
+
+    use crate::{contract::query::query, error::ContractError};
+
+    use cosmwasm_std::testing::*;
+
+    #[test]
+    fn query_no_data() {
+        let msg = cvm_runtime::gateway::QueryMsg::GetAssetById {
+            asset_id: 42.into(),
+        };
+        let resp = query(mock_dependencies().as_ref(), mock_env(), msg);
+        assert!(matches!(resp, Err(ContractError::AssetNotFound)));
+    }
+
     #[test]
     fn spawns_osmosis_hub_centauri() {}
 
