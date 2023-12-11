@@ -53,12 +53,14 @@ impl OrderItem {
             self.given.amount = <_>::default();
             self.msg.wants.amount = <_>::default();
         } else {
-            self.msg.wants.amount = self.msg.wants.amount.checked_sub(wanted_transfer)?;
             let given_reduction = wanted_transfer
                 .checked_mul(self.given.amount)?
                 .checked_div(self.msg.wants.amount)?;
 
+            self.msg.wants.amount = self.msg.wants.amount.checked_sub(wanted_transfer)?;
+
             self.given.amount = self.given.amount.saturating_sub(given_reduction);
+            assert!(self.given.amount > <_>::default());
         }
         Ok(())
     }
@@ -66,9 +68,39 @@ impl OrderItem {
 
 #[cfg(test)]
 mod test {
-    use crate::OrderItem;
+    use cosmwasm_std::Coin;
 
-    pub fn test() {
+    use crate::prelude::*;
+    use crate::types::*;
+
+    #[test]
+    pub fn fill() {
+        let mut order = OrderItem {
+            owner: Addr::unchecked("owner".to_string()),
+            msg: OrderSubMsg {
+                wants: Coin {
+                    denom: "wants".to_string(),
+                    amount: 100u128.into(),
+                },
+                transfer: None,
+                timeout: 1,
+                min_fill: None,
+            },
+            given: Coin {
+                denom: "given".to_string(),
+                amount: 100u128.into(),
+            },
+            order_id: 1u128.into(),
+        };
+        order.fill(50u128.into()).unwrap();
+        assert_eq!(order.given.amount, Uint128::from(50u128));
+        // assert_eq!(order.msg.wants.amount, 50u128.into());
+        // order.fill(50u128.into()).unwrap();
+        // assert_eq!(order.given.amount, 0u128.into());
+        // assert_eq!(order.msg.wants.amount, 0u128.into());
+        // order.fill(50u128.into()).unwrap();
+        // assert_eq!(order.given.amount, 0u128.into());
+        // assert_eq!(order.msg.wants.amount, 0u128.into());
     }
 }
 
