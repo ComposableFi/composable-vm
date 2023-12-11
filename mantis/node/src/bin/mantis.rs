@@ -229,62 +229,78 @@ async fn solve(
     println!("========================= solve =========================");
     let all_orders = get_all_orders(order_contract, cosmos_query_client, tip).await;
     if !all_orders.is_empty() {
-        let all_orders = all_orders.into_iter().group_by(|x| {
-            let mut ab = [x.given.denom.clone(), x.msg.wants.denom.clone()];
-            ab.sort();
-            (ab[0].clone(), ab[1].clone())
-        });
-        for ((a, b), orders) in all_orders.into_iter() {
-            let orders = orders.collect::<Vec<_>>();
-            use mantis_node::solver::solver::*;
-            use mantis_node::solver::types::*;
-            let orders = orders.iter().map(|x| {
-                let side = if x.given.denom == a {
-                    OrderType::Buy
-                } else {
-                    OrderType::Sell
-                };
-
-                mantis_node::solver::types::Order::new_integer(
-                    x.given.amount.u128(),
-                    x.msg.wants.amount.u128(),
-                    side,
-                    x.order_id,
-                )
-            });
-            let orders = OrderList {
-                value: orders.collect(),
-            };
-            orders.print();
-            let optimal_price = orders.compute_optimal_price(1000);
-            println!("optimal_price: {:?}", optimal_price);
-            let mut solution = Solution::new(orders.value.clone());
-            solution = solution.match_orders(optimal_price);
-            solution.print();
-            let cows = solution
-                .orders
-                .value
-                .into_iter()
-                .filter(|x| x.amount_out > <_>::default())
-                .map(|x| {
-                    let filled = x.amount_out.to_u128().expect("u128");
-                    OrderSolution {
-                        order_id: x.id,
-                        cow_amount: filled.into(),
-                        cross_chain: 0u128.into(),
-                    }
-                })
-                .collect::<Vec<_>>();
-            let optimal_price = decimal_to_fraction(optimal_price.0);
-            println!("cows: {:?}", cows);
-            if !cows.is_empty() {
-                send_solution(cows, tip, optimal_price, signing_key, order_contract, rpc).await;
-            }
+        let cows_per_pair = do_cows(all_orders);
+        for (cows, optimal_price) in cows_per_pair {
+            send_solution(cows, tip, optimal_price, signing_key, order_contract, rpc).await;
         }
     }
 }
 
-async fn send_solution(cows: Vec<OrderSolution>, tip: &Tip, optimal_price: (u64, u64), signing_key: &cosmrs::crypto::secp256k1::SigningKey, order_contract: &String, rpc: &str) {
+fn do_cows(all_orders: Vec<OrderItem>) -> Vec<(Vec<OrderSolution>, (u64, u64))> {
+    let all_orders = all_orders.into_iter().group_by(|x| {
+        let mut ab = [x.given.denom.clone(), x.msg.wants.denom.clone()];
+        ab.sort();
+        (ab[0].clone(), ab[1].clone())
+    });
+    let mut cows_per_pair = vec![];
+    for ((a, b), orders) in all_orders.into_iter() {
+        let orders = orders.collect::<Vec<_>>();
+        use mantis_node::solver::solver::*;
+        use mantis_node::solver::types::*;
+        let orders = orders.iter().map(|x| {
+            let side = if x.given.denom == a {
+                OrderType::Buy
+            } else {
+                OrderType::Sell
+            };
+
+            mantis_node::solver::types::Order::new_integer(
+                x.given.amount.u128(),
+                x.msg.wants.amount.u128(),
+                side,
+                x.order_id,
+            )
+        });
+        let orders = OrderList {
+            value: orders.collect(),
+        };
+        orders.print();
+        let optimal_price = orders.compute_optimal_price(1000);
+        println!("optimal_price: {:?}", optimal_price);
+        let mut solution = Solution::new(orders.value.clone());
+        solution = solution.match_orders(optimal_price);
+        solution.print();
+        let cows = solution
+            .orders
+            .value
+            .into_iter()
+            .filter(|x| x.amount_out > <_>::default())
+            .map(|x| {
+                let filled = x.amount_out.to_u128().expect("u128");
+                OrderSolution {
+                    order_id: x.id,
+                    cow_amount: filled.into(),
+                    cross_chain: 0u128.into(),
+                }
+            })
+            .collect::<Vec<_>>();
+        let optimal_price = decimal_to_fraction(optimal_price.0);
+        println!("cows: {:?}", cows);
+        if !cows.is_empty() {
+            cows_per_pair.push((cows, optimal_price));
+        }
+    }
+    cows_per_pair
+}
+
+async fn send_solution(
+    cows: Vec<OrderSolution>,
+    tip: &Tip,
+    optimal_price: (u64, u64),
+    signing_key: &cosmrs::crypto::secp256k1::SigningKey,
+    order_contract: &String,
+    rpc: &str,
+) {
     println!("========================= settle =========================");
     let solution = SolutionSubMsg {
         cows,
@@ -307,7 +323,11 @@ async fn send_solution(cows: Vec<OrderSolution>, tip: &Tip, optimal_price: (u64,
     println!("result: {:?}", result);
 }
 
-async fn get_all_orders(order_contract: &String, cosmos_query_client: &mut CosmWasmReadClient, tip: &Tip) -> Vec<OrderItem> {
+async fn get_all_orders(
+    order_contract: &String,
+    cosmos_query_client: &mut CosmWasmReadClient,
+    tip: &Tip,
+) -> Vec<OrderItem> {
     let query = cw_mantis_order::QueryMsg::GetAllOrders {};
     let all_orders = smart_query::<_, Vec<OrderItem>>(order_contract, query, cosmos_query_client)
         .await
