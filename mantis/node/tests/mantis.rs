@@ -1,6 +1,7 @@
 //! actually simulates mantis
-use cosmwasm_std::{testing::*, Addr};
-use cw_mantis_order::sv::*;
+use cosmwasm_std::{testing::*, Addr, Coin};
+use cvm_runtime::executor::ExecuteMsg;
+use cw_mantis_order::{sv::*, OrderSubMsg};
 use mantis_node::prelude::*;
 // let msg = cvm_runtime::gateway::InstantiateMsg(HereItem {
 //     network_id: 2.into(),
@@ -33,13 +34,31 @@ use mantis_node::prelude::*;
 // // crate::contract::query::query(deps.as_ref(), env.clone(), info.clone(), msg).unwrap();
 
 #[test]
-fn solve_one() {
+fn cows_scenarios() {
     let mut deps = mock_dependencies();
     let env = mock_env();
     let info = mock_info("sender", &[]);
 
-    let mantis = InstantiateMsg {
+    let msg = InstantiateMsg {
         admin: Some(Addr::unchecked("sender".to_string())),
         cvm_address: Addr::unchecked("cows only".to_string()),
     };
+    cw_mantis_order::entry_points::instantiate(deps.as_mut(), env.clone(), info.clone(), msg).unwrap();
+    
+    let msg = ExecMsg::Order {
+        msg : OrderSubMsg{
+            wants: Coin{
+                denom: "a".to_string(),
+                amount: 20000u128.into(),
+            },
+            transfer: None,
+            timeout: 1,
+            min_fill: None,
+        }
+    };
+    let msg = cw_mantis_order::sv::ContractExecMsg::OrderContract(msg);
+    cw_mantis_order::entry_points::execute(deps.as_mut(), env.clone(), info.clone(), msg).unwrap();
+    // 2 200000
+    // same by more
+    
 }

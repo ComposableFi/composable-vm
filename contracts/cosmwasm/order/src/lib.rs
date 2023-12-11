@@ -405,7 +405,7 @@ impl OrderContract<'_> {
         let mut results = vec![];
         for (transfer, order) in cows.into_iter() {
             let mut order: OrderItem = self.orders.load(storage, order.u128())?;
-            order.fill(transfer.amount);
+            order.fill(transfer.amount)?;
             let (event, remaining) = if order.given.amount.is_zero() {
                 self.orders.remove(storage, order.order_id.u128());
                 (

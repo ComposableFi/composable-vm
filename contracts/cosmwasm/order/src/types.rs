@@ -43,8 +43,9 @@ pub struct OrderItem {
 }
 
 impl OrderItem {
-    #[no_panic]
-    pub fn fill(&mut self, wanted_transfer: Uint128) {
+    /// `wanted_transfer` - amount to fill in `wants` amounts
+    /// reduces give amount
+    pub fn fill(&mut self, wanted_transfer: Uint128) -> StdResult<()> {
         // was given more or exact wanted - user happy or user was given all before, do not give more
         if wanted_transfer >= self.msg.wants.amount
             || self.msg.wants.amount.u128() == <_>::default()
@@ -52,16 +53,22 @@ impl OrderItem {
             self.given.amount = <_>::default();
             self.msg.wants.amount = <_>::default();
         } else {
-            self.msg.wants.amount = self
-                .msg
-                .wants
-                .amount
-                .checked_sub(wanted_transfer)
-                .expect("proven above via comparison");
-            let given_reduction = wanted_transfer * self.given.amount / self.msg.wants.amount;
+            self.msg.wants.amount = self.msg.wants.amount.checked_sub(wanted_transfer)?;
+            let given_reduction = wanted_transfer
+                .checked_mul(self.given.amount)?
+                .checked_div(self.msg.wants.amount)?;
 
             self.given.amount = self.given.amount.saturating_sub(given_reduction);
         }
+        Ok(())
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use crate::OrderItem;
+
+    pub fn test() {
     }
 }
 
