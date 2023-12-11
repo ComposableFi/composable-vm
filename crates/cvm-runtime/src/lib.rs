@@ -33,7 +33,6 @@
 #![feature(error_in_core)]
 
 extern crate alloc;
-pub mod analyzer;
 mod asset;
 mod bridge;
 #[cfg(feature = "cosmwasm")]

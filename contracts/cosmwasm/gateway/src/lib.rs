@@ -14,3 +14,4 @@ pub mod executor;
 mod network;
 mod prelude;
 pub mod state;
+pub mod analyzer;

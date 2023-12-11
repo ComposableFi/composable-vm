@@ -13,7 +13,7 @@
 //! I think because this one will produce dead branches(along with heap garbage), should searchers do that offchain and provide hint for execution?
 //! It seems under researched.
 
-use crate::{
+use cvm_runtime::{
     shared::{Displayed, XcAddr, XcProgram},
     AbsoluteAmount, Amount, AssetId, Instruction, NetworkId,
 };
@@ -55,7 +55,7 @@ pub fn ensure_final_transfers_are_absolute(
     for ix in program.instructions.iter() {
         match ix {
             Instruction::Transfer { to, assets } => match (to, assets.0.get(0)) {
-                (crate::Destination::Account(addr), Some((asset_id, amount))) => {
+                (cvm_runtime::Destination::Account(addr), Some((asset_id, amount))) => {
                     let transfer = AbsoluteTransfer {
                         to: addr.clone(),
                         amount: AbsoluteAmount {
@@ -89,7 +89,5 @@ mod tests {
     fn spawns_neutron_hub_osmosis_hub_centauri() {}
 
     #[test]
-    fn atom_on_centauri_atom_on_neutron_via_hub() {
-
-    }
+    fn atom_on_centauri_atom_on_neutron_via_hub() {}
 }
