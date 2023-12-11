@@ -1,7 +1,7 @@
 //! actually simulates mantis
-use cosmwasm_std::testing::*;
+use cosmwasm_std::{testing::*, Addr};
+use cw_mantis_order::sv::*;
 use mantis_node::prelude::*;
-
 // let msg = cvm_runtime::gateway::InstantiateMsg(HereItem {
 //     network_id: 2.into(),
 //     admin: Addr::unchecked("sender"),
@@ -37,4 +37,9 @@ fn solve_one() {
     let mut deps = mock_dependencies();
     let env = mock_env();
     let info = mock_info("sender", &[]);
+
+    let mantis = InstantiateMsg {
+        admin: Some(Addr::unchecked("sender".to_string())),
+        cvm_address: Addr::unchecked("cows only".to_string()),
+    };
 }
