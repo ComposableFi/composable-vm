@@ -80,8 +80,8 @@ impl OrderContract<'_> {
         let funds = ctx
             .info
             .funds
-            .first()
-            .expect("there are some funds in order");
+            .first().ok_or(errors::expected_some_funds_in_order())?;
+            
 
         // just save order under incremented id
         let order_id = self

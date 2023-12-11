@@ -9,7 +9,6 @@ use crate::SolvedOrder;
 /// given all orders amounts aggregated into common pool,
 /// ensure that solution does not violates this pull
 /// and return proper action to handle settling funds locally according solution
-#[no_panic]
 pub fn simulate_cows_via_bank(
     all_orders: &Vec<SolvedOrder>,
     mut a_total_in: u128,

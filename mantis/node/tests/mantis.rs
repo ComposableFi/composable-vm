@@ -1,5 +1,5 @@
 //! actually simulates mantis
-use cosmwasm_std::{testing::*, Addr, Coin};
+use cosmwasm_std::{testing::*, Addr, Coin, MessageInfo};
 use cvm_runtime::executor::ExecuteMsg;
 use cw_mantis_order::{sv::*, OrderSubMsg};
 use mantis_node::prelude::*;
@@ -58,6 +58,11 @@ fn cows_scenarios() {
         },
     };
     let msg = cw_mantis_order::sv::ContractExecMsg::OrderContract(msg);
+    let given = Coin::new(2, "a");
+    let info = MessageInfo {
+        funds: vec![given],
+        sender: Addr::unchecked("sender"),
+    };
     cw_mantis_order::entry_points::execute(deps.as_mut(), env.clone(), info.clone(), msg).unwrap();
     // 2 200000
     // same by more
