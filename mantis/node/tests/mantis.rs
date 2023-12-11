@@ -45,11 +45,12 @@ fn cows_scenarios() {
     cw_mantis_order::entry_points::instantiate(deps.as_mut(), env.clone(), info.clone(), msg)
         .unwrap();
 
+    // order 1
     let msg = ExecMsg::Order {
         msg: OrderSubMsg {
             wants: Coin {
-                denom: "a".to_string(),
-                amount: 20000u128.into(),
+                denom: "b".to_string(),
+                amount: 200000u128.into(),
             },
             transfer: None,
             timeout: 1,
@@ -57,21 +58,50 @@ fn cows_scenarios() {
         },
     };
     let msg = cw_mantis_order::sv::ContractExecMsg::OrderContract(msg);
-    let given = Coin::new(2, "a");
+    let given = Coin::new(2, "a");    
     let info = MessageInfo {
         funds: vec![given],
         sender: Addr::unchecked("sender"),
     };
     cw_mantis_order::entry_points::execute(deps.as_mut(), env.clone(), info.clone(), msg).unwrap();
 
+    /// try solve
     let msg = QueryMsg::GetAllOrders {};
     let msg = cw_mantis_order::sv::ContractQueryMsg::OrderContract(msg);
-
     let orders: Binary =
         cw_mantis_order::entry_points::query(deps.as_ref(), env.clone(), msg).unwrap();
     let orders: Vec<OrderItem> = serde_json_wasm::from_slice(orders.as_slice()).unwrap();
     let cows = mantis_node::mantis::mantis::do_cows(orders);
     assert!(cows.is_empty());
-    // 2 200000
-    // same by more
+
+
+    // order 2 perfect match
+    let msg = ExecMsg::Order {
+        msg: OrderSubMsg {
+            wants: Coin {
+                denom: "a".to_string(),
+                amount: 2u128.into(),
+            },
+            transfer: None,
+            timeout: 1,
+            min_fill: None,
+        },
+    };
+    let msg = cw_mantis_order::sv::ContractExecMsg::OrderContract(msg);
+    let given = Coin::new(200000u128, "b");    
+    let info = MessageInfo {
+        funds: vec![given],
+        sender: Addr::unchecked("sender"),
+    };
+    cw_mantis_order::entry_points::execute(deps.as_mut(), env.clone(), info.clone(), msg).unwrap();
+
+    /// try solve
+    let msg = QueryMsg::GetAllOrders {};
+    let msg = cw_mantis_order::sv::ContractQueryMsg::OrderContract(msg);
+    let orders: Binary =
+        cw_mantis_order::entry_points::query(deps.as_ref(), env.clone(), msg).unwrap();
+    let orders: Vec<OrderItem> = serde_json_wasm::from_slice(orders.as_slice()).unwrap();
+    let cows = mantis_node::mantis::mantis::do_cows(orders);
+    
+    /// settle
 }
