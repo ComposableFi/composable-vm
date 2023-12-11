@@ -229,68 +229,11 @@ async fn solve(
     println!("========================= solve =========================");
     let all_orders = get_all_orders(order_contract, cosmos_query_client, tip).await;
     if !all_orders.is_empty() {
-        let cows_per_pair = do_cows(all_orders);
+        let cows_per_pair = mantis_node::mantis::mantis::do_cows(all_orders);
         for (cows, optimal_price) in cows_per_pair {
             send_solution(cows, tip, optimal_price, signing_key, order_contract, rpc).await;
         }
     }
-}
-
-fn do_cows(all_orders: Vec<OrderItem>) -> Vec<(Vec<OrderSolution>, (u64, u64))> {
-    let all_orders = all_orders.into_iter().group_by(|x| {
-        let mut ab = [x.given.denom.clone(), x.msg.wants.denom.clone()];
-        ab.sort();
-        (ab[0].clone(), ab[1].clone())
-    });
-    let mut cows_per_pair = vec![];
-    for ((a, b), orders) in all_orders.into_iter() {
-        let orders = orders.collect::<Vec<_>>();
-        use mantis_node::solver::solver::*;
-        use mantis_node::solver::types::*;
-        let orders = orders.iter().map(|x| {
-            let side = if x.given.denom == a {
-                OrderType::Buy
-            } else {
-                OrderType::Sell
-            };
-
-            mantis_node::solver::types::Order::new_integer(
-                x.given.amount.u128(),
-                x.msg.wants.amount.u128(),
-                side,
-                x.order_id,
-            )
-        });
-        let orders = OrderList {
-            value: orders.collect(),
-        };
-        orders.print();
-        let optimal_price = orders.compute_optimal_price(1000);
-        println!("optimal_price: {:?}", optimal_price);
-        let mut solution = Solution::new(orders.value.clone());
-        solution = solution.match_orders(optimal_price);
-        solution.print();
-        let cows = solution
-            .orders
-            .value
-            .into_iter()
-            .filter(|x| x.amount_out > <_>::default())
-            .map(|x| {
-                let filled = x.amount_out.to_u128().expect("u128");
-                OrderSolution {
-                    order_id: x.id,
-                    cow_amount: filled.into(),
-                    cross_chain: 0u128.into(),
-                }
-            })
-            .collect::<Vec<_>>();
-        let optimal_price = decimal_to_fraction(optimal_price.0);
-        println!("cows: {:?}", cows);
-        if !cows.is_empty() {
-            cows_per_pair.push((cows, optimal_price));
-        }
-    }
-    cows_per_pair
 }
 
 async fn send_solution(
@@ -338,12 +281,3 @@ async fn get_all_orders(
     all_orders
 }
 
-fn decimal_to_fraction(amount: Decimal) -> (u64, u64) {
-    let digits_after_decimal = amount.to_string().split('.').nth(1).unwrap().len() as u32;
-    let denominator = 10_u128.pow(digits_after_decimal) as u64;
-    let numerator = (amount * Decimal::from(denominator))
-        .to_f64()
-        .expect("converted")
-        .round() as u64;
-    (numerator, denominator)
-}
