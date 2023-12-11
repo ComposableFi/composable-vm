@@ -85,10 +85,15 @@ mod tests {
 
     use std::borrow::BorrowMut;
 
-    use crate::{contract::query::query,contract::instantiate, error::ContractError};
+    use crate::{contract::instantiate, contract::query::query, error::ContractError};
 
     use cosmwasm_std::{testing::*, Addr};
-    use cvm_runtime::gateway::{InstantiateMsg, HereItem};
+    use cvm_runtime::{
+        executor::ExecuteMsg,
+        gateway::{HereItem, InstantiateMsg},
+        shared::{XcAddr, XcFunds, XcFundsFilter, XcProgram},
+        Amount, Destination, Instruction,
+    };
 
     #[test]
     fn query_no_data() {
@@ -100,18 +105,40 @@ mod tests {
     }
 
     #[test]
-    fn spawns_osmosis_hub_centauri() {
+    fn transfer_from_centauri_to_osmosis() {
         let mut deps = mock_dependencies();
         let env = mock_env();
         let info = mock_info("sender", &[]);
-        let msg = cvm_runtime::gateway::InstantiateMsg
-        (
-            HereItem {
-                network_id: 2.into(),
-                admin: Addr::unchecked("admin"),
-            }
+        let msg = cvm_runtime::gateway::InstantiateMsg(HereItem {
+            network_id: 2.into(),
+            admin: Addr::unchecked("sender"),
+        });
+        crate::contract::instantiate(deps.as_mut(), env.clone(), info.clone(), msg).unwrap();
+
+        let config = [];
+        let msg = cvm_runtime::gateway::ExecuteMsg::Config(
+            cvm_runtime::gateway::ConfigSubMsg::Force(config.to_vec()),
         );
-        crate::contract::instantiate(deps.as_mut(), env.clone(), info, msg);
+
+        crate::contract::execute::execute(deps.as_mut(), env.clone(), info.clone(), msg).unwrap();
+
+        let transfer = XcInstruction::transfer_absolute_to_account("bob", 2, 100);
+        let spawn = Instruction::Spawn {
+            network_id: 2.into(),
+            salt: <_>::default(),
+            assets: XcFundsFilter::one(1.into(), Amount::new(100, 0)),
+            program: XcProgram {
+                tag: <_>::default(),
+                instructions: vec![transfer],
+            },
+        };
+        let program = XcProgram {
+            tag: <_>::default(),
+            instructions: vec![spawn],
+        };
+
+        crate::contract::query::query(deps.as_ref(), env.clone(), info.clone(), msg).unwrap();
+
     }
 
     #[test]

@@ -12,6 +12,15 @@ pub type XcInstruction = crate::Instruction<Vec<u8>, XcAddr, XcFundsFilter>;
 pub type XcPacket = crate::Packet<XcProgram>;
 pub type XcProgram = crate::Program<Vec<XcInstruction>>;
 
+impl XcInstruction {
+    pub fn transfer_absolute_to_account(to: &str, asset_id: u128, amount: u128) -> Self {
+        Self::Transfer {
+            to: crate::Destination::Account(XcAddr(to.to_owned())),
+            assets: XcFundsFilter::one(asset_id.into(), crate::Amount::new(amount, 0)),
+        }
+    }
+}
+
 pub fn to_json_base64<T: Serialize>(x: &T) -> StdResult<String> {
     Ok(to_json_binary(x)?.to_base64())
 }
@@ -52,7 +61,7 @@ pub fn decode_base64<S: AsRef<str>, T: DeserializeOwned>(encoded: S) -> StdResul
 )]
 #[into(owned, ref, ref_mut)]
 #[repr(transparent)]
-pub struct XcAddr(String);
+pub struct XcAddr(pub String);
 
 impl From<XcAddr> for Vec<u8> {
     fn from(value: XcAddr) -> Self {

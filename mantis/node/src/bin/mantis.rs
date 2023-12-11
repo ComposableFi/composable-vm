@@ -227,13 +227,7 @@ async fn solve(
     tip: &Tip,
 ) {
     println!("========================= solve =========================");
-    let query = cw_mantis_order::QueryMsg::GetAllOrders {};
-    let all_orders = smart_query::<_, Vec<OrderItem>>(order_contract, query, cosmos_query_client)
-        .await
-        .into_iter()
-        .filter(|x| x.msg.timeout > tip.block.value())
-        .collect::<Vec<OrderItem>>();
-    println!("all_orders: {:?}", all_orders);
+    let all_orders = get_all_orders(order_contract, cosmos_query_client, tip).await;
     if !all_orders.is_empty() {
         let all_orders = all_orders.into_iter().group_by(|x| {
             let mut ab = [x.given.denom.clone(), x.msg.wants.denom.clone()];
@@ -281,32 +275,47 @@ async fn solve(
                     }
                 })
                 .collect::<Vec<_>>();
+            let optimal_price = decimal_to_fraction(optimal_price.0);
+            println!("cows: {:?}", cows);
             if !cows.is_empty() {
-                println!("========================= settle =========================");
-                println!("cows: {:?}", cows);
-                let optimal_price = decimal_to_fraction(optimal_price.0);
-                let solution = SolutionSubMsg {
-                    cows,
-                    route: None,
-                    timeout: tip.timeout(12),
-                    cow_optional_price: optimal_price.into(),
-                };
-
-                let auth_info = simulate_and_set_fee(signing_key, &tip.account).await;
-                let msg = cw_mantis_order::ExecMsg::Solve { msg: solution };
-                let msg = to_exec_signed(signing_key, order_contract.clone(), msg);
-                let result = tx_broadcast_single_signed_msg(
-                    msg.to_any().expect("proto"),
-                    auth_info,
-                    rpc,
-                    signing_key,
-                    tip,
-                )
-                .await;
-                println!("result: {:?}", result);
+                send_solution(cows, tip, optimal_price, signing_key, order_contract, rpc).await;
             }
         }
     }
+}
+
+async fn send_solution(cows: Vec<OrderSolution>, tip: &Tip, optimal_price: (u64, u64), signing_key: &cosmrs::crypto::secp256k1::SigningKey, order_contract: &String, rpc: &str) {
+    println!("========================= settle =========================");
+    let solution = SolutionSubMsg {
+        cows,
+        route: None,
+        timeout: tip.timeout(12),
+        cow_optional_price: optimal_price.into(),
+    };
+
+    let auth_info = simulate_and_set_fee(signing_key, &tip.account).await;
+    let msg = cw_mantis_order::ExecMsg::Solve { msg: solution };
+    let msg = to_exec_signed(signing_key, order_contract.clone(), msg);
+    let result = tx_broadcast_single_signed_msg(
+        msg.to_any().expect("proto"),
+        auth_info,
+        rpc,
+        signing_key,
+        tip,
+    )
+    .await;
+    println!("result: {:?}", result);
+}
+
+async fn get_all_orders(order_contract: &String, cosmos_query_client: &mut CosmWasmReadClient, tip: &Tip) -> Vec<OrderItem> {
+    let query = cw_mantis_order::QueryMsg::GetAllOrders {};
+    let all_orders = smart_query::<_, Vec<OrderItem>>(order_contract, query, cosmos_query_client)
+        .await
+        .into_iter()
+        .filter(|x| x.msg.timeout > tip.block.value())
+        .collect::<Vec<OrderItem>>();
+    println!("all_orders: {:?}", all_orders);
+    all_orders
 }
 
 fn decimal_to_fraction(amount: Decimal) -> (u64, u64) {

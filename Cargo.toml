@@ -126,3 +126,11 @@ astroport = { version = "^3.6.1", default-features = false }
 ndarray = { version = "^0.15.6", default-features = false }
 
 good_lp = {version = "^1.7", default-features = false}
+
+cw-multi-test = { version = "0.19.0"}
+
+
+cw-mantis-order = { path = "./contracts/cosmwasm/order", features = [
+    "json-schema",
+    "std",
+] }

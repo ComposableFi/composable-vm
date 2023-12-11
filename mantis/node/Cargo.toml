@@ -12,7 +12,7 @@ clap = { workspace = true, features = ["derive", "std"] }
 cosmos-sdk-proto = { workspace = true, features = ["grpc-transport"] }
 cosmrs = { workspace = true, features = []}
 cosmwasm-std = { workspace = true, features = []}
-cw-mantis-order = { path = "../../contracts/cosmwasm/order", features = [
+cw-mantis-order = { workspace = true, features = [
     "json-schema",
     "std",
 ] }

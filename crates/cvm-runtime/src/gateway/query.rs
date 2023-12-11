@@ -37,6 +37,13 @@ pub enum QueryMsg {
         returns(GetExchangeResponse)
     )]
     GetExchangeById { exchange_id: ExchangeId },
+
+    /// So given program, contract returns route which will follow
+    #[cfg_attr(
+        feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
+        returns(GetExchangeResponse)
+    )]
+    GetRoute { program: crate::shared::XcProgram },
 }
 
 /// gets all assets in CVM registry without underlying native information
