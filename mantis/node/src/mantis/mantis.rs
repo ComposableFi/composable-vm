@@ -55,6 +55,7 @@ pub fn do_cows(all_orders: Vec<OrderItem>) -> SolutionsPerPair {
                 }
             })
             .collect::<Vec<_>>();
+        println!("optimal price {:?}", optimal_price);
         let optimal_price = decimal_to_fraction(optimal_price.0);
         println!("cows: {:?}", cows);
         if !cows.is_empty() {
