@@ -134,3 +134,5 @@ cw-mantis-order = { path = "./contracts/cosmwasm/order", features = [
     "json-schema",
     "std",
 ] }
+
+fraction = { version = "0.14", default-features = false }

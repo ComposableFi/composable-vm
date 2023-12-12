@@ -1252,6 +1252,16 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c8cbd1169bd7b4a0a20d92b9af7a7e0422888bd38a6f5ec29c1fd8c1558a272e"
 
 [[package]]
+name = "fraction"
+version = "0.14.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "59a78dd758a47a7305478e0e054f9fde4e983b9f9eccda162bf7ca03b79e9d40"
+dependencies = [
+ "lazy_static",
+ "num",
+]
+
+[[package]]
 name = "funty"
 version = "2.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2148,6 +2158,7 @@ dependencies = [
  "cvm-runtime",
  "cw-mantis-order",
  "derive_more",
+ "fraction",
  "good_lp",
  "itertools 0.12.0",
  "ndarray",

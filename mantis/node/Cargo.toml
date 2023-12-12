@@ -34,6 +34,6 @@ tuples = { workspace = true }
 cvm-runtime = { workspace = true, features = ["std"] }
 ndarray ={ workspace = true, features = ["std", "serde"]}
 good_lp = {workspace = true, features = ["coin_cbc", "singlethread-cbc"]}
-
+fraction = {workspace = true, features = ["default"]}
 
 [dev-dependencies]

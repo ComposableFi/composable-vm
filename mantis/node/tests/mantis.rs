@@ -92,20 +92,7 @@ fn cows_scenarios() {
     /// try solve
     let orders = query_all_orders(&deps, &env);
     let cows_per_pair = mantis_node::mantis::mantis::do_cows(orders);
-    for (cows, cow_optional_price) in cows_per_pair {
-        let msg = ExecMsg::Solve {
-            msg: SolutionSubMsg {
-                cows,
-                cow_optional_price,
-                route: None,
-                timeout: 12,
-            },
-        };
-        let msg = cw_mantis_order::sv::ContractExecMsg::OrderContract(msg);
-
-        cw_mantis_order::entry_points::execute(deps.as_mut(), env.clone(), info.clone(), msg)
-            .unwrap();        
-    }
+    do_solve(cows_per_pair, &mut deps, &env, info.clone());
 
     let orders = query_all_orders(&deps, &env);
     assert!(orders.is_empty());
@@ -173,9 +160,86 @@ fn cows_scenarios() {
     // solving
     let orders = query_all_orders(&deps, &env);
     let cows_per_pair = mantis_node::mantis::mantis::do_cows(orders);
+    do_solve(cows_per_pair, &mut deps, &env, info.clone());
+    let orders = query_all_orders(&deps, &env);
+    assert!(orders.is_empty());
 
-    panic!("{:?}", cows_per_pair);
+    // partial orders
 
+    // order 
+    let msg = ExecMsg::Order {
+        msg: OrderSubMsg {
+            wants: Coin {
+                denom: "a".to_string(),
+                amount: 200000u128.into(),
+            },
+            transfer: None,
+            timeout: 1,
+            min_fill: None,
+        },
+    };
+    let given = Coin::new(2u128, "b");
+    send_order(msg, given, &mut deps, &env);
+
+    // half
+    let msg = ExecMsg::Order {
+        msg: OrderSubMsg {
+            wants: Coin {
+                denom: "b".to_string(),
+                amount: (2u128/2).into(),
+            },
+            transfer: None,
+            timeout: 1,
+            min_fill: None,
+        },
+    };
+    let given = Coin::new(200000u128/2, "a");
+    send_order(msg, given, &mut deps, &env);
+
+    // second half
+    let orders = query_all_orders(&deps, &env);
+    let cows_per_pair = mantis_node::mantis::mantis::do_cows(orders);
+    do_solve(cows_per_pair, &mut deps, &env, info.clone());
+    let orders = query_all_orders(&deps, &env);
+    assert!(!orders.is_empty());
+
+    let msg = ExecMsg::Order {
+        msg: OrderSubMsg {
+            wants: Coin {
+                denom: "b".to_string(),
+                amount: (2u128/2).into(),
+            },
+            transfer: None,
+            timeout: 1,
+            min_fill: None,
+        },
+    };
+    let given = Coin::new(200000u128/2, "a");
+    send_order(msg, given, &mut deps, &env);
+
+    // solving
+    let orders = query_all_orders(&deps, &env);
+    let cows_per_pair = mantis_node::mantis::mantis::do_cows(orders);
+    do_solve(cows_per_pair, &mut deps, &env, info.clone());
+    let orders = query_all_orders(&deps, &env);
+    assert!(orders.is_empty());
+}
+
+fn do_solve(cows_per_pair: Vec<(Vec<cw_mantis_order::OrderSolution>, (u64, u64))>, deps: &mut cosmwasm_std::OwnedDeps<cosmwasm_std::MemoryStorage, MockApi, MockQuerier>, env: &cosmwasm_std::Env, info: MessageInfo) {
+    for (cows, cow_optional_price) in cows_per_pair {
+        let msg = ExecMsg::Solve {
+            msg: SolutionSubMsg {
+                cows,
+                cow_optional_price,
+                route: None,
+                timeout: 12,
+            },
+        };
+        let msg = cw_mantis_order::sv::ContractExecMsg::OrderContract(msg);
+
+        cw_mantis_order::entry_points::execute(deps.as_mut(), env.clone(), info.clone(), msg)
+            .unwrap();        
+    }
 }
 
 fn send_order(msg: ExecMsg, given: Coin, deps: &mut cosmwasm_std::OwnedDeps<cosmwasm_std::MemoryStorage, MockApi, MockQuerier>, env: &cosmwasm_std::Env) {

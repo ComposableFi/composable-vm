@@ -65,12 +65,23 @@ pub fn do_cows(all_orders: Vec<OrderItem>) -> SolutionsPerPair {
     cows_per_pair
 }
 
+/// convert decimal to normalized fraction
 fn decimal_to_fraction(amount: Decimal) -> (u64, u64) {
-    let digits_after_decimal = amount.to_string().split('.').nth(1).unwrap().len() as u32;
-    let denominator = 10_u128.pow(digits_after_decimal) as u64;
-    let numerator = (amount * Decimal::from(denominator))
-        .to_f64()
-        .expect("converted")
-        .round() as u64;
-    (numerator, denominator)
+    let decimal_string = amount.to_string();
+    let decimal_string: Vec<_> = decimal_string.split('.').collect();
+    if decimal_string.len() == 1 {
+        (decimal_string[0].parse().expect("in range"), 1)
+    } else {
+        let digits_after_decimal = decimal_string[1].len() as u32;
+        let denominator = 10_u128.pow(digits_after_decimal) as u64;
+        let numerator = (amount * Decimal::from(denominator))
+            .to_u64()
+            .expect("integer");
+        let fraction = fraction::Fraction::new(numerator, denominator);
+
+        (
+            *fraction.numer().expect("num"),
+            *fraction.denom().expect("denom"),
+        )
+    }
 }
