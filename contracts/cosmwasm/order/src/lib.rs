@@ -269,21 +269,21 @@ impl OrderContract<'_> {
         let mut solution_item: SolutionItem = possible_solution;
         let mut volume = 0u128;
         for solution in all_solutions {
-            let alternative_all_orders =
+            let solution_orders =
                 join_solution_with_orders(&self.orders, &solution.msg, &ctx)?;
-            let a_total_in: u128 = alternative_all_orders
+            let a_total_from_orders_in_solution: u128 = solution_orders
                 .iter()
                 .filter(|x| x.given().denom == a)
                 .map(|x: &SolvedOrder| x.given().amount.u128())
                 .sum();
-            let b_total_in: u128 = alternative_all_orders
+            let b_total_from_orders_in_solution: u128 = solution_orders
                 .iter()
                 .filter(|x: &&SolvedOrder| x.given().denom == b)
                 .map(|x| x.given().amount.u128())
                 .sum();
 
             let cow_part =
-                simulate_cows_via_bank(&alternative_all_orders.clone(), a_total_in, b_total_in);
+                simulate_cows_via_bank(&solution_orders.clone(), a_total_from_orders_in_solution, b_total_from_orders_in_solution);
 
             ctx.deps
                 .api
@@ -294,11 +294,11 @@ impl OrderContract<'_> {
                     return Err(err);
                 }
             } else if let Ok(cow_part) = cow_part {
-                let new_volume = a_total_in.saturating_mul(b_total_in);
+                let new_volume = a_total_from_orders_in_solution.saturating_mul(b_total_from_orders_in_solution);
                 if new_volume >= a_in.saturating_mul(b_in) {
-                    a_in = a_total_in;
-                    b_in = b_total_in;
-                    all_orders = alternative_all_orders;
+                    a_in = a_total_from_orders_in_solution;
+                    b_in = b_total_from_orders_in_solution;
+                    all_orders = solution_orders;
                     transfers = cow_part.filled;
                     solution_item = solution;
                     volume = new_volume;
