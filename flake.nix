@@ -177,6 +177,7 @@
               pname = "mantis";
               name = "mantis";
               cargoBuildCommand = "cargo build --release --bin mantis";
+              nativeBuildInputs = [pkgs.cbc];
             });
           default = mantis;
           ci = pkgs.writeShellApplication {

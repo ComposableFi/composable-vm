@@ -3,7 +3,7 @@ extern crate alloc;
 
 pub use cvm_runtime::gateway as msg;
 
-pub mod analyzer;
+// pub mod analyzer;
 pub mod assets;
 pub mod auth;
 pub mod batch;
@@ -14,5 +14,5 @@ pub mod exchange;
 pub mod executor;
 mod network;
 mod prelude;
-pub mod router;
+//pub mod router;
 pub mod state;

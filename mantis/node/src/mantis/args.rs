@@ -56,7 +56,6 @@ pub struct SolverArgs {
     #[arg(long)]
     pub wallet: String,
 
-
     /// The node with pools. Optional, only if consider solving against osmosis.
     #[arg(long)]
     pub osmosis: Option<String>,
@@ -68,7 +67,6 @@ pub struct SolverArgs {
     /// CVM contract on Centauri. Optional, only if consider routing via cross chain CVM.
     #[arg(long)]
     pub cvm_contract: Option<String>,
-
 }
 
 impl MantisArgs {
