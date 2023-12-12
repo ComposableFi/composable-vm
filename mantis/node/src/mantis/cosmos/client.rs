@@ -165,7 +165,7 @@ pub async fn simulate_and_set_fee(
     let auth_info = SignerInfo::single_direct(Some(signing_key.public_key()), account.sequence)
         .auth_info(Fee {
             amount: vec![cosmrs::Coin {
-                amount: 10,
+                amount: gas_limit as u128 / 10_000,
                 denom: cosmrs::Denom::from_str("ppica").expect("denom"),
             }],
             gas_limit,
