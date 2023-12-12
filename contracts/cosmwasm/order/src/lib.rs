@@ -269,8 +269,7 @@ impl OrderContract<'_> {
         let mut solution_item: SolutionItem = possible_solution;
         let mut volume = 0u128;
         for solution in all_solutions {
-            let solution_orders =
-                join_solution_with_orders(&self.orders, &solution.msg, &ctx)?;
+            let solution_orders = join_solution_with_orders(&self.orders, &solution.msg, &ctx)?;
             let a_total_from_orders_in_solution: u128 = solution_orders
                 .iter()
                 .filter(|x| x.given().denom == a)
@@ -282,8 +281,11 @@ impl OrderContract<'_> {
                 .map(|x| x.given().amount.u128())
                 .sum();
 
-            let cow_part =
-                simulate_cows_via_bank(&solution_orders.clone(), a_total_from_orders_in_solution, b_total_from_orders_in_solution);
+            let cow_part = simulate_cows_via_bank(
+                &solution_orders.clone(),
+                a_total_from_orders_in_solution,
+                b_total_from_orders_in_solution,
+            );
 
             ctx.deps
                 .api
@@ -294,7 +296,8 @@ impl OrderContract<'_> {
                     return Err(err);
                 }
             } else if let Ok(cow_part) = cow_part {
-                let new_volume = a_total_from_orders_in_solution.saturating_mul(b_total_from_orders_in_solution);
+                let new_volume =
+                    a_total_from_orders_in_solution.saturating_mul(b_total_from_orders_in_solution);
                 if new_volume >= a_in.saturating_mul(b_in) {
                     a_in = a_total_from_orders_in_solution;
                     b_in = b_total_from_orders_in_solution;

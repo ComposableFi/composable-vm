@@ -66,6 +66,7 @@
         makeCosmwasmContract = name: rust: std-config: let
           binaryName = "${builtins.replaceStrings ["-"] ["_"] name}.wasm";
           maxWasmSizeBytes = 819200;
+          profile = "deployment";
         in
           rust.buildPackage (rust-attrs
             // {
@@ -76,13 +77,13 @@
                 self.inputs.cosmos.packages.${system}.cosmwasm-check
               ];
               pname = name;
-              cargoBuildCommand = "cargo build --target wasm32-unknown-unknown --profile release --package ${name} ${std-config}";
+              cargoBuildCommand = "cargo build --target wasm32-unknown-unknown --profile ${profile} --package ${name} ${std-config}";
               RUSTFLAGS = "-C link-arg=-s";
               installPhaseCommand = ''
                 mkdir --parents $out/lib
                 # from CosmWasm/rust-optimizer
                 # --signext-lowering is needed to support blockchains runnning CosmWasm < 1.3. It can be removed eventually
-                wasm-opt target/wasm32-unknown-unknown/release/${binaryName} -o $out/lib/${binaryName} -Os --signext-lowering
+                wasm-opt target/wasm32-unknown-unknown/${profile}/${binaryName} -o $out/lib/${binaryName} -Os --signext-lowering
                 cosmwasm-check $out/lib/${binaryName}
                 SIZE=$(stat --format=%s "$out/lib/${binaryName}")
                 if [[ "$SIZE" -gt ${builtins.toString maxWasmSizeBytes} ]]; then

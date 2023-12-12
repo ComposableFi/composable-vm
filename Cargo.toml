@@ -136,3 +136,15 @@ cw-mantis-order = { path = "./contracts/cosmwasm/order", features = [
 ] }
 
 fraction = { version = "0.14", default-features = false }
+
+[profile.deployment]
+inherits="release"
+codegen-units = 1
+incremental = false
+rpath = false
+lto = true
+overflow-checks = true
+opt-level = 3 # 3 gave bigger size of binary
+debug = false
+debug-assertions = false
+# panic = "abort"
