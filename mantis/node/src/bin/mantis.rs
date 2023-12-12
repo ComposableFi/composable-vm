@@ -7,6 +7,7 @@ use cosmos_sdk_proto::{traits::Message, Any};
 use cosmrs::{
     tendermint::{block::Height, chain},
     tx::{Msg, SignDoc},
+    Gas,
 };
 
 use cosmrs::{
@@ -42,7 +43,7 @@ async fn main() {
                 "m/44'/118'/0'/0/0",
             )
             .expect("mnemonic");
-
+            let gas = args.gas;
             let mut cosmos_query_client = create_cosmos_query_client(&args.rpc_centauri).await;
             print!("client 1");
             let mut write_client = create_wasm_write_client(&args.rpc_centauri).await;
@@ -65,6 +66,7 @@ async fn main() {
                             &signer,
                             &args.rpc_centauri,
                             &tip,
+                            gas,
                         )
                         .await;
                     };
@@ -84,6 +86,7 @@ async fn main() {
                         &signer,
                         &args.rpc_centauri,
                         &tip,
+                        gas,
                     )
                     .await;
                 };
@@ -102,6 +105,7 @@ async fn main() {
                     &signer,
                     &args.rpc_centauri,
                     &tip,
+                    gas,
                 )
                 .await;
             }
@@ -141,13 +145,14 @@ async fn simulate_order(
     signing_key: &cosmrs::crypto::secp256k1::SigningKey,
     rpc: &str,
     tip: &Tip,
+    gas: Gas,
 ) {
     println!("========================= simulate_order =========================");
     let (msg, fund) = randomize_order(coins_pair, tip.block);
 
     println!("msg: {:?}", msg);
 
-    let auth_info = simulate_and_set_fee(signing_key, &tip.account).await;
+    let auth_info = simulate_and_set_fee(signing_key, &tip.account, gas).await;
 
     let msg = to_exec_signed_with_fund(signing_key, order_contract, msg, fund);
 
@@ -170,9 +175,10 @@ async fn cleanup(
     signing_key: &cosmrs::crypto::secp256k1::SigningKey,
     rpc: &str,
     tip: &Tip,
+    gas: Gas,
 ) {
     println!("========================= cleanup =========================");
-    let auth_info = simulate_and_set_fee(signing_key, &tip.account).await;
+    let auth_info = simulate_and_set_fee(signing_key, &tip.account, gas).await;
     let msg = cw_mantis_order::ExecMsg::Timeout {
         orders: vec![],
         solutions: vec![],
@@ -202,13 +208,23 @@ async fn solve(
     signing_key: &cosmrs::crypto::secp256k1::SigningKey,
     rpc: &str,
     tip: &Tip,
+    gas: Gas,
 ) {
     println!("========================= solve =========================");
     let all_orders = get_all_orders(order_contract, cosmos_query_client, tip).await;
     if !all_orders.is_empty() {
         let cows_per_pair = mantis_node::mantis::mantis::do_cows(all_orders);
         for (cows, optimal_price) in cows_per_pair {
-            send_solution(cows, tip, optimal_price, signing_key, order_contract, rpc).await;
+            send_solution(
+                cows,
+                tip,
+                optimal_price,
+                signing_key,
+                order_contract,
+                rpc,
+                gas,
+            )
+            .await;
         }
     }
 }
@@ -220,6 +236,7 @@ async fn send_solution(
     signing_key: &cosmrs::crypto::secp256k1::SigningKey,
     order_contract: &String,
     rpc: &str,
+    gas: Gas,
 ) {
     println!("========================= settle =========================");
     let solution = SolutionSubMsg {
@@ -229,7 +246,7 @@ async fn send_solution(
         cow_optional_price: optimal_price.into(),
     };
 
-    let auth_info = simulate_and_set_fee(signing_key, &tip.account).await;
+    let auth_info = simulate_and_set_fee(signing_key, &tip.account, gas).await;
     let msg = cw_mantis_order::ExecMsg::Solve { msg: solution };
     let msg = to_exec_signed(signing_key, order_contract.clone(), msg);
     let result = tx_broadcast_single_signed_msg(

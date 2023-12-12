@@ -1,4 +1,5 @@
 use clap::*;
+use cosmrs::Gas;
 
 #[derive(Debug, Parser)]
 pub struct MantisArgs {
@@ -67,6 +68,9 @@ pub struct SolverArgs {
     /// CVM contract on Centauri. Optional, only if consider routing via cross chain CVM.
     #[arg(long)]
     pub cvm_contract: Option<String>,
+
+    #[arg(long, default_value_t = 1_000_000_000)]
+    pub gas: Gas,
 }
 
 impl MantisArgs {

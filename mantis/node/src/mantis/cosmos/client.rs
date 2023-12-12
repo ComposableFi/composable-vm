@@ -8,6 +8,7 @@ use cosmrs::{
     rpc::Client,
     tendermint::{block::Height, chain},
     tx::{self, Fee, SignDoc, SignerInfo},
+    Gas,
 };
 use prost_types::Any;
 use tonic::transport::Channel;
@@ -159,6 +160,7 @@ pub async fn tx_broadcast_single_signed_msg(
 pub async fn simulate_and_set_fee(
     signing_key: &cosmrs::crypto::secp256k1::SigningKey,
     account: &BaseAccount,
+    gas_limit: Gas,
 ) -> tx::AuthInfo {
     let auth_info = SignerInfo::single_direct(Some(signing_key.public_key()), account.sequence)
         .auth_info(Fee {
@@ -166,7 +168,7 @@ pub async fn simulate_and_set_fee(
                 amount: 10,
                 denom: cosmrs::Denom::from_str("ppica").expect("denom"),
             }],
-            gas_limit: 1_000_000,
+            gas_limit,
             payer: None,
             granter: None,
         });
