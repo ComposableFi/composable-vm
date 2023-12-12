@@ -32,6 +32,10 @@ impl Tip {
     }
 }
 
+pub fn timeout(height: Height, delta: u32) -> u64 {
+    height.value() + delta as u64
+}
+
 pub async fn create_cosmos_query_client(rpc: &str) -> CosmosQueryClient {
     use cosmos_sdk_proto::cosmos::auth::v1beta1::query_client::*;
     use cosmos_sdk_proto::cosmos::auth::v1beta1::*;

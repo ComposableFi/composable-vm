@@ -23,7 +23,7 @@ use mantis_node::{
             client::*,
             cosmwasm::{smart_query, to_exec_signed, to_exec_signed_with_fund},
             *,
-        },
+        }, mantis::randomize_order,
     },
     prelude::*,
     solver::{orderbook::OrderList, solution::Solution},
@@ -136,45 +136,21 @@ async fn simulate_order(
     write_client: &mut CosmWasmWriteClient,
     cosmos_query_client: &mut CosmosQueryClient,
     order_contract: String,
-    asset: String,
+    coins_pair: String,
     signing_key: &cosmrs::crypto::secp256k1::SigningKey,
     rpc: &str,
     tip: &Tip,
 ) {
     println!("========================= simulate_order =========================");
-    let coins: Vec<_> = asset
-        .split(',')
-        .map(|x| cosmwasm_std::Coin::from_str(x).expect("coin"))
-        .collect();
+    let (msg, fund) = randomize_order(coins_pair, tip.block);
 
-    let coins = if rand::random::<bool>() {
-        (coins[0].clone(), coins[1].clone())
-    } else {
-        (coins[1].clone(), coins[0].clone())
-    };
-
-    let auth_info = simulate_and_set_fee(signing_key, &tip.account).await;
-    let msg = cw_mantis_order::ExecMsg::Order {
-        msg: OrderSubMsg {
-            wants: cosmwasm_std::Coin {
-                amount: coins.0.amount.saturating_sub(1u32.into()),
-                denom: coins.0.denom.clone(),
-            },
-            transfer: None,
-            timeout: tip.timeout(100),
-            min_fill: None,
-        },
-    };
     println!("msg: {:?}", msg);
 
-    let fund = cosmrs::Coin {
-        amount: coins.1.amount.into(),
-        denom: cosmrs::Denom::from_str(&coins.1.denom).expect("denom"),
-    };
+    let auth_info = simulate_and_set_fee(signing_key, &tip.account).await;
 
     let msg = to_exec_signed_with_fund(signing_key, order_contract, msg, fund);
 
-    tx_broadcast_single_signed_msg(
+    let result = tx_broadcast_single_signed_msg(
         msg.to_any().expect("proto"),
         auth_info,
         rpc,
@@ -183,7 +159,7 @@ async fn simulate_order(
     )
     .await;
 
-    // here parse contract result for its response
+    println!("simulated tx {:?}", result.height)
 }
 
 async fn cleanup(

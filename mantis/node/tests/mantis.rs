@@ -1,36 +1,8 @@
 //! actually simulates mantis
-use cosmwasm_std::{testing::*, Addr, Binary, Coin, MessageInfo, DepsMut, CustomQuery};
+use cosmrs::tendermint::block::Height;
+use cosmwasm_std::{testing::*, Addr, Binary, Coin, CustomQuery, DepsMut, MessageInfo, Uint128};
 use cw_mantis_order::{sv::*, OrderItem, OrderSubMsg, SolutionSubMsg};
-use mantis_node::prelude::*;
-// let msg = cvm_runtime::gateway::InstantiateMsg(HereItem {
-//     network_id: 2.into(),
-//     admin: Addr::unchecked("sender"),
-// });
-// crate::contract::instantiate(deps.as_mut(), env.clone(), info.clone(), msg).unwrap();
-
-// let config = [];
-// let msg = cvm_runtime::gateway::ExecuteMsg::Config(
-//     cvm_runtime::gateway::ConfigSubMsg::Force(config.to_vec()),
-// );
-
-// crate::contract::execute::execute(deps.as_mut(), env.clone(), info.clone(), msg).unwrap();
-
-// let transfer = XcInstruction::transfer_absolute_to_account("bob", 2, 100);
-// let spawn = Instruction::Spawn {
-//     network_id: 2.into(),
-//     salt: <_>::default(),
-//     assets: XcFundsFilter::one(1.into(), Amount::new(100, 0)),
-//     program: XcProgram {
-//         tag: <_>::default(),
-//         instructions: vec![transfer],
-//     },
-// };
-// let program = XcProgram {
-//     tag: <_>::default(),
-//     instructions: vec![spawn],
-// };
-
-// // crate::contract::query::query(deps.as_ref(), env.clone(), info.clone(), msg).unwrap();
+use mantis_node::{mantis::mantis::randomize_order, prelude::*};
 
 #[test]
 fn cows_scenarios() {
@@ -166,7 +138,7 @@ fn cows_scenarios() {
 
     // partial orders
 
-    // order 
+    // order
     let msg = ExecMsg::Order {
         msg: OrderSubMsg {
             wants: Coin {
@@ -186,14 +158,14 @@ fn cows_scenarios() {
         msg: OrderSubMsg {
             wants: Coin {
                 denom: "b".to_string(),
-                amount: (2u128/2).into(),
+                amount: (2u128 / 2).into(),
             },
             transfer: None,
             timeout: 1,
             min_fill: None,
         },
     };
-    let given = Coin::new(200000u128/2, "a");
+    let given = Coin::new(200000u128 / 2, "a");
     send_order(msg, given, &mut deps, &env);
 
     // second half
@@ -207,14 +179,14 @@ fn cows_scenarios() {
         msg: OrderSubMsg {
             wants: Coin {
                 denom: "b".to_string(),
-                amount: (2u128/2).into(),
+                amount: (2u128 / 2).into(),
             },
             transfer: None,
             timeout: 1,
             min_fill: None,
         },
     };
-    let given = Coin::new(200000u128/2, "a");
+    let given = Coin::new(200000u128 / 2, "a");
     send_order(msg, given, &mut deps, &env);
 
     // solving
@@ -223,9 +195,39 @@ fn cows_scenarios() {
     do_solve(cows_per_pair, &mut deps, &env, info.clone());
     let orders = query_all_orders(&deps, &env);
     assert!(orders.is_empty());
+
+    for _ in 1..100 {
+        let (msg, funds): (cw_mantis_order::ExecMsg, cosmrs::Coin) = randomize_order(
+            "20a,200000b".to_string(),
+            Height::try_from(env.block.height).unwrap(),
+        );
+
+        send_order(
+            msg,
+            Coin {
+                denom: funds.denom.to_string(),
+                amount: funds.amount.into(),
+            },
+            &mut deps,
+            &env,
+        );
+    }
+
+    let orders = query_all_orders(&deps, &env);
+    let cows_per_pair = mantis_node::mantis::mantis::do_cows(orders);
+    let responses = do_solve(cows_per_pair, &mut deps, &env, info.clone());
+    let orders = query_all_orders(&deps, &env);
+    println!("solved {}", orders.len());
+    println!("{:?}", responses);
 }
 
-fn do_solve(cows_per_pair: Vec<(Vec<cw_mantis_order::OrderSolution>, (u64, u64))>, deps: &mut cosmwasm_std::OwnedDeps<cosmwasm_std::MemoryStorage, MockApi, MockQuerier>, env: &cosmwasm_std::Env, info: MessageInfo) {
+fn do_solve(
+    cows_per_pair: Vec<(Vec<cw_mantis_order::OrderSolution>, (u64, u64))>,
+    deps: &mut cosmwasm_std::OwnedDeps<cosmwasm_std::MemoryStorage, MockApi, MockQuerier>,
+    env: &cosmwasm_std::Env,
+    info: MessageInfo,
+) -> Vec<cosmwasm_std::Response> {
+    let mut responses = vec![];
     for (cows, cow_optional_price) in cows_per_pair {
         let msg = ExecMsg::Solve {
             msg: SolutionSubMsg {
@@ -237,12 +239,20 @@ fn do_solve(cows_per_pair: Vec<(Vec<cw_mantis_order::OrderSolution>, (u64, u64))
         };
         let msg = cw_mantis_order::sv::ContractExecMsg::OrderContract(msg);
 
-        cw_mantis_order::entry_points::execute(deps.as_mut(), env.clone(), info.clone(), msg)
-            .unwrap();        
+        let response =
+            cw_mantis_order::entry_points::execute(deps.as_mut(), env.clone(), info.clone(), msg)
+                .unwrap();
+        responses.push(response);
     }
+    responses
 }
 
-fn send_order(msg: ExecMsg, given: Coin, deps: &mut cosmwasm_std::OwnedDeps<cosmwasm_std::MemoryStorage, MockApi, MockQuerier>, env: &cosmwasm_std::Env) {
+fn send_order(
+    msg: ExecMsg,
+    given: Coin,
+    deps: &mut cosmwasm_std::OwnedDeps<cosmwasm_std::MemoryStorage, MockApi, MockQuerier>,
+    env: &cosmwasm_std::Env,
+) {
     let msg = cw_mantis_order::sv::ContractExecMsg::OrderContract(msg);
     let info = MessageInfo {
         funds: vec![given],
@@ -251,7 +261,10 @@ fn send_order(msg: ExecMsg, given: Coin, deps: &mut cosmwasm_std::OwnedDeps<cosm
     cw_mantis_order::entry_points::execute(deps.as_mut(), env.clone(), info.clone(), msg).unwrap();
 }
 
-fn query_all_orders(deps: &cosmwasm_std::OwnedDeps<cosmwasm_std::MemoryStorage, MockApi, MockQuerier>, env: &cosmwasm_std::Env) -> Vec<OrderItem> {
+fn query_all_orders(
+    deps: &cosmwasm_std::OwnedDeps<cosmwasm_std::MemoryStorage, MockApi, MockQuerier>,
+    env: &cosmwasm_std::Env,
+) -> Vec<OrderItem> {
     let msg = QueryMsg::GetAllOrders {};
     let msg = cw_mantis_order::sv::ContractQueryMsg::OrderContract(msg);
     let orders: Binary =

@@ -1,9 +1,12 @@
-use cw_mantis_order::{OrderItem, OrderSolution};
+use cosmrs::tendermint::block::Height;
+use cw_mantis_order::{OrderItem, OrderSolution, OrderSubMsg};
 
 use crate::{
     prelude::*,
     solver::{orderbook::OrderList, solution::Solution, types::OrderType},
 };
+
+use super::cosmos::client::timeout;
 
 pub type SolutionsPerPair = Vec<(Vec<OrderSolution>, (u64, u64))>;
 
@@ -84,4 +87,46 @@ fn decimal_to_fraction(amount: Decimal) -> (u64, u64) {
             *fraction.denom().expect("denom"),
         )
     }
+}
+
+pub fn randomize_order(
+    coins_pair: String,
+    tip: Height,
+) -> (cw_mantis_order::ExecMsg, cosmrs::Coin) {
+    let coins: Vec<_> = coins_pair
+        .split(',')
+        .map(|x| cosmwasm_std::Coin::from_str(x).expect("coin"))
+        .collect();
+
+    let coins = if rand::random::<bool>() {
+        (coins[0].clone(), coins[1].clone())
+    } else {
+        (coins[1].clone(), coins[0].clone())
+    };
+    let coin_0_random = randomize_coin(coins.0.amount.u128());
+    let coin_1_random = randomize_coin(coins.1.amount.u128());
+
+    let msg = cw_mantis_order::ExecMsg::Order {
+        msg: OrderSubMsg {
+            wants: cosmwasm_std::Coin {
+                amount: coin_0_random.into(),
+                denom: coins.0.denom.clone(),
+            },
+            transfer: None,
+            timeout: timeout(tip, 100),
+            min_fill: None,
+        },
+    };
+    let fund = cosmrs::Coin {
+        amount: coin_1_random.into(),
+        denom: cosmrs::Denom::from_str(&coins.1.denom).expect("denom"),
+    };
+    (msg, fund)
+}
+
+fn randomize_coin(coin_0_amount: u128) -> u128 {
+    let delta_0 = 1.max(coin_0_amount / 10);
+    let coin_0_random = rand_distr::Uniform::new(coin_0_amount - delta_0, coin_0_amount + delta_0);
+    let coin_0_random: u128 = coin_0_random.sample(&mut rand::thread_rng());
+    coin_0_random
 }

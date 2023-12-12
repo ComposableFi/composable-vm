@@ -43,18 +43,6 @@ pub struct SolverArgs {
     #[arg(long)]
     pub grpc_centauri: String,
 
-    /// the node with pools
-    #[arg(long)]
-    pub osmosis: String,
-
-    /// the node with pools
-    #[arg(long)]
-    pub neutron: String,
-
-    /// CVM contract on Centauri
-    #[arg(long)]
-    pub cvm_contract: String,
-
     /// Order contract on Centauri
     #[arg(long)]
     pub order_contract: String,
@@ -67,6 +55,20 @@ pub struct SolverArgs {
     /// wallet to use
     #[arg(long)]
     pub wallet: String,
+
+
+    /// The node with pools. Optional, only if consider solving against osmosis.
+    #[arg(long)]
+    pub osmosis: Option<String>,
+
+    /// The node with pools. Optional, only if consider solving against osmosis.
+    #[arg(long)]
+    pub neutron: Option<String>,
+
+    /// CVM contract on Centauri. Optional, only if consider routing via cross chain CVM.
+    #[arg(long)]
+    pub cvm_contract: Option<String>,
+
 }
 
 impl MantisArgs {
