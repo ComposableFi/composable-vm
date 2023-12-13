@@ -34,7 +34,7 @@ interface Registry{
     network(network_id: NetworkId): Network
     network_to_network(from: NetworkId, to: NetworkId): ConnectionFeatures
 }
-``````
+```
 
 More complicated is [asset prefix elimination](https://api-docs.skip.money/docs/ibc-routing-algorithm), swap on some chain and moving assets to final destination.
 
@@ -198,13 +198,13 @@ CVM is tree.
 
 Registry is graph.
 
-1. Start breadth first CVM traversing.
-2. If connectivity options found, create traversal branch for each option.
-3. Each child node gets path info which was done up to
-3.1. Check that given path info, can do operation outlined locally.
-4. In good case, traversed path found
-4.1  Evaluate price and retain cheapest (CVM>PFM>IBC Transfer)
-5. In case of not found path
-5.1. Use latest CVM step possible
-5.2. If no CVM before path not found, reject execution.
-6. Output is send CVM output for generate detailed packets packets
+- 1. Start breadth first CVM traversing.
+- 2. If connectivity options found, create traversal branch for each option.
+- 3. Each child node gets path info which was done up to
+- 3.1. Check that given path info, can do operation outlined locally.
+- 4. In good case, traversed path found
+- 4.1.  Evaluate price and retain cheapest (CVM>PFM>IBC Transfer)
+- 5. In case of not found path
+- 5.1. Use latest CVM step possible
+- 5.2. If no CVM before path not found, reject execution.
+- 6. Output is send CVM output for generate detailed packets packets
