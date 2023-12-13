@@ -169,7 +169,8 @@ Registry is graph.
 1. Start breadth first CVM traversing.
 2. If connectivity options found, tree branches.
 3. In good case, traversed path found
-3.1  Evaluate price and send to CVM output for generate packets
+3.1  Evaluate price and retain cheapest (CVM>PFM>IBC Transfer)
 4. In case of not found path
 4.1. Use latest CVM step possible
 4.2. If no CVM before path not found, reject execution.
+5. Output is send CVM output for generate detailed packets packets
