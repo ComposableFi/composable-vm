@@ -4,6 +4,38 @@ We have [CVM language](https://docs.composable.finance/technology/cvm/specificat
 
 CVM language is basically Abstract Syntax and Routing Tree which declares desire to move funds from chain to chain and execute some operations.
 
+
+Simplified CVM:
+```typescript
+type Instruction = Deposit | Exchange | Spawn
+interface Spawn {
+    assets : Asset[]
+    network_id : NetworkId
+    instructions: Instruction[]
+} 
+type NetworkId
+type AssetId
+interface Asset {
+    asset_id : AssetId
+    amount : Amount
+} 
+type Amount = Percentage | Absolute
+```
+
+Simplified registry:
+```typescript
+type TracePrefix
+type NetworkFeatures
+type ConnectionFeatures
+interface Registry{
+    asset_to_network(asset_id: AssetId) : NetworkId
+    asset_id_after(asset_id: AssetId, to: NetworkId) : AssetId
+    asset_id_to_prefix(asset_id: AssetId): TracePrefix
+    network(network_id: NetworkId): Network
+    network_to_network(from: NetworkId, to: NetworkId): ConnectionFeatures
+}
+``````
+
 More complicated is [asset prefix elimination](https://api-docs.skip.money/docs/ibc-routing-algorithm), swap on some chain and moving assets to final destination.
 
 Each chain and hop has its capabilities. One chain can have full set of transport features with contracts, other chain just can receive limited set of final assets and do not allow hosting programs.
@@ -167,10 +199,12 @@ CVM is tree.
 Registry is graph.
 
 1. Start breadth first CVM traversing.
-2. If connectivity options found, tree branches.
-3. In good case, traversed path found
-3.1  Evaluate price and retain cheapest (CVM>PFM>IBC Transfer)
-4. In case of not found path
-4.1. Use latest CVM step possible
-4.2. If no CVM before path not found, reject execution.
-5. Output is send CVM output for generate detailed packets packets
+2. If connectivity options found, create traversal branch for each option.
+3. Each child node gets path info which was done up to
+3.1. Check that given path info, can do operation outlined locally.
+4. In good case, traversed path found
+4.1  Evaluate price and retain cheapest (CVM>PFM>IBC Transfer)
+5. In case of not found path
+5.1. Use latest CVM step possible
+5.2. If no CVM before path not found, reject execution.
+6. Output is send CVM output for generate detailed packets packets
