@@ -2,6 +2,7 @@
 edition = "2021"
 name = "cvm"
 version = "0.1.0"
+description = "Core data types to be shared with any environment on chain and offchain"
 
 [dependencies]
 cosmwasm-std = { workspace = true, features = ["ibc3"] }
