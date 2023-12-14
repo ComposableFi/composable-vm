@@ -15,8 +15,8 @@ interface Spawn {
     network_id : NetworkId
     instructions: Instruction[]
 } 
-type NetworkId
-type AssetId
+type NetworkId = number
+type AssetId = number
 interface Asset {
     asset_id : AssetId
     amount : Amount
@@ -37,15 +37,15 @@ the smaller registry is. Actually preventing global knowledge of all possible ro
 
 Simplified registry:
 ```typescript
-type TracePrefix
-type NetworkFeatures
-type ConnectionFeatures
+type TracePrefix = String
+type NetworkFeatures = object
+type ConnectionFeatures = object
 interface Registry{
     asset_to_network(asset_id: AssetId) : NetworkId
-    asset_id_after(asset_id: AssetId, to: NetworkId) : AssetId
+    asset_id_after_transfer(asset_id: AssetId, to: NetworkId) : AssetId?
     asset_id_to_prefix(asset_id: AssetId): TracePrefix
-    network(network_id: NetworkId): Network
-    network_to_network(from: NetworkId, to: NetworkId): ConnectionFeatures
+    network(network_id: NetworkId): NetworkFeatures
+    network_to_network(from: NetworkId, to: NetworkId): ConnectionFeatures?
 }
 ```
 
