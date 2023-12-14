@@ -255,7 +255,7 @@ B
 
 2.1 Check that parent path allows CVM sending
 
-2.3 Do 1
+2.2 Do 1
 
 3. Do algorithm B
 ```
