@@ -15,7 +15,7 @@ All Python facilities (including data mangling) are done in `../simulation` code
 
 Use schemas from Neutron/Skip/Osmosis as needed. 
 
-Code as simples web service most popular in data science people named ???.
+Code as simples web service most popular in data science people named FastAPI.
 
 ### Data
 
