@@ -29,6 +29,8 @@ This code never simulates transactions, all such input provided inside call.
 
 Blackbox is not interactive regarding transactions.
 
+I doubt https://github.com/fetchai/cosmpy is good to get data as it lacks all shapes, so solution will be if need very specific direct chain data(rare), will talk to indexer team or spawn simple mantis-data (written in cosmrs) server to fetch it. But I hope it will not be needed. 
+
 ### Sandbox
 
 All data getting to be here. So that research can get current state of data just immediately to run numerics and debug.
@@ -42,4 +44,5 @@ Server hosted via https://github.com/ComposableFi/env with full access of releva
 Server works in constant restart in case of failure.
 
 Server fails on any overflow or undecided input, so it can be logged and fixed.
+
 
