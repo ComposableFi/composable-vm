@@ -177,9 +177,13 @@ Other cases rejected.
 
 ## Solution constraints and questions
 
+Given CVM program(tree) and Registry data(graph) on chain, solution to provide annotated CVM program with hints on transports and payloads to use on each hop.
+
+**On chain**
+
 Solution to be executed on chain, cheap one, but still constrained in computation.
 
-If chains knows what connectivity and features on other chains, it generates "hints" on how to from transport packet to get proper execution.
+So it can be proven that on chain one is impossible, which is good solution too.
 
 **Limited information**
 
