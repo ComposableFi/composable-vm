@@ -2,6 +2,8 @@
 
 We have [CVM language](https://docs.composable.finance/technology/cvm/specification) to describe cross chain execution and on chain routing registry over heterogenous networks.
 
+**Programs**
+
 CVM language is basically Abstract Syntax and Routing Tree which declares desire to move funds from chain to chain and execute some operations.
 
 
@@ -22,6 +24,17 @@ interface Asset {
 type Amount = Percentage | Absolute
 ```
 
+More complicated is [asset prefix elimination](https://api-docs.skip.money/docs/ibc-routing-algorithm), swap on some chain and moving assets to final destination.
+
+**Registry**
+
+Each chain and hop has its capabilities. One chain can have full set of transport features with contracts, other chain just can receive limited set of final assets and do not allow hosting programs.
+Limited chains usually provide some mechanics to execute very specific set of scenarios provided by on chain modules.
+Description of chains capabilities and assets they have is on chain registry.
+
+On chain registry contains information on a lot on directly connected chains, and partial info on some 1+ hop connected, so as far chain is (and higher costs of on chain operation), 
+the smaller registry is. Actually preventing global knowledge of all possible routes which can carry execution of CVM program.
+
 Simplified registry:
 ```typescript
 type TracePrefix
@@ -36,14 +49,7 @@ interface Registry{
 }
 ```
 
-More complicated is [asset prefix elimination](https://api-docs.skip.money/docs/ibc-routing-algorithm), swap on some chain and moving assets to final destination.
-
-Each chain and hop has its capabilities. One chain can have full set of transport features with contracts, other chain just can receive limited set of final assets and do not allow hosting programs.
-Limited chains usually provide some mechanics to execute very specific set of scenarios provided by on chain modules.
-Description of chains capabilities and assets they have is on chain registry.
-
-On chain registry contains information on a lot on directly connected chains, and partial info on some 1+ hop connected, so as far chain is (and higher costs of on chain operation), 
-the smaller registry is. Actually preventing global knowledge of all possible routes which can carry execution of CVM program.
+**Next steps**
 
 Next I will describe set of CVM programs, chain capabilities and registry information which should be solved in order express exact packets to send for execution.
 
@@ -179,7 +185,13 @@ If chains knows what connectivity and features on other chains, it generates "hi
 
 Each chain may have limited information about other chains, and yet we have to trust sender if he knows what he asks for.
 
-So some CVM program to be rejected.
+So some CVM program to be rejected
+
+**Multiple spawns**
+
+On chain A, program can split to move some assets to B and some to C. 
+So that both proper transport possibles to be found.
+
 
 **Optimization(Optional)**
 
@@ -197,6 +209,9 @@ Hints may be replaced by trustless CVM bots force Registry propagation.
 CVM is tree.
 
 Registry is graph.
+
+```python
+A
 
 1 Start breadth first CVM traversing.
 
@@ -217,3 +232,26 @@ Registry is graph.
   5.2 If no CVM before path not found, reject execution.
 
 6 Output is send CVM output for generate detailed packets packets
+
+6.1 CVM uses whole path metadata to generate proper transport payload
+
+6.2 Including verify receiver on final chain (by checking hash of hash of path + original sender)
+```
+
+
+Also can vary like
+```python
+B
+
+1. If CVM is found next step - just do it
+
+1.2 Assumed that next hop knows more about next hops 
+
+2 If CVM is not immediate steps, but found on some substeps
+
+2.1 Check that parent path allows CVM sending
+
+2.3 Do 1
+
+3. Do algorithm B
+```
