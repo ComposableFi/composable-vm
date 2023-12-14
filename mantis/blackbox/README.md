@@ -27,13 +27,13 @@ No heavy lifting of data. Just simple gets.
 
 This code never simulates transactions, all such input provided inside call.
 
-Blackbox is not interactive regarding transction.
+Blackbox is not interactive regarding transactions.
 
 ### Sandbox
 
-All data getting to be here. So that research can get current state of data just immediately to run simulator and debug.
+All data getting to be here. So that research can get current state of data just immediately to run numerics and debug.
 
-All calls are hidden behind `data` function
+All calls are hidden behind `data` function. Including `../../routing.md` data (about routes possible).
 
 Data-faced maps Cosmos assets and data to CVM/MANTIS data, and mangles it to provide
 
