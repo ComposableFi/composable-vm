@@ -53,7 +53,8 @@ pub struct SolverArgs {
     #[arg(long)]
     pub simulate: Option<String>,
 
-    /// wallet to use
+    /// wallet to use.
+    /// For now BIP39 normalized English mnemonic empty passphrase with Kepler default derivation supported
     #[arg(long)]
     pub wallet: String,
 
