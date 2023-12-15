@@ -49,9 +49,10 @@ async fn main() {
             let mut write_client = create_wasm_write_client(&args.rpc_centauri).await;
             print!("client 2");
 
+            let start = std::time::Instant::now();
             loop {
                 if let Some(assets) = args.simulate.clone() {
-                    if std::time::Instant::now().elapsed().as_millis() % 1000 == 0 {
+                    if start.elapsed().as_millis() % 100 == 0 {
                         let tip = get_latest_block_and_account_by_key(
                             &args.rpc_centauri,
                             &args.grpc_centauri,
@@ -72,7 +73,7 @@ async fn main() {
                     };
                 };
 
-                if std::time::Instant::now().elapsed().as_millis() % 100000 == 0 {
+                if start.elapsed().as_millis() % 10000 == 0 {
                     let tip = get_latest_block_and_account_by_key(
                         &args.rpc_centauri,
                         &args.grpc_centauri,
