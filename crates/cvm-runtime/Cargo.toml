@@ -39,6 +39,7 @@ serde-cw-value = { workspace = true, default-features = false }
 #   "serde_no_std",
 # ], default-features = false }
 
+cvm = { workspace = true, default-features = false }
 ibc-apps-more = { workspace = true, default-features = false }
 
 [build-dependencies]
@@ -50,6 +51,7 @@ default = ["std"]
 paroty-scale-codec = [
   "parity-scale-codec",
   "ibc-proto/parity-scale-codec",
+  "cvm/parity-scale-codec",
   "scale-info",
   "ibc-app-transfer-types/parity-scale-codec",
   "ibc-core-host-types/parity-scale-codec",
@@ -60,6 +62,7 @@ cosmwasm = ["cw-storage-plus", "cw20", "ibc-apps-more/cosmwasm"]
 json-schema = [
   "serde-cw-value/schema",
   "ibc-apps-more/json-schema",
+  "cvm/json-schema",
   "dep:cosmwasm-schema",
   "dep:schemars",
   "ibc-app-transfer-types/schema",
@@ -69,6 +72,7 @@ json-schema = [
 ]
 
 std = [
+  "cvm/std",
   "ibc-proto/std",
   "serde-cw-value/std",
   "serde-json-wasm/std",

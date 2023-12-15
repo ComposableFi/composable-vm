@@ -5,13 +5,30 @@ version = "0.1.0"
 description = "Core data types to be shared with any environment on chain and offchain"
 
 [dependencies]
-cosmwasm-std = { workspace = true, features = ["ibc3"] }
+
+cosmwasm-schema = { workspace = true, optional = true }
+cosmwasm-std = { workspace = true, no-default-features = true, optional = true}
+
+parity-scale-codec = { workspace = true, optional = true }
+prost = { workspace = true, features = ["prost-derive"] }
+scale-info = { workspace = true, features = ["derive"], optional = true }
+schemars = { workspace = true, optional = true }
+serde = { workspace = true, features = ["alloc", "derive"] }
+num = { workspace = true, default-features = false}
 
 [features]
 default = ["std"]
-cosmwasm = []
-json-schema = [
+paroty-scale-codec = [
+  "dep:parity-scale-codec",
+  "dep:scale-info",
 ]
 cosmos = []
+cosmwasm = ["dep:cosmwasm-std"]
+json-schema = [
+  "dep:cosmwasm-schema",
+  "dep:schemars",
+]
+
 std = [
+  "num/std",
 ]

@@ -33,15 +33,16 @@
 #![feature(error_in_core)]
 
 extern crate alloc;
-mod asset;
+
 mod bridge;
 #[cfg(feature = "cosmwasm")]
 pub mod cosmwasm;
-pub mod exchange;
+pub use  cvm::exchange;
 pub mod executor;
 pub mod gateway;
 mod instruction;
-mod network;
+pub use cvm::network;
+pub use cvm::asset;
 mod packet;
 pub mod prelude;
 mod program;

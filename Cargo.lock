@@ -702,7 +702,14 @@ dependencies = [
 name = "cvm"
 version = "0.1.0"
 dependencies = [
+ "cosmwasm-schema",
  "cosmwasm-std",
+ "num",
+ "parity-scale-codec",
+ "prost",
+ "scale-info",
+ "schemars",
+ "serde",
 ]
 
 [[package]]
@@ -712,6 +719,7 @@ dependencies = [
  "bech32",
  "cosmwasm-schema",
  "cosmwasm-std",
+ "cvm",
  "cw-storage-plus 1.2.0",
  "cw20 1.1.2",
  "derive_more",
