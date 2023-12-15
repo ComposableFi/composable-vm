@@ -1,7 +1,7 @@
 [package]
-description = "CVM Gateway contract"
+description = "CVM Outpost contract"
 edition = "2021"
-name = "cw-cvm-gateway"
+name = "cw-cvm-outpost"
 repository = "https://github.com/ComposableFi/cvm"
 version = "0.1.0"
 
