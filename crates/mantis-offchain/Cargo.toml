@@ -1,0 +1,17 @@
+[package]
+edition = "2021"
+name = "mantis-offchain"
+version = "0.1.0"
+description = "Core data types to be shared with any environment offchain"
+
+[dependencies]
+cosmwasm-std = { workspace = true, features = ["ibc3"] }
+
+[features]
+default = ["std"]
+cosmwasm = []
+json-schema = [
+]
+cosmos = []
+std = [
+]
