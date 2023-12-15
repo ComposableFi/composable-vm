@@ -138,6 +138,9 @@
             npm publish
           '';
         };
+      in let
+        python-packages = ps: with ps; [numpy cvxpy wheel virtualenv uvicorn fastapi];
+        python = pkgs.python3.withPackages python-packages;
       in {
         _module.args.pkgs = import self.inputs.nixpkgs {
           inherit system;
@@ -145,30 +148,26 @@
             rust-overlay.overlays.default
           ];
         };
-        devShells.default = let
-          python-packages = ps: with ps; [numpy cvxpy wheel virtualenv];
-          python = pkgs.python3.withPackages python-packages;
-        in
-          pkgs.mkShell {
-            VIRTUALENV_PYTHON = "${python}/bin/python3.11";
-            VIRTUAL_ENV = 1;
-            nativeBuildInputs = [python pkgs.cbc];
-            buildInputs = [
-              python
-              devour-flake
-              pkgs.virtualenv
-              pkgs.conda
-              pkgs.pyo3-pack
-              rust.cargo
-              rust.rustc
-              devour-flake
-            ];
-            shellHook = ''
-              if [[ -f ./.env ]]; then
-                source ./.env
-              fi
-            '';
-          };
+        devShells.default = pkgs.mkShell {
+          VIRTUALENV_PYTHON = "${python}/bin/python3.11";
+          VIRTUAL_ENV = 1;
+          nativeBuildInputs = [python pkgs.cbc];
+          buildInputs = [
+            python
+            devour-flake
+            pkgs.virtualenv
+            pkgs.conda
+            pkgs.pyo3-pack
+            rust.cargo
+            rust.rustc
+            devour-flake
+          ];
+          shellHook = ''
+            if [[ -f ./.env ]]; then
+              source ./.env
+            fi
+          '';
+        };
         formatter = pkgs.alejandra;
         packages = rec {
           inherit cw-mantis-order cw-cvm-executor cw-cvm-gateway cosmwasm-contracts;
@@ -181,6 +180,16 @@
               nativeBuildInputs = [pkgs.cbc];
             });
           default = mantis;
+          run = pkgs.writeShellApplication {
+            name = "run";
+            runtimeInputs = [
+              python
+              pkgs.cbc
+            ];
+            text = ''
+              uvicorn mantis.main:app --reload --host
+            '';
+          };
           ci = pkgs.writeShellApplication {
             name = "nix-build-all";
             runtimeInputs = [
