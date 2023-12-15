@@ -144,17 +144,7 @@ pub fn to_cosmwasm_message<T>(
     }
 }
 
-/// Information associated with an IBC channel.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
-pub struct ChannelInfo {
-    /// id of this channel
-    pub id: ChannelId,
-    /// the remote channel/port we connect to
-    pub counterparty_endpoint: IbcEndpoint,
-    /// the connection this exists on (you can use to query client/consensus info)
-    pub connection_id: ConnectionId,
-}
+
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
@@ -163,3 +153,39 @@ pub enum IbcIcs20Sender {
     CosmosStargateIbcApplicationsTransferV1MsgTransfer,
     CosmWasmStd1_3,
 }
+
+
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+#[serde(rename_all = "snake_case")]
+#[cfg_attr(
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
+    derive(schemars::JsonSchema)
+)]
+pub struct Ics20Channel {
+    /// specific per chain way to send IBC ICS 20 assets
+    pub sender: IbcIcs20Sender,
+    pub features: Option<Ics20Features>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+#[serde(rename_all = "snake_case")]
+#[cfg_attr(
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
+    derive(schemars::JsonSchema)
+)]
+pub struct IbcChannels {
+    pub ics20: Option<Ics20Channel>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+#[serde(rename_all = "snake_case")]
+#[cfg_attr(
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
+    derive(schemars::JsonSchema)
+)]
+pub struct IbcEnabled {
+    pub channels: Option<IbcChannels>,
+}
+
+

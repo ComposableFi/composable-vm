@@ -1,11 +1,12 @@
 [package]
 edition = "2021"
-name = "mantis-offchain"
+name = "cvm-route"
 version = "0.1.0"
-description = "Core data types to be shared with any environment offchain"
 
 [dependencies]
 cosmwasm-std = { workspace = true, features = ["ibc3"] }
+
+cvm = { workspace = true }
 
 [features]
 default = ["std"]
