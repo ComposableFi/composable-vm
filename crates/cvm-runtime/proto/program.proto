@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-import "common.proto";
+import "../cvm/protaso/common.proto";
 
 package cvm.program;
 
@@ -9,7 +9,7 @@ message PacketAsset {
   cvm.common.Uint128 amount = 2;
 
   // next tag: 3
-}
+}asdas
 
 message Packet {
   bytes interpreter = 1;

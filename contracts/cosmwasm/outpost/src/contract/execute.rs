@@ -16,7 +16,7 @@ use cosmwasm_std::{
 use cw20::{Cw20Contract, Cw20ExecuteMsg};
 
 use cvm_runtime::{
-    gateway::{BridgeExecuteProgramMsg, ConfigSubMsg},
+    outpost::{BridgeExecuteProgramMsg, ConfigSubMsg},
     CallOrigin, Funds, InterpreterOrigin,
 };
 
@@ -260,7 +260,7 @@ pub(crate) fn handle_execute_program_privilleged(
         // First, add a callback to instantiate an interpreter (which we later get the result
         // and save it)
         let interpreter_code_id = match config.gateway.expect("expected setup") {
-            msg::GatewayId::CosmWasm {
+            msg::OutpostId::CosmWasm {
                 interpreter_code_id,
                 ..
             } => interpreter_code_id,
@@ -281,7 +281,7 @@ pub(crate) fn handle_execute_program_privilleged(
 
         // Secondly, call itself again with the same parameters, so that this functions goes
         // into `Ok` state and properly executes the interpreter
-        let execute_program = cvm_runtime::gateway::BridgeExecuteProgramMsg {
+        let execute_program = cvm_runtime::outpost::BridgeExecuteProgramMsg {
             salt: interpreter_origin.salt,
             program,
             assets,

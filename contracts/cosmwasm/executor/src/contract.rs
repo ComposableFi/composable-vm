@@ -18,7 +18,7 @@ use cvm_runtime::{
     apply_bindings,
     exchange::*,
     executor::{CvmInterpreterInstantiated, InstantiateMsg},
-    gateway::{AssetReference, BridgeExecuteProgramMsg, BridgeForwardMsg},
+    outpost::{AssetReference, BridgeExecuteProgramMsg, BridgeForwardMsg},
     shared, Amount, BindingValue, Destination, Funds, Instruction, NetworkId, Register,
 };
 use cw2::{ensure_from_older_version, set_contract_version};
@@ -41,7 +41,7 @@ pub fn instantiate(
 ) -> Result {
     set_contract_version(deps.storage, CONTRACT_NAME, CONTRACT_VERSION)?;
     let gateway_address =
-        cvm_runtime::gateway::Gateway::addr_validate(deps.api, &msg.gateway_address)?;
+        cvm_runtime::outpost::Gateway::addr_validate(deps.api, &msg.gateway_address)?;
     let config = Config {
         gateway_address,
         interpreter_origin: msg.interpreter_origin,
@@ -286,7 +286,7 @@ struct BindingResolver<'a> {
     env: &'a Env,
     instruction_pointer: u16,
     tip: &'a Addr,
-    gateway: cvm_runtime::gateway::Gateway,
+    gateway: cvm_runtime::outpost::Gateway,
 }
 
 impl<'a> BindingResolver<'a> {

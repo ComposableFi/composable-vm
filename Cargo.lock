@@ -702,12 +702,31 @@ dependencies = [
 name = "cvm"
 version = "0.1.0"
 dependencies = [
+ "bech32",
  "cosmwasm-schema",
  "cosmwasm-std",
+ "cw-storage-plus 1.2.0",
+ "derive_more",
+ "hex",
  "num",
  "parity-scale-codec",
  "prost",
+ "prost-build",
  "scale-info",
+ "schemars",
+ "serde",
+]
+
+[[package]]
+name = "cvm-route"
+version = "0.1.0"
+dependencies = [
+ "cosmwasm-schema",
+ "cosmwasm-std",
+ "cvm",
+ "cw-storage-plus 1.2.0",
+ "ibc-app-transfer-types",
+ "ibc-core-host-types",
  "schemars",
  "serde",
 ]
@@ -720,6 +739,7 @@ dependencies = [
  "cosmwasm-schema",
  "cosmwasm-std",
  "cvm",
+ "cvm-route",
  "cw-storage-plus 1.2.0",
  "cw20 1.1.2",
  "derive_more",
@@ -748,7 +768,7 @@ version = "0.1.0"
 dependencies = [
  "astroport",
  "cosmwasm-std",
- "cvm-runtime",
+ "cvm",
  "ibc-apps-more",
  "prost",
  "schemars",
@@ -796,7 +816,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "cw-cvm-gateway"
+name = "cw-cvm-outpost"
 version = "0.1.0"
 dependencies = [
  "bech32",
@@ -2183,13 +2203,6 @@ dependencies = [
  "tokio",
  "tonic",
  "tuples",
-]
-
-[[package]]
-name = "mantis-offchain"
-version = "0.1.0"
-dependencies = [
- "cosmwasm-std",
 ]
 
 [[package]]

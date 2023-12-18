@@ -1,6 +1,10 @@
 use crate::prelude::*;
 
 use alloc::vec::Vec;
+#[cfg(feature = "cosmwasm")]
+use cosmwasm_std::StdResult;
+#[cfg(feature = "cosmwasm")]
+use cw_storage_plus::{Key, KeyDeserialize, PrimaryKey, Prefixer, IntKey};
 
 /// The interpreter origin, composite of a user origin and a salt.
 #[cfg_attr(
@@ -195,3 +199,125 @@ mod tests {
         check("\"616c696365\"", UserId(b"alice".to_vec()));
     }
 }
+
+
+#[cfg(feature = "cosmwasm")]
+impl<'a> PrimaryKey<'a> for NetworkId {
+    type Prefix = ();
+    type SubPrefix = ();
+    type Suffix = u128;
+    type SuperSuffix = u128;
+    fn key(&self) -> Vec<Key> {
+        vec![Key::Val32(self.0.to_cw_bytes())]
+    }
+}
+
+#[cfg(feature = "cosmwasm")]
+impl<'a> Prefixer<'a> for NetworkId {
+    fn prefix(&self) -> Vec<Key> {
+        <u32 as Prefixer<'a>>::prefix(&self.0)
+    }
+}
+
+#[cfg(feature = "cosmwasm")]
+impl KeyDeserialize for NetworkId {
+    type Output = <u32 as KeyDeserialize>::Output;
+    fn from_vec(value: Vec<u8>) -> StdResult<Self::Output> {
+        <u32 as KeyDeserialize>::from_vec(value)
+    }
+}
+
+
+#[cfg(feature = "cosmwasm")]
+impl<'a> PrimaryKey<'a> for InterpreterOrigin {
+    type Prefix = ();
+    type SubPrefix = ();
+    type Suffix = u128;
+    type SuperSuffix = u128;
+    fn key(&self) -> Vec<Key> {
+        vec![
+            Key::Val32(self.user_origin.network_id.0.to_cw_bytes()),
+            Key::Ref(self.user_origin.user_id.as_ref()),
+            Key::Ref(self.salt.as_ref()),
+        ]
+    }
+}
+
+#[cfg(feature = "cosmwasm")]
+impl<'a> Prefixer<'a> for InterpreterOrigin {
+    fn prefix(&self) -> Vec<Key> {
+        vec![
+            Key::Val32(self.user_origin.network_id.0.to_cw_bytes()),
+            Key::Ref(self.user_origin.user_id.as_ref()),
+            Key::Ref(self.salt.as_ref()),
+        ]
+    }
+}
+
+#[cfg(feature = "cosmwasm")]
+impl KeyDeserialize for InterpreterOrigin {
+    type Output = <(u32, Vec<u8>, Vec<u8>) as KeyDeserialize>::Output;
+    fn from_vec(value: Vec<u8>) -> StdResult<Self::Output> {
+        <(u32, Vec<u8>, Vec<u8>) as KeyDeserialize>::from_vec(value)
+    }
+}
+
+#[cfg(feature = "cosmwasm")]
+impl<'a> PrimaryKey<'a> for UserOrigin {
+    type Prefix = ();
+    type SubPrefix = ();
+    type Suffix = u128;
+    type SuperSuffix = u128;
+    fn key(&self) -> Vec<Key> {
+        vec![
+            Key::Val32(self.network_id.0.to_cw_bytes()),
+            Key::Ref(self.user_id.as_ref()),
+        ]
+    }
+}
+
+#[cfg(feature = "cosmwasm")]
+impl<'a> Prefixer<'a> for UserOrigin {
+    fn prefix(&self) -> Vec<Key> {
+        vec![
+            Key::Val32(self.network_id.0.to_cw_bytes()),
+            Key::Ref(self.user_id.as_ref()),
+        ]
+    }
+}
+
+#[cfg(feature = "cosmwasm")]
+impl KeyDeserialize for UserOrigin {
+    type Output = <(u32, Vec<u8>) as KeyDeserialize>::Output;
+    fn from_vec(value: Vec<u8>) -> StdResult<Self::Output> {
+        <(u32, Vec<u8>) as KeyDeserialize>::from_vec(value)
+    }
+}
+
+#[cfg(feature = "cosmwasm")]
+impl<'a> PrimaryKey<'a> for UserId {
+    type Prefix = ();
+    type SubPrefix = ();
+    type Suffix = u128;
+    type SuperSuffix = u128;
+    fn key(&self) -> Vec<Key> {
+        vec![Key::Ref(self.0.as_ref())]
+    }
+}
+
+#[cfg(feature = "cosmwasm")]
+impl<'a> Prefixer<'a> for UserId {
+    fn prefix(&self) -> Vec<Key> {
+        <Vec<u8> as Prefixer<'a>>::prefix(&self.0)
+    }
+}
+
+#[cfg(feature = "cosmwasm")]
+impl KeyDeserialize for UserId {
+    type Output = <Vec<u8> as KeyDeserialize>::Output;
+
+    fn from_vec(value: Vec<u8>) -> StdResult<Self::Output> {
+        <Vec<u8> as KeyDeserialize>::from_vec(value)
+    }
+}
+

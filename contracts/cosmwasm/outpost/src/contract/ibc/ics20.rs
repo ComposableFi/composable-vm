@@ -8,7 +8,7 @@ use cosmwasm_std::{
     Storage, SubMsg,
 };
 use cvm_runtime::{
-    gateway::{AssetItem, ExecuteMsg, ExecuteProgramMsg, GatewayId},
+    outpost::{AssetItem, ExecuteMsg, ExecuteProgramMsg, OutpostId},
     shared::{XcFunds, XcPacket, XcProgram},
     transport::ibc::{to_cosmwasm_message, IbcIcs20ProgramRoute, XcMessageData},
     AssetId, CallOrigin,
@@ -30,7 +30,7 @@ pub(crate) fn handle_bridge_forward(
     _: auth::Executor,
     deps: DepsMut,
     info: MessageInfo,
-    msg: cvm_runtime::gateway::BridgeForwardMsg,
+    msg: cvm_runtime::outpost::BridgeForwardMsg,
     block: BlockInfo,
 ) -> Result {
     deps.api.debug(&format!(
@@ -99,7 +99,7 @@ pub(crate) fn handle_bridge_forward(
         let coin = Coin::new(amount.0, route.local_native_denom.clone());
 
         match route.gateway_to_send_to.clone() {
-            GatewayId::CosmWasm { contract, .. } => {
+            OutpostId::CosmWasm { contract, .. } => {
                 let msg = to_cosmwasm_message(
                     deps.as_ref(),
                     deps.api,
@@ -137,7 +137,7 @@ pub struct IbcIcs20TransferShortcutRoute {
 /// this method return route in case program can be just transfer
 pub fn ibc_ics_20_transfer_shortcut(
     deps: Deps,
-    msg: &cvm_runtime::gateway::BridgeForwardMsg,
+    msg: &cvm_runtime::outpost::BridgeForwardMsg,
 ) -> Result<IbcIcs20TransferShortcutRoute, ContractError> {
     let storage = deps.storage;
     let this = load_this(storage)?;
@@ -190,7 +190,7 @@ pub fn get_this_route(
         .ok_or(ContractError::UnsupportedNetwork)?;
 
     let sender_gateway = match this.gateway.expect("we execute here") {
-        GatewayId::CosmWasm { contract, .. } => contract,
+        OutpostId::CosmWasm { contract, .. } => contract,
         // GatewayId::Evm { .. } => {
         //     Err(ContractError::BadlyConfiguredRouteBecauseThisChainCanSendOnlyFromCosmwasm)?
         // }

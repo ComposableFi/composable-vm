@@ -1,11 +1,12 @@
 use crate::{
-    outpost::{self, GatewayId, RelativeTimeout},
+    outpost::{self, OutpostId,},
     prelude::*,
     shared::XcPacket,
     AssetId, NetworkId,
 };
 use cosmwasm_std::{Api, BlockInfo, CosmosMsg, Deps, IbcEndpoint, StdResult};
 
+use cvm_route::transport::RelativeTimeout;
 use ibc_core_host_types::identifiers::{ChannelId, ConnectionId, PortId};
 
 use ibc_apps_more::{
@@ -54,7 +55,7 @@ pub struct IbcIcs20ProgramRoute {
     pub channel_to_send_over: ChannelId,
     pub sender_gateway: Addr,
     /// the contract address of the gateway to send to assets
-    pub gateway_to_send_to: GatewayId,
+    pub gateway_to_send_to: OutpostId,
     pub counterparty_timeout: RelativeTimeout,
     pub ibc_ics_20_sender: IbcIcs20Sender,
     pub on_remote_asset: AssetId,

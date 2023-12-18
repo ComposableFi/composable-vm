@@ -28,8 +28,8 @@ pub enum ContractError {
     Std(#[from] StdError),
 }
 
-impl From<cvm_runtime::ArithmeticError> for ContractError {
-    fn from(_: cvm_runtime::ArithmeticError) -> Self {
-        ContractError::InvalidProgram
-    }
-}
+// impl From<cvm_runtime::ArithmeticError> for ContractError {
+//     fn from(_: cvm_runtime::ArithmeticError) -> Self {
+//         ContractError::InvalidProgram
+//     }
+// }

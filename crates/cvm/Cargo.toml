@@ -8,6 +8,7 @@ description = "Core data types to be shared with any environment on chain and of
 
 cosmwasm-schema = { workspace = true, optional = true }
 cosmwasm-std = { workspace = true, no-default-features = true, optional = true}
+cw-storage-plus = { workspace = true, optional = true}
 
 parity-scale-codec = { workspace = true, optional = true }
 prost = { workspace = true, features = ["prost-derive"] }
@@ -29,7 +30,7 @@ parity-scale-codec = [
   "dep:scale-info",
 ]
 cosmos = []
-cosmwasm = ["dep:cosmwasm-std"]
+cosmwasm = ["dep:cosmwasm-std", "dep:cw-storage-plus",]
 json-schema = [
   "dep:cosmwasm-schema",
   "dep:schemars",

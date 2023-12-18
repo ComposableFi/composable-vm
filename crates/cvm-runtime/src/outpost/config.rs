@@ -1,11 +1,11 @@
+
+use cvm_route::{*, exchange::ExchangeItem, transport::NetworkToNetwork};
 use cosmwasm_std::{BlockInfo, IbcTimeout};
 use ibc_core_host_types::identifiers::ChannelId;
 
 use crate::{
-    exchange::ExchangeItem,
     prelude::*,
-    transport::ibc::{ChannelInfo, IbcIcs20Sender},
-    AssetId, NetworkId,
+    AssetId, NetworkId, transport::ibc::IbcEnabled,
 };
 
 type EthAddress = [u8; 20]; // primitive_types::H160;
@@ -79,7 +79,7 @@ pub struct NetworkItem {
     pub network_id: NetworkId,
     /// something which will be receiver on other side
     /// case of network has XCVM deployed as contract, account address is stored here
-    pub gateway: Option<GatewayId>,
+    pub gateway: Option<OutpostId>,
     /// Account encoding type
     pub accounts: Option<Prefix>,
     pub ibc: Option<IbcEnabled>,
@@ -104,10 +104,10 @@ pub enum ConfigSubMsg {
     /// parameters too)
     ForceNetwork(NetworkItem),
     /// Sets network to network connectivity/routing information
-    ForceNetworkToNetwork(ForceNetworkToNetworkMsg),
+    ForceNetworkToNetwork(NetworkToNetwork),
 
     /// Permissioned message (gov or admin) to force set asset information.
-    ForceAsset(AssetItem),
+    ForceAsset(cvm_route::asset::AssetItem),
 
     ForceAssetToNetworkMap(AssetToNetwork),
 
@@ -159,7 +159,7 @@ pub struct HereItem {
     feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
     derive(schemars::JsonSchema)
 )]
-pub enum GatewayId {
+pub enum OutpostId {
     CosmWasm {
         contract: Addr,
         /// CVM interpreter contract code

@@ -11,7 +11,7 @@ use osmosis_std::types::osmosis::poolmanager::v1beta1::MsgSwapExactAmountIn;
 pub fn exchange(
     give: Funds,
     want: Funds,
-    gateway_address: cvm_runtime::gateway::Gateway,
+    gateway_address: cvm_runtime::outpost::Gateway,
     deps: &mut DepsMut<'_>,
     sender: Addr,
     exchange_id: &ExchangeId,

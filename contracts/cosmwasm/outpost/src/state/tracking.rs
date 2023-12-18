@@ -3,7 +3,7 @@
 
 use cosmwasm_std::{StdResult, Storage};
 use cvm_runtime::{
-    gateway::BridgeForwardMsg,
+    outpost::BridgeForwardMsg,
     transport::ibc::{IbcIcs20ProgramRoute, TransportTrackerId},
 };
 use cw_storage_plus::{Item, Map};

@@ -36,7 +36,7 @@ pub fn ibc_channel_open(
             counterparty_version,
         } => (channel, Some(counterparty_version)),
     };
-    const IBC_VERSION: &str = cvm_runtime::gateway::IBC_VERSION;
+    const IBC_VERSION: &str = cvm_runtime::outpost::IBC_VERSION;
     if version.is_some() && version.as_deref() != Some(IBC_VERSION) {
         Err(ContractError::InvalidIbcVersion(version.unwrap()))
     } else if channel.order != IbcOrder::Unordered {

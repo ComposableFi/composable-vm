@@ -9,7 +9,7 @@ use ibc_app_transfer_types::PrefixedDenom;
     feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
     derive(schemars::JsonSchema)
 )]
-pub struct ForceNetworkToNetworkMsg {
+pub struct NetworkToNetwork {
     pub from: NetworkId,
     pub to: NetworkId,
 

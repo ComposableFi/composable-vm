@@ -1,6 +1,6 @@
-use crate::{exchange::ExchangeItem, prelude::*, AssetId, ExchangeId, NetworkId};
+use crate::{prelude::*, AssetId, ExchangeId, NetworkId};
 
-use super::{AssetItem, AssetReference};
+use cvm_route::{*, asset::{AssetReference, AssetItem}, exchange::ExchangeItem};
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "snake_case")]

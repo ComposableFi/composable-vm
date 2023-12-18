@@ -2,7 +2,7 @@ use crate::{
     batch::BatchResponse, events::make_event, prelude::*, state::xcvm::IBC_CHANNEL_NETWORK,
 };
 use cosmwasm_std::{DepsMut, Storage};
-use cvm_runtime::{gateway::NetworkItem, NetworkId};
+use cvm_runtime::{outpost::NetworkItem, NetworkId};
 
 use crate::state::{self, NETWORK, NETWORK_TO_NETWORK};
 
@@ -34,7 +34,7 @@ pub fn load_other(storage: &dyn Storage, other: NetworkId) -> Result<OtherNetwor
 pub(crate) fn force_network_to_network(
     _: crate::auth::Auth<crate::auth::policy::Admin>,
     deps: DepsMut,
-    msg: cvm_runtime::gateway::ForceNetworkToNetworkMsg,
+    msg: cvm_runtime::outpost::ForceNetworkToNetworkMsg,
 ) -> std::result::Result<BatchResponse, crate::error::ContractError> {
     NETWORK_TO_NETWORK.save(deps.storage, (msg.from, msg.to), &msg.other)?;
     if let Some(ibc) = msg.other.ics27_channel {

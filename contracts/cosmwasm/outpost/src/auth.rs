@@ -4,7 +4,7 @@ use crate::{
     msg, network, state,
 };
 use cosmwasm_std::{Deps, Env, MessageInfo};
-use cvm_runtime::{gateway::OtherNetworkItem, NetworkId};
+use cvm_runtime::{outpost::OtherNetworkItem, NetworkId};
 
 /// Authorisation token indicating call is authorised according to policy
 /// `T`.
@@ -68,7 +68,7 @@ impl Auth<policy::WasmHook> {
             .ok_or(ContractError::GatewayForNetworkNotFound(network_id))?;
 
         let sender = match sender {
-            msg::GatewayId::CosmWasm { contract, .. } => contract.to_string(),
+            msg::OutpostId::CosmWasm { contract, .. } => contract.to_string(),
             //msg::GatewayId::Evm { contract, .. } => contract.to_string(),
         };
 

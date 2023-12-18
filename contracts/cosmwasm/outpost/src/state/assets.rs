@@ -1,5 +1,5 @@
 use cvm_runtime::{
-    gateway::{config::AssetReference, AssetItem},
+    outpost::{config::AssetReference, AssetItem},
     AssetId, NetworkId,
 };
 

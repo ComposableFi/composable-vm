@@ -3,10 +3,11 @@ pub mod exchange;
 pub mod interpreter;
 pub mod tracking;
 pub mod xcvm;
+pub mod network;
 use crate::prelude::*;
 
 use cosmwasm_std::{StdResult, Storage};
-use cvm_runtime::gateway::NetworkItem;
+use cvm_runtime::outpost::NetworkItem;
 use cw_storage_plus::Item;
 
 use cvm_runtime::NetworkId;

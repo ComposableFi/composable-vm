@@ -5,7 +5,7 @@ version = "0.1.0"
 
 [dependencies]
 cosmwasm-std = { workspace = true, features = ["ibc3"] }
-cvm-runtime = { workspace = true, default-features = false }
+cvm = { workspace = true, default-features = false }
 astroport = { workspace = true, default-features = false }
 prost = { workspace = true, default-features = false}
 serde = { workspace = true, default-features = false}
@@ -17,15 +17,17 @@ default = [
     "std",
     "ibc-apps-more/std",
     ]
-cosmwasm = []
+cosmwasm = [
+    "cvm/cosmwasm",
+ ]
 json-schema = [
-    "cvm-runtime/json-schema",
+    "cvm/json-schema",
     "ibc-apps-more/json-schema",
     "dep:schemars",
 ]
 cosmos = []
 std = [
-    "cvm-runtime/std",
+    "cvm/std",
 ]
 
 
