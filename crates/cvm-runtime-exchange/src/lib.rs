@@ -4,21 +4,22 @@ mod osmosis_std;
 use cosmwasm_std::{
     ensure_eq, to_json_binary, Addr, Binary, Coin, CosmosMsg, DepsMut, Response, SubMsg, WasmMsg,
 };
-use cvm_runtime::{Amount, ExchangeId, ExchangeItem, Funds};
+use cvm_route::exchange::ExchangeItem;
+use cvm_runtime::{Amount, ExchangeId,  Funds};
 use error::ContractError;
 use osmosis_std::types::osmosis::poolmanager::v1beta1::MsgSwapExactAmountIn;
 
 pub fn exchange(
     give: Funds,
     want: Funds,
-    gateway_address: cvm_runtime::gateway::Gateway,
+    gateway_address: cvm_runtime::outpost::Gateway,
     deps: &mut DepsMut<'_>,
     sender: Addr,
     exchange_id: &ExchangeId,
     exchange: ExchangeItem,
     response_id: u64,
 ) -> Result<Response, ContractError> {
-    use cvm_runtime::exchange::ExchangeType::*;
+    use cvm_route::exchange::ExchangeType::*;
     use prost::Message;
     ensure_eq!(
         give.0.len(),

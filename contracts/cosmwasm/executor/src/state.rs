@@ -8,7 +8,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 pub struct Config {
-    pub gateway_address: cvm_runtime::gateway::Gateway,
+    pub gateway_address: cvm_runtime::outpost::Gateway,
     pub interpreter_origin: InterpreterOrigin,
 }
 

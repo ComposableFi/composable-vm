@@ -719,7 +719,33 @@ dependencies = [
 name = "cvm"
 version = "0.1.0"
 dependencies = [
+ "bech32",
+ "cosmwasm-schema",
  "cosmwasm-std",
+ "cw-storage-plus 1.2.0",
+ "derive_more",
+ "hex",
+ "num",
+ "parity-scale-codec",
+ "prost",
+ "prost-build",
+ "scale-info",
+ "schemars",
+ "serde",
+]
+
+[[package]]
+name = "cvm-route"
+version = "0.1.0"
+dependencies = [
+ "cosmwasm-schema",
+ "cosmwasm-std",
+ "cvm",
+ "cw-storage-plus 1.2.0",
+ "ibc-app-transfer-types",
+ "ibc-core-host-types",
+ "schemars",
+ "serde",
 ]
 
 [[package]]
@@ -729,6 +755,8 @@ dependencies = [
  "bech32",
  "cosmwasm-schema",
  "cosmwasm-std",
+ "cvm",
+ "cvm-route",
  "cw-storage-plus 1.2.0",
  "cw20 1.1.2",
  "derive_more",
@@ -757,6 +785,8 @@ version = "0.1.0"
 dependencies = [
  "astroport",
  "cosmwasm-std",
+ "cvm",
+ "cvm-route",
  "cvm-runtime",
  "ibc-apps-more",
  "prost",
@@ -787,6 +817,7 @@ dependencies = [
  "astroport",
  "cosmwasm-schema",
  "cosmwasm-std",
+ "cvm-route",
  "cvm-runtime",
  "cvm-runtime-exchange",
  "cw-storage-plus 1.2.0",
@@ -805,11 +836,13 @@ dependencies = [
 ]
 
 [[package]]
-name = "cw-cvm-gateway"
+name = "cw-cvm-outpost"
 version = "0.1.0"
 dependencies = [
  "bech32",
  "cosmwasm-std",
+ "cvm",
+ "cvm-route",
  "cvm-runtime",
  "cw-storage-plus 1.2.0",
  "cw2 1.1.2",

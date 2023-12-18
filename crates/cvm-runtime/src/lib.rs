@@ -30,18 +30,19 @@
         unused_parens,
     )
 )]
-#![feature(error_in_core)]
+#![cfg_attr(no_std, feature(error_in_core))]
 
 extern crate alloc;
-mod asset;
+
 mod bridge;
 #[cfg(feature = "cosmwasm")]
 pub mod cosmwasm;
-pub mod exchange;
+pub use cvm::exchange;
 pub mod executor;
-pub mod gateway;
 mod instruction;
-mod network;
+pub mod outpost;
+pub use cvm::asset;
+pub use cvm::network;
 mod packet;
 pub mod prelude;
 mod program;

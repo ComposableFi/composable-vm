@@ -16,6 +16,8 @@ let_unit_value = "allow"
 
 [workspace.dependencies]
 
+cvm = { path = "./crates/cvm", default-features = false}
+cvm-route = { path = "./crates/cvm-route", default-features = false}
 cvm-runtime = { path = "./crates/cvm-runtime", default-features = false}
 cvm-runtime-exchange = { path = "./crates/cvm-runtime-exchange", default-features = false}
 derive_more = { version = "0.99.17", default-features = false, features = [

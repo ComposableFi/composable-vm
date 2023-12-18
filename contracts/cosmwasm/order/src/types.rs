@@ -1,5 +1,5 @@
 use cosmwasm_std::{ensure, BankMsg, Event, StdResult, Uint64, WasmMsg};
-use cvm_runtime::{gateway::ExecuteProgramMsg, shared::XcProgram, AssetId, ExchangeId, NetworkId};
+use cvm_runtime::{outpost::ExecuteProgramMsg, shared::XcProgram, AssetId, ExchangeId, NetworkId};
 
 use crate::prelude::*;
 

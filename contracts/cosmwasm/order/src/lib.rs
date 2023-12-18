@@ -182,8 +182,8 @@ impl OrderContract<'_> {
             &format!("mantis::route:: so here we add route execution tracking to storage and map route to CVM program {:?}", msg)
         );
 
-        let cvm: cvm_runtime::gateway::ExecuteMsg =
-            cvm_runtime::gateway::ExecuteMsg::ExecuteProgram(msg.msg.msg);
+        let cvm: cvm_runtime::outpost::ExecuteMsg =
+            cvm_runtime::outpost::ExecuteMsg::ExecuteProgram(msg.msg.msg);
 
         let contract = self.cvm_address.load(ctx.deps.storage)?;
 

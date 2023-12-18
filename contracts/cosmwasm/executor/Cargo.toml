@@ -13,10 +13,12 @@ library = []
 json-schema = [
   "ibc-apps-more/json-schema", 
   "cvm-runtime/json-schema",
+  "cvm-route/json-schema",
   "cvm-runtime-exchange/json-schema",
   ]
 std = [
   "cvm-runtime/std",
+  "cvm-route/std",
   "dep:cosmwasm-schema",
   "ibc-apps-more/std",
   "thiserror/std",
@@ -24,6 +26,7 @@ std = [
 ]
 cosmos = [
   "cvm-runtime/cosmos",
+  "cvm-route/cosmos",
   "cvm-runtime-exchange/cosmos",
 ]
 
@@ -50,6 +53,12 @@ cvm-runtime = { path = "../../../crates/cvm-runtime", features = [
   "cosmwasm",
   "cosmos",
 ], default-features = false }
+
+cvm-route = { path = "../../../crates/cvm-route", features = [
+  "cosmwasm",
+], default-features = false }
+
+
 ibc-apps-more = { workspace = true, default-features = false, features = [
   "cosmwasm",
 ] }

@@ -1,0 +1,36 @@
+[package]
+edition = "2021"
+name = "cvm-route"
+version = "0.1.0"
+
+[dependencies]
+cosmwasm-std = { workspace = true, features = ["ibc3"] }
+cw-storage-plus = { workspace = true, optional = true}
+cvm = { workspace = true }
+serde = { workspace = true, default-features = false, features = ["derive", "alloc"] }
+schemars ={ workspace = true, optional = true}
+ibc-core-host-types = { workspace = true, features = [
+  "serde",
+] }
+ibc-app-transfer-types = { workspace = true, default-features = false, features = ["serde"] }
+cosmwasm-schema = {workspace = true, optional = true}
+
+[features]
+default = ["std"]
+cosmwasm = [
+    "cvm/cosmwasm",
+    "dep:cw-storage-plus",
+]
+json-schema = [
+    "cvm/json-schema",
+    "ibc-core-host-types/schema",
+    "dep:schemars",
+    "dep:cosmwasm-schema",
+    "ibc-app-transfer-types/schema",
+]
+cosmos = []
+std = [
+    "cvm/std",
+    "ibc-core-host-types/std",
+    "ibc-app-transfer-types/std",
+]

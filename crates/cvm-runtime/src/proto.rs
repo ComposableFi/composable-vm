@@ -1,6 +1,5 @@
 use prost::Message as _;
 
-pub mod common;
 pub mod cvm;
 pub mod pb;
 pub mod result;

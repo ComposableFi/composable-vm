@@ -18,10 +18,7 @@ ibc-app-transfer-types = { workspace = true, features = [
   "serde",
   "parity-scale-codec",
 ] }
-ibc-core-host-types = { workspace = true, features = [
-  "serde",
-  "parity-scale-codec",
-] }
+ibc-core-host-types = { workspace = true, features = ["serde"] }
 num = { workspace = true }
 parity-scale-codec = { workspace = true, optional = true }
 prost = { workspace = true, features = ["prost-derive"] }
@@ -39,6 +36,8 @@ serde-cw-value = { workspace = true, default-features = false }
 #   "serde_no_std",
 # ], default-features = false }
 
+cvm = { workspace = true, default-features = false }
+cvm-route = { workspace = true, default-features = false }
 ibc-apps-more = { workspace = true, default-features = false }
 
 [build-dependencies]
@@ -50,16 +49,19 @@ default = ["std"]
 paroty-scale-codec = [
   "parity-scale-codec",
   "ibc-proto/parity-scale-codec",
+  "cvm/parity-scale-codec",
   "scale-info",
   "ibc-app-transfer-types/parity-scale-codec",
   "ibc-core-host-types/parity-scale-codec",
 ]
 cosmos = []
-cosmwasm = ["cw-storage-plus", "cw20", "ibc-apps-more/cosmwasm"]
+cosmwasm = ["cw-storage-plus", "cw20", "ibc-apps-more/cosmwasm", "cvm/cosmwasm", "cvm-route/cosmwasm",]
 # substrate = ["xcm"]
 json-schema = [
   "serde-cw-value/schema",
   "ibc-apps-more/json-schema",
+  "cvm/json-schema",
+  "cvm-route/json-schema",
   "dep:cosmwasm-schema",
   "dep:schemars",
   "ibc-app-transfer-types/schema",
@@ -69,6 +71,8 @@ json-schema = [
 ]
 
 std = [
+  "cvm/std",
+  "cvm-route/std",
   "ibc-proto/std",
   "serde-cw-value/std",
   "serde-json-wasm/std",

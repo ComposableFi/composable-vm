@@ -4,9 +4,8 @@ extern crate alloc;
 
 pub mod asset;
 pub mod exchange;
-pub mod network;
 mod prelude;
-pub mod proto;
-pub mod shared;
-pub use asset::*;
-pub use network::*;
+pub mod transport;
+use cvm::asset::*;
+use cvm::exchange::*;
+use cvm::network::*;

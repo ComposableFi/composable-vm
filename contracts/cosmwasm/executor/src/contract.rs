@@ -13,12 +13,13 @@ use cosmwasm_std::{
     DepsMut, Env, MessageInfo, QueryRequest, Reply, Response, StdError, StdResult, SubMsg,
     SubMsgResult, WasmMsg, WasmQuery,
 };
+use cvm_route::{asset::AssetReference, exchange::ExchangeItem};
 use cvm_runtime::executor::*;
 use cvm_runtime::{
     apply_bindings,
     exchange::*,
     executor::{CvmInterpreterInstantiated, InstantiateMsg},
-    gateway::{AssetReference, BridgeExecuteProgramMsg, BridgeForwardMsg},
+    outpost::{BridgeExecuteProgramMsg, BridgeForwardMsg},
     shared, Amount, BindingValue, Destination, Funds, Instruction, NetworkId, Register,
 };
 use cw2::{ensure_from_older_version, set_contract_version};
@@ -41,7 +42,7 @@ pub fn instantiate(
 ) -> Result {
     set_contract_version(deps.storage, CONTRACT_NAME, CONTRACT_VERSION)?;
     let gateway_address =
-        cvm_runtime::gateway::Gateway::addr_validate(deps.api, &msg.gateway_address)?;
+        cvm_runtime::outpost::Gateway::addr_validate(deps.api, &msg.gateway_address)?;
     let config = Config {
         gateway_address,
         interpreter_origin: msg.interpreter_origin,
@@ -231,7 +232,7 @@ fn execute_exchange(
     let Config {
         gateway_address, ..
     } = CONFIG.load(deps.storage)?;
-    let exchange: cvm_runtime::exchange::ExchangeItem = gateway_address
+    let exchange: ExchangeItem = gateway_address
         .get_exchange_by_id(deps.querier, exchange_id)
         .map_err(ContractError::ExchangeNotFound)?;
 
@@ -286,7 +287,7 @@ struct BindingResolver<'a> {
     env: &'a Env,
     instruction_pointer: u16,
     tip: &'a Addr,
-    gateway: cvm_runtime::gateway::Gateway,
+    gateway: cvm_runtime::outpost::Gateway,
 }
 
 impl<'a> BindingResolver<'a> {
