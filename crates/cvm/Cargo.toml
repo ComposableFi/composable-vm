@@ -25,6 +25,7 @@ prost-build = { workspace = true }
 
 [features]
 default = ["std"]
+cw-storage-plus = []
 parity-scale-codec = [
   "dep:parity-scale-codec",
   "dep:scale-info",

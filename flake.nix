@@ -105,14 +105,14 @@
             CARGO_PROFILE_RELEASE_BUILD_OVERRIDE_DEBUG = true;
             buildInputs = [ pkgs.protobuf ];
           };
-          cw-cvm-gateway = makeCosmwasmContract "cw-cvm-gateway" rust "--no-default-features --features=std,json-schema,cosmos";
+          cw-cvm-outpost = makeCosmwasmContract "cw-cvm-outpost" rust "--no-default-features --features=std,json-schema,cosmos";
           cw-cvm-executor = makeCosmwasmContract "cw-cvm-executor" rust "--no-default-features --features=std,json-schema,cosmos";
           cw-mantis-order = makeCosmwasmContract "cw-mantis-order" rust "--no-default-features --features=std,json-schema";
           cosmwasm-contracts = pkgs.symlinkJoin {
             name = "cosmwasm-contracts";
             paths = [
               cw-cvm-executor
-              cw-cvm-gateway
+              cw-cvm-outpost
               cw-mantis-order
             ];
           };
@@ -134,7 +134,7 @@
               npm run build-cw-mantis-order
 
               rm --recursive --force schema
-              cargo run --bin gateway --package xc-core
+              cargo run --bin outpost --package xc-core
               npm run build-xc-core
 
               npm publish
@@ -175,15 +175,20 @@
             };
           formatter = pkgs.alejandra;
           packages = rec {
-            inherit cw-mantis-order cw-cvm-executor cw-cvm-gateway cosmwasm-contracts;
+            inherit cw-mantis-order cw-cvm-executor cw-cvm-outpost cosmwasm-contracts;
             mantis = rust.buildPackage (rust-attrs
               // {
               src = rust-src;
               pname = "mantis";
               name = "mantis";
-              cargoBuildCommand = "cargo builds --release --bin mantis";
+              cargoBuildCommand = "cargo build --release --bin mantis";
               nativeBuildInputs = [ pkgs.cbc ];
             });
+            mantis-blackbox = buildPythonPackage rec {
+              name = "mantis-blackbox";
+              src = ./mantis/blackbox;
+              propagatedBuildInputs = [ python ];
+            };
             default = pkgs.writeShellApplication {
               name = "run";
               runtimeInputs = [

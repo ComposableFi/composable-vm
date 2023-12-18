@@ -13,6 +13,16 @@ pub struct AssetToNetwork {
     pub other_asset: AssetId,
 }
 
+impl AssetToNetwork{
+    pub fn new(this_asset: AssetId, other_network: NetworkId, other_asset: AssetId) -> Self {
+        Self {
+            this_asset,
+            other_network,
+            other_asset,
+        }
+    }
+}
+
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "snake_case")]
 #[cfg_attr(
