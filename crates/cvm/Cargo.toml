@@ -15,8 +15,12 @@ scale-info = { workspace = true, features = ["derive"], optional = true }
 schemars = { workspace = true, optional = true }
 serde = { workspace = true, features = ["alloc", "derive"] }
 num = { workspace = true, default-features = false}
-hex ={ workspace = true, default-features = false}
+hex ={ workspace = true, default-features = false, features = ["serde"]}
 bech32 = { workspace = true, default-features = false}
+derive_more = { workspace = true, default-features = false}
+
+[build-dependencies]
+prost-build = { workspace = true }
 
 [features]
 default = ["std"]

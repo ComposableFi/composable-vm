@@ -21,5 +21,3 @@ pub use cosmwasm_schema::QueryResponses;
 
 #[cfg(all(feature = "json-schema", not(target_arch = "wasm32")))]
 pub use schemars::JsonSchema;
-
-pub use ibc_app_transfer_types::PrefixedDenom;
