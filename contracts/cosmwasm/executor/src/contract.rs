@@ -13,12 +13,13 @@ use cosmwasm_std::{
     DepsMut, Env, MessageInfo, QueryRequest, Reply, Response, StdError, StdResult, SubMsg,
     SubMsgResult, WasmMsg, WasmQuery,
 };
+use cvm_route::{asset::AssetReference, exchange::ExchangeItem};
 use cvm_runtime::executor::*;
 use cvm_runtime::{
     apply_bindings,
     exchange::*,
     executor::{CvmInterpreterInstantiated, InstantiateMsg},
-    outpost::{AssetReference, BridgeExecuteProgramMsg, BridgeForwardMsg},
+    outpost::{BridgeExecuteProgramMsg, BridgeForwardMsg},
     shared, Amount, BindingValue, Destination, Funds, Instruction, NetworkId, Register,
 };
 use cw2::{ensure_from_older_version, set_contract_version};
@@ -231,7 +232,7 @@ fn execute_exchange(
     let Config {
         gateway_address, ..
     } = CONFIG.load(deps.storage)?;
-    let exchange: cvm_runtime::exchange::ExchangeItem = gateway_address
+    let exchange: ExchangeItem = gateway_address
         .get_exchange_by_id(deps.querier, exchange_id)
         .map_err(ContractError::ExchangeNotFound)?;
 
