@@ -144,6 +144,7 @@
         let
           python-packages = ps: with ps; [ numpy cvxpy wheel virtualenv uvicorn fastapi ];
           python = pkgs.python3.withPackages python-packages;
+          mantis-blackbox-src = ./mantis/blackbox;
         in
         {
           _module.args.pkgs = import self.inputs.nixpkgs {
@@ -184,19 +185,15 @@
               cargoBuildCommand = "cargo build --release --bin mantis";
               nativeBuildInputs = [ pkgs.cbc ];
             });
-            mantis-blackbox = buildPythonPackage rec {
-              name = "mantis-blackbox";
-              src = ./mantis/blackbox;
-              propagatedBuildInputs = [ python ];
-            };
-            default = pkgs.writeShellApplication {
+            default = mantis-blackbox;
+            mantis-blackbox = pkgs.writeShellApplication {
               name = "run";
               runtimeInputs = [
                 python
                 pkgs.cbc
               ];
               text = ''
-                cd mantis/blackbox
+                cd ${mantis-blackbox-src}
                 uvicorn main:app --reload
               '';
             };
