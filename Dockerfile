@@ -1,4 +1,4 @@
-FROM --platform=linux/arm64 ubuntu:22.04
+FROM arm64v8/ubuntu:latest
 
 # Update default packages
 RUN apt-get update
@@ -11,18 +11,14 @@ RUN apt-get install -y \
     zip \
     git \
     libfl-dev \
-    clang
+    clang \
+    cmake \
+    coinor-cbc \
+    coinor-libcbc-dev
 
 
 # Get Rust
 RUN curl https://sh.rustup.rs -sSf | bash -s -- -y
-
-#Get brew and cbc
-RUN /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" 
-RUN (echo; echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"') >> /root/.profile 
-RUN eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-ENV PATH="/home/linuxbrew/.linuxbrew/bin:${PATH}"
-RUN brew install cbc
 
 # Update new packages
 RUN apt-get update
