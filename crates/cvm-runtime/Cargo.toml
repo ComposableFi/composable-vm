@@ -18,10 +18,7 @@ ibc-app-transfer-types = { workspace = true, features = [
   "serde",
   "parity-scale-codec",
 ] }
-ibc-core-host-types = { workspace = true, features = [
-  "serde",
-  "parity-scale-codec",
-] }
+ibc-core-host-types = { workspace = true, features = ["serde"] }
 num = { workspace = true }
 parity-scale-codec = { workspace = true, optional = true }
 prost = { workspace = true, features = ["prost-derive"] }
@@ -57,7 +54,7 @@ paroty-scale-codec = [
   "ibc-core-host-types/parity-scale-codec",
 ]
 cosmos = []
-cosmwasm = ["cw-storage-plus", "cw20", "ibc-apps-more/cosmwasm"]
+cosmwasm = ["cw-storage-plus", "cw20", "ibc-apps-more/cosmwasm", "cvm/cosmwasm"]
 # substrate = ["xcm"]
 json-schema = [
   "serde-cw-value/schema",

@@ -1,5 +1,5 @@
 use crate::{
-    gateway::{self, GatewayId, RelativeTimeout},
+    outpost::{self, GatewayId, RelativeTimeout},
     prelude::*,
     shared::XcPacket,
     AssetId, NetworkId,
@@ -71,7 +71,7 @@ pub fn to_cosmwasm_message<T>(
     block: BlockInfo,
     gateway_to_send_to: Addr,
 ) -> StdResult<CosmosMsg<T>> {
-    let msg = gateway::ExecuteMsg::MessageHook(XcMessageData {
+    let msg = outpost::ExecuteMsg::MessageHook(XcMessageData {
         from_network_id: route.from_network,
         packet,
     });

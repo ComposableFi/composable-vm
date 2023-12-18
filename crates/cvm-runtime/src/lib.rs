@@ -30,7 +30,8 @@
         unused_parens,
     )
 )]
-#![feature(error_in_core)]
+
+#![cfg_attr(no_std, feature(error_in_core))]
 
 extern crate alloc;
 
@@ -39,7 +40,7 @@ mod bridge;
 pub mod cosmwasm;
 pub use  cvm::exchange;
 pub mod executor;
-pub mod gateway;
+pub mod outpost;
 mod instruction;
 pub use cvm::network;
 pub use cvm::asset;

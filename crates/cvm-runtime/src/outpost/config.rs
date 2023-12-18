@@ -54,41 +54,6 @@ pub struct Ics20Features {
     pub pfm: Option<PFM>,
 }
 
-#[allow(clippy::large_enum_variant)]
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(rename_all = "snake_case")]
-#[cfg_attr(
-    all(
-        feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
-        not(feature = "xcm")
-    ),
-    derive(schemars::JsonSchema)
-)]
-pub enum ForeignAssetId {
-    IbcIcs20(PrefixedDenom),
-    #[cfg(feature = "xcm")]
-    Xcm(xcm::VersionedMultiLocation),
-}
-
-#[cfg(feature = "xcm")]
-impl parity_scale_codec::MaxEncodedLen for ForeignAssetId {
-    fn max_encoded_len() -> usize {
-        2048
-    }
-}
-
-#[cfg(feature = "xcm")]
-impl From<xcm::VersionedMultiLocation> for ForeignAssetId {
-    fn from(this: xcm::VersionedMultiLocation) -> Self {
-        Self::Xcm(this)
-    }
-}
-
-impl From<PrefixedDenom> for ForeignAssetId {
-    fn from(this: PrefixedDenom) -> Self {
-        Self::IbcIcs20(this)
-    }
-}
 
 /// given prefix you may form accounts from 32 bit addresses or partially identify chains
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]

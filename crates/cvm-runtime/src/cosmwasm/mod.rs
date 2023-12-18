@@ -154,28 +154,7 @@ impl KeyDeserialize for UserId {
     }
 }
 
-impl<'a> PrimaryKey<'a> for NetworkId {
-    type Prefix = ();
-    type SubPrefix = ();
-    type Suffix = u128;
-    type SuperSuffix = u128;
-    fn key(&self) -> Vec<Key> {
-        vec![Key::Val32(self.0.to_cw_bytes())]
-    }
-}
 
-impl<'a> Prefixer<'a> for NetworkId {
-    fn prefix(&self) -> Vec<Key> {
-        <u32 as Prefixer<'a>>::prefix(&self.0)
-    }
-}
-
-impl KeyDeserialize for NetworkId {
-    type Output = <u32 as KeyDeserialize>::Output;
-    fn from_vec(value: Vec<u8>) -> StdResult<Self::Output> {
-        <u32 as KeyDeserialize>::from_vec(value)
-    }
-}
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct LateCall {
