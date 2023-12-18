@@ -15,6 +15,7 @@ use cosmwasm_std::{
     IbcChannelOpenResponse, IbcMsg, IbcOrder, IbcPacketAckMsg, IbcPacketReceiveMsg,
     IbcPacketTimeoutMsg, IbcReceiveResponse, MessageInfo, Response, SubMsg,
 };
+use cvm_route::transport::ChannelInfo;
 use cvm_runtime::{
     proto::Isomorphism, shared::XcPacket,  CallOrigin, XCVMAck,
 };
@@ -53,7 +54,7 @@ pub fn ibc_channel_connect(
     msg: IbcChannelConnectMsg,
 ) -> Result<IbcBasicResponse> {
     let channel = msg.channel();
-    state::xcvm::IBC_CHANNEL_INFO.save(
+    state::ics27::IBC_CHANNEL_INFO.save(
         deps.storage,
         channel.endpoint.channel_id.clone(),
         &ChannelInfo {
@@ -74,9 +75,9 @@ pub fn ibc_channel_close(
     msg: IbcChannelCloseMsg,
 ) -> Result<IbcBasicResponse> {
     let channel = msg.channel();
-    state::xcvm::IBC_CHANNEL_INFO.remove(deps.storage, channel.endpoint.channel_id.clone());
+    state::ics27::IBC_CHANNEL_INFO.remove(deps.storage, channel.endpoint.channel_id.clone());
 
-    state::xcvm::IBC_CHANNEL_NETWORK.remove(deps.storage, channel.endpoint.channel_id.clone());
+    state::ics27::IBC_CHANNEL_NETWORK.remove(deps.storage, channel.endpoint.channel_id.clone());
     Ok(IbcBasicResponse::new().add_event(
         make_event("ibc_close").add_attribute("channel_id", channel.endpoint.channel_id.clone()),
     ))

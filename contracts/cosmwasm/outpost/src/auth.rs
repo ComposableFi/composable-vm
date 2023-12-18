@@ -4,6 +4,7 @@ use crate::{
     msg,  state,
 };
 use cosmwasm_std::{Deps, Env, MessageInfo};
+use cvm::NetworkId;
 use cvm_route::transport::*;
 
 /// Authorisation token indicating call is authorised according to policy

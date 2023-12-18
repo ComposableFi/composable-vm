@@ -1,5 +1,5 @@
 use crate::{
-    batch::BatchResponse, events::make_event, prelude::*, state::xcvm::IBC_CHANNEL_NETWORK,
+    batch::BatchResponse, events::make_event, prelude::*, state::ics27::IBC_CHANNEL_NETWORK,
 };
 use cosmwasm_std::{DepsMut, Storage};
 use cvm_route::transport::*;

@@ -3,7 +3,7 @@ use crate::{
     contract::ReplyId,
     error::{ContractError, Result},
     events::make_event,
-    state,
+    state::{self, network::load_this},
 };
 use cosmwasm_std::{
     to_json_binary, Deps, DepsMut, Reply, Response, StdError, StdResult, SubMsg, WasmMsg,

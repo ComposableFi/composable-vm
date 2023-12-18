@@ -2,11 +2,12 @@ pub mod assets;
 pub mod exchange;
 pub mod interpreter;
 pub mod tracking;
-pub mod xcvm;
+pub mod ics27;
 pub mod network;
 use crate::prelude::*;
 
 use cosmwasm_std::{StdResult, Storage};
+use cvm_route::transport::OtherNetworkItem;
 use cvm_runtime::outpost::NetworkItem;
 use cw_storage_plus::Item;
 

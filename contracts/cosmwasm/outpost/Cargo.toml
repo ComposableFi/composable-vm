@@ -59,6 +59,7 @@ cvm-runtime = { path = "../../../crates/cvm-runtime", features = [
 ], default-features = false }
 cvm = { path = "../../../crates/cvm", features = [
   "cosmwasm",
+  "cw-storage-plus",
 ], default-features = false }
 cvm-route = { path = "../../../crates/cvm-route", features = [
   "cosmwasm",

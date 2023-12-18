@@ -2,7 +2,7 @@
 //! Allows to map asset identifiers, contracts, networks, channels, denominations from, to and on
 //! each chain via contract storage, precompiles, host extensions.
 //! handles PFM and IBC wasm hooks
-use crate::{contract::ReplyId, state::network, prelude::*};
+use crate::{contract::ReplyId, state::network::{self, load_this}, prelude::*};
 use cosmwasm_std::{
     ensure_eq, wasm_execute, Binary, BlockInfo, Coin, Deps, DepsMut, Env, MessageInfo, Response,
     Storage, SubMsg,
@@ -54,7 +54,7 @@ pub(crate) fn handle_bridge_forward(
         unimplemented!("add tracking lock for funds return usual cosmos message to transfer as defined in {:?}", transfer_shortcut);
     } else {
         let route: IbcIcs20ProgramRoute = get_this_route(deps.storage, msg.to, *local_asset)?;
-        state::tracking::bridge_lock(deps.storage, (msg.clone(), route.clone()))?;
+        crate::state::tracking::bridge_lock(deps.storage, (msg.clone(), route.clone()))?;
 
         let asset = msg
             .msg
@@ -177,10 +177,10 @@ pub fn get_this_route(
 ) -> Result<IbcIcs20ProgramRoute, ContractError> {
     let this = load_this(storage)?;
     let other = network::load_other(storage, to)?;
-    let asset: AssetItem = state::assets::ASSETS
+    let asset: AssetItem = crate::state::assets::ASSETS
         .load(storage, this_asset_id)
         .map_err(|_| ContractError::AssetNotFoundById(this_asset_id))?;
-    let to_asset: AssetId = state::assets::NETWORK_ASSET
+    let to_asset: AssetId = crate::state::assets::NETWORK_ASSET
         .load(storage, (this_asset_id, to))
         .map_err(|_| ContractError::AssetCannotBeTransferredToNetwork(this_asset_id, to))?;
     let gateway_to_send_to = other

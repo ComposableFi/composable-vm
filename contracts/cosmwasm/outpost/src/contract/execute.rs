@@ -4,15 +4,16 @@ use crate::{
     error::{ContractError, Result},
     events::make_event,
     exchange, executor, msg,
-    state::network::{self, load_this},
     prelude::*,
     state,
+    state::network::{self, load_this},
 };
 
 use cosmwasm_std::{
     entry_point, wasm_execute, Addr, BankMsg, Coin, CosmosMsg, Deps, DepsMut, Env, MessageInfo,
     Response,
 };
+use cvm_route::asset::{AssetReference, AssetToNetwork};
 use cw20::{Cw20Contract, Cw20ExecuteMsg};
 
 use cvm_runtime::{
@@ -86,11 +87,13 @@ fn handle_config_msg(
         ConfigSubMsg::ForceRemoveAsset { asset_id } => {
             assets::force_remove_asset(auth, deps, asset_id)
         }
-        ConfigSubMsg::ForceAssetToNetworkMap {
+        ConfigSubMsg::ForceAssetToNetworkMap(AssetToNetwork {
             this_asset,
             other_network,
             other_asset,
-        } => assets::force_asset_to_network_map(auth, deps, this_asset, other_network, other_asset),
+        }) => {
+            assets::force_asset_to_network_map(auth, deps, this_asset, other_network, other_asset)
+        }
         ConfigSubMsg::ForceNetwork(msg) => network::force_network(auth, deps, msg),
         ConfigSubMsg::ForceInstantiate { user_origin, salt } => {
             executor::force_instantiate(auth, env.contract.address.clone(), deps, user_origin, salt)
