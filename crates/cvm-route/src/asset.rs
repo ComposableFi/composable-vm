@@ -1,10 +1,11 @@
+use crate::{prelude::*, transport::ForeignAssetId};
+use cvm::{AssetId, NetworkId};
 
 pub struct AssetToNetwork {
     pub this_asset: AssetId,
     pub other_network: NetworkId,
     pub other_asset: AssetId,
 }
-
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -51,7 +52,7 @@ pub struct BridgeAsset {
 )]
 pub enum AssetReference {
     Native { denom: String },
-    Cw20 { contract: Addr },
+    Cw20 { contract: cosmwasm_std::Addr },
     // Erc20 { contract: EthAddress },
 }
 

@@ -1,3 +1,6 @@
+use crate::prelude::*;
+use cvm::{exchange::ExchangeId, NetworkId};
+
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[cfg_attr(
     feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
@@ -13,7 +16,7 @@ pub enum ExchangeType {
     },
     #[cfg(feature = "cosmwasm")]
     AstroportRouterContract {
-        address: Addr,
+        address: cosmwasm_std::Addr,
         token_a: String,
         token_b: String,
     },
