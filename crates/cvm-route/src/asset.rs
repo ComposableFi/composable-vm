@@ -1,8 +1,6 @@
 use crate::{prelude::*, transport::ForeignAssetId};
 use cvm::{AssetId, NetworkId};
 
-
-
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "snake_case")]
 #[cfg_attr(

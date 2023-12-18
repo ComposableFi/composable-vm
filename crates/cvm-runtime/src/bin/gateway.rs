@@ -5,9 +5,9 @@ fn main() {
     use cvm_runtime::outpost;
 
     write_api! {
-        instantiate: gateway::InstantiateMsg,
-        query: gateway::QueryMsg,
-        execute: gateway::ExecuteMsg,
+        instantiate: outpost::InstantiateMsg,
+        query: outpost::QueryMsg,
+        execute: outpost::ExecuteMsg,
     }
 }
 

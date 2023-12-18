@@ -70,8 +70,6 @@ use cosmwasm_std::{BankMsg, Coin, CosmosMsg, StdResult, Uint64};
 use cw_storage_plus::{IntKey, Key, KeyDeserialize, Prefixer, PrimaryKey};
 use serde::{Deserialize, Serialize};
 
-
-
 #[derive(Debug, Serialize, Deserialize)]
 pub struct LateCall {
     pub bindings: Bindings,

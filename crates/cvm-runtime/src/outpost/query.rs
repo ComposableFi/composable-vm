@@ -1,6 +1,10 @@
 use crate::{prelude::*, AssetId, ExchangeId, NetworkId};
 
-use cvm_route::{*, asset::{AssetReference, AssetItem}, exchange::ExchangeItem};
+use cvm_route::{
+    asset::{AssetItem, AssetReference},
+    exchange::ExchangeItem,
+    *,
+};
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "snake_case")]

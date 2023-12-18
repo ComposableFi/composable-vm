@@ -1,12 +1,8 @@
-
-use cvm_route::{*, exchange::ExchangeItem, transport::NetworkToNetwork, asset::AssetToNetwork};
 use cosmwasm_std::{BlockInfo, IbcTimeout};
+use cvm_route::{asset::AssetToNetwork, exchange::ExchangeItem, transport::NetworkToNetwork, *};
 use ibc_core_host_types::identifiers::ChannelId;
 
-use crate::{
-    prelude::*,
-    AssetId, NetworkId, transport::ibc::IbcEnabled,
-};
+use crate::{prelude::*, transport::ibc::IbcEnabled, AssetId, NetworkId};
 
 type EthAddress = [u8; 20]; // primitive_types::H160;
 
@@ -53,7 +49,6 @@ pub struct Ics20Features {
     pub ibc_callbacks: Option<Adr08IbcCallbacks>,
     pub pfm: Option<PFM>,
 }
-
 
 /// given prefix you may form accounts from 32 bit addresses or partially identify chains
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -172,5 +167,3 @@ pub enum OutpostId {
     //     admin: EthAddress,
     // },
 }
-
-

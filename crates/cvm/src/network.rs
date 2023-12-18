@@ -4,7 +4,7 @@ use alloc::vec::Vec;
 #[cfg(feature = "cosmwasm")]
 use cosmwasm_std::StdResult;
 #[cfg(feature = "cosmwasm")]
-use cw_storage_plus::{Key, KeyDeserialize, PrimaryKey, Prefixer, IntKey};
+use cw_storage_plus::{IntKey, Key, KeyDeserialize, Prefixer, PrimaryKey};
 
 /// The interpreter origin, composite of a user origin and a salt.
 #[cfg_attr(
@@ -200,7 +200,6 @@ mod tests {
     }
 }
 
-
 #[cfg(feature = "cosmwasm")]
 impl<'a> PrimaryKey<'a> for NetworkId {
     type Prefix = ();
@@ -226,7 +225,6 @@ impl KeyDeserialize for NetworkId {
         <u32 as KeyDeserialize>::from_vec(value)
     }
 }
-
 
 #[cfg(feature = "cosmwasm")]
 impl<'a> PrimaryKey<'a> for InterpreterOrigin {
@@ -320,4 +318,3 @@ impl KeyDeserialize for UserId {
         <Vec<u8> as KeyDeserialize>::from_vec(value)
     }
 }
-

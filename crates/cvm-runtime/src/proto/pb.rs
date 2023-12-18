@@ -6,5 +6,5 @@ pub mod program {
 }
 
 pub mod common {
-    include!(concat!(env!("OUT_DIR"), "/cvm.common.rs"));
+    pub use cvm::proto::*;
 }

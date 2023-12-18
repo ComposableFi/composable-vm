@@ -7,5 +7,5 @@ pub mod exchange;
 mod prelude;
 pub mod transport;
 use cvm::asset::*;
-use cvm::network::*;
 use cvm::exchange::*;
+use cvm::network::*;

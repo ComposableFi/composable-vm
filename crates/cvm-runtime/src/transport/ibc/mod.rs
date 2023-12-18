@@ -1,5 +1,5 @@
 use crate::{
-    outpost::{self, OutpostId, Ics20Features,},
+    outpost::{self, Ics20Features, OutpostId},
     prelude::*,
     shared::XcPacket,
     AssetId, NetworkId,
@@ -145,8 +145,6 @@ pub fn to_cosmwasm_message<T>(
     }
 }
 
-
-
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 pub enum IbcIcs20Sender {
@@ -154,8 +152,6 @@ pub enum IbcIcs20Sender {
     CosmosStargateIbcApplicationsTransferV1MsgTransfer,
     CosmWasmStd1_3,
 }
-
-
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -188,5 +184,3 @@ pub struct IbcChannels {
 pub struct IbcEnabled {
     pub channels: Option<IbcChannels>,
 }
-
-
