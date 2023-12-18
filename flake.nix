@@ -16,7 +16,14 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.rust-overlay.follows = "rust-overlay";
     };
-
+    datamodel-code-generator-src = {
+      url = "github:koxudaxi/datamodel-code-generator";
+      flake = false;
+    };
+    poetry2nix = {
+      url = "github:nix-community/poetry2nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     devour-flake = {
       url = "github:srid/devour-flake";
       flake = false;
@@ -28,6 +35,8 @@
     , self
     , crane
     , devour-flake
+    , datamodel-code-generator-src
+    , poetry2nix
     , ...
     }:
     flake-parts.lib.mkFlake { inherit inputs; } {
@@ -143,35 +152,21 @@
 
 
 
-          # RUST_BACKTRACE=1 cargo run --package cvm-route --bin schema --features=cosmwasm,json-schema,sdk
         in
         let
-          python-packages = ps: with ps; [ numpy cvxpy wheel virtualenv uvicorn fastapi pydantic ];
+          python-packages = ps: with ps; [ numpy cvxpy wheel virtualenv uvicorn fastapi pydantic pip ];
           python = pkgs.python3.withPackages python-packages;
           mantis-blackbox-src = ./mantis/blackbox;
-
+          inherit (poetry2nix.lib.mkPoetry2Nix { inherit pkgs; }) mkPoetryApplication;
           cosmwasm-json-schema-py = pkgs.writeShellApplication {
             name = "cosmwasm-json-schema-py";
             runtimeInputs = with pkgs; [
               rust
-              nodejs
-              nodePackages.npm
+
             ];
             text = ''
-              echo "generating TypeScript types and client definitions from JSON schema of CosmWasm contracts"
-              cd contracts/cosmwasm/cvm-runtime
-              npm install
-              rm --recursive --force dist
-
-              rm --recursive --force schema
-              cargo run --bin order --package cw-mantis-order
-              npm run build-cw-mantis-order
-
-              rm --recursive --force schema
-              cargo run --bin outpost --package xc-core
-              npm run build-xc-core
-              
-              npm publish
+              RUST_BACKTRACE=1 cargo run --package cvm-route --bin schema --features=cosmwasm,json-schema,sdk
+              datamodel-code-generator 
             '';
           };
 
@@ -206,7 +201,11 @@
             };
           formatter = pkgs.alejandra;
           packages = rec {
-            inherit cw-mantis-order cw-cvm-executor cw-cvm-outpost cosmwasm-contracts;
+            inherit cw-mantis-order cw-cvm-executor cw-cvm-outpost cosmwasm-contracts cosmwasm-json-schema-py;
+            datamodel-code-generator =
+              mkPoetryApplication {
+                projectDir = datamodel-code-generator-src;
+              };
             mantis = rust.buildPackage (rust-attrs
               // {
               src = rust-src;
