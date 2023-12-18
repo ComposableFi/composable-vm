@@ -12,7 +12,6 @@ RUN apt-get install -y \
     git \
     libfl-dev \
     clang \
-    cmake \
     coinor-cbc \
     coinor-libcbc-dev
 
