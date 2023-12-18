@@ -1,5 +1,5 @@
 
-use cvm_route::{*, exchange::ExchangeItem, transport::NetworkToNetwork};
+use cvm_route::{*, exchange::ExchangeItem, transport::NetworkToNetwork, asset::AssetToNetwork};
 use cosmwasm_std::{BlockInfo, IbcTimeout};
 use ibc_core_host_types::identifiers::ChannelId;
 

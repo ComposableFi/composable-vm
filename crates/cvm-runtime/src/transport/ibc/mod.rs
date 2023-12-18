@@ -1,5 +1,5 @@
 use crate::{
-    outpost::{self, OutpostId,},
+    outpost::{self, OutpostId, Ics20Features,},
     prelude::*,
     shared::XcPacket,
     AssetId, NetworkId,

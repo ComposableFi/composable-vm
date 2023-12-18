@@ -2,6 +2,7 @@ pub mod config;
 mod query;
 
 pub use config::*;
+use cvm_route::{asset::{AssetReference, AssetItem}, exchange::ExchangeItem};
 pub use query::*;
 
 use crate::{

@@ -1,6 +1,14 @@
 use crate::{prelude::*, transport::ForeignAssetId};
 use cvm::{AssetId, NetworkId};
 
+
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+#[serde(rename_all = "snake_case")]
+#[cfg_attr(
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
+    derive(schemars::JsonSchema)
+)]
 pub struct AssetToNetwork {
     pub this_asset: AssetId,
     pub other_network: NetworkId,
@@ -13,7 +21,6 @@ pub struct AssetToNetwork {
     feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
     derive(schemars::JsonSchema)
 )]
-
 pub struct AssetItem {
     pub asset_id: AssetId,
     /// network id on which this asset id can be used locally
