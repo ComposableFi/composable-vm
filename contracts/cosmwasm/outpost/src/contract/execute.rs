@@ -4,7 +4,7 @@ use crate::{
     error::{ContractError, Result},
     events::make_event,
     exchange, executor, msg,
-    network::{self, load_this},
+    state::network::{self, load_this},
     prelude::*,
     state,
 };

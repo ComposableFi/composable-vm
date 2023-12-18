@@ -2,7 +2,7 @@
 //! Allows to map asset identifiers, contracts, networks, channels, denominations from, to and on
 //! each chain via contract storage, precompiles, host extensions.
 //! handles PFM and IBC wasm hooks
-use crate::{contract::ReplyId, network, prelude::*};
+use crate::{contract::ReplyId, state::network, prelude::*};
 use cosmwasm_std::{
     ensure_eq, wasm_execute, Binary, BlockInfo, Coin, Deps, DepsMut, Env, MessageInfo, Response,
     Storage, SubMsg,

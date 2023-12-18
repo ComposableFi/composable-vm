@@ -12,7 +12,6 @@ pub mod error;
 pub mod events;
 pub mod exchange;
 pub mod executor;
-mod network;
 mod prelude;
 //pub mod router;
 pub mod state;

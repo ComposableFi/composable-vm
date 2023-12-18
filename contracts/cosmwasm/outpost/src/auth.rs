@@ -1,10 +1,9 @@
 //! Module with authorisation checks.
 use crate::{
     error::{ContractError, Result},
-    msg, network, state,
+    msg,  state,
 };
 use cosmwasm_std::{Deps, Env, MessageInfo};
-use cvm_runtime::{outpost::OtherNetworkItem, NetworkId};
 
 /// Authorisation token indicating call is authorised according to policy
 /// `T`.
@@ -45,7 +44,7 @@ impl Auth<policy::WasmHook> {
         info: &MessageInfo,
         network_id: NetworkId,
     ) -> Result<Self> {
-        let this = network::load_this(deps.storage)?;
+        let this = state::network::load_this(deps.storage)?;
         let this_to_other: OtherNetworkItem = state::NETWORK_TO_NETWORK
             .load(deps.storage, (this.network_id, network_id))
             .map_err(|_| {
@@ -59,7 +58,7 @@ impl Auth<policy::WasmHook> {
             .map(|x| match x {
                 msg::Prefix::SS58(prefix) => prefix.to_string(),
                 msg::Prefix::Bech(prefix) => prefix,
-                msg::Prefix::EthEvm => "".to_string(),
+                // msg::Prefix::EthEvm => "".to_string(),
             })
             .unwrap_or_default();
         let sender = state::NETWORK
