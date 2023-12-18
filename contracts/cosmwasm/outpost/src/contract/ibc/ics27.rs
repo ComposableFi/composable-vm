@@ -5,8 +5,7 @@ use crate::{
     error::{ContractError, Result},
     events::make_event,
     msg,
-    network::load_other,
-    state,
+    state::{self, network::load_other},
 };
 use std::str::FromStr;
 
@@ -17,7 +16,7 @@ use cosmwasm_std::{
     IbcPacketTimeoutMsg, IbcReceiveResponse, MessageInfo, Response, SubMsg,
 };
 use cvm_runtime::{
-    proto::Isomorphism, shared::XcPacket, transport::ibc::ChannelInfo, CallOrigin, XCVMAck,
+    proto::Isomorphism, shared::XcPacket,  CallOrigin, XCVMAck,
 };
 use ibc_core_host_types::identifiers::{ChannelId, ConnectionId};
 

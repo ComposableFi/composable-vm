@@ -7,8 +7,9 @@ use cosmwasm_std::{
     ensure_eq, wasm_execute, Binary, BlockInfo, Coin, Deps, DepsMut, Env, MessageInfo, Response,
     Storage, SubMsg,
 };
+use cvm_route::asset::{AssetReference, AssetItem};
 use cvm_runtime::{
-    outpost::{AssetItem, ExecuteMsg, ExecuteProgramMsg, OutpostId},
+    outpost::{ExecuteMsg, ExecuteProgramMsg, OutpostId},
     shared::{XcFunds, XcPacket, XcProgram},
     transport::ibc::{to_cosmwasm_message, IbcIcs20ProgramRoute, XcMessageData},
     AssetId, CallOrigin,
@@ -18,8 +19,6 @@ use crate::{
     auth,
     error::{ContractError, Result},
     events::make_event,
-    network::load_this,
-    state,
 };
 
 // 1. if there is know short cat multi hop path it is used up to point in cannot be used anymore (in
@@ -143,7 +142,7 @@ pub fn ibc_ics_20_transfer_shortcut(
     let this = load_this(storage)?;
     let other = network::load_other(storage, msg.to)?;
     let this_asset_id = msg.msg.assets.0[0].0;
-    let asset: AssetItem = state::assets::ASSETS
+    let asset: AssetItem = crate::state::assets::ASSETS
         .load(storage, this_asset_id)
         .map_err(|_| ContractError::AssetNotFoundById(this_asset_id))?;
     if let Some(ics20) = other.connection.ics_20 {

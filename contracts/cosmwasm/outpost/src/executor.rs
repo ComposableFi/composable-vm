@@ -3,7 +3,6 @@ use crate::{
     contract::ReplyId,
     error::{ContractError, Result},
     events::make_event,
-    network::load_this,
     state,
 };
 use cosmwasm_std::{

@@ -135,7 +135,7 @@ fn transfer_from_user(
         let mut transfers = Vec::with_capacity(program_funds.0.len());
         for (asset_id, program_amount) in program_funds.0.iter() {
             match assets::get_asset_by_id(deps.as_ref(), *asset_id)?.local {
-                msg::AssetReference::Native { denom } => {
+                cvm_route::asset::AssetReference::Native { denom } => {
                     let Coin {
                         amount: host_amount,
                         ..
@@ -147,13 +147,13 @@ fn transfer_from_user(
                         return Err(ContractError::ProgramAmountNotEqualToHostAmount)?;
                     }
                 }
-                msg::AssetReference::Cw20 { contract } => {
+                cvm_route::asset::AssetReference::Cw20 { contract } => {
                     transfers.push(Cw20Contract(contract).call(Cw20ExecuteMsg::TransferFrom {
                         owner: user.to_string(),
                         recipient: self_address.to_string(),
                         amount: (*program_amount).into(),
                     })?)
-                } // msg::AssetReference::Erc20 { .. } => {
+                } // cvm_route::asset::AssetReference::Erc20 { .. } => {
                   //     Err(ContractError::RuntimeUnsupportedOnNetwork)?
                   // }
             }
@@ -316,18 +316,18 @@ fn send_funds_to_interpreter(
         deps.api.debug("cvm::gateway:: sending funds");
 
         let msg = match assets::get_asset_by_id(deps, asset_id)?.local {
-            msg::AssetReference::Native { denom } => BankMsg::Send {
+            cvm_route::asset::AssetReference::Native { denom } => BankMsg::Send {
                 to_address: interpreter_address.clone(),
                 amount: vec![Coin::new(amount.into(), denom)],
             }
             .into(),
-            msg::AssetReference::Cw20 { contract } => {
+            cvm_route::asset::AssetReference::Cw20 { contract } => {
                 let contract = Cw20Contract(contract);
                 contract.call(Cw20ExecuteMsg::Transfer {
                     recipient: interpreter_address.clone(),
                     amount: amount.into(),
                 })?
-            } //msg::AssetReference::Erc20 { .. } => Err(ContractError::RuntimeUnsupportedOnNetwork)?,
+            } //cvm_route::asset::AssetReference::Erc20 { .. } => Err(ContractError::RuntimeUnsupportedOnNetwork)?,
         };
         response = response.add_message(msg);
     }

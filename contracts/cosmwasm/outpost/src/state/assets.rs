@@ -1,5 +1,5 @@
+use cvm_route::asset::{AssetItem, AssetReference};
 use cvm_runtime::{
-    outpost::{config::AssetReference, AssetItem},
     AssetId, NetworkId,
 };
 

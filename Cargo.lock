@@ -824,6 +824,8 @@ version = "0.1.0"
 dependencies = [
  "bech32",
  "cosmwasm-std",
+ "cvm",
+ "cvm-route",
  "cvm-runtime",
  "cw-storage-plus 1.2.0",
  "cw2 1.1.2",
