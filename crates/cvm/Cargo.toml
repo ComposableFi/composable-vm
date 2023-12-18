@@ -15,10 +15,12 @@ scale-info = { workspace = true, features = ["derive"], optional = true }
 schemars = { workspace = true, optional = true }
 serde = { workspace = true, features = ["alloc", "derive"] }
 num = { workspace = true, default-features = false}
+hex ={ workspace = true, default-features = false}
+bech32 = { workspace = true, default-features = false}
 
 [features]
 default = ["std"]
-paroty-scale-codec = [
+parity-scale-codec = [
   "dep:parity-scale-codec",
   "dep:scale-info",
 ]
