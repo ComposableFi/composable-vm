@@ -154,19 +154,23 @@
 
         in
         let
+          datamodel-code-generator =
+            mkPoetryApplication {
+              projectDir = datamodel-code-generator-src;
+              checkGroups = [ ];
+            };
           python-packages = ps: with ps; [ numpy cvxpy wheel virtualenv uvicorn fastapi pydantic pip ];
           python = pkgs.python3.withPackages python-packages;
-          mantis-blackbox-src = ./mantis/blackbox;
           inherit (poetry2nix.lib.mkPoetry2Nix { inherit pkgs; }) mkPoetryApplication;
           cosmwasm-json-schema-py = pkgs.writeShellApplication {
             name = "cosmwasm-json-schema-py";
             runtimeInputs = with pkgs; [
-              rust
-
+              rust.cargo
+              datamodel-code-generator
             ];
             text = ''
               RUST_BACKTRACE=1 cargo run --package cvm-route --bin schema --features=cosmwasm,json-schema,sdk
-              datamodel-code-generator 
+              datamodel-codegen  --input schema/cvm-route.json --input-file-type jsonschema --output mantis/blackbox/cvm_route.py --disable-timestamp --target-python-version "3.10" --use-schema-description --output-model-type "pydantic.BaseModel"
             '';
           };
 
@@ -201,11 +205,8 @@
             };
           formatter = pkgs.alejandra;
           packages = rec {
-            inherit cw-mantis-order cw-cvm-executor cw-cvm-outpost cosmwasm-contracts cosmwasm-json-schema-py;
-            datamodel-code-generator =
-              mkPoetryApplication {
-                projectDir = datamodel-code-generator-src;
-              };
+            inherit cw-mantis-order cw-cvm-executor cw-cvm-outpost cosmwasm-contracts cosmwasm-json-schema-py datamodel-code-generator;
+
             mantis = rust.buildPackage (rust-attrs
               // {
               src = rust-src;
@@ -222,8 +223,8 @@
                 pkgs.cbc
               ];
               text = ''
-                cd ${mantis-blackbox-src}
-                uvicorn main:app --reload
+                cd ${ ./mantis }      
+                uvicorn blackbox.main:app --reload --log-level debug --host "0.0.0.0"
               '';
             };
             ci = pkgs.writeShellApplication {

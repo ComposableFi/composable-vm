@@ -18,7 +18,17 @@ use serde::{Deserialize, Serialize};
 )]
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Hash, Serialize, Deserialize)]
 #[repr(transparent)]
-pub struct AssetId(pub Displayed<u128>);
+pub struct AssetId(
+    #[cfg_attr(
+        feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
+        schemars(with = "String")
+    )]
+    pub Displayed<u128>
+);
+
+
+
+
 
 impl core::fmt::Display for AssetId {
     fn fmt(&self, fmtr: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
