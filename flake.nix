@@ -16,7 +16,14 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.rust-overlay.follows = "rust-overlay";
     };
-
+    datamodel-code-generator-src = {
+      url = "github:koxudaxi/datamodel-code-generator";
+      flake = false;
+    };
+    poetry2nix = {
+      url = "github:nix-community/poetry2nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     devour-flake = {
       url = "github:srid/devour-flake";
       flake = false;
@@ -28,6 +35,8 @@
     , self
     , crane
     , devour-flake
+    , datamodel-code-generator-src
+    , poetry2nix
     , ...
     }:
     flake-parts.lib.mkFlake { inherit inputs; } {
@@ -125,7 +134,7 @@
             ];
             text = ''
               echo "generating TypeScript types and client definitions from JSON schema of CosmWasm contracts"
-              cd code/cvm
+              cd contracts/cosmwasm/cvm-runtime
               npm install
               rm --recursive --force dist
 
@@ -136,15 +145,35 @@
               rm --recursive --force schema
               cargo run --bin outpost --package xc-core
               npm run build-xc-core
-
+              
               npm publish
             '';
           };
+
+
+
         in
         let
-          python-packages = ps: with ps; [ numpy cvxpy wheel virtualenv uvicorn fastapi ];
+          datamodel-code-generator =
+            mkPoetryApplication {
+              projectDir = datamodel-code-generator-src;
+              checkGroups = [ ];
+            };
+          python-packages = ps: with ps; [ numpy cvxpy wheel virtualenv uvicorn fastapi pydantic pip ];
           python = pkgs.python3.withPackages python-packages;
-          mantis-blackbox-src = ./mantis/blackbox;
+          inherit (poetry2nix.lib.mkPoetry2Nix { inherit pkgs; }) mkPoetryApplication;
+          cosmwasm-json-schema-py = pkgs.writeShellApplication {
+            name = "cosmwasm-json-schema-py";
+            runtimeInputs = with pkgs; [
+              rust.cargo
+              datamodel-code-generator
+            ];
+            text = ''
+              RUST_BACKTRACE=1 cargo run --package cvm-route --bin schema --features=cosmwasm,json-schema,sdk
+              datamodel-codegen  --input schema/cvm-route.json --input-file-type jsonschema --output mantis/blackbox/cvm_route.py --disable-timestamp --target-python-version "3.10" --use-schema-description --output-model-type "pydantic.BaseModel"
+            '';
+          };
+
         in
         {
           _module.args.pkgs = import self.inputs.nixpkgs {
@@ -176,7 +205,8 @@
             };
           formatter = pkgs.alejandra;
           packages = rec {
-            inherit cw-mantis-order cw-cvm-executor cw-cvm-outpost cosmwasm-contracts;
+            inherit cw-mantis-order cw-cvm-executor cw-cvm-outpost cosmwasm-contracts cosmwasm-json-schema-py datamodel-code-generator;
+
             mantis = rust.buildPackage (rust-attrs
               // {
               src = rust-src;
@@ -193,8 +223,8 @@
                 pkgs.cbc
               ];
               text = ''
-                cd ${mantis-blackbox-src}
-                uvicorn main:app --reload
+                cd ${ ./mantis }      
+                uvicorn blackbox.main:app --reload --log-level debug --host "0.0.0.0"
               '';
             };
             ci = pkgs.writeShellApplication {

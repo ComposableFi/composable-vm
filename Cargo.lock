@@ -746,6 +746,7 @@ dependencies = [
  "ibc-core-host-types",
  "schemars",
  "serde",
+ "serde_json",
 ]
 
 [[package]]

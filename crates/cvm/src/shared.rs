@@ -90,8 +90,8 @@ impl core::fmt::Debug for XcAddr {
 /// For serde-serialisation to be implemented for the type `T` must implement
 /// `Display` and `FromStr` traits.
 ///
-/// ```
-/// # use cvm_runtime::shared::Displayed;
+/// ```rust
+/// use cvm::shared::Displayed;
 ///
 /// #[derive(serde::Serialize, serde::Deserialize)]
 /// struct Foo {
@@ -121,7 +121,13 @@ impl core::fmt::Debug for XcAddr {
     derive_more::From,
 )]
 #[repr(transparent)]
-pub struct Displayed<T>(pub T);
+pub struct Displayed<T>(
+    #[cfg_attr(
+        feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
+        schemars(with = "String")
+    )]
+    pub T,
+);
 
 impl<T: FromStr> FromStr for Displayed<T> {
     type Err = <T as FromStr>::Err;
