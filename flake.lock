@@ -209,6 +209,22 @@
         "type": "github"
       }
     },
+    "cosmpy-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1701342826,
+        "narHash": "sha256-WVrPM106r8JwPZbGfeMvmJZirv8MSJpniu496hmzxK4=",
+        "owner": "fetchai",
+        "repo": "cosmpy",
+        "rev": "e3b67a91d9bb4be5c7da33fb997db2b29e2e18e6",
+        "type": "github"
+      },
+      "original": {
+        "owner": "fetchai",
+        "repo": "cosmpy",
+        "type": "github"
+      }
+    },
     "cosmwasm-src": {
       "flake": false,
       "locked": {
@@ -1139,6 +1155,7 @@
     "root": {
       "inputs": {
         "cosmos": "cosmos",
+        "cosmpy-src": "cosmpy-src",
         "crane": "crane",
         "datamodel-code-generator-src": "datamodel-code-generator-src",
         "devour-flake": "devour-flake",

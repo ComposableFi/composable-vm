@@ -1,5 +1,7 @@
 from fastapi import FastAPI
 
+from cosmpy import cosm
+
 import blackbox.cvm_route as cvm
 
 app = FastAPI()

@@ -24,6 +24,12 @@
       url = "github:nix-community/poetry2nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    cosmpy-src = {
+      url = "github:fetchai/cosmpy";
+      flake = false;
+    };
+
     devour-flake = {
       url = "github:srid/devour-flake";
       flake = false;
@@ -37,6 +43,7 @@
     devour-flake,
     datamodel-code-generator-src,
     poetry2nix,
+    cosmpy-src,
     ...
   }:
     flake-parts.lib.mkFlake {inherit inputs;} {
@@ -152,9 +159,22 @@
           projectDir = datamodel-code-generator-src;
           checkGroups = [];
         };
-        python-packages = ps: with ps; [numpy cvxpy wheel virtualenv uvicorn fastapi pydantic pip];
+
+        cosmpy = pkgs.python3Packages.buildPythonPackage {
+          name = "cosmpy";
+          version = "0.9.1";
+          format = "pyproject";
+
+          src = cosmpy-src;
+
+          nativeBuildInputs = [
+            pkgs.python3Packages.poetry-core
+          ];
+        };
+  
+        python-packages = ps: with ps; [numpy cvxpy wheel virtualenv uvicorn fastapi pydantic pip cosmpy];
         python = pkgs.python3.withPackages python-packages;
-        inherit (poetry2nix.lib.mkPoetry2Nix {inherit pkgs;}) mkPoetryApplication;
+        inherit (poetry2nix.lib.mkPoetry2Nix {inherit pkgs;}) mkPoetryApplication mkPoetryPackages;
         cosmwasm-json-schema-py = let
         in
           pkgs.writeShellApplication {
@@ -170,10 +190,12 @@
 
               curl "https://app.osmosis.zone/api/pools?page=1&limit=1000&min_liquidity=500000" | jq .pools > schema/osmosis_pools.json
               datamodel-codegen  --input schema/osmosis_pools.py --input-file-type json --output mantis/blackbox/osmosis_pools.json  --disable-timestamp --target-python-version "3.10" --use-schema-description --output-model-type "pydantic.BaseModel"
-              
+
               curl "https://app.astroport.fi/api/trpc/pools.getAll?input=%7B%22json%22%3A%7B%22chainId%22%3A%5B%22neutron-1%22%5D%7D%7D" | jq .result.data > schema/neutron_pools.json
               datamodel-codegen  --input schema/neutron_pools.json --input-file-type json --output mantis/blackbox/neutron_pools.py  --disable-timestamp --target-python-version "3.10" --use-schema-description --output-model-type "pydantic.BaseModel"
-            
+
+              curl "https://api-swagger.skip.money/swagger.yml" > schema/skip_money_swagger.yml
+              datamodel-codegen  --input schema/skip_money_swagger.yml --input-file-type openapi --output mantis/blackbox/skip_money.py  --disable-timestamp --target-python-version "3.10" --use-schema-description --output-model-type "pydantic.BaseModel"
             '';
           };
       in {
