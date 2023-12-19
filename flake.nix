@@ -189,7 +189,7 @@
               datamodel-codegen  --input schema/cvm-route.json --input-file-type jsonschema --output mantis/blackbox/cvm_route.py  --disable-timestamp --target-python-version "3.10" --use-schema-description --output-model-type "pydantic.BaseModel"
 
               curl "https://app.osmosis.zone/api/pools?page=1&limit=1000&min_liquidity=500000" | jq .pools > schema/osmosis_pools.json
-              datamodel-codegen  --input schema/osmosis_pools.py --input-file-type json --output mantis/blackbox/osmosis_pools.json  --disable-timestamp --target-python-version "3.10" --use-schema-description --output-model-type "pydantic.BaseModel"
+              datamodel-codegen  --input schema/osmosis_pools.json --input-file-type json --output mantis/blackbox/osmosis_pools.py  --disable-timestamp --target-python-version "3.10" --use-schema-description --output-model-type "pydantic.BaseModel"
 
               curl "https://app.astroport.fi/api/trpc/pools.getAll?input=%7B%22json%22%3A%7B%22chainId%22%3A%5B%22neutron-1%22%5D%7D%7D" | jq .result.data > schema/neutron_pools.json
               datamodel-codegen  --input schema/neutron_pools.json --input-file-type json --output mantis/blackbox/neutron_pools.py  --disable-timestamp --target-python-version "3.10" --use-schema-description --output-model-type "pydantic.BaseModel"
