@@ -3,6 +3,8 @@ from cosmpy.aerial.contract import LedgerClient
 from cosmpy.aerial.config import NetworkConfig
 from cosmpy.cosmwasm.rest_client import CosmWasmRestClient
 import requests
+import json
+from blackbox.osmosis_pools import osmosis_pools
 
 from cosmpy.protos.cosmwasm.wasm.v1.query_pb2 import (
     QueryAllContractStateRequest,
@@ -23,6 +25,7 @@ from cosmpy.protos.cosmwasm.wasm.v1.query_pb2 import (
     QuerySmartContractStateResponse,
 )
 
+from blackbox.settings import setting
 import blackbox.cvm_runtime.query as cvm
 
 app = FastAPI()
@@ -39,9 +42,10 @@ async def id(id: str):
 # gets all data from all sources
 @app.get("/data/all")
 async def get_data_all():
+    
     cfg = NetworkConfig(
     chain_id="centauri-1",
-    url="grpc+http://composable-grpc.polkachu.com:22290",
+    url="grpc+"+ setting.composable_cosmos_grpc,
     fee_minimum_gas_price=1,
     fee_denomination="ppica",
     staking_denomination="ppica",
@@ -54,5 +58,7 @@ async def get_data_all():
     
     result = {}
     result["cvm"] = response.models[1].value
-    result["pools"] = requests.get("https://app.osmosis.zone/api/pools?page=1&limit=1000&min_liquidity=500000").text
+    
+    result["pools"] = json.load(requests.get(setting.osmosis_pools).content.decode("utf-8"))
+    
     return result

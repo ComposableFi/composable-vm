@@ -24,7 +24,9 @@
       url = "github:nix-community/poetry2nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
+    networks = {
+      url = "github:ComposableFi/networks";
+    };
     cosmpy-src = {
       url = "github:fetchai/cosmpy";
       flake = false;
@@ -172,9 +174,14 @@
           ];
         };
   
-        python-packages = ps: with ps; [numpy cvxpy wheel virtualenv uvicorn fastapi pydantic pip cosmpy jsonschema grpcio ecdsa bech32 requests protobuf python-dateutil pycryptodome googleapis-common-protos];
+        python-packages = ps: with ps; [numpy cvxpy wheel virtualenv uvicorn fastapi pydantic environs pip cosmpy jsonschema grpcio ecdsa bech32 requests protobuf python-dateutil pycryptodome googleapis-common-protos];
         python = pkgs.python3.withPackages python-packages;
         inherit (poetry2nix.lib.mkPoetry2Nix {inherit pkgs;}) mkPoetryApplication mkPoetryPackages;
+        env = {
+          OSMOSIS_POOLS = "https://app.osmosis.zone/api/pools?page=1&limit=1000&min_liquidity=500000";
+          ASTROPORT_POOLS = "https://app.astroport.fi/api/trpc/pools.getAll?input=%7B%22json%22%3A%7B%22chainId%22%3A%5B%22neutron-1%22%5D%7D%7D";
+          SKIP_MONEY= "https://api-swagger.skip.money/";
+        };
         cosmwasm-json-schema-py = let
         in
           pkgs.writeShellApplication {
@@ -188,13 +195,13 @@
 
               datamodel-codegen  --input schema/raw/ --input-file-type jsonschema --output mantis/blackbox/cvm_runtime/  --disable-timestamp --target-python-version "3.10" --use-schema-description --output-model-type "pydantic.BaseModel"
 
-              curl "https://app.osmosis.zone/api/pools?page=1&limit=1000&min_liquidity=500000" | jq .pools > schema/osmosis_pools.json
+              curl "${env.OSMOSIS_POOLS}" | jq .pools > schema/osmosis_pools.json
               datamodel-codegen  --input schema/osmosis_pools.json --input-file-type json --output mantis/blackbox/osmosis_pools.py  --disable-timestamp --target-python-version "3.10" --use-schema-description --output-model-type "pydantic.BaseModel"
 
-              curl "https://app.astroport.fi/api/trpc/pools.getAll?input=%7B%22json%22%3A%7B%22chainId%22%3A%5B%22neutron-1%22%5D%7D%7D" | jq .result.data > schema/neutron_pools.json
+              curl "${env.ASTROPORT_POOLS}" | jq .result.data > schema/neutron_pools.json
               datamodel-codegen  --input schema/neutron_pools.json --input-file-type json --output mantis/blackbox/neutron_pools.py  --disable-timestamp --target-python-version "3.10" --use-schema-description --output-model-type "pydantic.BaseModel"
 
-              curl "https://api-swagger.skip.money/swagger.yml" > schema/skip_money_swagger.yml
+              curl "${env.SKIP_MONEY}swagger.yml" > schema/skip_money_swagger.yml
               datamodel-codegen  --input schema/skip_money_swagger.yml --input-file-type openapi --output mantis/blackbox/skip_money.py  --disable-timestamp --target-python-version "3.10" --use-schema-description --output-model-type "pydantic.BaseModel"
             '';
           };
@@ -246,6 +253,14 @@
             ];
             text = ''
               cd ${./mantis}
+              
+              OSMOSIS_POOLS="${env.OSMOSIS_POOLS}"
+              COMPOSABLE_COSMOS_GRPC="${inputs.networks.lib.pica.mainnet.GRPC}"
+              CVM_ADDRESS="${inputs.networks.lib.pica.mainnet.CVM_OUTPOST_CONTRACT_ADDRESS}"
+
+              export OSMOSIS_POOLS
+              export COMPOSABLE_COSMOS_GRPC
+              export CVM_ADDRESS
               uvicorn blackbox.main:app --reload --log-level trace --host "0.0.0.0"
             '';
           };
