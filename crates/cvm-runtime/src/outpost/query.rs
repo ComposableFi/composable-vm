@@ -110,4 +110,6 @@ pub struct GetConfigResponse {
     pub assets: Vec<AssetItem>,
     pub exchanges: Vec<ExchangeItem>,
     pub networks: Vec<NetworkItem>,
+    pub network_to_networks: Vec<NetworkToNetworkItem>,
+    pub network_assets: Vec<(NetworkAssetId, AssetId)>,
 }
