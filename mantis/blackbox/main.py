@@ -1,33 +1,13 @@
-from fastapi import FastAPI
-from cosmpy.aerial.contract import LedgerClient
-from cosmpy.aerial.config import NetworkConfig
-from cosmpy.cosmwasm.rest_client import CosmWasmRestClient
-import requests
-import json
-from blackbox.osmosis_pools import Model as OsmosisPoolsModel
-
-from cosmpy.protos.cosmwasm.wasm.v1.query_pb2 import (
-    QueryAllContractStateRequest,
-    QueryAllContractStateResponse,
-    QueryCodeRequest,
-    QueryCodeResponse,
-    QueryCodesRequest,
-    QueryCodesResponse,
-    QueryContractHistoryRequest,
-    QueryContractHistoryResponse,
-    QueryContractInfoRequest,
-    QueryContractInfoResponse,
-    QueryContractsByCodeRequest,
-    QueryContractsByCodeResponse,
-    QueryRawContractStateRequest,
-    QueryRawContractStateResponse,
-    QuerySmartContractStateRequest,
-    QuerySmartContractStateResponse,
-)
-
+from blackbox.cvm_runtime.response_to_get_config import GetConfigResponse
+from blackbox.models import AllData, CosmosChains, NeutronPoolsResponse, OsmosisPoolsResponse
+from blackbox.neutron_pools import Model as NeutronPoolsModel
 from blackbox.settings import setting
-import blackbox.cvm_runtime.query as cvm
-from blackbox.models import AllData, OsmosisPoolsResponse
+from cosmpy.aerial.config import NetworkConfig 
+from cosmpy.aerial.contract import LedgerClient, LedgerContract
+from fastapi import FastAPI
+import blackbox.cvm_runtime.query as cvm_query
+import requests
+
 
 app = FastAPI()
 
@@ -35,15 +15,9 @@ app = FastAPI()
 async def status():
     return {"status": "ok"}
 
-@app.get("/assets/{id}")
-async def id(id: str):
-    return {"asset_id": cvm.AssetId(__root__= id)}
-
-
 # gets all data from all sources
-@app.get("/data/all")
-async def get_data_all():
-    
+@app.get("/data/all") 
+async def get_data_all()-> AllData:
     cfg = NetworkConfig(
     chain_id="centauri-1",
     url="grpc+"+ setting.composable_cosmos_grpc,
@@ -51,18 +25,15 @@ async def get_data_all():
     fee_denomination="ppica",
     staking_denomination="ppica",
     )
-    
     client = LedgerClient(cfg)
     cvm_contract = LedgerContract(
         path=None, client = client, address= setting.cvm_address
     )
-    wasm : CosmWasmRestClient = client.wasm
-    response: QueryAllContractStateResponse = wasm.SmartContractState(QuerySmartContractStateRequest(address="centauri1lkh7p89tdhkc52vkza5jus5xmgjqjut6ngucsn88mhmzaqc02h5qu89k2u"), )
-    print(response)
-    
-    # result = {}
-    # result["cvm"] = response.models[1].value
-    
+        
+    skip_api = CosmosChains.parse_raw(requests.get(setting.skip_money+ "v1/info/chains").content)      
+    cvm_registry = GetConfigResponse.parse_obj(cvm_contract.query(cvm_query.QueryMsg5()))
+    cvm_registry = None
     osmosis_pools = OsmosisPoolsResponse.parse_raw(requests.get(setting.osmosis_pools).content)
-    result = AllData(osmosis_pools = osmosis_pools.pools)
+    astroport_pools = NeutronPoolsResponse.parse_raw(requests.get(setting.astroport_pools).content).result.data   
+    result = AllData(osmosis_pools = osmosis_pools.pools, cvm_registry = cvm_registry, astroport_pools = astroport_pools, cosmos_chains=skip_api)
     return result

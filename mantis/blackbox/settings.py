@@ -10,6 +10,6 @@ class Settings(BaseModel):
     astroport_pools: str = env("ASTROPORT_POOLS")
     neutron_rpc : str = None
     osmosis_rpc : str = None
-    skip_money : str = None
+    skip_money : str = env("SKIP_MONEY")
 
 setting = Settings()

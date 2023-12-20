@@ -180,7 +180,8 @@
         env = {
           OSMOSIS_POOLS = "https://app.osmosis.zone/api/pools?page=1&limit=1000&min_liquidity=500000";
           ASTROPORT_POOLS = "https://app.astroport.fi/api/trpc/pools.getAll?input=%7B%22json%22%3A%7B%22chainId%22%3A%5B%22neutron-1%22%5D%7D%7D";
-          SKIP_MONEY= "https://api-swagger.skip.money/";
+          SKIP_MONEY_SWAGGER= "https://api-swagger.skip.money/";
+          SKIP_MONEY= "https://api.skip.money/";
         };
         cosmwasm-json-schema-py = let
         in
@@ -201,7 +202,7 @@
               curl "${env.ASTROPORT_POOLS}" | jq .result.data > schema/neutron_pools.json
               datamodel-codegen  --input schema/neutron_pools.json --input-file-type json --output mantis/blackbox/neutron_pools.py  --disable-timestamp --target-python-version "3.10" --use-schema-description --output-model-type "pydantic.BaseModel"
 
-              curl "${env.SKIP_MONEY}swagger.yml" > schema/skip_money_swagger.yml
+              curl "${env.SKIP_MONEY_SWAGGER}swagger.yml" > schema/skip_money_swagger.yml
               datamodel-codegen  --input schema/skip_money_swagger.yml --input-file-type openapi --output mantis/blackbox/skip_money.py  --disable-timestamp --target-python-version "3.10" --use-schema-description --output-model-type "pydantic.BaseModel"
             '';
           };
@@ -256,9 +257,11 @@
               cd mantis
               OSMOSIS_POOLS="${env.OSMOSIS_POOLS}"
               ASTROPORT_POOLS="${env.ASTROPORT_POOLS}"
+              SKIP_MONEY="${env.SKIP_MONEY}"
               COMPOSABLE_COSMOS_GRPC="${inputs.networks.lib.pica.mainnet.GRPC}"
               CVM_ADDRESS="${inputs.networks.lib.pica.mainnet.CVM_OUTPOST_CONTRACT_ADDRESS}"
 
+              export SKIP_MONEY
               export OSMOSIS_POOLS
               export ASTROPORT_POOLS
               export COMPOSABLE_COSMOS_GRPC
