@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "mantis-blackbox"
+version = "0.0.1"
+description = "Python server which solves problems from provided input and additional data obtained from chains/indexers and outputs single route solution."
+authors = []
+
+[tool.poetry.dependencies]
+python = "^3.8"
+ecdsa = "*"
+bech32 = "*"
+requests = "*"
+protobuf = ">=4.21.6,<5.0dev"
+grpcio = "==1.53.2"
+jsonschema = ">=3.2.0,<5"
+python-dateutil = "*"
+pycryptodome = "^3.18.0"
+googleapis-common-protos = "*"

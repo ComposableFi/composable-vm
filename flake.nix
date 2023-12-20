@@ -172,7 +172,7 @@
           ];
         };
   
-        python-packages = ps: with ps; [numpy cvxpy wheel virtualenv uvicorn fastapi pydantic pip cosmpy];
+        python-packages = ps: with ps; [numpy cvxpy wheel virtualenv uvicorn fastapi pydantic pip cosmpy jsonschema grpcio ecdsa bech32 requests protobuf python-dateutil pycryptodome googleapis-common-protos];
         python = pkgs.python3.withPackages python-packages;
         inherit (poetry2nix.lib.mkPoetry2Nix {inherit pkgs;}) mkPoetryApplication mkPoetryPackages;
         cosmwasm-json-schema-py = let
@@ -246,7 +246,7 @@
             ];
             text = ''
               cd ${./mantis}
-              uvicorn blackbox.main:app --reload --log-level debug --host "0.0.0.0"
+              uvicorn blackbox.main:app --reload --log-level trace --host "0.0.0.0"
             '';
           };
           ci = pkgs.writeShellApplication {
