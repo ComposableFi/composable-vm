@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from cosmpy.aerial.contract import LedgerClient
 from cosmpy.aerial.config import NetworkConfig
 from cosmpy.cosmwasm.rest_client import CosmWasmRestClient
+import requests
 
 from cosmpy.protos.cosmwasm.wasm.v1.query_pb2 import (
     QueryAllContractStateRequest,
@@ -45,8 +46,13 @@ async def get_data_all():
     fee_denomination="ppica",
     staking_denomination="ppica",
     )
+    
     client = LedgerClient(cfg)
     wasm : CosmWasmRestClient = client.wasm
     response: QueryAllContractStateResponse = wasm.AllContractState(QueryAllContractStateRequest(address="centauri1lkh7p89tdhkc52vkza5jus5xmgjqjut6ngucsn88mhmzaqc02h5qu89k2u"))
     print(response)
-    return response.models[1].value
+    
+    result = {}
+    result["cvm"] = response.models[1].value
+    result["pools"] = requests.get("https://app.osmosis.zone/api/pools?page=1&limit=1000&min_liquidity=500000").text
+    return result
