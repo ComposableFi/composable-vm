@@ -7,7 +7,7 @@ class Settings(BaseModel):
     osmosis_pools: str = env("OSMOSIS_POOLS")
     composable_cosmos_grpc : str = env("COMPOSABLE_COSMOS_GRPC")
     cvm_address : str = env("CVM_ADDRESS")
-    astroport_pools: str = None
+    astroport_pools: str = env("ASTROPORT_POOLS")
     neutron_rpc : str = None
     osmosis_rpc : str = None
     skip_money : str = None

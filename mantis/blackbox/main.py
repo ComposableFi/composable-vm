@@ -4,7 +4,7 @@ from cosmpy.aerial.config import NetworkConfig
 from cosmpy.cosmwasm.rest_client import CosmWasmRestClient
 import requests
 import json
-from blackbox.osmosis_pools import osmosis_pools
+from blackbox.osmosis_pools import Model as OsmosisPoolsModel
 
 from cosmpy.protos.cosmwasm.wasm.v1.query_pb2 import (
     QueryAllContractStateRequest,
@@ -27,6 +27,7 @@ from cosmpy.protos.cosmwasm.wasm.v1.query_pb2 import (
 
 from blackbox.settings import setting
 import blackbox.cvm_runtime.query as cvm
+from blackbox.models import AllData, OsmosisPoolsResponse
 
 app = FastAPI()
 
@@ -52,13 +53,16 @@ async def get_data_all():
     )
     
     client = LedgerClient(cfg)
+    cvm_contract = LedgerContract(
+        path=None, client = client, address= setting.cvm_address
+    )
     wasm : CosmWasmRestClient = client.wasm
-    response: QueryAllContractStateResponse = wasm.AllContractState(QueryAllContractStateRequest(address="centauri1lkh7p89tdhkc52vkza5jus5xmgjqjut6ngucsn88mhmzaqc02h5qu89k2u"))
+    response: QueryAllContractStateResponse = wasm.SmartContractState(QuerySmartContractStateRequest(address="centauri1lkh7p89tdhkc52vkza5jus5xmgjqjut6ngucsn88mhmzaqc02h5qu89k2u"), )
     print(response)
     
-    result = {}
-    result["cvm"] = response.models[1].value
+    # result = {}
+    # result["cvm"] = response.models[1].value
     
-    result["pools"] = json.load(requests.get(setting.osmosis_pools).content.decode("utf-8"))
-    
+    osmosis_pools = OsmosisPoolsResponse.parse_raw(requests.get(setting.osmosis_pools).content)
+    result = AllData(osmosis_pools = osmosis_pools.pools)
     return result

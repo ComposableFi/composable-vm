@@ -252,13 +252,15 @@
               pkgs.cbc
             ];
             text = ''
-              cd ${./mantis}
-              
+              # cd $ {./mantis}
+              cd mantis
               OSMOSIS_POOLS="${env.OSMOSIS_POOLS}"
+              ASTROPORT_POOLS="${env.ASTROPORT_POOLS}"
               COMPOSABLE_COSMOS_GRPC="${inputs.networks.lib.pica.mainnet.GRPC}"
               CVM_ADDRESS="${inputs.networks.lib.pica.mainnet.CVM_OUTPOST_CONTRACT_ADDRESS}"
 
               export OSMOSIS_POOLS
+              export ASTROPORT_POOLS
               export COMPOSABLE_COSMOS_GRPC
               export CVM_ADDRESS
               uvicorn blackbox.main:app --reload --log-level trace --host "0.0.0.0"
