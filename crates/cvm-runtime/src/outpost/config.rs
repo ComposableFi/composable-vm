@@ -1,5 +1,5 @@
 use cosmwasm_std::{BlockInfo, IbcTimeout};
-use cvm_route::{asset::AssetToNetwork, exchange::ExchangeItem, transport::NetworkToNetwork, *};
+use cvm_route::{asset::AssetToNetwork, exchange::ExchangeItem, transport::NetworkToNetworkItem, *};
 use ibc_core_host_types::identifiers::ChannelId;
 
 use crate::{prelude::*, transport::ibc::IbcEnabled, AssetId, NetworkId};
@@ -99,7 +99,7 @@ pub enum ConfigSubMsg {
     /// parameters too)
     ForceNetwork(NetworkItem),
     /// Sets network to network connectivity/routing information
-    ForceNetworkToNetwork(NetworkToNetwork),
+    ForceNetworkToNetwork(NetworkToNetworkItem),
 
     /// Permissioned message (gov or admin) to force set asset information.
     ForceAsset(cvm_route::asset::AssetItem),

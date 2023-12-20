@@ -47,7 +47,7 @@ impl Auth<policy::WasmHook> {
         network_id: NetworkId,
     ) -> Result<Self> {
         let this = state::network::load_this(deps.storage)?;
-        let this_to_other: OtherNetworkItem = state::network::NETWORK_TO_NETWORK
+        let this_to_other: NetworkToNetworkItem = state::network::NETWORK_TO_NETWORK
             .load(deps.storage, (this.network_id, network_id))
             .map_err(|_| {
                 ContractError::NoConnectionInformationFromThisToOtherNetwork(
@@ -73,7 +73,7 @@ impl Auth<policy::WasmHook> {
             //msg::GatewayId::Evm { contract, .. } => contract.to_string(),
         };
 
-        let channel = this_to_other
+        let channel = this_to_other.to_other
             .ics_20
             .ok_or(ContractError::ICS20NotFound)?
             .source;

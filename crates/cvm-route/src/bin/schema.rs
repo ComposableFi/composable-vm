@@ -7,7 +7,7 @@ fn main() {
     use cvm_route::transport::*;
     #[derive(Debug, schemars::JsonSchema, serde::Deserialize, serde::Serialize)]
     pub enum CvmRouteSchema {
-        NetworkToNetwork(NetworkToNetwork),
+        NetworkToNetwork(NetworkToNetworkItem),
         AssetToNetwork(AssetItem),
         ExchangeItem(ExchangeItem),
     }

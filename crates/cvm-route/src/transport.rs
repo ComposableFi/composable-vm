@@ -9,12 +9,12 @@ use ibc_app_transfer_types::PrefixedDenom;
     feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
     derive(schemars::JsonSchema)
 )]
-pub struct NetworkToNetwork {
-    pub from: NetworkId,
-    pub to: NetworkId,
+pub struct NetworkToNetworkItem {
+    pub from_network_id: NetworkId,
+    pub to_network_id: NetworkId,
 
-    /// on `to` chain
-    pub other: OtherNetworkItem,
+    /// how to send `to_network_id` chain
+    pub to_other: OtherNetworkItem,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
