@@ -176,17 +176,17 @@ pub fn ibc_ics_20_transfer_shortcut(
 /// starts on this network only
 pub fn get_this_route(
     storage: &dyn Storage,
-    to: cvm_runtime::NetworkId,
+    to_network_id: cvm_runtime::NetworkId,
     this_asset_id: AssetId,
 ) -> Result<IbcIcs20ProgramRoute, ContractError> {
     let this = load_this(storage)?;
-    let other = network::load_other(storage, to)?;
+    let other = network::load_other(storage, to_network_id)?;
     let asset: AssetItem = crate::state::assets::ASSETS
         .load(storage, this_asset_id)
         .map_err(|_| ContractError::AssetNotFoundById(this_asset_id))?;
     let to_asset: AssetId = crate::state::assets::NETWORK_ASSET
-        .load(storage, (this_asset_id, to))
-        .map_err(|_| ContractError::AssetCannotBeTransferredToNetwork(this_asset_id, to))?;
+        .load(storage, (to_network_id, this_asset_id))
+        .map_err(|_| ContractError::AssetCannotBeTransferredToNetwork(this_asset_id, to_network_id))?;
     let gateway_to_send_to = other
         .network
         .outpost

@@ -68,7 +68,7 @@ pub(crate) fn force_asset_to_network_map(
     other_network: NetworkId,
     other_asset: AssetId,
 ) -> Result<BatchResponse> {
-    state::assets::NETWORK_ASSET.save(deps.storage, (this_asset, other_network), &other_asset)?;
+    state::assets::NETWORK_ASSET.save(deps.storage, (other_network, this_asset), &other_asset)?;
     Ok(BatchResponse::new().add_event(
         make_event("assets.forced_asset_to_network_map")
             .add_attribute("this_asset", this_asset.to_string())

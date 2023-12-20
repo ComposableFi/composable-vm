@@ -24,5 +24,6 @@ pub(crate) fn save(storage: &mut dyn Storage, value: &HereItem) -> StdResult<()>
 }
 
 pub(crate) fn get_config(deps: cosmwasm_std::Deps<'_>) -> Result<GetConfigResponse, ContractError> {
-    todo!()
+    let exchanges = exchange::get_all_exchanges(deps)?;
+    panic!()
 }
