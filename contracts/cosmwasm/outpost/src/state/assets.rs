@@ -1,7 +1,5 @@
 use cvm_route::asset::{AssetItem, AssetReference};
-use cvm_runtime::{
-    AssetId, NetworkId,
-};
+use cvm_runtime::{AssetId, NetworkId};
 
 use crate::prelude::*;
 

@@ -90,9 +90,6 @@ pub fn to_cosmwasm_message<T>(
     let memo = serde_json_wasm::to_string(&memo).expect("any memo can be to string");
     api.debug(&format!("cvm::gateway::ibc::ics20::memo {}", &memo));
     match route.ibc_ics_20_sender {
-        IbcIcs20Sender::SubstratePrecompile(_addr) => {
-            unimplemented!("pallet-cosmwasm development was frozen")
-        }
         IbcIcs20Sender::CosmosStargateIbcApplicationsTransferV1MsgTransfer => {
             // really
             // https://github.com/osmosis-labs/osmosis-rust/blob/main/packages/osmosis-std-derive/src/lib.rs
@@ -148,6 +145,7 @@ pub fn to_cosmwasm_message<T>(
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 pub enum IbcIcs20Sender {
+    #[cfg(feature = "substrate")]
     SubstratePrecompile(Addr),
     CosmosStargateIbcApplicationsTransferV1MsgTransfer,
     CosmWasmStd1_3,

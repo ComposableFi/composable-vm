@@ -1,14 +1,14 @@
 pub mod assets;
 pub mod exchange;
-pub mod interpreter;
-pub mod tracking;
 pub mod ics27;
+pub mod interpreter;
 pub mod network;
-use crate::prelude::*;
+pub mod tracking;
+use crate::{error::ContractError, prelude::*};
 
 use cosmwasm_std::{StdResult, Storage};
 use cvm_route::transport::OtherNetworkItem;
-use cvm_runtime::outpost::NetworkItem;
+use cvm_runtime::outpost::{GetConfigResponse, NetworkItem};
 use cw_storage_plus::Item;
 
 use cvm_runtime::NetworkId;
@@ -23,9 +23,6 @@ pub(crate) fn save(storage: &mut dyn Storage, value: &HereItem) -> StdResult<()>
     CONFIG.save(storage, value)
 }
 
-/// the connection description from first network to second
-pub(crate) const NETWORK_TO_NETWORK: Map<(NetworkId, NetworkId), OtherNetworkItem> =
-    Map::new("network_to_network");
-
-/// network state shared among all networks about it
-pub(crate) const NETWORK: Map<NetworkId, NetworkItem> = Map::new("network");
+pub(crate) fn get_config(deps: cosmwasm_std::Deps<'_>) -> Result<GetConfigResponse, ContractError> {
+    todo!()
+}

@@ -3,8 +3,8 @@
 fn main() {
     use ::std::{fs, fs::write};
     use cvm_route::asset::*;
-    use cvm_route::transport::*;
     use cvm_route::exchange::*;
+    use cvm_route::transport::*;
     #[derive(Debug, schemars::JsonSchema, serde::Deserialize, serde::Serialize)]
     pub enum CvmRouteSchema {
         NetworkToNetwork(NetworkToNetwork),
@@ -22,7 +22,7 @@ fn main() {
     }
 
     let path = out_dir.join(concat!("cvm-route", ".json"));
-    
+
     write(&path, serde_json::to_string(&root).unwrap()).unwrap();
 }
 

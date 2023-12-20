@@ -5,7 +5,7 @@ use cosmwasm_std::{
     ensure_eq, to_json_binary, Addr, Binary, Coin, CosmosMsg, DepsMut, Response, SubMsg, WasmMsg,
 };
 use cvm_route::exchange::ExchangeItem;
-use cvm_runtime::{Amount, ExchangeId,  Funds};
+use cvm_runtime::{Amount, ExchangeId, Funds};
 use error::ContractError;
 use osmosis_std::types::osmosis::poolmanager::v1beta1::MsgSwapExactAmountIn;
 

@@ -16,9 +16,7 @@ use cosmwasm_std::{
     IbcPacketTimeoutMsg, IbcReceiveResponse, MessageInfo, Response, SubMsg,
 };
 use cvm_route::transport::ChannelInfo;
-use cvm_runtime::{
-    proto::Isomorphism, shared::XcPacket,  CallOrigin, XCVMAck,
-};
+use cvm_runtime::{proto::Isomorphism, shared::XcPacket, CallOrigin, XCVMAck};
 use ibc_core_host_types::identifiers::{ChannelId, ConnectionId};
 
 use super::make_ibc_failure_event;

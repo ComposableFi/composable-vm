@@ -3,8 +3,11 @@ use crate::{prelude::*, AssetId, ExchangeId, NetworkId};
 use cvm_route::{
     asset::{AssetItem, AssetReference},
     exchange::ExchangeItem,
+    transport::NetworkToNetwork,
     *,
 };
+
+use super::NetworkItem;
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -41,10 +44,16 @@ pub enum QueryMsg {
         returns(GetExchangeResponse)
     )]
     GetExchangeById { exchange_id: ExchangeId },
+    /// Get all information this CVM knows about local and foreign assets/exchanges/networks
+    #[cfg_attr(
+        feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
+        returns(GetConfigResponse)
+    )]
+    GetConfig {},
     // /// So given program, contract returns route which will follow
     // #[cfg_attr(
     //     feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
-    //     returns(GetExchangeResponse)
+    //     returns(GetRouteResponse)
     // )]
     // GetRoute { program: crate::shared::XcProgram },
 }
@@ -88,4 +97,17 @@ pub struct GetIbcIcs20RouteResponse {
 )]
 pub struct GetAssetResponse {
     pub asset: AssetItem,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+#[serde(rename_all = "snake_case")]
+#[cfg_attr(
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
+    derive(schemars::JsonSchema)
+)]
+pub struct GetConfigResponse {
+    pub network_to_networks: Vec<NetworkToNetwork>,
+    pub assets: Vec<AssetItem>,
+    pub exchanges: Vec<ExchangeItem>,
+    pub networks: Vec<NetworkItem>,
 }

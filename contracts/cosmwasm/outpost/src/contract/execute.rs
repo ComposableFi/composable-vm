@@ -3,7 +3,7 @@ use crate::{
     batch::BatchResponse,
     error::{ContractError, Result},
     events::make_event,
-    exchange, executor, msg,
+    executor, msg,
     prelude::*,
     state,
     state::network::{self, load_this},
@@ -83,7 +83,7 @@ fn handle_config_msg(
             network::force_network_to_network(auth, deps, msg)
         }
         ConfigSubMsg::ForceAsset(msg) => assets::force_asset(auth, deps, msg),
-        ConfigSubMsg::ForceExchange(msg) => exchange::force_exchange(auth, deps, msg),
+        ConfigSubMsg::ForceExchange(msg) => crate::state::exchange::force_exchange(auth, deps, msg),
         ConfigSubMsg::ForceRemoveAsset { asset_id } => {
             assets::force_remove_asset(auth, deps, asset_id)
         }
@@ -262,7 +262,7 @@ pub(crate) fn handle_execute_program_privilleged(
     } else {
         // First, add a callback to instantiate an interpreter (which we later get the result
         // and save it)
-        let interpreter_code_id = match config.gateway.expect("expected setup") {
+        let interpreter_code_id = match config.outpost.expect("expected setup") {
             msg::OutpostId::CosmWasm {
                 interpreter_code_id,
                 ..

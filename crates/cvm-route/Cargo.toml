@@ -14,9 +14,11 @@ ibc-core-host-types = { workspace = true, features = [
 ] }
 ibc-app-transfer-types = { workspace = true, default-features = false, features = ["serde"] }
 cosmwasm-schema = {workspace = true, optional = true}
-serde_json ={ version = "*", optional = true}
+
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+serde_json = { version = "*", optional = false}
+
 [features]
-sdk = ["dep:serde_json"]
 default = ["std"]
 cosmwasm = [
     "cvm/cosmwasm",

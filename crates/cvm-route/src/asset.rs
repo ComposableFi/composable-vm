@@ -13,7 +13,7 @@ pub struct AssetToNetwork {
     pub other_asset: AssetId,
 }
 
-impl AssetToNetwork{
+impl AssetToNetwork {
     pub fn new(this_asset: AssetId, other_network: NetworkId, other_asset: AssetId) -> Self {
         Self {
             this_asset,

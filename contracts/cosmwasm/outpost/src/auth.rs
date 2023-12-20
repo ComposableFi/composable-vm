@@ -1,7 +1,7 @@
 //! Module with authorisation checks.
 use crate::{
     error::{ContractError, Result},
-    msg,  state,
+    msg, state,
 };
 use cosmwasm_std::{Deps, Env, MessageInfo};
 use cvm::NetworkId;
@@ -47,7 +47,7 @@ impl Auth<policy::WasmHook> {
         network_id: NetworkId,
     ) -> Result<Self> {
         let this = state::network::load_this(deps.storage)?;
-        let this_to_other: OtherNetworkItem = state::NETWORK_TO_NETWORK
+        let this_to_other: OtherNetworkItem = state::network::NETWORK_TO_NETWORK
             .load(deps.storage, (this.network_id, network_id))
             .map_err(|_| {
                 ContractError::NoConnectionInformationFromThisToOtherNetwork(
@@ -63,9 +63,9 @@ impl Auth<policy::WasmHook> {
                 // msg::Prefix::EthEvm => "".to_string(),
             })
             .unwrap_or_default();
-        let sender = state::NETWORK
+        let sender = crate::state::network::NETWORK
             .load(deps.storage, network_id)?
-            .gateway
+            .outpost
             .ok_or(ContractError::GatewayForNetworkNotFound(network_id))?;
 
         let sender = match sender {

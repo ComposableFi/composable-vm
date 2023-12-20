@@ -1,6 +1,7 @@
-use crate::{assets, error::Result, exchange, msg};
+use crate::{assets, error::Result, msg};
 
 use cosmwasm_std::{to_json_binary, Binary, Deps, Env};
+use cvm_runtime::outpost::GetConfigResponse;
 
 use super::ibc::ics20::get_this_route;
 
@@ -19,8 +20,11 @@ pub fn query(deps: Deps, _env: Env, msg: msg::QueryMsg) -> Result<Binary> {
             for_asset,
         } => get_this_route(deps.storage, to_network, for_asset)
             .and_then(|route| Ok(to_json_binary(&msg::GetIbcIcs20RouteResponse { route })?)),
-        GetExchangeById { exchange_id } => exchange::get_by_id(deps, exchange_id)
+        GetExchangeById { exchange_id } => crate::state::exchange::get_by_id(deps, exchange_id)
             .and_then(|exchange| Ok(to_json_binary(&msg::GetExchangeResponse { exchange })?)),
+        GetConfig {} => {
+            crate::state::get_config(deps).and_then(|config| Ok(to_json_binary(&config)?))
+        }
         // GetRoute { program } => router::get_route(deps, program),
     }
 }

@@ -10,7 +10,6 @@ pub mod batch;
 pub mod contract;
 pub mod error;
 pub mod events;
-pub mod exchange;
 pub mod executor;
 mod prelude;
 //pub mod router;

@@ -2,12 +2,16 @@
 //! Allows to map asset identifiers, contracts, networks, channels, denominations from, to and on
 //! each chain via contract storage, precompiles, host extensions.
 //! handles PFM and IBC wasm hooks
-use crate::{contract::ReplyId, state::network::{self, load_this}, prelude::*};
+use crate::{
+    contract::ReplyId,
+    prelude::*,
+    state::network::{self, load_this},
+};
 use cosmwasm_std::{
     ensure_eq, wasm_execute, Binary, BlockInfo, Coin, Deps, DepsMut, Env, MessageInfo, Response,
     Storage, SubMsg,
 };
-use cvm_route::asset::{AssetReference, AssetItem};
+use cvm_route::asset::{AssetItem, AssetReference};
 use cvm_runtime::{
     outpost::{ExecuteMsg, ExecuteProgramMsg, OutpostId},
     shared::{XcFunds, XcPacket, XcProgram},
@@ -185,10 +189,10 @@ pub fn get_this_route(
         .map_err(|_| ContractError::AssetCannotBeTransferredToNetwork(this_asset_id, to))?;
     let gateway_to_send_to = other
         .network
-        .gateway
+        .outpost
         .ok_or(ContractError::UnsupportedNetwork)?;
 
-    let sender_gateway = match this.gateway.expect("we execute here") {
+    let sender_gateway = match this.outpost.expect("we execute here") {
         OutpostId::CosmWasm { contract, .. } => contract,
         // GatewayId::Evm { .. } => {
         //     Err(ContractError::BadlyConfiguredRouteBecauseThisChainCanSendOnlyFromCosmwasm)?

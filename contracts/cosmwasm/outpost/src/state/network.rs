@@ -5,7 +5,7 @@ use cosmwasm_std::{DepsMut, Storage};
 use cvm_route::transport::*;
 use cvm_runtime::{outpost::NetworkItem, NetworkId};
 
-use crate::state::{self, NETWORK, NETWORK_TO_NETWORK};
+use crate::state::{self};
 
 use crate::error::{ContractError, Result};
 
@@ -59,3 +59,10 @@ pub(crate) fn force_network(
         make_event("network.forced").add_attribute("network_id", msg.network_id.to_string()),
     ))
 }
+
+/// the connection description from first network to second
+pub(crate) const NETWORK_TO_NETWORK: Map<(NetworkId, NetworkId), OtherNetworkItem> =
+    Map::new("network_to_network");
+
+/// network state shared among all networks about it
+pub(crate) const NETWORK: Map<NetworkId, NetworkItem> = Map::new("network");

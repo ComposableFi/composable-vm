@@ -10,7 +10,7 @@ use crate::{
     },
 };
 use cosmwasm_std::{Deps, DepsMut};
-use cvm_route::asset::{AssetReference, AssetItem};
+use cvm_route::asset::{AssetItem, AssetReference};
 use cvm_runtime::{AssetId, NetworkId};
 
 /// Adds a new asset to the registry; errors out if asset already exists.
