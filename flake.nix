@@ -184,9 +184,9 @@
               datamodel-code-generator
             ];
             text = ''
-              RUST_BACKTRACE=1 cargo run --package cvm-route --bin schema --features=cosmwasm,json-schema,sdk
+              RUST_BACKTRACE=1 cargo run --package cvm-runtime --bin outpost --features=cosmwasm,json-schema
 
-              datamodel-codegen  --input schema/cvm-route.json --input-file-type jsonschema --output mantis/blackbox/cvm_route.py  --disable-timestamp --target-python-version "3.10" --use-schema-description --output-model-type "pydantic.BaseModel"
+              datamodel-codegen  --input schema/raw/ --input-file-type jsonschema --output mantis/blackbox/cvm_runtime/  --disable-timestamp --target-python-version "3.10" --use-schema-description --output-model-type "pydantic.BaseModel"
 
               curl "https://app.osmosis.zone/api/pools?page=1&limit=1000&min_liquidity=500000" | jq .pools > schema/osmosis_pools.json
               datamodel-codegen  --input schema/osmosis_pools.json --input-file-type json --output mantis/blackbox/osmosis_pools.py  --disable-timestamp --target-python-version "3.10" --use-schema-description --output-model-type "pydantic.BaseModel"

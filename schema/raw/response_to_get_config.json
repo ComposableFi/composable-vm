@@ -1,0 +1,653 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "GetConfigResponse",
+  "type": "object",
+  "required": [
+    "assets",
+    "exchanges",
+    "network_assets",
+    "network_to_networks",
+    "networks"
+  ],
+  "properties": {
+    "assets": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/AssetItem"
+      }
+    },
+    "exchanges": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ExchangeItem"
+      }
+    },
+    "network_assets": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/NetworkAssetItem"
+      }
+    },
+    "network_to_networks": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/NetworkToNetworkItem"
+      }
+    },
+    "networks": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/NetworkItem"
+      }
+    }
+  },
+  "definitions": {
+    "Addr": {
+      "description": "A human readable address.\n\nIn Cosmos, this is typically bech32 encoded. But for multi-chain smart contracts no assumptions should be made other than being UTF-8 encoded and of reasonable length.\n\nThis type represents a validated address. It can be created in the following ways 1. Use `Addr::unchecked(input)` 2. Use `let checked: Addr = deps.api.addr_validate(input)?` 3. Use `let checked: Addr = deps.api.addr_humanize(canonical_addr)?` 4. Deserialize from JSON. This must only be done from JSON that was validated before such as a contract's state. `Addr` must not be used in messages sent by the user because this would result in unvalidated instances.\n\nThis type is immutable. If you really need to mutate it (Really? Are you sure?), create a mutable copy using `let mut mutable = Addr::to_string()` and operate on that `String` instance.",
+      "type": "string"
+    },
+    "Adr08IbcCallbacks": {
+      "description": "if chain has IBC SDK callbacks enabled",
+      "type": "object"
+    },
+    "AssetId": {
+      "description": "Newtype for XCVM assets ID. Must be unique for each asset and must never change. This ID is an opaque, arbitrary type from the XCVM protocol and no assumption must be made on how it is computed.",
+      "type": "string"
+    },
+    "AssetItem": {
+      "type": "object",
+      "required": [
+        "asset_id",
+        "local",
+        "network_id"
+      ],
+      "properties": {
+        "asset_id": {
+          "$ref": "#/definitions/AssetId"
+        },
+        "bridged": {
+          "description": "if asset was bridged, it would have way to identify bridge/source/channel",
+          "anyOf": [
+            {
+              "$ref": "#/definitions/BridgeAsset"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "local": {
+          "$ref": "#/definitions/AssetReference"
+        },
+        "network_id": {
+          "description": "network id on which this asset id can be used locally",
+          "allOf": [
+            {
+              "$ref": "#/definitions/NetworkId"
+            }
+          ]
+        }
+      }
+    },
+    "AssetReference": {
+      "description": "Definition of an asset native to some chain to operate on. For example for Cosmos CW and EVM chains both CW20 and ERC20 can be actual. So if asset is local or only remote to some chain depends on context of network or connection. this design leads to some dummy matches, but in general unifies code (so that if one have to solve other chain route it can)",
+      "oneOf": [
+        {
+          "type": "object",
+          "required": [
+            "native"
+          ],
+          "properties": {
+            "native": {
+              "type": "object",
+              "required": [
+                "denom"
+              ],
+              "properties": {
+                "denom": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "cw20"
+          ],
+          "properties": {
+            "cw20": {
+              "type": "object",
+              "required": [
+                "contract"
+              ],
+              "properties": {
+                "contract": {
+                  "$ref": "#/definitions/Addr"
+                }
+              }
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "BridgeAsset": {
+      "type": "object",
+      "required": [
+        "location_on_network"
+      ],
+      "properties": {
+        "location_on_network": {
+          "$ref": "#/definitions/ForeignAssetId"
+        }
+      }
+    },
+    "ChannelId": {
+      "type": "string"
+    },
+    "ChannelInfo": {
+      "description": "Information associated with an IBC channel.",
+      "type": "object",
+      "required": [
+        "connection_id",
+        "counterparty_endpoint",
+        "id"
+      ],
+      "properties": {
+        "connection_id": {
+          "description": "the connection this exists on (you can use to query client/consensus info)",
+          "allOf": [
+            {
+              "$ref": "#/definitions/ConnectionId"
+            }
+          ]
+        },
+        "counterparty_endpoint": {
+          "description": "the remote channel/port we connect to",
+          "allOf": [
+            {
+              "$ref": "#/definitions/IbcEndpoint"
+            }
+          ]
+        },
+        "id": {
+          "description": "id of this channel",
+          "allOf": [
+            {
+              "$ref": "#/definitions/ChannelId"
+            }
+          ]
+        }
+      }
+    },
+    "ConnectionId": {
+      "type": "string"
+    },
+    "Displayed_for_uint128": {
+      "description": "A wrapper around a type which is serde-serialised as a string.\n\nFor serde-serialisation to be implemented for the type `T` must implement `Display` and `FromStr` traits.\n\n```rust use cvm::shared::Displayed;\n\n#[derive(serde::Serialize, serde::Deserialize)] struct Foo { value: Displayed<u64> }\n\nlet encoded = serde_json_wasm::to_string(&Foo { value: Displayed(42) }).unwrap(); assert_eq!(r#\"{\"value\":\"42\"}\"#, encoded);\n\nlet decoded = serde_json_wasm::from_str::<Foo>(r#\"{\"value\":\"42\"}\"#).unwrap(); assert_eq!(Displayed(42), decoded.value); ```",
+      "type": "string"
+    },
+    "ExchangeItem": {
+      "description": "allows to execute Exchange instruction",
+      "type": "object",
+      "required": [
+        "exchange",
+        "exchange_id",
+        "network_id"
+      ],
+      "properties": {
+        "exchange": {
+          "$ref": "#/definitions/ExchangeType"
+        },
+        "exchange_id": {
+          "$ref": "#/definitions/Displayed_for_uint128"
+        },
+        "network_id": {
+          "$ref": "#/definitions/NetworkId"
+        }
+      }
+    },
+    "ExchangeType": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": [
+            "astroport_router_contract"
+          ],
+          "properties": {
+            "astroport_router_contract": {
+              "type": "object",
+              "required": [
+                "address",
+                "token_a",
+                "token_b"
+              ],
+              "properties": {
+                "address": {
+                  "$ref": "#/definitions/Addr"
+                },
+                "token_a": {
+                  "type": "string"
+                },
+                "token_b": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "ForeignAssetId": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": [
+            "ibc_ics20"
+          ],
+          "properties": {
+            "ibc_ics20": {
+              "$ref": "#/definitions/PrefixedDenom"
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "IbcChannels": {
+      "type": "object",
+      "properties": {
+        "ics20": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/Ics20Channel"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "IbcEnabled": {
+      "type": "object",
+      "properties": {
+        "channels": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/IbcChannels"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "IbcEndpoint": {
+      "type": "object",
+      "required": [
+        "channel_id",
+        "port_id"
+      ],
+      "properties": {
+        "channel_id": {
+          "type": "string"
+        },
+        "port_id": {
+          "type": "string"
+        }
+      }
+    },
+    "IbcIcs20Sender": {
+      "type": "string",
+      "enum": [
+        "CosmosStargateIbcApplicationsTransferV1MsgTransfer",
+        "CosmWasmStd1_3"
+      ]
+    },
+    "Ics20Channel": {
+      "type": "object",
+      "required": [
+        "sender"
+      ],
+      "properties": {
+        "features": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/Ics20Features"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sender": {
+          "description": "specific per chain way to send IBC ICS 20 assets",
+          "allOf": [
+            {
+              "$ref": "#/definitions/IbcIcs20Sender"
+            }
+          ]
+        }
+      }
+    },
+    "Ics20Features": {
+      "description": "what features/modules/version enabled/installed/configured",
+      "type": "object",
+      "properties": {
+        "ibc_callbacks": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/Adr08IbcCallbacks"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "pfm": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/PFM"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "wasm_hooks": {
+          "description": "if it is exists, chain has that enabled",
+          "anyOf": [
+            {
+              "$ref": "#/definitions/OsmosisIbcHooks"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "IcsPair": {
+      "description": "we need both, so we can unwrap",
+      "type": "object",
+      "required": [
+        "sink",
+        "source"
+      ],
+      "properties": {
+        "sink": {
+          "$ref": "#/definitions/ChannelId"
+        },
+        "source": {
+          "$ref": "#/definitions/ChannelId"
+        }
+      }
+    },
+    "NetworkAssetItem": {
+      "type": "object",
+      "required": [
+        "asset_id",
+        "to_asset_id",
+        "to_network_id"
+      ],
+      "properties": {
+        "asset_id": {
+          "$ref": "#/definitions/AssetId"
+        },
+        "to_asset_id": {
+          "$ref": "#/definitions/AssetId"
+        },
+        "to_network_id": {
+          "$ref": "#/definitions/NetworkId"
+        }
+      }
+    },
+    "NetworkId": {
+      "description": "Newtype for XCVM networks ID. Must be unique for each network and must never change. This ID is an opaque, arbitrary type from the XCVM protocol and no assumption must be made on how it is computed.",
+      "type": "integer",
+      "format": "uint32",
+      "minimum": 0.0
+    },
+    "NetworkItem": {
+      "type": "object",
+      "required": [
+        "network_id"
+      ],
+      "properties": {
+        "accounts": {
+          "description": "Account encoding type",
+          "anyOf": [
+            {
+              "$ref": "#/definitions/Prefix"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "ibc": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/IbcEnabled"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "network_id": {
+          "$ref": "#/definitions/NetworkId"
+        },
+        "outpost": {
+          "description": "something which will be receiver on other side case of network has XCVM deployed as contract, account address is stored here",
+          "anyOf": [
+            {
+              "$ref": "#/definitions/OutpostId"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "NetworkToNetworkItem": {
+      "type": "object",
+      "required": [
+        "from_network_id",
+        "to_network",
+        "to_network_id"
+      ],
+      "properties": {
+        "from_network_id": {
+          "$ref": "#/definitions/NetworkId"
+        },
+        "to_network": {
+          "description": "how to send `to_network_id` chain",
+          "allOf": [
+            {
+              "$ref": "#/definitions/OtherNetworkItem"
+            }
+          ]
+        },
+        "to_network_id": {
+          "$ref": "#/definitions/NetworkId"
+        }
+      }
+    },
+    "OsmosisIbcHooks": {
+      "type": "object",
+      "required": [
+        "callback"
+      ],
+      "properties": {
+        "callback": {
+          "type": "boolean"
+        }
+      }
+    },
+    "OtherNetworkItem": {
+      "type": "object",
+      "required": [
+        "counterparty_timeout"
+      ],
+      "properties": {
+        "counterparty_timeout": {
+          "description": "default timeout to use for direct send",
+          "allOf": [
+            {
+              "$ref": "#/definitions/RelativeTimeout"
+            }
+          ]
+        },
+        "ics27_channel": {
+          "description": "if there is ICS27 IBC channel opened",
+          "anyOf": [
+            {
+              "$ref": "#/definitions/ChannelInfo"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "ics_20": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/IcsPair"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "use_shortcut": {
+          "description": "if true, than will use shortcuts for example, if program transfer only program will just use native transfer or if connection supports exchange, it will use exchange default is false if target chain has CVM gateway",
+          "type": [
+            "boolean",
+            "null"
+          ]
+        }
+      }
+    },
+    "OutpostId": {
+      "description": "when message is sent to other side, we should identify receiver of some kind",
+      "oneOf": [
+        {
+          "type": "object",
+          "required": [
+            "cosm_wasm"
+          ],
+          "properties": {
+            "cosm_wasm": {
+              "type": "object",
+              "required": [
+                "admin",
+                "contract",
+                "interpreter_code_id"
+              ],
+              "properties": {
+                "admin": {
+                  "description": "admin of everything",
+                  "allOf": [
+                    {
+                      "$ref": "#/definitions/Addr"
+                    }
+                  ]
+                },
+                "contract": {
+                  "$ref": "#/definitions/Addr"
+                },
+                "interpreter_code_id": {
+                  "description": "CVM interpreter contract code",
+                  "type": "integer",
+                  "format": "uint64",
+                  "minimum": 0.0
+                }
+              }
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "PFM": {
+      "type": "object"
+    },
+    "Prefix": {
+      "description": "given prefix you may form accounts from 32 bit addresses or partially identify chains",
+      "oneOf": [
+        {
+          "type": "object",
+          "required": [
+            "s_s58"
+          ],
+          "properties": {
+            "s_s58": {
+              "type": "integer",
+              "format": "uint16",
+              "minimum": 0.0
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "bech"
+          ],
+          "properties": {
+            "bech": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "PrefixedDenom": {
+      "description": "A type that contains the base denomination for ICS20 and the source tracing information path.",
+      "type": "object",
+      "required": [
+        "base_denom",
+        "trace_path"
+      ],
+      "properties": {
+        "base_denom": {
+          "description": "Base denomination of the relayed fungible token.",
+          "type": "string"
+        },
+        "trace_path": {
+          "description": "A series of `{port-id}/{channel-id}`s for tracing the source of the token.",
+          "type": "string"
+        }
+      }
+    },
+    "RelativeTimeout": {
+      "description": "relative timeout to CW/IBC-rs time. very small, assumed messages are arriving fast enough, like less than hours",
+      "oneOf": [
+        {
+          "description": "Timeout is relative to the current block timestamp of counter party",
+          "type": "object",
+          "required": [
+            "seconds"
+          ],
+          "properties": {
+            "seconds": {
+              "type": "integer",
+              "format": "uint16",
+              "minimum": 0.0
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    }
+  }
+}

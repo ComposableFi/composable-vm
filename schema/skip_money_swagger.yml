@@ -1,0 +1,2459 @@
+
+
+openapi: 3.0.0
+info:
+  title: Skip API
+  description: Simple APIs to build IBC-enabled products that do more with fewer transactions. For devs with all levels of IBC experience.
+  version: 0.1.0
+servers:
+  - url: https://api.skip.money
+tags:
+  - name: "Info"
+    description: "APIs that return general information useful for a variety of operations"
+  - name: "Fungible"
+    description: "APIs swaps, transfers, and contract calls within the IBC/Cosmos Ecosystem, EVM ecosystem, and between them, including automatic DEX aggregation, bridge routing, and denom recommendation. Typical usage is /route to generate routing info and quotes, followed by /msgs to generate msgs for signing"
+  - name: "Transaction"
+    description: "APIs for broadcasting transactions within the IBC/Cosmos ecosystem, EVM ecosystem, and between them, and tracking their status and any subsequent transfers if routing assets cross chain. Typical usage is /submit to broadcast a transaction, followed by /status to query its status"
+paths:
+  /v1/info/chains:
+    get:
+      operationId: getChains
+      tags:
+        - "Info"
+      description: 
+        Get all supported chains along with additional data useful for building applications + frontends 
+        that interface with them (e.g. logo URI, IBC capabilities, fee assets, bech32 prefix, etc...)
+      parameters:
+        - in: query
+          name: include_evm
+          required: false
+          schema:
+            type: boolean
+          description: Whether to include EVM chains in the response
+          example:
+            false
+        - in: query
+          name: client_id
+          required: false
+          schema:
+            type: string
+          description: Recognizable identifier for callers (e.g. skip-api-docs, best-wallet, etc...)
+          example:
+            skip-api-docs
+      responses:
+        "200":
+          description: Returns a list of supported chains with additional data 
+          content:
+            application/json:
+              example:
+                chains:
+                  - chain_name: cosmoshub
+                    chain_id: cosmoshub-4
+                    pfm_enabled: true
+                    modules:
+                      github.com/cosmos/ibc-go:
+                        path: github.com/cosmos/ibc-go/v4
+                        version: v4.4.2
+                        sum: h1:pg4_yy0/bw6_hvmha3r_zbc53k_yza_cwu_b07_ot4g_lyzc_bvo=
+                    bech32_prefix: cosmos
+                    logo_uri: https://raw.githubusercontent.com/cosmos/chain-registry/master/cosmoshub/images/atom.png
+                    fee_assets:
+                      - denom: uatom
+                        gas_price:
+                          low: "0.01"
+                          average: "0.025"
+                          high: "0.03"
+                    chain_type: cosmos
+                  - chain_name: osmosis
+                    chain_id: osmosis-1
+                    pfm_enabled: true
+                    modules:
+                      github.com/cosmos/ibc-go:
+                        path: github.com/cosmos/ibc-go/v4
+                        version: v4.4.2
+                        sum: h1:PG4Yy0/bw6Hvmha3RZbc53KYzaCwuB07Ot4GLyzcBvo=
+                      github.com/osmosis-labs/osmosis/x/ibc-hooks:
+                        path: github.com/cosmos/ibc-go/v4
+                        version: v0.0.6
+                        sum: h1:PjfLL5rwwm44CeLnNQssrFgmj4BdeIS5DriKYhGz7IM=
+                    bech32_prefix: osmo
+                    logo_uri: https://raw.githubusercontent.com/cosmos/chain-registry/master/osmosis/images/osmosis-chain-logo.png
+                    fee_assets:
+                      - denom: uosmo
+                        gas_price:
+                          low: "0.0025"
+                          average: "0.025"
+                          high: "0.04"
+                    chain_type: cosmos
+              schema:
+                type: object
+                properties:
+                  chains:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Chain"
+                    description: Array of supported chain-ids
+  /v1/fungible/venues:
+    get:
+      operationId: getVenues
+      tags:
+        - "Fungible"
+      description:
+        Get supported swap venues.
+      responses:
+        "200":
+          description: A list of supported swap venues
+          content:
+            application/json:
+              example:
+                venues:
+                  - name: neutron-astroport
+                    chain_id: neutron-1
+                    client_id: skip-api-docs
+                  - name: osmosis
+                    chain_id: osmosis-1
+                    client_id: skip-api-docs
+              schema:
+                type: object
+                properties:
+                  venues:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/SwapVenue"
+                    description: Array of supported swap venues
+
+  /v1/fungible/assets:
+    get:
+      operationId: getAssets
+      tags:
+        - "Fungible"
+      description:
+        Get supported assets. Optionally limit to assets on a given chain and/or native assets.
+      parameters:
+        - in: query
+          name: chain_id
+          required: false
+          schema:
+            type: string
+          description: Chain-id to get supported assets for
+          examples:
+            osmosis:
+              value: osmosis-1
+              summary: Get assets on osmosis-1
+            all:
+              value:
+              summary: Get assets across all chains
+        - in: query
+          name: native_only
+          required: false
+          schema:
+            type: boolean
+          description: Whether to restrict assets to those native to their chain
+          examples:
+            true:
+              value: true
+              summary: Get only native assets
+            false:
+              value: false
+              summary: Get all assets
+        - in: query
+          name: include_no_metadata_assets
+          required: false
+          schema:
+            type: boolean
+          description: Whether to include assets without metadata (symbol, name, logo_uri, etc.)
+          examples:
+            false:
+              value: false
+              summary: Exclude assets without metadata
+            true:
+              value: true
+              summary: Include assets without metadata
+        - in: query
+          name: include_cw20_assets
+          required: false
+          schema:
+            type: boolean
+          description: Whether to include CW20 tokens
+          examples:
+            false:
+              value: false
+              summary: Exclude CW20 tokens
+            true:
+              value: true
+              summary: Include CW20 tokens
+        - in: query
+          name: include_evm_assets
+          required: false
+          schema:
+            type: boolean
+          description: Whether to include EVM tokens
+          examples:
+            false:
+              value: false
+              summary: Exclude EVM tokens
+            true:
+              value: true
+              summary: Include EVM tokens
+        - in: query
+          name: client_id
+          required: false
+          schema:
+            type: string
+          description: Recognizable identifier for callers (e.g. skip-api-docs, best-wallet, etc...)
+          examples:
+            skip-api-docs:
+              value: skip-api-docs
+              summary: Identifier for this docs page
+
+      responses:
+        "200":
+          description: A map of chain_id to assets
+          content:
+            application/json:
+              example:
+                chain_to_assets_map:
+                  osmosis-1:
+                    assets:
+                    - denom: uosmo
+                      chain_id: osmosis-1
+                      origin_denom: uosmo
+                      origin_chain_id: osmosis-1
+                      trace: ""
+                      symbol: OSMO
+                      name: OSMO
+                      logo_uri: https://raw.githubusercontent.com/cosmostation/chainlist/main/chain/osmosis/asset/osmo.png
+                      decimals: 6
+                      coingecko_id: osmosis
+                      description: The native token of Osmosis
+                      recommended_symbol: OSMO
+              schema:
+                type: object
+                properties:
+                  chain_to_assets_map:
+                    type: object
+                    description: Map of chain-ids to array of assets supported on the chain
+                    additionalProperties:
+                      type: object
+                      properties:
+                        assets:
+                          type: array
+                          items:
+                            $ref: "#/components/schemas/Asset"
+        "400":
+          description: The request was invalid, e.g. field is invalid
+          content:
+            application/json:
+              example:
+                code: 3
+                message: Invalid chain_id
+                details: []
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              example:
+                code: 2
+                message: internal server error
+                details: []
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /v1/fungible/assets_from_source:
+    post:
+      operationId: getAssetsFromSource
+      tags:
+        - "Fungible"
+      description:
+        Get assets that can be reached from a source via transfers under different conditions (e.g. single vs multiple txs)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              source_asset_denom: uusdc
+              source_asset_chain_id: axelar-dojo-1
+              allow_multi_tx: false
+              client_id: skip-api-docs
+            schema:
+              type: object
+              required:
+                - source_asset_denom
+                - source_asset_chain_id
+              properties:
+                source_asset_denom:
+                  type: string
+                  description: Denom of the source asset
+                source_asset_chain_id:
+                  type: string
+                  description: Chain-id of the source asset
+                allow_multi_tx:
+                  type: boolean
+                  description: Whether to include recommendations requiring multiple transactions to reach the destination
+                  default: false
+                include_cw20_assets:
+                  type: boolean
+                  description: Whether to include CW20 tokens
+                  default: false
+                client_id:
+                  type: string
+                  description: Recognizable identifier for callers (e.g. skip-api-docs, best-wallet, etc...)
+      responses:
+        "200":
+          description: Assets reachable from the specified source without swapping
+          content:
+            application/json:
+              example:
+                dest_assets:
+                  agoric-3:
+                    assets:
+                    - denom: ibc/295548A78785A1007F232DE286149A6FF512F180AF5657780FC89C009E2C348F
+                      chain_id: agoric-3
+                      origin_denom: uusdc
+                      origin_chain_id: axelar-dojo-1
+                      trace: transfer/channel-9
+                  comdex-1:
+                    assets:
+                    - denom: ibc/E1616E7C19EA474C565737709A628D6F8A23FF9D3E9A7A6871306CF5E0A5341E
+                      chain_id: comdex-1
+                      origin_denom: uusdc
+                      origin_chain_id: axelar-dojo-1
+                      trace: transfer/channel-34
+                      symbol: axlUSDC
+                      name: axlUSDC
+                      logo_uri: https://raw.githubusercontent.com/cosmostation/chainlist/main/chain/ethereum/asset/usdc.png
+                      decimals: 6
+                      recommended_symbol: USDC.axl
+              schema:
+                type: object
+                properties:
+                  dest_assets:
+                    type: object
+                    description: Array of assets that are reachable from the specified source asset
+                    additionalProperties:
+                      type: object
+                      properties:
+                        assets:
+                          type: array
+                          items:
+                            $ref: "#/components/schemas/Asset"
+        "400":
+          description: The request was invalid, e.g. field is invalid
+          content:
+            application/json:
+              example:
+                code: 3
+                message: Invalid source_asset_denom
+                details: []
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              example:
+                code: 2
+                message: internal server error
+                details: []
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /v2/fungible/route:
+    post:
+      operationId: getRouteV2
+      tags:
+        - "Fungible"
+      description:
+        This supports cross-chain actions among EVM chains, Cosmos chains, and between them. Returns the sequence of transfers and/or swaps to reach the given destination asset from the given source asset, along with estimated amount out. Commonly called before /msgs to generate route info and quote.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            examples:
+              swap_usdc_to_atom:
+                value:
+                  amount_in: "1000000"
+                  source_asset_denom: uusdc
+                  source_asset_chain_id: axelar-dojo-1
+                  dest_asset_denom: uatom
+                  dest_asset_chain_id: cosmoshub-4
+                  cumulative_affiliate_fee_bps: "0"
+                  client_id: skip-api-docs
+                summary: "Swap 1 USDC on Axelar to ATOM on the Hub"
+              transfer_statom_from_osomosis_to_hub:
+                value:
+                  amount_in: "1000000"
+                  source_asset_denom: ibc/C140AFD542AE77BD7DCC83F13FDD8C5E5BB8C4929785E6EC2F4C636F98F17901
+                  source_asset_chain_id: osmosis-1
+                  dest_asset_denom: ibc/B05539B66B72E2739B986B86391E5D08F12B8D5D2C2A7F8F8CF9ADF674DFA231
+                  dest_asset_chain_id: cosmoshub-4
+                  cumulative_affiliate_fee_bps: "0"
+                  client_id: skip-api-docs
+                summary: "Transfer 1 stATOM from Osmosis to the Hub"
+              transfer_matic_to_osmosis:
+                value:
+                  amount_in: "3000000000000000000"
+                  source_asset_denom: "matic"
+                  source_asset_chain_id: "137"
+                  dest_asset_denom: "ibc/AB589511ED0DD5FA56171A39978AFBF1371DB986EC1C3526CE138A16377E39BB"
+                  dest_asset_chain_id: osmosis-1
+                  cumulative_affiliate_fee_bps: "0"
+                  client_id: skip-api-docs
+                summary: "Transfer 3 MATIC from Polygon to Osmosis"
+            schema:
+              type: object
+              properties:
+                amount_in:
+                  type: string
+                  description: Amount of source asset to be transferred or swapped. Only one of amount_in and amount_out should be provided.
+                amount_out:
+                  type: string
+                  description: Amount of destination asset to receive. Only one of amount_in and amount_out should be provided. If amount_out is provided for a swap, the route will be computed to give exactly amount_out.
+                source_asset_denom:
+                  type: string
+                  description: Denom of the source asset
+                source_asset_chain_id:
+                  type: string
+                  description: Chain-id of the source asset
+                dest_asset_denom:
+                  type: string
+                  description: Denom of the destination asset
+                dest_asset_chain_id:
+                  type: string
+                  description: Chain-id of the destination asset
+                cumulative_affiliate_fee_bps:
+                  type: string
+                  nullable: true
+                  description: Cumulative fee to be distributed to affiliates, in bps (optional)
+                swap_venue:
+                  description: Swap venue to use, if provided (optional)
+                  allOf:
+                    - $ref: "#/components/schemas/SwapVenue"
+                client_id:
+                  type: string
+                  description: Recognizable identifier for callers (e.g. skip-api-docs, best-wallet, etc...)
+
+      responses:
+        "200":
+          description: Swap and transfer route summary & quote
+          content:
+            application/json:
+              example:
+                amount_in: "1000000000000000000"
+                amount_out: "721110"
+                source_asset_denom: matic
+                source_asset_chain_id: "137"
+                dest_asset_denom: uosmo
+                dest_asset_chain_id: osmosis-1
+                operations:
+                  - axelar_transfer:
+                      from_chain: Polygon
+                      from_chain_id: "137"
+                      to_chain: osmosis
+                      to_chain_id: osmosis-1
+                      asset: wmatic-wei
+                      should_unwrap: false
+                      fee_amount: "335901477747718412"
+                      usd_fee_amount: "0.27"
+                      fee_asset:
+                        denom: matic
+                        chain_id: "137"
+                        origin_denom: ""
+                        origin_chain_id: ""
+                        trace: ""
+                        is_cw20: false
+                        is_evm: true
+                        symbol: "MATIC"
+                        name: "matic"
+                        logo_uri: "https://raw.githubusercontent.com/cosmostation/chainlist/main/chain/polygon/asset/wmatic.png"
+                        decimals: 18
+                        token_contract: ""
+                      is_testnet: false
+                  - swap:
+                      swap_in:
+                        swap_venue:
+                          name: osmosis-poolmanager
+                          chain_id: osmosis-1
+                        swap_operations:
+                        - pool: "789"
+                          denom_in: ibc/AB589511ED0DD5FA56171A39978AFBF1371DB986EC1C3526CE138A16377E39BB
+                          denom_out: uosmo
+                        swap_amount_in: "664098522252281588"
+                        price_impact_percent: "1.05"
+                      estimated_affiliate_fee: 0uosmo
+                chain_ids:
+                  - axelar-dojo-1
+                  - osmosis-1
+                  - cosmoshub-4
+                does_swap: true
+                estimated_amount_out: "721110"
+                swap_venue:
+                  name: osmosis-poolmanager
+                  chain_id: osmosis-1
+                txs_required: 1
+                usd_amount_in: "2000.01"
+                usd_amount_out: "2005.23"
+                swap_price_impact_percent: "1.05"
+              schema:
+                $ref: "#/components/schemas/RouteResponse"
+        "400":
+          description:
+            The request was invalid, e.g. an invalid amount was passed.
+          content:
+            application/json:
+              example:
+                code: 3
+                message: "invalid amount_in"
+                details: []
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+            description: Internal server error
+            content:
+              application/json:
+                example:
+                  code: 2
+                  message: internal server error
+                  details: []
+                schema:
+                  $ref: "#/components/schemas/Error"
+  
+  /v2/fungible/msgs:
+    post:
+      operationId: getMsgsV2
+      tags:
+        - "Fungible"
+      description:
+        This supports cross-chain actions among EVM chains, Cosmos chains, and between them. Returns minimal number of messages required to execute a multi-chain swap or transfer. Input consists of the output of route with additional information required for message construction (e.g. destination addresses for each chain)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            examples:
+              swap_usdc_to_atom:
+                value:
+                  source_asset_denom: uusdc
+                  source_asset_chain_id: axelar-dojo-1
+                  dest_asset_denom: uatom
+                  dest_asset_chain_id: cosmoshub-4
+                  amount_in: "1000000"
+                  amount_out: "107033"
+                  address_list:
+                    - "axelar1x8ad0zyw52mvndh7hlnafrg0gt284ga7u3rez0"
+                    - "osmo1x8ad0zyw52mvndh7hlnafrg0gt284ga7syxplu"
+                    - "cosmos1x8ad0zyw52mvndh7hlnafrg0gt284ga7cl43fw"
+                  operations:
+                    - transfer:
+                        port: transfer
+                        channel: channel-3
+                        chain_id: axelar-dojo-1
+                        pfm_enabled: false
+                        dest_denom: ibc/D189335C6E4A68B513C10AB227BF1C1D38C746766278BA3EEB4FB14124F1D858
+                    - swap:
+                        swap_in:
+                          swap_venue:
+                            name: osmosis-poolmanager
+                            chain_id: osmosis-1
+                          swap_operations:
+                          - pool: "678"
+                            denom_in: ibc/D189335C6E4A68B513C10AB227BF1C1D38C746766278BA3EEB4FB14124F1D858
+                            denom_out: uosmo
+                          - pool: "1"
+                            denom_in: uosmo
+                            denom_out: ibc/27394FB092D2ECCD56123C74F36E4C1F926001CEADA9CA97EA622B25F41E5EB2
+                          swap_amount_in: "1000000"
+                        estimated_affiliate_fee: 0ibc/27394FB092D2ECCD56123C74F36E4C1F926001CEADA9CA97EA622B25F41E5EB2
+                    - transfer:
+                        port: transfer
+                        channel: channel-0
+                        chain_id: osmosis-1
+                        pfm_enabled: true
+                        dest_denom: uatom
+                  slippage_tolerance_percent: "1"
+                  affiliates: []
+                  client_id: skip-api-docs
+                summary: "Swap 1 USDC on Axelar to ATOM on the Hub"
+              transfer_matic_to_osmosis:
+                value:
+                  source_asset_denom: matic 
+                  source_asset_chain_id: "137" 
+                  dest_asset_denom: ibc/AB589511ED0DD5FA56171A39978AFBF1371DB986EC1C3526CE138A16377E39BB
+                  dest_asset_chain_id: osmosis-1
+                  amount_in: "3000000000000000000"
+                  amount_out: "1509000000000000000" 
+                  operations:
+                  - axelar_transfer:
+                      from_chain: "Polygon"
+                      from_chain_id: "137"
+                      to_chain: "osmosis"
+                      to_chain_id: "osmosis-1"
+                      asset: "matic" 
+                      should_unwrap: false
+                      is_testnet: false
+                  affiliates: []
+                  address_list:
+                  - "0x00b40F326Ab76189170cA2FfeCfa4B34b43949dA"
+                  - "osmo1tsmt8ezjrp7w0mls5p4rv8gcaz4yx5lzqyww8m"
+                summary: "Transfer 3 MATIC from Polygon to Osmosis"
+            schema:
+              type: object
+              properties:
+                source_asset_denom:
+                  type: string
+                  description: Denom of the source asset
+                source_asset_chain_id:
+                  type: string
+                  description: Chain-id of the source asset
+                dest_asset_denom:
+                  type: string
+                  description: Denom of the destination asset
+                dest_asset_chain_id:
+                  type: string
+                  description: Chain-id of the destination asset
+                amount_in:
+                  type: string
+                  description: Amount of source asset to be transferred or swapped
+                amount_out:
+                    type: string
+                    description: Amount of destination asset out
+                address_list:
+                  type: array
+                  description: Array of receipient and/or sender address for each chain in the path, corresponding to the chain_ids array returned from a route request
+                  items:
+                    type: string
+                operations:
+                  type: array
+                  description: Array of operations required to perform the transfer or swap
+                  items:
+                    $ref: "#/components/schemas/Operation"
+                slippage_tolerance_percent:
+                  type: string
+                  description: Percent tolerance for slippage on swap, if a swap is performed
+                timeout_seconds:
+                  type: string
+                  description: Number of seconds for the IBC transfer timeout, defaults to 5 minutes
+                post_route_handler:
+                  $ref: "#/components/schemas/PostHandler"
+                affiliates:
+                  type: array
+                  description: Array of affiliates to send affiliate fees
+                  items:
+                    $ref: "#/components/schemas/Affiliate"
+      responses:
+        "200":
+          description:
+            The messages required to execute the swap, as JSON.
+          content:
+            application/json:
+              example:
+                msgs:
+                  - multi_chain_msg:
+                      chain_id: axelar-dojo-1
+                      path:
+                      - axelar-dojo-1
+                      msg: '{"source_port":"transfer","source_channel":"channel-3","token":{"denom":"uusdc","amount":"1000000"},"sender":"axelar1x8ad0zyw52mvndh7hlnafrg0gt284ga7u3rez0","receiver":"osmo1qpvu80yfd0jnnh3ytn8964382typrqq0ejmqaasa3j233su8apasfqtler","timeout_height":{},"timeout_timestamp":1688663426558649000,"memo":"{\"wasm\":{\"contract\":\"osmo1qpvu80yfd0jnnh3ytn8964382typrqq0ejmqaasa3j233su8apasfqtler\",\"msg\":{\"swap_with_action\":{\"swap_msg\":{\"token_out_min_amount\":\"105963\",\"path\":[{\"pool_id\":\"678\",\"token_out_denom\":\"uosmo\"},{\"pool_id\":\"1\",\"token_out_denom\":\"ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2\"}]},\"after_swap_action\":{\"ibc_transfer\":{\"receiver\":\"cosmos1x8ad0zyw52mvndh7hlnafrg0gt284ga7cl43fw\",\"channel\":\"channel-0\"}},\"local_fallback_address\":\"osmo1x8ad0zyw52mvndh7hlnafrg0gt284ga7syxplu\"}}}}"}'
+                      msg_type_url: "/ibc.applications.transfer.v1.MsgTransfer"
+              schema:
+                type: object
+                properties:
+                  msgs: 
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Msg"
+        "400":
+          description:
+            The request was invalid, e.g. an invalid amount was passed.
+          content:
+            application/json:
+              example:
+                code: 3
+                message: "invalid amount_in"
+                details: []
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+           description: Internal server error
+           content:
+             application/json:
+               example:
+                 code: 2
+                 message: internal server error
+                 details: []
+               schema:
+                 $ref: "#/components/schemas/Error"
+
+  /v2/fungible/msgs_direct:
+    post:
+      operationId: getMsgsDirectV2
+      tags:
+        - "Fungible"
+      description:
+        This supports cross-chain actions among EVM chains, Cosmos chains, and between them. Returns minimal number of messages required to execute a multi-chain swap or transfer. This is a convenience endpoint that combines /route and /msgs into a single call.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            examples:
+              swap_usdc_to_atom:
+                value:
+                  source_asset_denom: uusdc
+                  source_asset_chain_id: axelar-dojo-1
+                  dest_asset_denom: uatom
+                  dest_asset_chain_id: cosmoshub-4
+                  amount_in: "1000000"
+                  chain_ids_to_addresses:
+                    axelar-dojo-1: axelar1x8ad0zyw52mvndh7hlnafrg0gt284ga7u3rez0
+                    osmosis-1: osmo1x8ad0zyw52mvndh7hlnafrg0gt284ga7syxplu
+                    cosmoshub-4: cosmos1x8ad0zyw52mvndh7hlnafrg0gt284ga7cl43fw
+                  slippage_tolerance_percent: "3"
+                  client_id: skip-api-docs
+                summary: "Swap 1 USDC on Axelar to ATOM on the Hub"
+              transfer_matic_to_osmosis:
+                value:
+                  amount_in: "3000000000000000000"
+                  source_asset_denom: "matic"
+                  source_asset_chain_id: "137"
+                  dest_asset_denom: "ibc/AB589511ED0DD5FA56171A39978AFBF1371DB986EC1C3526CE138A16377E39BB"
+                  dest_asset_chain_id: osmosis-1
+                  client_id: skip-api-docs
+                  chain_ids_to_addresses:
+                    137: "0x00b40F326Ab76189170cA2FfeCfa4B34b43949dA" 
+                    osmosis-1: "osmo1x8ad0zyw52mvndh7hlnafrg0gt284ga7syxplu"
+                  slippage_tolerance_percent: "3"
+                summary: "Transfer 3 MATIC from Polygon to Osmosis" 
+            schema:
+              type: object
+              properties:
+                source_asset_denom:
+                  type: string
+                  description: Denom of the source asset
+                source_asset_chain_id:
+                  type: string
+                  description: Chain-id of the source asset
+                dest_asset_denom:
+                  type: string
+                  description: Denom of the destination asset
+                dest_asset_chain_id:
+                  type: string
+                  description: Chain-id of the destination asset
+                amount_in:
+                  type: string
+                  description: Amount of source asset to be transferred or swapped. If this is a swap, only one of amount_in and amount_out should be provided.
+                amount_out:
+                    type: string
+                    description: Amount of destination asset out. If this is a swap, only one of amount_in and amount_out should be provided. If amount_out is provided for a swap, the route will be computed to give exactly amount_out.
+                chain_ids_to_addresses:
+                  type: object
+                  description: Map of chain-ids to receipient and/or sender address for each chain in the path. Since the path is not known to the caller beforehand, the caller should attempt to provide addresses for all chains in the path, and the API will return an error if the path cannot be constructed.
+                  additionalProperties:
+                    type: string
+                swap_venue:
+                  description: The swap venue to use, if this request is for a swap (optional)
+                  allOf:
+                    - $ref: "#/components/schemas/SwapVenue"
+                  nullable: true
+                slippage_tolerance_percent:
+                  type: string
+                  description: Percent tolerance for slippage on swap, if a swap is performed
+                timeout_seconds:
+                  type: string
+                  description: Number of seconds for the IBC transfer timeout, defaults to 5 minutes
+                affiliates:
+                  type: array
+                  description: Array of affiliates to send affiliate fees
+                  items:
+                    $ref: "#/components/schemas/Affiliate"
+                post_route_handler:
+                  $ref: "#/components/schemas/PostHandler"
+      responses:
+        "200":
+          description:
+            The messages required to execute the swap, as JSON.
+          content:
+            application/json:
+              example:
+                msgs:
+                  - multi_chain_msg:
+                      chain_id: axelar-dojo-1
+                      path:
+                      - axelar-dojo-1
+                      msg: '{"source_port":"transfer","source_channel":"channel-3","token":{"denom":"uusdc","amount":"1000000"},"sender":"axelar1x8ad0zyw52mvndh7hlnafrg0gt284ga7u3rez0","receiver":"osmo1qpvu80yfd0jnnh3ytn8964382typrqq0ejmqaasa3j233su8apasfqtler","timeout_height":{},"timeout_timestamp":1688663426558649000,"memo":"{\"wasm\":{\"contract\":\"osmo1qpvu80yfd0jnnh3ytn8964382typrqq0ejmqaasa3j233su8apasfqtler\",\"msg\":{\"swap_with_action\":{\"swap_msg\":{\"token_out_min_amount\":\"105963\",\"path\":[{\"pool_id\":\"678\",\"token_out_denom\":\"uosmo\"},{\"pool_id\":\"1\",\"token_out_denom\":\"ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2\"}]},\"after_swap_action\":{\"ibc_transfer\":{\"receiver\":\"cosmos1x8ad0zyw52mvndh7hlnafrg0gt284ga7cl43fw\",\"channel\":\"channel-0\"}},\"local_fallback_address\":\"osmo1x8ad0zyw52mvndh7hlnafrg0gt284ga7syxplu\"}}}}"}'
+                      msg_type_url: "/ibc.applications.transfer.v1.MsgTransfer"
+                route:
+                  amount_in: "1000000"
+                  amount_out: "107033"
+                  source_asset_denom: uusdc
+                  source_asset_chain_id: axelar-dojo-1
+                  dest_asset_denom: uatom
+                  dest_asset_chain_id: cosmoshub-4
+                  operations:
+                    - transfer:
+                        port: transfer
+                        channel: channel-3
+                        chain_id: axelar-dojo-1
+                        pfm_enabled: false
+                        dest_denom: ibc/D189335C6E4A68B513C10AB227BF1C1D38C746766278BA3EEB4FB14124F1D858
+                    - swap:
+                        swap_in:
+                          swap_venue:
+                            name: osmosis-poolmanager
+                            chain_id: osmosis-1
+                          swap_operations:
+                          - pool: "678"
+                            denom_in: ibc/D189335C6E4A68B513C10AB227BF1C1D38C746766278BA3EEB4FB14124F1D858
+                            denom_out: uosmo
+                          - pool: "1"
+                            denom_in: uosmo
+                            denom_out: ibc/27394FB092D2ECCD56123C74F36E4C1F926001CEADA9CA97EA622B25F41E5EB2
+                          swap_amount_in: "1000000"
+                          price_impact_percent: "1.05"
+                        estimated_affiliate_fee: 0ibc/27394FB092D2ECCD56123C74F36E4C1F926001CEADA9CA97EA622B25F41E5EB2
+                    - transfer:
+                        port: transfer
+                        channel: channel-0
+                        chain_id: osmosis-1
+                        pfm_enabled: true
+                        dest_denom: uatom
+                  chain_ids:
+                    - axelar-dojo-1
+                    - osmosis-1
+                    - cosmoshub-4
+                  does_swap: true
+                  estimated_amount_out: "107033"
+                  swap_venue:
+                    name: osmosis-poolmanager
+                    chain_id: osmosis-1
+                  txs_required: 1
+                  usd_amount_in: "2000.01"
+                  usd_amount_out: "2005.23"
+                  swap_price_impact_percent: "1.05"
+              schema:
+                type: object
+                properties:
+                  msgs: 
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Msg"
+                  route:
+                    $ref: "#/components/schemas/RouteResponse"
+        "400":
+          description:
+            The request was invalid, e.g. an invalid amount was passed.
+          content:
+            application/json:
+              example:
+                code: 3
+                message: "invalid amount_in"
+                details: []
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+           description: Internal server error
+           content:
+             application/json:
+               example:
+                 code: 2
+                 message: internal server error
+                 details: []
+               schema:
+                 $ref: "#/components/schemas/Error" 
+
+  /v1/fungible/recommend_assets:
+    post:
+      operationId: getAssetRecommendations
+      tags:
+        - "Fungible"
+      description:
+        Request asset recommendations for a given source asset on a given destination chain. The response includes
+        recommended destination assets and recommendation reasons.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            examples:
+              single_asset_recommendation:
+                value:
+                  source_asset_denom: uusdc
+                  source_asset_chain_id: axelar-dojo-1
+                  dest_chain_id: cosmoshub-4
+                  client_id: skip-api-docs
+                summary: Request recommendations for a single asset
+              multiple_asset_recommendations:
+                value:
+                  requests:
+                    - source_asset_denom: uusdc
+                      source_asset_chain_id: axelar-dojo-1
+                      dest_chain_id: cosmoshub-4
+                    - source_asset_denom: uusdc
+                      source_asset_chain_id: axelar-dojo-1
+                      dest_chain_id: osmosis-1
+                  client_id: skip-api-docs
+                summary: Request recommendations for multiple assets
+            schema:
+              type: object
+              properties:
+                source_asset_denom:
+                  type: string
+                  description: Denom of the source asset
+                source_asset_chain_id:
+                  type: string
+                  description: Chain-id of the source asset
+                dest_chain_id:
+                  type: string
+                  nullable: true
+                  description: Chain-id of the recommended destination asset
+                reason:
+                  description: Reason for recommendation (optional)
+                  allOf:
+                    - $ref: "#/components/schemas/Reason"
+                  nullable: true
+                client_id:
+                  type: string
+                  description: Recognizable identifier for callers (e.g. skip-api-docs, best-wallet, etc...)
+                requests:
+                  type: array
+                  description: Array where each entry corresponds to a distinct asset recommendation request.
+                  items:
+                    properties:
+                        source_asset_denom:
+                            type: string
+                            description: Denom of the source asset
+                        source_asset_chain_id:
+                            type: string
+                            description: Chain-id of the source asset
+                        dest_chain_id:
+                            type: string
+                            nullable: true
+                            description: Chain-id of the recommended destination asset
+                        reason:
+                            description: Reason for recommendation (optional)
+                            allOf:
+                            - $ref: "#/components/schemas/Reason"
+                            nullable: true
+
+      responses:
+        "200":
+          description: Recommended destination assets and reasons
+          content:
+            application/json:
+              examples:
+                single_asset_recommendation:
+                  value:
+                    recommendations:
+                      - asset:
+                          denom: ibc/932D6003DA334ECBC5B23A071B4287D0A5CC97331197FE9F1C0689BA002A8421
+                          chain_id: cosmoshub-4
+                          origin_denom: uusdc
+                          origin_chain_id: axelar-dojo-1
+                          trace: transfer/channel-293
+                        reason: MOST_LIQUID
+                  summary: Response for a single asset recommendation.
+                multiple_asset_recommendations:
+                  value:
+                    recommendation_entries:
+                      - recommendations:
+                          - asset:
+                              denom: ibc/932D6003DA334ECBC5B23A071B4287D0A5CC97331197FE9F1C0689BA002A8421
+                              chain_id: cosmoshub-4
+                              origin_denom: uusdc
+                              origin_chain_id: axelar-dojo-1
+                              trace: transfer/channel-293
+                            reason: MOST_LIQUID
+                      - recommendations:
+                          - asset:
+                              denom: ibc/D189335C6E4A68B513C10AB227BF1C1D38C746766278BA3EEB4FB14124F1D858
+                              chain_id: osmosis-1
+                              origin_denom: uusdc
+                              origin_chain_id: axelar-dojo-1
+                              trace: transfer/channel-208
+                            reason: MOST_LIQUID
+                  summary: Response for multiple asset recommendations.
+              schema:
+                type: object
+                properties:
+                  recommendations: 
+                    type: array
+                    description: Array of AssetRecommendations for the source asset on the destination chain
+                    items:
+                      $ref: "#/components/schemas/AssetRecommendation"
+                  recommendation_entries:
+                    type: array
+                    description: Array of recommendations for each entry in the `request` field.
+                    items:
+                      properties:
+                        recommendations:
+                          type: array
+                          items:
+                            $ref: "#/components/schemas/AssetRecommendation"
+                        error:
+                          $ref: "#/components/schemas/ApiError"
+        "400":
+          description: The request was invalid, i.e. required fields are missing
+          content:
+            application/json:
+              example:
+                code: 3
+                message: Must supply source_asset
+                details: []
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: A recommendation or the specified token was not found
+          content:
+            application/json:
+              example:
+                code: 5
+                message: no recommendation found
+                details: []
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              example:
+                code: 2
+                message: internal server error
+                details: []
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /v2/tx/submit:
+    post:
+      operationId: submitTransactionV2
+      tags:
+        - "Transaction"
+      description:
+        Submit a signed base64 encoded transaction to be broadcast to the specified network. On successful submission,
+        the status of the transaction and any subsequent IBC or Axelar transfers can be
+        queried through the /status endpoint.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                tx:
+                  type: string
+                  description: Signed base64 encoded transaction
+                  example: base64 encoded transaction
+                chain_id:
+                  type: string
+                  description: Chain ID of the transaction
+                  example: osmosis-1
+                client_id:
+                  type: string
+                  description: Recognizable identifier for callers (e.g. skip-api-docs, best-wallet, etc...)
+                  example: skip-api-docs
+      responses:
+        "200":
+          description: The hash of the transaction.
+          content:
+            application/json:
+              example:
+                tx_hash: F30790E79987F18F3A4DA8C7A9BA9FD837043EF59D8236CA85180E1078BC607F
+              schema:
+                type: object
+                properties:
+                  tx_hash:
+                    type: string
+                    description: Hash of the transaction
+        "400":
+          description: The request was invalid, i.e. the submitted transaction was malformed or fails on execution.
+          content:
+            application/json:
+              example:
+                code: 3
+                message: tx must be base64 encoded
+                details: [ ]
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: The specified chain is not supported.
+          content:
+            application/json:
+              example:
+                code: 5
+                message: chain id not supported
+                details: [ ]
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              example:
+                code: 2
+                message: internal server error
+                details: [ ]
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /v2/tx/track:
+    post:
+      operationId: trackTransactionV2
+      tags:
+        - "Transaction"
+      description:
+        Requests tracking of a transaction that has already landed on-chain but was not broadcast through the skip api.
+        The status of a tracked transaction and subsequent IBC or Axelar transfers if routing assets cross chain can be
+        queried through the /status endpoint.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                tx_hash:
+                  type: string
+                  description: Hex encoded hash of the transaction to track
+                  example: tx hash
+                chain_id:
+                  type: string
+                  description: Chain ID of the transaction
+                  example: osmosis-1
+                client_id:
+                  type: string
+                  description: Recognizable identifier for callers (e.g. skip-api-docs, best-wallet, etc...)
+                  example: skip-api-docs
+      responses:
+        "200":
+          description: The hash of the transaction.
+          content:
+            application/json:
+              example:
+                tx_hash: F30790E79987F18F3A4DA8C7A9BA9FD837043EF59D8236CA85180E1078BC607F
+              schema:
+                type: object
+                properties:
+                  tx_hash:
+                    type: string
+                    description: Hash of the transaction
+        "400":
+          description: The request was invalid, i.e. the transaction hash was malformed or the specified transaction did not execute successfully.
+          content:
+            application/json:
+              example:
+                code: 3
+                message: tx is invalid on chain
+                details: [ ]
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: The specified chain is not supported or the specified transaction was not found.
+          content:
+            application/json:
+              example:
+                code: 5
+                message: chain id not supported
+                details: [ ]
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              example:
+                code: 2
+                message: internal server error
+                details: [ ]
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /v2/tx/status:
+    get:
+      operationId: getTransactionStatusV2
+      tags:
+        - "Transaction"
+      description:
+        Get the status of the specified transaction and any subsequent IBC or Axelar transfers if routing assets cross chain.
+        The transaction must have previously been submitted to either the /submit or /track endpoints.
+      parameters:
+        - in: query
+          name: tx_hash
+          required: true
+          schema:
+            type: string
+          description: Hex encoded hash of the transaction to query for
+          example:
+            EEC65138E6A7BDD047ED0D4BBA249A754F0BBBC7AA976568C4F35A32CD7FB8EB
+        - in: query
+          name: chain_id
+          required: true
+          schema:
+            type: string
+          description: Chain ID of the transaction
+          example:
+            cosmoshub-4
+        - in: query
+          name: client_id
+          required: false
+          schema:
+            type: string
+          description: Recognizable identifier for callers (e.g. skip-api-docs, best-wallet, etc...)
+          example:
+            skip-api-docs
+      responses:
+        "200":
+          description: The status of the transaction and any subsequent ibc or Axelar transfers.
+          content:
+            application/json:
+              examples:
+                Transfer from Cosmoshub to Avalanche:
+                  value:
+                    transfers:
+                      - state: STATE_COMPLETED_SUCCESS
+                        transfer_sequence:
+                          - ibc_transfer:
+                              src_chain_id: cosmoshub-4
+                              dst_chain_id: osmosis-1
+                              state: TRANSFER_SUCCESS
+                              packet_txs:
+                                send_tx:
+                                  chain_id: cosmoshub-4
+                                  tx_hash: EEC65138E6A7BDD047ED0D4BBA249A754F0BBBC7AA976568C4F35A32CD7FB8EB
+                                  explorer_link: https://www.mintscan.io/cosmos/transactions/EEC65138E6A7BDD047ED0D4BBA249A754F0BBBC7AA976568C4F35A32CD7FB8EB
+                                receive_tx:
+                                  chain_id: osmosis-1
+                                  tx_hash: F513DDCB7BDFEE74AF07F67881D6778A3710C88EEAEBDA95E726E52C7B5E6BD3
+                                  explorer_link: https://www.mintscan.io/osmosis/transactions/F513DDCB7BDFEE74AF07F67881D6778A3710C88EEAEBDA95E726E52C7B5E6BD3
+                                acknowledge_tx:
+                                  chain_id: cosmoshub-4
+                                  tx_hash: 67E19B010FED8688C1B476EE4E1E627111158527C531742FB3D54A7399E40789
+                                  explorer_link: https://www.mintscan.io/cosmos/transactions/67E19B010FED8688C1B476EE4E1E627111158527C531742FB3D54A7399E40789
+                                timeout_tx: null
+                                error: null
+                          - axelar_transfer:
+                              src_chain_id: osmosis-1
+                              dst_chain_id: "43114"
+                              type: AXELAR_TRANSFER_SEND_TOKEN
+                              state: AXELAR_TRANSFER_SUCCESS
+                              txs:
+                                send_token_txs:
+                                  send_tx:
+                                    chain_id: osmosis-1
+                                    tx_hash: F513DDCB7BDFEE74AF07F67881D6778A3710C88EEAEBDA95E726E52C7B5E6BD3
+                                    explorer_link: https://www.mintscan.io/osmosis/transactions/F513DDCB7BDFEE74AF07F67881D6778A3710C88EEAEBDA95E726E52C7B5E6BD3
+                                  confirm_tx: null
+                                  execute_tx:
+                                    chain_id: "43114"
+                                    tx_hash: "0x0f2c793c8fe522efd7bcd38e1e666f02fb516782799ddd26d8d7a4e8a5b71dc8"
+                                    explorer_link: https://snowtrace.io/tx/0x0f2c793c8fe522efd7bcd38e1e666f02fb516782799ddd26d8d7a4e8a5b71dc8
+                                  error: null
+                              axelar_scan_link: https://axelarscan.io/transfer/F513DDCB7BDFEE74AF07F67881D6778A3710C88EEAEBDA95E726E52C7B5E6BD3
+                        next_blocking_transfer: null
+                        transfer_asset_release:
+                          chain_id: "43114"
+                          denom: wavax-wei
+                        error: null
+                  summary: "Transfer with swap of Atom from Cosmoshub to wavax on Avalanche"
+                Multiple Transfers:
+                  value:
+                    transfers:
+                      - state: STATE_COMPLETED_SUCCESS
+                        transfer_sequence:
+                          - ibc_transfer:
+                              src_chain_id: osmosis-1
+                              dst_chain_id: cosmoshub-4
+                              state: TRANSFER_SUCCESS
+                              packet_txs:
+                                send_tx:
+                                  chain_id: osmosis-1
+                                  tx_hash: 19444D7C23B4C1FB96649EFECA5CCBDF88A6937D6EFDAFD41B96B3CE7BAC12B0
+                                  explorer_link: https://www.mintscan.io/osmosis/transactions/19444D7C23B4C1FB96649EFECA5CCBDF88A6937D6EFDAFD41B96B3CE7BAC12B0
+                                receive_tx:
+                                  chain_id: cosmoshub-4
+                                  tx_hash: 3CEEA7B7042AC5C3CBC287BB5D0B7E427AB0640922D2D991E9DBB9D34385C247
+                                  explorer_link: https://www.mintscan.io/cosmos/transactions/3CEEA7B7042AC5C3CBC287BB5D0B7E427AB0640922D2D991E9DBB9D34385C247
+                                acknowledge_tx:
+                                  chain_id: osmosis-1
+                                  tx_hash: E6E402D88C8CFF1101F6FA583054E12D05ACD906DB5BA7249E1B6E22ECD3BC78
+                                  explorer_link: https://www.mintscan.io/osmosis/transactions/E6E402D88C8CFF1101F6FA583054E12D05ACD906DB5BA7249E1B6E22ECD3BC78
+                                timeout_tx: null
+                                error: null
+                          - ibc_transfer:
+                              src_chain_id: cosmoshub-4
+                              dst_chain_id: juno-1
+                              state: TRANSFER_SUCCESS
+                              packet_txs:
+                                send_tx:
+                                  chain_id: cosmoshub-4
+                                  tx_hash: 3CEEA7B7042AC5C3CBC287BB5D0B7E427AB0640922D2D991E9DBB9D34385C247
+                                  explorer_link: https://www.mintscan.io/cosmos/transactions/3CEEA7B7042AC5C3CBC287BB5D0B7E427AB0640922D2D991E9DBB9D34385C247
+                                receive_tx:
+                                  chain_id: juno-1
+                                  tx_hash: 66BB827E38BD7B9071A855444BCA871447DF90830AA57891F92983B5CC8946B3
+                                  explorer_link: https://www.mintscan.io/juno/transactions/66BB827E38BD7B9071A855444BCA871447DF90830AA57891F92983B5CC8946B3
+                                acknowledge_tx:
+                                  chain_id: cosmoshub-4
+                                  tx_hash: 83E95C18C78CD298C3B6C5DDB6F766DEFB2083BF3A91D6C7CD739FE0ADAF29AF
+                                  explorer_link: https://www.mintscan.io/cosmos/transactions/83E95C18C78CD298C3B6C5DDB6F766DEFB2083BF3A91D6C7CD739FE0ADAF29AF
+                                timeout_tx: null
+                                error: null
+                              next_blocking_transfer: null
+                              transfer_asset_release:
+                                chain_id: juno-1
+                                denom: ibc/C4CFF46FD6DE35CA4CF4CE031E643C8FDC9BA4B99AE598E9B0ED98FE3A2319F9
+                              error: null
+                      - state: STATE_COMPLETED_SUCCESS
+                        transfer_sequence:
+                          - ibc_transfer:
+                              src_chain_id: osmosis-1
+                              dst_chain_id: cosmoshub-4
+                              state: TRANSFER_SUCCESS
+                              packet_txs:
+                                send_tx:
+                                  chain_id: osmosis-1
+                                  tx_hash: 19444D7C23B4C1FB96649EFECA5CCBDF88A6937D6EFDAFD41B96B3CE7BAC12B0
+                                  explorer_link: https://www.mintscan.io/osmosis/transactions/19444D7C23B4C1FB96649EFECA5CCBDF88A6937D6EFDAFD41B96B3CE7BAC12B0
+                                receive_tx:
+                                  chain_id: cosmoshub-4
+                                  tx_hash: 3CEEA7B7042AC5C3CBC287BB5D0B7E427AB0640922D2D991E9DBB9D34385C247
+                                  explorer_link: https://www.mintscan.io/cosmos/transactions/3CEEA7B7042AC5C3CBC287BB5D0B7E427AB0640922D2D991E9DBB9D34385C247
+                                acknowledge_tx:
+                                  chain_id: osmosis-1
+                                  tx_hash: F8C661B9F25CC908C85C61BADBE66D4B51650CA839360C385BFF2D9A475B97E9
+                                  explorer_link: https://www.mintscan.io/osmosis/transactions/F8C661B9F25CC908C85C61BADBE66D4B51650CA839360C385BFF2D9A475B97E9
+                                timeout_tx: null
+                                error: null
+                          - ibc_transfer:
+                              src_chain_id: cosmoshub-4
+                              dst_chain_id: canto_7700-1
+                              state: TRANSFER_SUCCESS
+                              packet_txs:
+                                send_tx:
+                                  chain_id: cosmoshub-4
+                                  tx_hash: 3CEEA7B7042AC5C3CBC287BB5D0B7E427AB0640922D2D991E9DBB9D34385C247
+                                  explorer_link: https://www.mintscan.io/cosmos/transactions/3CEEA7B7042AC5C3CBC287BB5D0B7E427AB0640922D2D991E9DBB9D34385C247
+                                receive_tx:
+                                  chain_id: canto_7700-1
+                                  tx_hash: 4CAB58C09868091B93F1D1C7A45E423C48C312DC2C0F8482F01EA9469EB1E1B5
+                                  explorer_link: https://www.mintscan.io/juno/transactions/4CAB58C09868091B93F1D1C7A45E423C48C312DC2C0F8482F01EA9469EB1E1B5
+                                acknowledge_tx:
+                                  chain_id: cosmoshub-4
+                                  tx_hash: BC195283E22406CAD84393B9442F9D29018AE51E4BEF59055599A23B10702898
+                                  explorer_link: https://www.mintscan.io/cosmos/transactions/BC195283E22406CAD84393B9442F9D29018AE51E4BEF59055599A23B10702898
+                                timeout_tx: null
+                                error: null
+                              next_blocking_transfer: null
+                              transfer_asset_release:
+                                chain_id: canto_7700-1
+                                denom: ibc/9117A26BA81E29FA4F78F57DC2BD90CD3D26848101BA880445F119B22A1E254E
+                              error: null
+                  summary: "Multiple transfers of Atom from Osmosis to Juno and from Osmosis to Canto"
+              schema:
+                type: object
+                properties:
+                  transfers:
+                    type: array
+                    items:
+                      $ref : "#/components/schemas/TransferStatus"
+                    description: Transfer status for all transfers initiated by the transaction in the order they were initiated.
+        "404":
+          description: The specified tx was not found.
+          content:
+            application/json:
+              example:
+                code: 5
+                message: tx not found
+                details: [ ]
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              example:
+                code: 2
+                message: internal server error
+                details: [ ]
+              schema:
+                $ref: "#/components/schemas/Error"
+  /v1/fungible/ibc_origin_assets:
+    post:
+      operationId: getOriginAssets
+      tags:
+        - "Fungible"
+      description:
+        Get origin assets from a given list of denoms and chain ids.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            examples:
+              one_asset:
+                value:
+                  assets:
+                    - denom: ibc/14F9BC3E44B8A9C1BE1FB08980FAB87034C9905EF17CF2F5008FC085218811CC
+                      chain_id: cosmoshub-4
+                summary: Request origin asset for a single asset
+              multiple_assets:
+                summary: Request origin asset for several assets
+                value:
+                  assets:
+                    - denom: ibc/14F9BC3E44B8A9C1BE1FB08980FAB87034C9905EF17CF2F5008FC085218811CC
+                      chain_id: cosmoshub-4
+                    - denom: ibc/932D6003DA334ECBC5B23A071B4287D0A5CC97331197FE9F1C0689BA002A8421
+                      chain_id: cosmoshub-4
+            schema:
+              type: object
+              properties:
+                assets:
+                  type: array
+                  description: Array of assets to get origin assets for
+                  items:
+                    type: object
+                    properties:
+                      denom:
+                        type: string
+                        description: Denom of the asset
+                      chain_id:
+                        type: string
+                        description: Chain-id of the asset  
+      responses:
+        "200":
+          description: The origin assets of the specified denoms and chain ids.
+          content:
+            application/json:
+              example:
+                origin_assets:
+                  - asset:
+                      denom: uosmo
+                      chain_id: osmosis-1
+                      origin_denom: uosmo
+                      origin_chain_id: osmosis-1
+                      trace: ""
+                      symbol: OSMO
+                      name: OSMO
+                      logo_uri: https://raw.githubusercontent.com/cosmostation/chainlist/main/chain/osmosis/asset/osmo.png
+                      decimals: 6
+                      coingecko_id: osmosis
+                      description: The native token of Osmosis
+                    asset_found: true
+              schema:
+                type: object
+                properties:
+                  origin_assets:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/OptionalAsset"
+        "400":
+          description: The request was invalid, i.e. required fields are missing
+          content:
+            application/json:
+              example:
+                code: 3
+                message: Must supply denom and chain_id
+                details: []
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              example:
+                code: 2
+                message: internal server error
+                details: []
+              schema:
+                $ref: "#/components/schemas/Error"
+  /v2/fungible/assets_between_chains:  
+    post:
+      tags:
+        - "Fungible"    
+      description: 'Given 2 chain ids, returns a list of equivalent assets that can be transferred'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            examples:
+              cosmos_to_cosmos:
+                value:
+                  source_chain_id: cosmoshub-4
+                  dest_chain_id: osmosis-1
+                summary: "Get assets between Cosmos Hub and Osmosis"
+              evm_to_cosmos:
+                value:
+                  source_chain_id: "1"
+                  dest_chain_id: cosmoshub-4
+                  include_evm_assets: true
+                summary: "Get assets between Ethereum and Cosmos Hub"
+            schema:
+              type: object
+              properties:
+                source_chain_id:
+                  type: string
+                  description: Chain-id of the source chain
+                dest_chain_id:
+                  type: string
+                  description: Chain-id of the destination chain
+                include_no_metadata_assets:
+                  type: boolean
+                  description: Whether to include assets without metadata (symbol, name, logo_uri, etc.)
+                  default: false
+                include_cw20_assets:
+                  type: boolean
+                  description: Whether to include CW20 tokens
+                  default: false
+                include_evm_assets:
+                  type: boolean
+                  description: Whether to include EVM tokens
+                  default: false
+                allow_multi_tx:
+                  type: boolean
+                  description: Whether to include recommendations requiring multiple transactions to reach the destination
+                  default: false
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  assets_between_chains:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/AssetBetweenChains"
+              examples:
+                cosmos_to_cosmos:
+                  value:
+                    assets_between_chains:
+                      - asset_on_source:
+                          denom: uatom
+                          chain_id: cosmoshub-4
+                          origin_denom: uatom
+                          origin_chain_id: cosmoshub-4
+                          trace: ''
+                          is_cw20: false
+                          is_evm: false
+                          symbol: ATOM
+                          name: ATOM
+                          logo_uri: https://raw.githubusercontent.com/cosmos/chain-registry/master/cosmoshub/images/atom.png
+                          decimals: 6
+                          description: The native staking and governance token of the Cosmos Hub.
+                          coingecko_id: cosmos
+                          recommended_symbol: ATOM
+                        asset_on_dest:
+                          denom: ibc/27394FB092D2ECCD56123C74F36E4C1F926001CEADA9CA97EA622B25F41E5EB2
+                          chain_id: osmosis-1
+                          origin_denom: uatom
+                          origin_chain_id: cosmoshub-4
+                          trace: transfer/channel-0
+                          is_cw20: false
+                          is_evm: false
+                          symbol: ATOM
+                          name: ATOM
+                          logo_uri: https://raw.githubusercontent.com/cosmos/chain-registry/master/cosmoshub/images/atom.png
+                          decimals: 6
+                          description: The native staking and governance token of the Cosmos Hub.
+                          coingecko_id: cosmos
+                          recommended_symbol: ATOM
+                        txs_required: 1
+                        bridges:
+                        - IBC 
+                evm_to_cosmos:
+                  value:
+                    assets_between_chains:
+                      - asset_on_source:
+                          denom: usdc
+                          chain_id: '1'
+                          origin_denom: usdc
+                          origin_chain_id: '1'
+                          trace: ''
+                          is_cw20: false
+                          is_evm: true
+                          symbol: USDC
+                          name: usdc
+                          logo_uri: https://raw.githubusercontent.com/cosmostation/chainlist/main/chain/ethereum/asset/usdc.png
+                          decimals: 6
+                          token_contract: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'
+                          coingecko_id: usd-coin
+                          recommended_symbol: USDC
+                        asset_on_dest:
+                          denom: ibc/932D6003DA334ECBC5B23A071B4287D0A5CC97331197FE9F1C0689BA002A8421
+                          chain_id: cosmoshub-4
+                          origin_denom: uusdc
+                          origin_chain_id: axelar-dojo-1
+                          trace: transfer/channel-293
+                          is_cw20: false
+                          is_evm: false
+                          symbol: USDC
+                          name: USDC
+                          logo_uri: https://raw.githubusercontent.com/cosmos/chain-registry/master/axelar/images/usdc.png
+                          decimals: 6
+                          description: Circle's stablecoin on Axelar
+                          coingecko_id: axlusdc
+                          recommended_symbol: USDC.axl
+                        txs_required: 1
+                        bridges:
+                        - AXELAR
+        "404":
+          description: One of the chain ids was not found
+          content:
+            application/json:
+              example:
+                code: 5
+                message: dest chain not found
+                details: []
+              schema:
+                $ref: "#/components/schemas/Error" 
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              example:
+                code: 2
+                message: internal server error
+                details: []
+              schema:
+                $ref: "#/components/schemas/Error"                                                                                    
+
+components:   
+   schemas:
+    AcknowledgementErrorDetails:
+      properties:
+        code:
+          description: Error code
+          type: number
+        message:
+          description: Error message
+          type: string
+      type: object
+    Affiliate:
+      description: An affiliate that receives fees from a swap
+      properties:
+        address:
+          description: Address to which to pay the fee
+          type: string
+        basis_points_fee:
+          description: Bps fee to pay to the affiliate
+          type: string
+      type: object
+    ApiError:
+      properties:
+        message:
+          description: Error message
+          type: string
+      type: object
+    Asset:
+      properties:
+        chain_id:
+          description: Chain-id of the asset
+          type: string
+        coingecko_id:
+          description: Coingecko id of the asset
+          nullable: true
+          type: string
+        decimals:
+          description: Number of decimals used for amounts of the asset
+          nullable: true
+          type: number
+        denom:
+          description: Denom of the asset
+          type: string
+        description:
+          description: Description of the asset
+          nullable: true
+          type: string
+        is_cw20:
+          description: Indicates whether asset is a CW20 token
+          type: boolean
+        is_evm:
+          description: Indicates whether asset is an EVM token
+          type: boolean
+        logo_uri:
+          description: URI pointing to an image of the logo of the asset
+          nullable: true
+          type: string
+        name:
+          description: Name of the asset
+          nullable: true
+          type: string
+        origin_chain_id:
+          description: Chain-id of the origin of the asset. If this is an ibc denom, this
+            is the chain-id of the asset that the ibc token represents
+          type: string
+        origin_denom:
+          description: Denom of the origin of the asset. If this is an ibc denom, this
+            is the original denom that the ibc token represents
+          type: string
+        recommended_symbol:
+          description: Recommended symbol of the asset used to differentiate between bridged
+            assets with the same symbol, e.g. USDC.axl for Axelar USDC and USDC.grv for
+            Gravity USDC
+          nullable: true
+          type: string
+        symbol:
+          description: Symbol of the asset, e.g. ATOM for uatom
+          nullable: true
+          type: string
+        token_contract:
+          description: Address of the contract for the asset, e.g. if it is a CW20 or
+            ERC20 token
+          nullable: true
+          type: string
+        trace:
+          description: The forward slash delimited sequence of ibc ports and channels
+            that can be traversed to unwind an ibc token to its origin asset.
+          type: string
+      type: object
+    AssetBetweenChains:
+      properties:
+        asset_on_source:
+          $ref: '#/components/schemas/Asset'
+        asset_on_dest:
+          $ref: '#/components/schemas/Asset'
+        txs_required:
+          description: Number of transactions required to transfer the asset
+          type: integer
+        bridges:
+          description: Bridges that are used to transfer the asset
+          items:
+            $ref: '#/components/schemas/BridgeType'
+          type: array      
+    AssetRecommendation:
+      properties:
+        asset:
+          allOf:
+          - $ref: '#/components/schemas/Asset'
+          description: Asset that is recommended
+        reason:
+          allOf:
+          - $ref: '#/components/schemas/Reason'
+          description: Reason for recommending the asset
+      type: object
+    AutopilotAction:
+      enum:
+      - LIQUID_STAKE
+      - CLAIM
+      type: string
+    AutopilotMsg:
+      properties:
+        action:
+          $ref: '#/components/schemas/AutopilotAction'
+        receiver:
+          type: string
+      type: object
+    AutopilotMsgWrapper:
+      properties:
+        autpilot_msg:
+          $ref: '#/components/schemas/AutopilotMsg'
+      type: object
+    AxelarTransfer:
+      description: A transfer facilitated by the Axelar bridge
+      properties:
+        asset:
+          description: Axelar-name of the asset to bridge
+          type: string
+        fee_amount:
+          description: Amount of the fee asset to be paid as the Axelar bridge fee. This is denominated in the fee asset.
+          type: string
+        fee_asset:
+          $ref: '#/components/schemas/Asset'
+        from_chain:
+          description: Name for source chain of the bridge transaction used on Axelar
+          type: string
+        from_chain_id:
+          description: Canonical chain-id of the source chain of the bridge transaction
+          type: string
+        is_testnet:
+          description: Whether the source and destination chains are both testnets
+          type: boolean
+        should_unwrap:
+          description: Whether to unwrap the asset at the destination chain (from ERC-20
+            to native)
+          type: boolean
+        to_chain:
+          description: Name for destination chain of the bridge transaction used on Axelar
+          type: string
+        to_chain_id:
+          description: Canonical chain-id of the destination chain of the bridge transaction
+          type: string
+        usd_fee_amount:
+          description: Amount of the fee asset to be paid as the Axelar bridge fee, converted
+            to USD value
+          type: string
+      type: object
+    AxelarTransferInfo:
+      properties:
+        axelar_transfer:
+          properties:
+            axelar_scan_link:
+              description: Link to the transaction on the Axelar Scan explorer
+              type: string
+            dst_chain_id:
+              description: Chain ID of the destination chain
+              type: string
+            src_chain_id:
+              description: Chain ID of the source chain
+              type: string
+            state:
+              $ref: '#/components/schemas/AxelarTransferState'
+            txs:
+              oneOf:
+              - $ref: '#/components/schemas/ContractCallWithTokenTxs'
+              - $ref: '#/components/schemas/SendTokenTxs'
+            type:
+              $ref: '#/components/schemas/AxelarTransferType'
+          type: object
+      type: object
+    AxelarTransferState:
+      description: 'Axelar transfer state: <br/> * AXELAR_TRANSFER_UNKNOWN - Unknown error
+        <br/> * AXELAR_TRANSFER_PENDING_CONFIRMATION - Axelar transfer is pending confirmation
+        <br/> * AXELAR_TRANSFER_PENDING_RECEIPT - Axelar transfer is pending receipt at
+        destination <br/> * AXELAR_TRANSFER_SUCCESS - Axelar transfer succeeded and assets
+        have been received <br/> * AXELAR_TRANSFER_FAILURE - Axelar transfer failed <br/>
+
+        '
+      enum:
+      - AXELAR_TRANSFER_UNKNOWN
+      - AXELAR_TRANSFER_PENDING_CONFIRMATION
+      - AXELAR_TRANSFER_PENDING_RECEIPT
+      - AXELAR_TRANSFER_SUCCESS
+      - AXELAR_TRANSFER_FAILURE
+      type: string
+    AxelarTransferType:
+      description: 'Axelar transfer type: <br/> * AXELAR_TRANSFER_CONTRACT_CALL_WITH_TOKEN
+        - GMP contract call with token transfer type <br/> * AXELAR_TRANSFER_SEND_TOKEN
+        - Send token transfer type <br/>
+
+        '
+      enum:
+      - AXELAR_TRANSFER_CONTRACT_CALL_WITH_TOKEN
+      - AXELAR_TRANSFER_SEND_TOKEN
+      type: string
+    AxelarTransferWrapper:
+      properties:
+        axelar_transfer:
+          $ref: '#/components/schemas/AxelarTransfer'
+      type: object
+    BankSend:
+      type: object
+    BankSendWrapper:
+      properties:
+        bank_send:
+          $ref: '#/components/schemas/BankSend'
+      type: object
+    BridgeType:
+      enum:
+      - IBC
+      - AXELAR      
+    Chain:
+      properties:
+        bech32_prefix:
+          description: Bech32 prefix of the chain
+          type: string
+        chain_id:
+          description: Chain-id of the chain
+          type: string
+        chain_name:
+          description: Name of the chain
+          type: string
+        fee_assets:
+          description: Fee assets of the chain
+          items:
+            $ref: '#/components/schemas/FeeAsset'
+          type: array
+        logo_uri:
+          description: chain logo URI
+          nullable: true
+          type: string
+        pfm_enabled:
+          description: Whether the PFM module is enabled on the chain
+          type: boolean
+        chain_type:
+          description: Type of chain, e.g. "cosmos" or "evm"
+          type: string 
+      type: object
+    ContractCallWithTokenError:
+      properties:
+        message:
+          description: Error message
+          type: string
+        type:
+          $ref: '#/components/schemas/ContractCallWithTokenErrorType'
+      type: object
+    ContractCallWithTokenErrorType:
+      description: 'ContractCallWithToken errors: <br/> * CONTRACT_CALL_WITH_TOKEN_EXECUTION_ERROR
+        - Error occurred during the execute transaction <br/>
+
+        '
+      enum:
+      - CONTRACT_CALL_WITH_TOKEN_EXECUTION_ERROR
+      type: string
+    ContractCallWithTokenTxs:
+      properties:
+        approve_tx:
+          allOf:
+          - $ref: '#/components/schemas/PacketTransaction'
+          nullable: true
+        confirm_tx:
+          allOf:
+          - $ref: '#/components/schemas/PacketTransaction'
+          nullable: true
+        error:
+          allOf:
+          - $ref: '#/components/schemas/ContractCallWithTokenError'
+          nullable: true
+        execute_tx:
+          allOf:
+          - $ref: '#/components/schemas/PacketTransaction'
+          nullable: true
+        gas_paid_tx:
+          allOf:
+          - $ref: '#/components/schemas/PacketTransaction'
+          nullable: true
+        send_tx:
+          allOf:
+          - $ref: '#/components/schemas/PacketTransaction'
+          nullable: true
+      type: object
+    CosmWasmContractMsg:
+      properties:
+        contract_address:
+          description: Address of the contract to execute the message on
+          type: string
+        msg:
+          description: JSON string of the message
+          type: string
+      type: object
+    CosmWasmContractMsgWrapper:
+      properties:
+        wasm_msg:
+          $ref: '#/components/schemas/CosmWasmContractMsg'
+      type: object
+    Erc20Approval:
+      description: An ERC20 token contract approval
+      properties:
+        amount:
+          description: Amount of the approval
+          type: string
+        spender:
+          description: Address of the spender
+          type: string
+        token_contract:
+          description: Address of the ERC20 token contract
+          type: string
+      type: object
+    Error:
+      properties:
+        code:
+          allOf:
+          - $ref: '#/components/schemas/GRPCStatusCode'
+          description: Error code
+        details:
+          description: Additional error details
+          items:
+            type: string
+          type: array
+        message:
+          description: Error message
+          type: string
+      type: object
+    EvmTx:
+      description: A transaction on an EVM chain
+      properties:
+        chain_id:
+          description: Chain-id of the chain that the transaction is intended for
+          type: string
+        data:
+          description: Data of the transaction
+          type: string
+        required_erc20_approvals:
+          description: ERC20 approvals required for the transaction
+          items:
+            $ref: '#/components/schemas/Erc20Approval'
+          type: array
+        to:
+          description: Address of the recipient of the transaction
+          type: string
+        value:
+          description: Amount of the transaction
+          type: string
+      type: object
+    EvmTxWrapper:
+      properties:
+        evm_tx:
+          $ref: '#/components/schemas/EvmTx'
+      type: object
+    FeeAsset:
+      description: Asset used to pay gas fees and the recommended price tiers. Assets
+        and gas price recommendations are sourced from the [keplr chain registry](https://github.com/chainapsis/keplr-chain-registry)
+      properties:
+        denom:
+          description: Asset denom
+          type: string
+        gas_price_info:
+          description: Gas price tiers
+          nullable: true
+          properties:
+            average:
+              description: Average gas price
+              type: string
+            high:
+              description: High gas price
+              type: string
+            low:
+              description: Low gas price
+              type: string
+          type: object
+      type: object
+    GRPCStatusCode:
+      description: grpc status codes as defined [here](https://grpc.github.io/grpc/core/md_doc_statuscodes.html)
+      type: number
+    IBCTransferInfo:
+      properties:
+        ibc_transfer:
+          $ref: '#/components/schemas/TransferInfo'
+      type: object
+    Msg:
+      oneOf:
+      - $ref: '#/components/schemas/MultiChainMsgWrapper'
+      - $ref: '#/components/schemas/EvmTxWrapper'
+    MultiChainMsg:
+      description: A message that interacts with multiple chains
+      properties:
+        chain_id:
+          description: Chain-id of the chain that the transaction containing the message
+            is intended for
+          type: string
+        msg:
+          description: JSON string of the message
+          type: string
+        msg_type_url:
+          description: TypeUrl of the message
+          type: string
+        path:
+          description: Path of chain-ids that the message is intended to interact with
+          items:
+            type: string
+          type: array
+      type: object
+    MultiChainMsgWrapper:
+      properties:
+        multi_chain_msg:
+          $ref: '#/components/schemas/MultiChainMsg'
+      type: object
+    Operation:
+      oneOf:
+      - $ref: '#/components/schemas/TransferWrapper'
+      - $ref: '#/components/schemas/SwapWrapper'
+      - $ref: '#/components/schemas/AxelarTransferWrapper'
+      - $ref: '#/components/schemas/BankSendWrapper'
+    OptionalAsset:
+      properties:
+        asset:
+          $ref: '#/components/schemas/Asset'
+        asset_found:
+          description: Whether the asset was found
+          type: boolean
+      type: object
+    Packet:
+      properties:
+        acknowledge_tx:
+          allOf:
+          - $ref: '#/components/schemas/PacketTransaction'
+          nullable: true
+        error:
+          allOf:
+          - $ref: '#/components/schemas/PacketError'
+          nullable: true
+        receive_tx:
+          allOf:
+          - $ref: '#/components/schemas/PacketTransaction'
+          nullable: true
+        send_tx:
+          allOf:
+          - $ref: '#/components/schemas/PacketTransaction'
+          nullable: true
+        timeout_tx:
+          allOf:
+          - $ref: '#/components/schemas/PacketTransaction'
+          nullable: true
+      type: object
+    PacketError:
+      properties:
+        details:
+          oneOf:
+          - nullable: true
+          - $ref: '#/components/schemas/AcknowledgementErrorDetails'
+        message:
+          description: Error message
+          type: string
+        type:
+          $ref: '#/components/schemas/PacketErrorType'
+      type: object
+    PacketErrorType:
+      description: 'Packet error type: <br/> * PACKET_ERROR_UNKNOWN - Unknown error <br/>
+        * PACKET_ERROR_ACKNOWLEDGEMENT - Packet acknowledgement error <br/> * PACKET_ERROR_TIMEOUT
+        - Packet timed out <br/>
+
+        '
+      enum:
+      - PACKET_ERROR_UNKNOWN
+      - PACKET_ERROR_ACKNOWLEDGEMENT
+      - PACKET_ERROR_TIMEOUT
+      type: string
+    PacketTransaction:
+      properties:
+        chain_id:
+          description: Chain ID the packet event occurs on
+          type: string
+        explorer_link:
+          description: Link to the transaction on block explorer
+          type: string
+        tx_hash:
+          description: Hash of the transaction the packet event occurred in
+          type: string
+      type: object
+    PostHandler:
+      oneOf:
+      - $ref: '#/components/schemas/CosmWasmContractMsgWrapper'
+      - $ref: '#/components/schemas/AutopilotMsgWrapper'
+    Reason:
+      description: 'Recommendation reason: <br/> * UNKNOWN - Unknown recommendation reason.
+        <br/> * MOST_LIQUID - Highest liquidity form of the transferred token on the destination
+        chain. <br/> * BASE_TOKEN - The base token if the destination chain is the origin
+        chain of the source token. <br/> * DIRECT - The token resulting from the least
+        amount of transfers to the destination chain.
+
+        '
+      enum:
+      - UNKNOWN
+      - MOST_LIQUID
+      - BASE_TOKEN
+      - DIRECT
+      type: string
+    RouteResponse:
+      properties:
+        amount_in:
+          description: Amount of source asset to be transferred or swapped
+          type: string
+        amount_out:
+          description: Amount of destination asset out
+          type: string
+        chain_ids:
+          description: Chain-ids of all chains of the transfer or swap, in order of usage
+            by operations in the route
+          items:
+            type: string
+          type: array
+        dest_asset_chain_id:
+          description: Chain-id of the destination asset
+          type: string
+        dest_asset_denom:
+          description: Denom of the destination asset
+          type: string
+        does_swap:
+          description: Whether this route performs a swap
+          type: boolean
+        estimated_amount_out:
+          description: Amount of destination asset out, if a swap is performed
+          type: string
+        operations:
+          description: Array of operations required to perform the transfer or swap
+          items:
+            $ref: '#/components/schemas/Operation'
+          type: array
+        source_asset_chain_id:
+          description: Chain-id of the source asset
+          type: string
+        source_asset_denom:
+          description: Denom of the source asset
+          type: string
+        swap_venue:
+          allOf:
+          - $ref: '#/components/schemas/SwapVenue'
+          description: Swap venue on which the swap is performed, if a swap is performed
+        txs_required:
+          description: Number of transactions required to perform the transfer or swap
+          type: integer
+        usd_amount_in:
+          description: Amount of the source denom, converted to USD value
+          type: string
+        usd_amount_out:
+          description: Amount of the destination denom expected to be received, converted
+            to USD value
+          type: string
+        swap_price_impact_percent:
+          description: Price impact of the estimated swap, if present
+          nullable: true
+          type: string
+      type: object
+    SendTokenError:
+      properties:
+        message:
+          description: Error message
+          type: string
+        type:
+          $ref: '#/components/schemas/SendTokenErrorType'
+      type: object
+    SendTokenErrorType:
+      description: 'SendToken error types: <br/> * SEND_TOKEN_EXECUTION_ERROR - Error
+        occurred during the execute transaction <br/>
+
+        '
+      enum:
+      - SEND_TOKEN_EXECUTION_ERROR
+      type: string
+    SendTokenTxs:
+      properties:
+        confirm_tx:
+          allOf:
+          - $ref: '#/components/schemas/PacketTransaction'
+          nullable: true
+        error:
+          allOf:
+          - $ref: '#/components/schemas/SendTokenError'
+          nullable: true
+        execute_tx:
+          allOf:
+          - $ref: '#/components/schemas/PacketTransaction'
+          nullable: true
+        send_tx:
+          allOf:
+          - $ref: '#/components/schemas/PacketTransaction'
+          nullable: true
+      type: object
+    StatusError:
+      properties:
+        details:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/TransactionExecutionErrorDetails'
+        message:
+          description: Error message
+          type: string
+        type:
+          $ref: '#/components/schemas/StatusErrorType'
+      type: object
+    StatusErrorType:
+      description: 'Packet error type: <br/> * STATUS_ERROR_UNKNOWN - Unknown error <br/>
+        * STATUS_ERROR_TRANSACTION_EXECUTION - Error was encountered during transaction
+        execution <br/> * STATUS_ERROR_INDEXING - Error was encountered while indexing
+        the transaction and packet data <br/> * STATUS_ERROR_TRANSFER - The transfer failed
+        to complete successfully <br/>
+
+        '
+      enum:
+      - STATUS_ERROR_UNKNOWN
+      - STATUS_ERROR_TRANSACTION_EXECUTION
+      - STATUS_ERROR_INDEXING
+      - STATUS_ERROR_TRANSFER
+      type: string
+    Swap:
+      oneOf:
+      - $ref: '#/components/schemas/SwapInWrapper'
+      - $ref: '#/components/schemas/SwapOutWrapper'
+      properties:
+        estimated_affiliate_fee:
+          description: Estimated total affiliate fee generated by the swap
+          type: string
+      type: object
+    SwapExactCoinIn:
+      description: Specification of a swap with an exact amount in
+      properties:
+        swap_amount_in:
+          description: Amount to swap in
+          nullable: true
+          type: string
+        swap_operations:
+          description: Operations required to execute the swap
+          items:
+            $ref: '#/components/schemas/SwapOperation'
+          type: array
+        swap_venue:
+          allOf:
+          - $ref: '#/components/schemas/SwapVenue'
+          description: Swap venue that this swap should execute on
+        price_impact_percent:
+          description: Price impact of the estimated swap
+          nullable: true
+          type: string
+      type: object
+    SwapExactCoinOut:
+      description: Specification of a swap with an exact amount out
+      properties:
+        swap_amount_out:
+          description: Amount to get out of the swap
+          type: string
+        swap_operations:
+          description: Operations required to execute the swap
+          items:
+            $ref: '#/components/schemas/SwapOperation'
+          type: array
+        swap_venue:
+          allOf:
+          - $ref: '#/components/schemas/SwapVenue'
+          description: Swap venue that this swap should execute on
+        price_impact_percent:
+          description: Price impact of the estimated swap
+          nullable: true
+          type: string
+      type: object
+    SwapInWrapper:
+      properties:
+        swap_in:
+          $ref: '#/components/schemas/SwapExactCoinIn'
+      type: object
+    SwapOperation:
+      description: Description of a single swap operation
+      properties:
+        denom_in:
+          description: Input denom of the swap
+          type: string
+        denom_out:
+          description: Output denom of the swap
+          type: string
+        pool:
+          description: Identifier of the pool to use for the swap
+          type: string
+      type: object
+    SwapOutWrapper:
+      properties:
+        swap_out:
+          $ref: '#/components/schemas/SwapExactCoinOut'
+      type: object
+    SwapVenue:
+      description: A venue on which swaps can be exceuted
+      properties:
+        chain_id:
+          description: Chain-id of the swap venue
+          type: string
+        name:
+          description: Name of the swap venue
+          type: string
+      type: object
+    SwapWrapper:
+      properties:
+        swap:
+          $ref: '#/components/schemas/Swap'
+      type: object
+    TransactionExecutionErrorDetails:
+      properties:
+        code:
+          description: Error code
+          type: number
+        message:
+          description: Error message
+          type: string
+      type: object
+    TransactionState:
+      description: 'Transaction state: <br/> * STATE_SUBMITTED - The initial transaction
+        has been submitted to Skip API but not observed on chain yet. <br/> * STATE_PENDING
+        - The initial transaction has been observed on chain, and there are still pending
+        actions. <br/> * STATE_RECEIVED - The transfer asset has been released, but there
+        are still packet events that are not indexed. <br/> * STATE_COMPLETED_SUCCESS
+        - The initial transaction and any subsequent transfers have completed successfully
+        and lifecycle tracking has concluded. <br/> * STATE_COMPLETED_ERROR - The initial
+        transaction or a subsequent transfer failed and lifecycle tracking has concluded.
+        <br/> * STATE_ABANDONED - Tracking for the transaction has been abandoned. This
+        happens if the cross-chain  sequence of actions stalls for more than 10 minutes
+        or if the initial transaction does not get observed in a block for 5 minutes.
+
+        '
+      enum:
+      - STATE_SUBMITTED
+      - STATE_PENDING
+      - STATE_RECEIVED
+      - STATE_COMPLETED_SUCCESS
+      - STATE_COMPLETED_ERROR
+      - STATE_ABANDONED
+      type: string
+    Transfer:
+      description: A cross-chain transfer
+      properties:
+        chain_id:
+          description: Chain-id on which the transfer is initiated
+          type: string
+        channel:
+          description: Channel to use to initiate the transfer
+          type: string
+        dest_denom:
+          description: Denom of the destionation asset of the transfer
+          type: string
+        pfm_enabled:
+          description: Whether pfm is enabled on the chain where the transfer is initiated
+          type: boolean
+        port:
+          description: Port to use to initiate the transfer
+          type: string
+      type: object
+    TransferEvent:
+      oneOf:
+      - $ref: '#/components/schemas/IBCTransferInfo'
+      - $ref: '#/components/schemas/AxelarTransferInfo'
+    TransferInfo:
+      properties:
+        dst_chain_id:
+          description: Chain ID of the destination chain
+          type: string
+        packet_txs:
+          $ref: '#/components/schemas/Packet'
+        src_chain_id:
+          description: Chain ID of the source chain
+          type: string
+        state:
+          $ref: '#/components/schemas/TransferState'
+      type: object
+    TransferState:
+      description: "Transfer state: <br/> * TRANSFER_UNKNOWN - Transfer state is not known.\
+        \ <br/> * TRANSFER_PENDING - The send packet for the transfer has been committed\
+        \ and the transfer is pending. <br/> * TRANSFER_RECEIVED - The transfer packet\
+        \ has been received by the destination chain. It can still fail and revert if\
+        \ it is part  of a multi-hop PFM transfer. <br/> * TRANSFER_SUCCESS - The transfer\
+        \ has been successfully completed and will not revert. <br/> * TRANSFER_FAILURE\
+        \ - The transfer has failed. \n"
+      enum:
+      - TRANSFER_UNKNOWN
+      - TRANSFER_PENDING
+      - TRANSFER_RECEIVED
+      - TRANSFER_SUCCESS
+      - TRANSFER_FAILURE
+      type: string
+    TransferStatus:
+      properties:
+        error:
+          allOf:
+          - $ref: '#/components/schemas/StatusError'
+          nullable: true
+        next_blocking_transfer:
+          description: Indicates which entry in the `transfer_sequence` field that the
+            transfer is blocked on. Will be null if there is no blocked transfer.
+          nullable: true
+          properties:
+            transfer_sequence_index:
+              description: The index of the entry in the `transfer_sequence` field that
+                the transfer is blocked on.
+              type: integer
+          type: object
+        state:
+          $ref: '#/components/schemas/TransactionState'
+        transfer_asset_release:
+          description: Indicates location and denom of transfer asset release.
+          nullable: true
+          properties:
+            chain_id:
+              description: The chain ID of the chain that the transfer asset is released
+                on.
+              type: string
+            denom:
+              description: The denom of the asset that is released.
+              type: string
+          type: object
+        transfer_sequence:
+          description: Lists any IBC and Axelar transfers as they are seen.
+          items:
+            $ref: '#/components/schemas/TransferEvent'
+          type: array
+      type: object
+    TransferWrapper:
+      properties:
+        transfer:
+          $ref: '#/components/schemas/Transfer'
+      type: object 
