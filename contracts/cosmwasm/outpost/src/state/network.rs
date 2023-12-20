@@ -1,7 +1,7 @@
 use crate::{
     batch::BatchResponse, events::make_event, prelude::*, state::ics27::IBC_CHANNEL_NETWORK,
 };
-use cosmwasm_std::{DepsMut, Storage, Deps, StdResult, Order};
+use cosmwasm_std::{Deps, DepsMut, Order, StdResult, Storage};
 use cvm_route::transport::*;
 use cvm_runtime::{outpost::NetworkItem, NetworkId};
 
@@ -25,10 +25,11 @@ pub struct OtherNetwork {
 pub fn load_other(storage: &dyn Storage, other: NetworkId) -> Result<OtherNetwork> {
     let this = state::load(storage)?;
     let other: NetworkItem = NETWORK.load(storage, other)?;
-    let connection = NETWORK_TO_NETWORK.load(storage, (this.network_id, other.network_id))?;
+    let connection: NetworkToNetworkItem =
+        NETWORK_TO_NETWORK.load(storage, (this.network_id, other.network_id))?;
     Ok(OtherNetwork {
         network: other,
-        connection : connection.other,
+        connection: connection.to_network,
     })
 }
 
@@ -38,14 +39,14 @@ pub(crate) fn force_network_to_network(
     msg: cvm_route::transport::NetworkToNetworkItem,
 ) -> std::result::Result<BatchResponse, crate::error::ContractError> {
     NETWORK_TO_NETWORK.save(deps.storage, (msg.from_network_id, msg.to_network_id), &msg)?;
-    if let Some(ibc) = msg.to_other.ics27_channel {
+    if let Some(ibc) = msg.to_network.ics27_channel {
         IBC_CHANNEL_NETWORK.save(deps.storage, ibc.id.to_string(), &msg.to_network_id)?;
     }
     Ok(BatchResponse::new().add_event(
         make_event("network_to_network.forced")
             .add_attribute("to", msg.to_network_id.to_string())
             .add_attribute("from", msg.from_network_id.to_string())
-            .add_attribute("ics_20", msg.to_other.ics_20.is_some().to_string()),
+            .add_attribute("ics_20", msg.to_network.ics_20.is_some().to_string()),
     ))
 }
 
@@ -66,7 +67,6 @@ pub(crate) const NETWORK_TO_NETWORK: Map<(NetworkId, NetworkId), NetworkToNetwor
 
 /// network state shared among all networks about it
 pub(crate) const NETWORK: Map<NetworkId, NetworkItem> = Map::new("network");
-
 
 pub fn get_all_networks(deps: Deps) -> StdResult<Vec<NetworkItem>> {
     NETWORK

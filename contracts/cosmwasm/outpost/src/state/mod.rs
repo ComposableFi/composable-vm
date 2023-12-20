@@ -24,6 +24,13 @@ pub(crate) fn save(storage: &mut dyn Storage, value: &HereItem) -> StdResult<()>
 }
 
 pub(crate) fn get_config(deps: cosmwasm_std::Deps<'_>) -> Result<GetConfigResponse, ContractError> {
+    use crate::state::*;
     let exchanges = exchange::get_all_exchanges(deps)?;
-    panic!()
+    Ok(GetConfigResponse {
+        network_to_networks: network::get_all_network_to_network(deps)?,
+        assets: assets::get_all_assets(deps)?,
+        exchanges,
+        networks: network::get_all_networks(deps)?,
+        network_assets: assets::get_all_network_assets(deps)?,
+    })
 }

@@ -186,7 +186,10 @@ pub fn get_this_route(
         .map_err(|_| ContractError::AssetNotFoundById(this_asset_id))?;
     let to_asset: AssetId = crate::state::assets::NETWORK_ASSET
         .load(storage, (to_network_id, this_asset_id))
-        .map_err(|_| ContractError::AssetCannotBeTransferredToNetwork(this_asset_id, to_network_id))?;
+        .map_err(|_| {
+            ContractError::AssetCannotBeTransferredToNetwork(this_asset_id, to_network_id)
+        })?
+        .asset_id;
     let gateway_to_send_to = other
         .network
         .outpost

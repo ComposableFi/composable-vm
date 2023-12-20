@@ -73,7 +73,8 @@ impl Auth<policy::WasmHook> {
             //msg::GatewayId::Evm { contract, .. } => contract.to_string(),
         };
 
-        let channel = this_to_other.to_other
+        let channel = this_to_other
+            .to_network
             .ics_20
             .ok_or(ContractError::ICS20NotFound)?
             .source;

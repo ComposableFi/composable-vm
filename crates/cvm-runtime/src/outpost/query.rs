@@ -1,7 +1,7 @@
 use crate::{prelude::*, AssetId, ExchangeId, NetworkId};
 
 use cvm_route::{
-    asset::{AssetItem, AssetReference},
+    asset::{AssetItem, AssetReference, NetworkAssetItem},
     exchange::ExchangeItem,
     transport::NetworkToNetworkItem,
     *,
@@ -110,6 +110,5 @@ pub struct GetConfigResponse {
     pub assets: Vec<AssetItem>,
     pub exchanges: Vec<ExchangeItem>,
     pub networks: Vec<NetworkItem>,
-    pub network_to_networks: Vec<NetworkToNetworkItem>,
-    pub network_assets: Vec<(NetworkAssetId, AssetId)>,
+    pub network_assets: Vec<NetworkAssetItem>,
 }

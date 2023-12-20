@@ -14,7 +14,7 @@ pub struct NetworkToNetworkItem {
     pub to_network_id: NetworkId,
 
     /// how to send `to_network_id` chain
-    pub to_other: OtherNetworkItem,
+    pub to_network: OtherNetworkItem,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]

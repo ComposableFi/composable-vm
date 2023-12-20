@@ -38,6 +38,18 @@ pub struct AssetItem {
     pub bridged: Option<BridgeAsset>,
 }
 
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+#[serde(rename_all = "snake_case")]
+#[cfg_attr(
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
+    derive(schemars::JsonSchema)
+)]
+pub struct NetworkAssetItem {
+    pub to_network_id: NetworkId,
+    pub asset_id: AssetId,
+    pub to_asset_id: AssetId,
+}
+
 impl AssetItem {
     pub fn denom(&self) -> String {
         self.local.denom()

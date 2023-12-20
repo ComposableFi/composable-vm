@@ -10,7 +10,7 @@ use crate::{
     },
 };
 use cosmwasm_std::{Deps, DepsMut};
-use cvm_route::asset::{AssetItem, AssetReference};
+use cvm_route::asset::{AssetItem, AssetReference, NetworkAssetItem};
 use cvm_runtime::{AssetId, NetworkId};
 
 /// Adds a new asset to the registry; errors out if asset already exists.
@@ -68,7 +68,12 @@ pub(crate) fn force_asset_to_network_map(
     other_network: NetworkId,
     other_asset: AssetId,
 ) -> Result<BatchResponse> {
-    state::assets::NETWORK_ASSET.save(deps.storage, (other_network, this_asset), &other_asset)?;
+    let item = NetworkAssetItem {
+        asset_id: this_asset,
+        to_network_id: other_network,
+        to_asset_id: other_asset,
+    };
+    state::assets::NETWORK_ASSET.save(deps.storage, (other_network, this_asset), &item)?;
     Ok(BatchResponse::new().add_event(
         make_event("assets.forced_asset_to_network_map")
             .add_attribute("this_asset", this_asset.to_string())

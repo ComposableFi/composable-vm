@@ -1,5 +1,7 @@
 use cosmwasm_std::{BlockInfo, IbcTimeout};
-use cvm_route::{asset::AssetToNetwork, exchange::ExchangeItem, transport::NetworkToNetworkItem, *};
+use cvm_route::{
+    asset::AssetToNetwork, exchange::ExchangeItem, transport::NetworkToNetworkItem, *,
+};
 use ibc_core_host_types::identifiers::ChannelId;
 
 use crate::{prelude::*, transport::ibc::IbcEnabled, AssetId, NetworkId};
