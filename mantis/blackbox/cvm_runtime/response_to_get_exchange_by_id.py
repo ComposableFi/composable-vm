@@ -3,6 +3,8 @@
 
 from __future__ import annotations
 
+from typing import Union
+
 from pydantic import BaseModel, Extra, Field, conint
 
 
@@ -20,13 +22,26 @@ class DisplayedForUint128(BaseModel):
     )
 
 
+class OsmosisPoolManagerModuleV1Beta1(BaseModel):
+    pool_id: conint(ge=0)
+    token_a: str
+    token_b: str
+
+
+class ExchangeType5(BaseModel):
+    class Config:
+        extra = Extra.forbid
+
+    osmosis_pool_manager_module_v1_beta1: OsmosisPoolManagerModuleV1Beta1
+
+
 class AstroportRouterContract(BaseModel):
     address: Addr
     token_a: str
     token_b: str
 
 
-class ExchangeType3(BaseModel):
+class ExchangeType6(BaseModel):
     class Config:
         extra = Extra.forbid
 
@@ -34,7 +49,7 @@ class ExchangeType3(BaseModel):
 
 
 class ExchangeType(BaseModel):
-    __root__: ExchangeType3
+    __root__: Union[ExchangeType5, ExchangeType6]
 
 
 class NetworkId(BaseModel):

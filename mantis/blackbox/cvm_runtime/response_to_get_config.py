@@ -81,13 +81,26 @@ class DisplayedForUint128(BaseModel):
     )
 
 
+class OsmosisPoolManagerModuleV1Beta1(BaseModel):
+    pool_id: conint(ge=0)
+    token_a: str
+    token_b: str
+
+
+class ExchangeType3(BaseModel):
+    class Config:
+        extra = Extra.forbid
+
+    osmosis_pool_manager_module_v1_beta1: OsmosisPoolManagerModuleV1Beta1
+
+
 class AstroportRouterContract(BaseModel):
     address: Addr
     token_a: str
     token_b: str
 
 
-class ExchangeType2(BaseModel):
+class ExchangeType4(BaseModel):
     class Config:
         extra = Extra.forbid
 
@@ -95,7 +108,7 @@ class ExchangeType2(BaseModel):
 
 
 class ExchangeType(BaseModel):
-    __root__: ExchangeType2
+    __root__: Union[ExchangeType3, ExchangeType4]
 
 
 class IbcEndpoint(BaseModel):

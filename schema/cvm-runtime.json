@@ -642,6 +642,36 @@
           {
             "type": "object",
             "required": [
+              "osmosis_pool_manager_module_v1_beta1"
+            ],
+            "properties": {
+              "osmosis_pool_manager_module_v1_beta1": {
+                "type": "object",
+                "required": [
+                  "pool_id",
+                  "token_a",
+                  "token_b"
+                ],
+                "properties": {
+                  "pool_id": {
+                    "type": "integer",
+                    "format": "uint64",
+                    "minimum": 0.0
+                  },
+                  "token_a": {
+                    "type": "string"
+                  },
+                  "token_b": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "required": [
               "astroport_router_contract"
             ],
             "properties": {
@@ -2064,6 +2094,36 @@
             {
               "type": "object",
               "required": [
+                "osmosis_pool_manager_module_v1_beta1"
+              ],
+              "properties": {
+                "osmosis_pool_manager_module_v1_beta1": {
+                  "type": "object",
+                  "required": [
+                    "pool_id",
+                    "token_a",
+                    "token_b"
+                  ],
+                  "properties": {
+                    "pool_id": {
+                      "type": "integer",
+                      "format": "uint64",
+                      "minimum": 0.0
+                    },
+                    "token_a": {
+                      "type": "string"
+                    },
+                    "token_b": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "required": [
                 "astroport_router_contract"
               ],
               "properties": {
@@ -2543,6 +2603,36 @@
         },
         "ExchangeType": {
           "oneOf": [
+            {
+              "type": "object",
+              "required": [
+                "osmosis_pool_manager_module_v1_beta1"
+              ],
+              "properties": {
+                "osmosis_pool_manager_module_v1_beta1": {
+                  "type": "object",
+                  "required": [
+                    "pool_id",
+                    "token_a",
+                    "token_b"
+                  ],
+                  "properties": {
+                    "pool_id": {
+                      "type": "integer",
+                      "format": "uint64",
+                      "minimum": 0.0
+                    },
+                    "token_a": {
+                      "type": "string"
+                    },
+                    "token_b": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "additionalProperties": false
+            },
             {
               "type": "object",
               "required": [

@@ -149,8 +149,8 @@ class DisplayedForUint64(BaseModel):
     )
 
 
-class AstroportRouterContract(BaseModel):
-    address: Addr
+class OsmosisPoolManagerModuleV1Beta1(BaseModel):
+    pool_id: conint(ge=0)
     token_a: str
     token_b: str
 
@@ -159,11 +159,24 @@ class ExchangeType1(BaseModel):
     class Config:
         extra = Extra.forbid
 
+    osmosis_pool_manager_module_v1_beta1: OsmosisPoolManagerModuleV1Beta1
+
+
+class AstroportRouterContract(BaseModel):
+    address: Addr
+    token_a: str
+    token_b: str
+
+
+class ExchangeType2(BaseModel):
+    class Config:
+        extra = Extra.forbid
+
     astroport_router_contract: AstroportRouterContract
 
 
 class ExchangeType(BaseModel):
-    __root__: ExchangeType1
+    __root__: Union[ExchangeType1, ExchangeType2]
 
 
 class FundsForDisplayedForUint128(BaseModel):
