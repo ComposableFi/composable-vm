@@ -194,7 +194,7 @@
             ];
           };
 
-          python-packages = ps: with ps; [ numpy cvxpy wheel virtualenv uvicorn fastapi pydantic environs fastapi-cache2 pip cosmpy jsonschema grpcio ecdsa bech32 requests protobuf python-dateutil pycryptodome googleapis-common-protos ];
+          python-packages = ps: with ps; [ numpy cvxpy wheel virtualenv uvicorn fastapi pydantic environs fastapi-cache2 pip cosmpy pendulum jsonschema grpcio ecdsa bech32 requests protobuf python-dateutil pycryptodome googleapis-common-protos ];
           python = pkgs.python3.withPackages python-packages;
           inherit (poetry2nix.lib.mkPoetry2Nix { inherit pkgs; }) mkPoetryApplication mkPoetryPackages;
           env = {
