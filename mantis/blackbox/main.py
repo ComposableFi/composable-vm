@@ -9,6 +9,8 @@ from fastapi import FastAPI
 import blackbox.cvm_runtime.query as cvm_query
 import requests
 
+from fastapi_cache.decorator import cache
+
 app = FastAPI()
 
 @app.get("/status")
@@ -18,6 +20,11 @@ async def status():
 # gets all data from all sources
 @app.get("/data/all") 
 async def get_data_all()-> AllData:
+    result = get_data()
+    return result
+
+@cache(expire=30)
+def get_data():
     cfg = NetworkConfig(
     chain_id="centauri-1",
     url="grpc+"+ setting.composable_cosmos_grpc,

@@ -346,6 +346,22 @@
         "type": "github"
       }
     },
+    "fastapi-cache-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1701956277,
+        "narHash": "sha256-zkWDeODlkEOd9s+vnedS1cliycZadpZNS1RvFfhw8/A=",
+        "owner": "long2ice",
+        "repo": "fastapi-cache",
+        "rev": "91ba6d75524b1f6a17ae6a3300ab51b9aa1fcf71",
+        "type": "github"
+      },
+      "original": {
+        "owner": "long2ice",
+        "repo": "fastapi-cache",
+        "type": "github"
+      }
+    },
     "flake-parts": {
       "inputs": {
         "nixpkgs-lib": "nixpkgs-lib"
@@ -1246,6 +1262,7 @@
         "crane": "crane",
         "datamodel-code-generator-src": "datamodel-code-generator-src",
         "devour-flake": "devour-flake",
+        "fastapi-cache-src": "fastapi-cache-src",
         "flake-parts": "flake-parts_2",
         "networks": "networks",
         "nixpkgs": "nixpkgs_4",
