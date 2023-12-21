@@ -983,11 +983,11 @@
         "nixpkgs": "nixpkgs_3"
       },
       "locked": {
-        "lastModified": 1703094359,
-        "narHash": "sha256-RQwus0tTLo58bOz5gDaxPEbhA2oX+6TqXH7dns1bgRE=",
+        "lastModified": 1703173993,
+        "narHash": "sha256-knmvZLtlEPT0RSdpjPUuzYUL3RDiYhZpKNxNxj6r9Dk=",
         "owner": "ComposableFi",
         "repo": "networks",
-        "rev": "a4edc3eee0c30592824a690f4db1f12ecaddc5e6",
+        "rev": "2be517f4f57375ba46f77b7adc2ef7a1c6673e46",
         "type": "github"
       },
       "original": {
