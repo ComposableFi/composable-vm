@@ -8,7 +8,6 @@ from fastapi import FastAPI
 import blackbox.cvm_runtime.query as cvm_query
 import requests
 
-
 app = FastAPI()
 
 @app.get("/status")
