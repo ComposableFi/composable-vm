@@ -1,3 +1,4 @@
+from typing import Dict
 from blackbox.cvm_runtime.response_to_get_config import GetConfigResponse
 from blackbox.models import AllData, CosmosChains, NeutronPoolsResponse, OsmosisPoolsResponse
 from blackbox.neutron_pools import Model as NeutronPoolsModel
@@ -26,12 +27,12 @@ async def get_data_all()-> AllData:
     )
     client = LedgerClient(cfg)
     cvm_contract = LedgerContract(
-        path=None, client = client, address= setting.cvm_address
+        path=None, client = client, address = setting.cvm_address
     )
         
+    cvmQueryRequest = cvm_contract.query(cvm_query.QueryMsg5(get_config=dict()).__dict__)
+    cvm_registry = GetConfigResponse.parse_obj(cvmQueryRequest)
     skip_api = CosmosChains.parse_raw(requests.get(setting.skip_money+ "v1/info/chains").content)      
-    cvm_registry = GetConfigResponse.parse_obj(cvm_contract.query(cvm_query.QueryMsg5()))
-    cvm_registry = None
     osmosis_pools = OsmosisPoolsResponse.parse_raw(requests.get(setting.osmosis_pools).content)
     astroport_pools = NeutronPoolsResponse.parse_raw(requests.get(setting.astroport_pools).content).result.data   
     result = AllData(osmosis_pools = osmosis_pools.pools, cvm_registry = cvm_registry, astroport_pools = astroport_pools, cosmos_chains=skip_api)
