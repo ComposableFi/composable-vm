@@ -92,13 +92,13 @@ class IbcIcs20ProgramRoute(BaseModel):
     channel_to_send_over: ChannelId
     counterparty_timeout: RelativeTimeout
     from_network: NetworkId
-    gateway_to_send_to: OutpostId = Field(
-        ..., description='the contract address of the gateway to send to assets'
-    )
+    from_outpost: Addr
     ibc_ics_20_sender: IbcIcs20Sender
     local_native_denom: str
     on_remote_asset: AssetId
-    sender_gateway: Addr
+    to_outpost: OutpostId = Field(
+        ..., description='the contract address of the gateway to send to assets'
+    )
 
 
 class GetIbcIcs20RouteResponse(BaseModel):

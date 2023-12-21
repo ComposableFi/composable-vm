@@ -64,7 +64,7 @@
 //! variants of both of them.
 
 use super::{BindingValue, Bindings};
-use crate::{InterpreterOrigin, NetworkId, OrderedBindings, UserId, UserOrigin};
+use crate::{ExecutorOrigin, NetworkId, OrderedBindings, UserId, UserOrigin};
 use alloc::{fmt::Debug, string::String, vec, vec::Vec};
 use cosmwasm_std::{BankMsg, Coin, CosmosMsg, StdResult, Uint64};
 use cw_storage_plus::{IntKey, Key, KeyDeserialize, Prefixer, PrimaryKey};

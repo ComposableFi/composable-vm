@@ -6,7 +6,7 @@ use ibc_core_host_types::identifiers::ChannelId;
 #[cfg_attr(not(feature = "library"), entry_point)]
 pub fn sudo(deps: DepsMut, env: Env, msg: SudoMsg) -> crate::error::Result {
     deps.api.debug(&format!(
-        "cvm::gateway::sudo {}",
+        "cvm::outpost::sudo {}",
         serde_json_wasm::to_string(&msg)?
     ));
     match msg {
@@ -38,7 +38,7 @@ fn handle_transport_failure(
 ) -> Result<cosmwasm_std::Response, ContractError> {
     deps.api.debug(
         format!(
-            "cvm::gateway::handle::transport_failure {} {} {}",
+            "cvm::outpost::handle::transport_failure {} {} {}",
             &channel, sequence, &reason
         )
         .as_str(),
@@ -67,5 +67,5 @@ fn handle_transport_failure(
         .collect();
 
     response = response.add_message(wasm_execute(interpreter.address, &msg, assets)?);
-    Ok(response.add_event(Event::new("cvm::gateway::handle::transport_failure")))
+    Ok(response.add_event(Event::new("cvm::outpost::handle::transport_failure")))
 }

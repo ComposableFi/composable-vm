@@ -307,7 +307,7 @@
       ],
       "properties": {
         "executor_origin": {
-          "$ref": "#/definitions/InterpreterOrigin"
+          "$ref": "#/definitions/ExecutorOrigin"
         },
         "msg": {
           "$ref": "#/definitions/ExecuteProgramMsg_for_Funds_for_Displayed_for_uint128"
@@ -693,6 +693,22 @@
         }
       }
     },
+    "ExecutorOrigin": {
+      "description": "The interpreter origin, composite of a user origin and a salt.",
+      "type": "object",
+      "required": [
+        "salt",
+        "user_origin"
+      ],
+      "properties": {
+        "salt": {
+          "type": "string"
+        },
+        "user_origin": {
+          "$ref": "#/definitions/UserOrigin"
+        }
+      }
+    },
     "ForeignAssetId": {
       "oneOf": [
         {
@@ -1009,22 +1025,6 @@
           "additionalProperties": false
         }
       ]
-    },
-    "InterpreterOrigin": {
-      "description": "The interpreter origin, composite of a user origin and a salt.",
-      "type": "object",
-      "required": [
-        "salt",
-        "user_origin"
-      ],
-      "properties": {
-        "salt": {
-          "type": "string"
-        },
-        "user_origin": {
-          "$ref": "#/definitions/UserOrigin"
-        }
-      }
     },
     "NetworkId": {
       "description": "Newtype for XCVM networks ID. Must be unique for each network and must never change. This ID is an opaque, arbitrary type from the XCVM protocol and no assumption must be made on how it is computed.",

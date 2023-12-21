@@ -37,7 +37,7 @@ pub(crate) fn handle_bridge_forward(
     block: BlockInfo,
 ) -> Result {
     deps.api.debug(&format!(
-        "cvm::gateway::bridge::forward::ibc::ics20::memo {}",
+        "cvm::outpost::bridge::forward::ibc::ics20::memo {}",
         &serde_json_wasm::to_string(&msg)?
     ));
 
@@ -77,7 +77,7 @@ pub(crate) fn handle_bridge_forward(
         };
 
         deps.api.debug(&format!(
-            "cvm::gateway::ibc::ics20 route {}",
+            "cvm::outpost::ibc::ics20 route {}",
             &serde_json_wasm::to_string(&route)?
         ));
 
@@ -101,7 +101,7 @@ pub(crate) fn handle_bridge_forward(
 
         let coin = Coin::new(amount.0, route.local_native_denom.clone());
 
-        match route.gateway_to_send_to.clone() {
+        match route.to_outpost.clone() {
             OutpostId::CosmWasm { contract, .. } => {
                 let msg = to_cosmwasm_message(
                     deps.as_ref(),
@@ -113,7 +113,7 @@ pub(crate) fn handle_bridge_forward(
                     contract,
                 )?;
                 (msg, event)
-            } // GatewayId::Evm { .. } => Err(ContractError::NotImplemented)?,
+            } // OutpostId::Evm { .. } => Err(ContractError::NotImplemented)?,
         }
     };
 
@@ -190,14 +190,14 @@ pub fn get_this_route(
             ContractError::AssetCannotBeTransferredToNetwork(this_asset_id, to_network_id)
         })?
         .asset_id;
-    let gateway_to_send_to = other
+    let to_outpost = other
         .network
         .outpost
         .ok_or(ContractError::UnsupportedNetwork)?;
 
-    let sender_gateway = match this.outpost.expect("we execute here") {
+    let from_outpost = match this.outpost.expect("we execute here") {
         OutpostId::CosmWasm { contract, .. } => contract,
-        // GatewayId::Evm { .. } => {
+        // OutpostId::Evm { .. } => {
         //     Err(ContractError::BadlyConfiguredRouteBecauseThisChainCanSendOnlyFromCosmwasm)?
         // }
     };
@@ -212,8 +212,8 @@ pub fn get_this_route(
         from_network: this.network_id,
         local_native_denom: asset.local.denom(),
         channel_to_send_over: channel,
-        gateway_to_send_to,
-        sender_gateway,
+        to_outpost,
+        from_outpost,
         counterparty_timeout: other.connection.counterparty_timeout,
         ibc_ics_20_sender: this
             .ibc
@@ -237,7 +237,7 @@ pub(crate) fn ics20_message_hook(
     let packet: XcPacket = msg.packet;
     ensure_anonymous(&packet.program)?;
     deps.api.debug(&format!(
-        "cvm::gateway::ibc::ics20:: received assets {:?}, packet assets {:?}",
+        "cvm::outpost::ibc::ics20:: received assets {:?}, packet assets {:?}",
         &info.funds, &packet.assets
     ));
 

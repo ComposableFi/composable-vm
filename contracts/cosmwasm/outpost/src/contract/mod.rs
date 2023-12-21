@@ -55,7 +55,7 @@ pub fn migrate(deps: DepsMut, _env: Env, _msg: msg::MigrateMsg) -> Result {
 
 #[cfg_attr(not(feature = "library"), cosmwasm_std::entry_point)]
 pub fn reply(deps: DepsMut, _env: Env, msg: Reply) -> Result<Response> {
-    deps.api.debug(&format!("cvm::cosmwasm::reply {msg:?}"));
+    deps.api.debug(&format!("cvm::outpost::cosmwasm::reply {msg:?}"));
     if let Some(reply_id) = ReplyId::n(msg.id) {
         return match reply_id {
             ReplyId::InstantiateInterpreter => {
@@ -70,7 +70,7 @@ pub fn reply(deps: DepsMut, _env: Env, msg: Reply) -> Result<Response> {
 
 fn handle_transfer_sent(deps: DepsMut, msg: Reply) -> Result {
     deps.api.debug(&format!(
-        "cvm::gateway::handle_transfer_sent {:?}",
+        "cvm::outposts::handle_transfer_sent {:?}",
         msg.result
     ));
     let SubMsgResult::Ok(SubMsgResponse { data: Some(b), .. }) = msg.result else {

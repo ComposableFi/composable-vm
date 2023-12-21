@@ -66,11 +66,11 @@ impl Auth<policy::WasmHook> {
         let sender = crate::state::network::NETWORK
             .load(deps.storage, network_id)?
             .outpost
-            .ok_or(ContractError::GatewayForNetworkNotFound(network_id))?;
+            .ok_or(ContractError::OutpostForNetworkNotFound(network_id))?;
 
         let sender = match sender {
             msg::OutpostId::CosmWasm { contract, .. } => contract.to_string(),
-            //msg::GatewayId::Evm { contract, .. } => contract.to_string(),
+            //msg::OutpostId::Evm { contract, .. } => contract.to_string(),
         };
 
         let channel = this_to_other
@@ -81,7 +81,7 @@ impl Auth<policy::WasmHook> {
         let hash_of_channel_and_sender =
             ibc_apps_more::hook::derive_intermediate_sender(&channel, &sender, &prefix)?;
         deps.api.debug(&format!(
-            "cvm::gateway:auth:: {0} {1}",
+            "cvm::outpost:auth:: {0} {1}",
             &hash_of_channel_and_sender, &info.sender
         ));
         Self::new(hash_of_channel_and_sender == info.sender || info.sender == env.contract.address)
@@ -92,7 +92,7 @@ impl Auth<policy::Interpreter> {
     pub(crate) fn authorise(
         deps: Deps,
         info: &MessageInfo,
-        interpreter_origin: cvm_runtime::InterpreterOrigin,
+        interpreter_origin: cvm_runtime::ExecutorOrigin,
     ) -> Result<Self> {
         let interpreter_address = state::interpreter::get_by_origin(deps, interpreter_origin)
             .map(|int| int.address)

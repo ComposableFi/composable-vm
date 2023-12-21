@@ -9,13 +9,13 @@ use cosmwasm_std::{
     to_json_binary, Deps, DepsMut, Reply, Response, StdError, StdResult, SubMsg, WasmMsg,
 };
 
-use cvm_runtime::{executor::CvmInterpreterInstantiated, CallOrigin, InterpreterOrigin};
+use cvm_runtime::{executor::CvmInterpreterInstantiated, CallOrigin, ExecutorOrigin};
 
 use crate::{auth, prelude::*};
 
 pub(crate) fn force_instantiate(
     _: auth::Admin,
-    gateway: Addr,
+    outpost: Addr,
     deps: DepsMut,
     user_origin: Addr,
     salt: String,
@@ -26,18 +26,18 @@ pub(crate) fn force_instantiate(
             interpreter_code_id,
             ..
         } => interpreter_code_id,
-        //GatewayId::Evm { .. } => Err(ContractError::RuntimeUnsupportedOnNetwork)?,
+        //OutpostId::Evm { .. } => Err(ContractError::RuntimeUnsupportedOnNetwork)?,
     };
     let salt = salt.into_bytes();
 
     let call_origin = CallOrigin::Local { user: user_origin };
-    let interpreter_origin = InterpreterOrigin {
+    let interpreter_origin = ExecutorOrigin {
         user_origin: call_origin.user(config.network_id),
         salt: salt.clone(),
     };
     let msg = instantiate(
         deps.as_ref(),
-        gateway,
+        outpost,
         interpreter_code_id,
         &interpreter_origin,
         salt,
@@ -52,7 +52,7 @@ pub fn instantiate(
     deps: Deps,
     admin: Addr,
     interpreter_code_id: u64,
-    interpreter_origin: &InterpreterOrigin,
+    interpreter_origin: &ExecutorOrigin,
     salt: Vec<u8>,
 ) -> Result<SubMsg, ContractError> {
     let next_interpreter_id: u128 = state::interpreter::INTERPRETERS_COUNT
@@ -64,8 +64,8 @@ pub fn instantiate(
         admin: Some(admin.clone().into_string()),
         code_id: interpreter_code_id,
         msg: to_json_binary(&cvm_runtime::executor::InstantiateMsg {
-            gateway_address: admin.into_string(),
-            interpreter_origin: interpreter_origin.clone(),
+            outpost_address: admin.into_string(),
+            executor_origin: interpreter_origin.clone(),
         })?,
         funds: vec![],
         // and label has some unknown limits  (including usage of special characters)
@@ -113,7 +113,7 @@ pub(crate) fn handle_instantiate_reply(deps: DepsMut, msg: Reply) -> StdResult<R
         .ok_or_else(|| StdError::not_found("no data is returned from 'cvm_executor'"))?
         .value;
     let interpreter_origin =
-        cvm_runtime::shared::decode_base64::<_, InterpreterOrigin>(interpreter_origin.as_str())?;
+        cvm_runtime::shared::decode_base64::<_, ExecutorOrigin>(interpreter_origin.as_str())?;
 
     let interpreter_id: u128 = state::interpreter::INTERPRETERS_COUNT
         .load(deps.storage)

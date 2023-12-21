@@ -101,8 +101,8 @@
         '';
       };
 
-      evm-cvm-gateway = pkgs.stdenv.mkDerivation rec {
-        name = "evm-cvm-gateway";
+      evm-cvm-outpost = pkgs.stdenv.mkDerivation rec {
+        name = "evm-cvm-outpost";
         FOUNDRY_SOLC = "${pkgs.solc}/bin/solc";
         nativeBuildInputs = [self'.packages.forge pkgs.solc];
         src = evm-cvm-src;

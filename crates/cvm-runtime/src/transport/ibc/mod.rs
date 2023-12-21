@@ -53,9 +53,9 @@ pub struct IbcIcs20ProgramRoute {
     pub from_network: NetworkId,
     pub local_native_denom: String,
     pub channel_to_send_over: ChannelId,
-    pub sender_gateway: Addr,
+    pub from_outpost: Addr,
     /// the contract address of the gateway to send to assets
-    pub gateway_to_send_to: OutpostId,
+    pub to_outpost: OutpostId,
     pub counterparty_timeout: RelativeTimeout,
     pub ibc_ics_20_sender: IbcIcs20Sender,
     pub on_remote_asset: AssetId,
@@ -70,7 +70,7 @@ pub fn to_cosmwasm_message<T>(
     route: IbcIcs20ProgramRoute,
     packet: XcPacket,
     block: BlockInfo,
-    gateway_to_send_to: Addr,
+    to_outpost: Addr,
 ) -> StdResult<CosmosMsg<T>> {
     let msg = outpost::ExecuteMsg::MessageHook(XcMessageData {
         from_network_id: route.from_network,
@@ -79,7 +79,7 @@ pub fn to_cosmwasm_message<T>(
     let memo = SendMemo {
         inner: Memo {
             wasm: Some(Callback::new_cosmwasm(
-                gateway_to_send_to.clone(),
+                to_outpost.clone(),
                 serde_cw_value::to_value(msg).expect("can always serde"),
             )),
 
@@ -88,7 +88,7 @@ pub fn to_cosmwasm_message<T>(
         ibc_callback: None,
     };
     let memo = serde_json_wasm::to_string(&memo).expect("any memo can be to string");
-    api.debug(&format!("cvm::gateway::ibc::ics20::memo {}", &memo));
+    api.debug(&format!("cvm::outpost::ibc::ics20::memo {}", &memo));
     match route.ibc_ics_20_sender {
         IbcIcs20Sender::CosmosStargateIbcApplicationsTransferV1MsgTransfer => {
             // really
@@ -107,8 +107,8 @@ pub fn to_cosmwasm_message<T>(
                     denom: coin.denom,
                     amount: coin.amount.to_string(),
                 }),
-                sender: route.sender_gateway.to_string(),
-                receiver: gateway_to_send_to.clone().to_string(),
+                sender: route.from_outpost.to_string(),
+                receiver: to_outpost.clone().to_string(),
                 timeout_height: route
                     .counterparty_timeout
                     .absolute(block.clone())
@@ -125,7 +125,7 @@ pub fn to_cosmwasm_message<T>(
                     .unwrap_or_default(),
                 memo,
             };
-            api.debug(&format!("cvm::gateway::ibc::ics20:: payload {:?}", &value));
+            api.debug(&format!("cvm::outpost::ibc::ics20:: payload {:?}", &value));
 
             let value = value.encode_to_vec();
             let value = Binary::from(value);

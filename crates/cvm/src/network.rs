@@ -12,7 +12,7 @@ use cw_storage_plus::{IntKey, Key, KeyDeserialize, Prefixer, PrimaryKey};
     derive(schemars::JsonSchema)
 )]
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
-pub struct InterpreterOrigin {
+pub struct ExecutorOrigin {
     pub user_origin: UserOrigin,
     #[serde(with = "hex")]
     #[cfg_attr(
@@ -22,7 +22,7 @@ pub struct InterpreterOrigin {
     pub salt: Vec<u8>,
 }
 
-impl Display for InterpreterOrigin {
+impl Display for ExecutorOrigin {
     #[inline]
     fn fmt(&self, fmtr: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         let salt = hex::encode(self.salt.as_slice());
@@ -227,7 +227,7 @@ impl KeyDeserialize for NetworkId {
 }
 
 #[cfg(feature = "cosmwasm")]
-impl<'a> PrimaryKey<'a> for InterpreterOrigin {
+impl<'a> PrimaryKey<'a> for ExecutorOrigin {
     type Prefix = ();
     type SubPrefix = ();
     type Suffix = u128;
@@ -242,7 +242,7 @@ impl<'a> PrimaryKey<'a> for InterpreterOrigin {
 }
 
 #[cfg(feature = "cosmwasm")]
-impl<'a> Prefixer<'a> for InterpreterOrigin {
+impl<'a> Prefixer<'a> for ExecutorOrigin {
     fn prefix(&self) -> Vec<Key> {
         vec![
             Key::Val32(self.user_origin.network_id.0.to_cw_bytes()),
@@ -253,7 +253,7 @@ impl<'a> Prefixer<'a> for InterpreterOrigin {
 }
 
 #[cfg(feature = "cosmwasm")]
-impl KeyDeserialize for InterpreterOrigin {
+impl KeyDeserialize for ExecutorOrigin {
     type Output = <(u32, Vec<u8>, Vec<u8>) as KeyDeserialize>::Output;
     fn from_vec(value: Vec<u8>) -> StdResult<Self::Output> {
         <(u32, Vec<u8>, Vec<u8>) as KeyDeserialize>::from_vec(value)

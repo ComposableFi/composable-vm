@@ -10,7 +10,7 @@ pub use query::*;
 
 use crate::{
     exchange::*, prelude::*, transport::ibc::XcMessageData, AssetId, CallOrigin, Funds,
-    InterpreterOrigin, NetworkId,
+    ExecutorOrigin, NetworkId,
 };
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -115,7 +115,7 @@ pub type BridgeExecuteProgramMsg = ExecuteProgramMsg<Funds<crate::shared::Displa
     derive(schemars::JsonSchema)
 )]
 pub struct BridgeForwardMsg {
-    pub executor_origin: InterpreterOrigin,
+    pub executor_origin: ExecutorOrigin,
     /// target network
     pub to: NetworkId,
     pub msg: BridgeExecuteProgramMsg,
@@ -140,12 +140,12 @@ pub struct BridgeForwardMsg {
     derive(schemars::JsonSchema)
 )]
 #[serde(transparent)]
-pub struct Gateway {
+pub struct Outpost {
     address: cosmwasm_std::Addr,
 }
 
 #[cfg(feature = "cosmwasm")]
-impl Gateway {
+impl Outpost {
     pub fn new(address: cosmwasm_std::Addr) -> Self {
         Self { address }
     }

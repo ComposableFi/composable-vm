@@ -1,6 +1,6 @@
 use cosmwasm_std::{Addr, Event};
 use cvm_runtime::{
-    exchange::ExchangeId, executor::CvmInterpreterInstantiated, shared, InterpreterOrigin,
+    exchange::ExchangeId, executor::CvmInterpreterInstantiated, shared, ExecutorOrigin,
     NetworkId, UserId,
 };
 use serde::{Deserialize, Serialize};

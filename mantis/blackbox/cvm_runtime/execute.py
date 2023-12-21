@@ -487,6 +487,15 @@ class ExchangeItem(BaseModel):
     network_id: NetworkId
 
 
+class ExecutorOrigin(BaseModel):
+    """
+    The interpreter origin, composite of a user origin and a salt.
+    """
+
+    salt: str
+    user_origin: UserOrigin
+
+
 class ForeignAssetId1(BaseModel):
     class Config:
         extra = Extra.forbid
@@ -571,15 +580,6 @@ class InstructionForArrayOfUint8AndXcAddrAndFundsForAmount4(BaseModel):
         extra = Extra.forbid
 
     exchange: Exchange
-
-
-class InterpreterOrigin(BaseModel):
-    """
-    The interpreter origin, composite of a user origin and a salt.
-    """
-
-    salt: str
-    user_origin: UserOrigin
 
 
 class OtherNetworkItem(BaseModel):
@@ -788,7 +788,7 @@ class ExecuteMsg(BaseModel):
 
 
 class BridgeForwardMsg(BaseModel):
-    executor_origin: InterpreterOrigin
+    executor_origin: ExecutorOrigin
     msg: ExecuteProgramMsgForFundsForDisplayedForUint128
     to: NetworkId = Field(..., description='target network')
 

@@ -90,14 +90,14 @@ mod tests {
     use cosmwasm_std::{testing::*, Addr};
     use cvm_runtime::{
         executor::ExecuteMsg,
-        gateway::{HereItem, InstantiateMsg},
+        outpost::{HereItem, InstantiateMsg},
         shared::{XcAddr, XcFunds, XcFundsFilter, XcInstruction, XcProgram},
         Amount, Destination, Instruction,
     };
 
     #[test]
     fn query_no_data() {
-        let msg = cvm_runtime::gateway::QueryMsg::GetAssetById {
+        let msg = cvm_runtime::outpost::QueryMsg::GetAssetById {
             asset_id: 42.into(),
         };
         let resp = query(mock_dependencies().as_ref(), mock_env(), msg);
@@ -109,15 +109,15 @@ mod tests {
         let mut deps = mock_dependencies();
         let env = mock_env();
         let info = mock_info("sender", &[]);
-        let msg = cvm_runtime::gateway::InstantiateMsg(HereItem {
+        let msg = cvm_runtime::outpost::InstantiateMsg(HereItem {
             network_id: 2.into(),
             admin: Addr::unchecked("sender"),
         });
         crate::contract::instantiate(deps.as_mut(), env.clone(), info.clone(), msg).unwrap();
 
         let config = [];
-        let msg = cvm_runtime::gateway::ExecuteMsg::Config(
-            cvm_runtime::gateway::ConfigSubMsg::Force(config.to_vec()),
+        let msg = cvm_runtime::outpost::ExecuteMsg::Config(
+            cvm_runtime::outpost::ConfigSubMsg::Force(config.to_vec()),
         );
 
         crate::contract::execute::execute(deps.as_mut(), env.clone(), info.clone(), msg).unwrap();

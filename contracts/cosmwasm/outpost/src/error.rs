@@ -77,7 +77,7 @@ pub enum ContractError {
     #[error("Asset {0} cannot be transferred to network {1}")]
     AssetCannotBeTransferredToNetwork(AssetId, NetworkId),
     #[error("Gateway for network {0} not found")]
-    GatewayForNetworkNotFound(NetworkId),
+    OutpostForNetworkNotFound(NetworkId),
     #[error("Anonymous calls can do only limitet set of actions")]
     AnonymousCallsCanDoOnlyLimitedSetOfActions,
     #[error("Runtime unsupported on network")]

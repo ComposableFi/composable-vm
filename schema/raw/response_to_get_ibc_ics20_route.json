@@ -29,11 +29,11 @@
         "channel_to_send_over",
         "counterparty_timeout",
         "from_network",
-        "gateway_to_send_to",
+        "from_outpost",
         "ibc_ics_20_sender",
         "local_native_denom",
         "on_remote_asset",
-        "sender_gateway"
+        "to_outpost"
       ],
       "properties": {
         "channel_to_send_over": {
@@ -45,13 +45,8 @@
         "from_network": {
           "$ref": "#/definitions/NetworkId"
         },
-        "gateway_to_send_to": {
-          "description": "the contract address of the gateway to send to assets",
-          "allOf": [
-            {
-              "$ref": "#/definitions/OutpostId"
-            }
-          ]
+        "from_outpost": {
+          "$ref": "#/definitions/Addr"
         },
         "ibc_ics_20_sender": {
           "$ref": "#/definitions/IbcIcs20Sender"
@@ -62,8 +57,13 @@
         "on_remote_asset": {
           "$ref": "#/definitions/AssetId"
         },
-        "sender_gateway": {
-          "$ref": "#/definitions/Addr"
+        "to_outpost": {
+          "description": "the contract address of the gateway to send to assets",
+          "allOf": [
+            {
+              "$ref": "#/definitions/OutpostId"
+            }
+          ]
         }
       }
     },

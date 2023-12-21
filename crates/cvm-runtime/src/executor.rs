@@ -2,7 +2,7 @@ use cosmwasm_std::Event;
 
 use crate::prelude::*;
 use crate::shared::XcProgram;
-use crate::InterpreterOrigin;
+use crate::ExecutorOrigin;
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[cfg_attr(
@@ -12,9 +12,9 @@ use crate::InterpreterOrigin;
 #[serde(rename_all = "snake_case")]
 pub struct InstantiateMsg {
     /// Address of the gateway.
-    pub gateway_address: String,
+    pub outpost_address: String,
     /// The interpreter origin.
-    pub interpreter_origin: InterpreterOrigin,
+    pub executor_origin: ExecutorOrigin,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -63,7 +63,7 @@ impl CvmInterpreterInstantiated {
     pub const NAME: &'static str = "cvm.executor.instantiated";
     pub const INTERPRETER_ORIGIN: &'static str = "interpreter_origin";
     #[cfg(feature = "cosmwasm")]
-    pub fn new(interpreter_origin: &InterpreterOrigin) -> Event {
+    pub fn new(interpreter_origin: &ExecutorOrigin) -> Event {
         use crate::shared::to_json_base64;
 
         Event::new(Self::NAME).add_attribute(

@@ -12,7 +12,7 @@ use osmosis_std::types::osmosis::poolmanager::v1beta1::MsgSwapExactAmountIn;
 pub fn exchange(
     give: Funds,
     want: Funds,
-    gateway_address: cvm_runtime::outpost::Gateway,
+    outpost_address: cvm_runtime::outpost::Outpost,
     deps: &mut DepsMut<'_>,
     sender: Addr,
     exchange_id: &ExchangeId,
@@ -33,7 +33,7 @@ pub fn exchange(
     );
     let give = give.0[0].clone();
     let want = want.0[0].clone();
-    let give_asset = gateway_address
+    let give_asset = outpost_address
         .get_asset_by_id(deps.querier, give.0)
         .map_err(ContractError::AssetNotFound)?;
     let amount: Coin = deps.querier.query_balance(&sender, give_asset.denom())?;
@@ -42,7 +42,7 @@ pub fn exchange(
         denom: give_asset.denom(),
         amount: amount.to_string(),
     };
-    let want_asset = gateway_address
+    let want_asset = outpost_address
         .get_asset_by_id(deps.querier, want.0)
         .map_err(ContractError::AssetNotFound)?;
     if want.1.is_absolute() && want.1.is_ratio() {

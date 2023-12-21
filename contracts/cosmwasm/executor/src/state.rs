@@ -1,15 +1,15 @@
 use cosmwasm_std::{
     to_json_binary, Addr, Binary, Order, StdError, StdResult, Storage, SubMsgResponse,
 };
-use cvm_runtime::InterpreterOrigin;
+use cvm_runtime::ExecutorOrigin;
 use cw_storage_plus::{Item, Map};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 pub struct Config {
-    pub gateway_address: cvm_runtime::outpost::Gateway,
-    pub interpreter_origin: InterpreterOrigin,
+    pub outpost_address: cvm_runtime::outpost::Outpost,
+    pub executor_origin: ExecutorOrigin,
 }
 
 /// The interpreter configuration.

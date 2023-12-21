@@ -42,14 +42,14 @@ pub fn instantiate(
 ) -> Result {
     set_contract_version(deps.storage, CONTRACT_NAME, CONTRACT_VERSION)?;
     let gateway_address =
-        cvm_runtime::outpost::Gateway::addr_validate(deps.api, &msg.gateway_address)?;
+        cvm_runtime::outpost::Outpost::addr_validate(deps.api, &msg.outpost_address)?;
     let config = Config {
-        gateway_address,
-        interpreter_origin: msg.interpreter_origin,
+        outpost_address: gateway_address,
+        executor_origin: msg.executor_origin,
     };
     CONFIG.save(deps.storage, &config)?;
     OWNERS.save(deps.storage, info.sender, &())?;
-    Ok(Response::new().add_event(CvmInterpreterInstantiated::new(&config.interpreter_origin)))
+    Ok(Response::new().add_event(CvmInterpreterInstantiated::new(&config.executor_origin)))
 }
 
 #[cfg_attr(not(feature = "library"), entry_point)]
@@ -230,7 +230,7 @@ fn execute_exchange(
     sender: Addr,
 ) -> Result {
     let Config {
-        gateway_address, ..
+        outpost_address: gateway_address, ..
     } = CONFIG.load(deps.storage)?;
     let exchange: ExchangeItem = gateway_address
         .get_exchange_by_id(deps.querier, exchange_id)
@@ -287,7 +287,7 @@ struct BindingResolver<'a> {
     env: &'a Env,
     instruction_pointer: u16,
     tip: &'a Addr,
-    gateway: cvm_runtime::outpost::Gateway,
+    outpost: cvm_runtime::outpost::Outpost,
 }
 
 impl<'a> BindingResolver<'a> {
@@ -297,7 +297,7 @@ impl<'a> BindingResolver<'a> {
     /// read error.
     fn new(deps: &'a Deps, env: &'a Env, instruction_pointer: u16, tip: &'a Addr) -> Result<Self> {
         let Config {
-            gateway_address: gateway,
+            outpost_address: gateway,
             ..
         } = CONFIG.load(deps.storage)?;
         Ok(Self {
@@ -305,7 +305,7 @@ impl<'a> BindingResolver<'a> {
             env,
             instruction_pointer,
             tip,
-            gateway,
+            outpost: gateway,
         })
     }
 
@@ -334,7 +334,7 @@ impl<'a> BindingResolver<'a> {
     }
 
     fn resolve_asset(&'a self, asset_id: cvm_runtime::AssetId) -> Result<Cow<'a, [u8]>> {
-        let reference = self.gateway.get_asset_by_id(self.deps.querier, asset_id)?;
+        let reference = self.outpost.get_asset_by_id(self.deps.querier, asset_id)?;
         let value = match reference.local {
             AssetReference::Cw20 { contract } => contract.into_string(),
             AssetReference::Native { denom } => denom,
@@ -348,7 +348,7 @@ impl<'a> BindingResolver<'a> {
         asset_id: cvm_runtime::AssetId,
         balance: &Amount,
     ) -> Result<Cow<'a, [u8]>> {
-        let reference = self.gateway.get_asset_by_id(self.deps.querier, asset_id)?;
+        let reference = self.outpost.get_asset_by_id(self.deps.querier, asset_id)?;
         let amount = match reference.local {
             AssetReference::Cw20 { contract } => apply_amount_to_cw20_balance(
                 *self.deps,
@@ -379,8 +379,8 @@ pub fn interpret_spawn(
     program: shared::XcProgram,
 ) -> Result {
     let Config {
-        interpreter_origin,
-        gateway_address: gateway,
+        executor_origin: interpreter_origin,
+        outpost_address: gateway,
         ..
     } = CONFIG.load(deps.storage)?;
 
@@ -457,7 +457,7 @@ pub fn interpret_transfer(
     assets: Funds<Amount>,
 ) -> Result {
     let Config {
-        gateway_address: gateway,
+        outpost_address: gateway,
         ..
     } = CONFIG.load(deps.storage)?;
     deps.api

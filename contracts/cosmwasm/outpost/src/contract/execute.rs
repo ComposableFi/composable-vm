@@ -18,7 +18,7 @@ use cw20::{Cw20Contract, Cw20ExecuteMsg};
 
 use cvm_runtime::{
     outpost::{BridgeExecuteProgramMsg, ConfigSubMsg},
-    CallOrigin, Funds, InterpreterOrigin,
+    CallOrigin, Funds, ExecutorOrigin,
 };
 
 #[cfg_attr(not(feature = "library"), entry_point)]
@@ -27,7 +27,7 @@ pub fn execute(deps: DepsMut, env: Env, info: MessageInfo, msg: msg::ExecuteMsg)
     let sender = &info.sender;
     let canonical_sender = deps.api.addr_canonicalize(sender.as_str())?;
     deps.api.debug(&format!(
-        "cvm::gateway::execute sender on chain {}, sender cross chain {}",
+        "cvm::outpost::execute sender on chain {}, sender cross chain {}",
         sender,
         &serde_json_wasm::to_string(&canonical_sender)?
     ));
@@ -61,7 +61,7 @@ pub fn execute(deps: DepsMut, env: Env, info: MessageInfo, msg: msg::ExecuteMsg)
         }
         msg::ExecuteMsg::MessageHook(msg) => {
             deps.api
-                .debug(&format!("cvm::gateway::execute::message_hook {:?}", msg));
+                .debug(&format!("cvm::outpost::execute::message_hook {:?}", msg));
 
             let auth = auth::WasmHook::authorise(deps.as_ref(), &env, &info, msg.from_network_id)?;
 
@@ -191,7 +191,7 @@ pub(crate) fn handle_execute_program(
     let tip = execute_program
         .tip
         .unwrap_or(env.contract.address.to_string());
-    let this = msg::Gateway::new(env.contract.address);
+    let this = msg::Outpost::new(env.contract.address);
     let call_origin = CallOrigin::Local {
         user: info.sender.clone(),
     };
@@ -233,7 +233,7 @@ pub(crate) fn handle_execute_program_privilleged(
     }: msg::BridgeExecuteProgramMsg,
 ) -> Result {
     let config = load_this(deps.storage)?;
-    let interpreter_origin = InterpreterOrigin {
+    let interpreter_origin = ExecutorOrigin {
         user_origin: call_origin.user(config.network_id),
         salt: salt.clone(),
     };
@@ -241,7 +241,7 @@ pub(crate) fn handle_execute_program_privilleged(
         state::interpreter::get_by_origin(deps.as_ref(), interpreter_origin.clone()).ok();
     if let Some(state::interpreter::Interpreter { address, .. }) = interpreter {
         deps.api
-            .debug("cvm::gateway::execute:: reusing existing interpreter and adding funds");
+            .debug("cvm::outpost::execute:: reusing existing interpreter and adding funds");
         let response = send_funds_to_interpreter(deps.as_ref(), address.clone(), assets)?;
         let wasm_msg = wasm_execute(
             address.clone(),
@@ -267,12 +267,12 @@ pub(crate) fn handle_execute_program_privilleged(
                 interpreter_code_id,
                 ..
             } => interpreter_code_id,
-            // msg::GatewayId::Evm { .. } => {
+            // msg::OutpostId::Evm { .. } => {
             //     Err(ContractError::BadlyConfiguredRouteBecauseThisChainCanSendOnlyFromCosmwasm)?
             // }
         };
         deps.api.debug("instantiating interpreter");
-        let this = msg::Gateway::new(env.contract.address);
+        let this = msg::Outpost::new(env.contract.address);
 
         let interpreter_instantiate_submessage = crate::executor::instantiate(
             deps.as_ref(),
@@ -316,7 +316,7 @@ fn send_funds_to_interpreter(
         if amount == 0 {
             continue;
         }
-        deps.api.debug("cvm::gateway:: sending funds");
+        deps.api.debug("cvm::outpost:: sending funds");
 
         let msg = match assets::get_asset_by_id(deps, asset_id)?.local {
             cvm_route::asset::AssetReference::Native { denom } => BankMsg::Send {

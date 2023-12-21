@@ -2,7 +2,7 @@
 
 Receives and stores user funds.
 Fully owned by user.
-Delegates cross chain execution to gateway.
+Delegates cross chain execution to `outpost`.
 
 Instantiated as many instances of the CVM interpreter contract. On some chains, we can use probabilistically generated sub_accounts, but for most, we instantiate a contract instance.
 
@@ -81,7 +81,7 @@ Which is used to call a contract. See that the encoded payload must be in a form
 ```
 
 ### Transfer
-Queries `gateway`, gets the contract address and then executes that contract to do the transfer.
+Queries `outpost`, gets the contract address and then executes that contract to do the transfer.
 
 ### Spawn
 Emits `spawn` event with the given parameters.
