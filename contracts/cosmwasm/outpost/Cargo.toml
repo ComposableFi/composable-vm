@@ -35,6 +35,8 @@ json-schema = [
 ]
 cosmos = [
   "cvm-runtime/cosmos",
+  "cvm-route/cosmos",
+  "cvm/cosmos",
 ]
 default = ["std", "cosmos"]
 

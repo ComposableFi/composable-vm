@@ -30,7 +30,13 @@ cosmos = [
   "cvm-runtime-exchange/cosmos",
 ]
 
-default = ["std", "cosmos"]
+default = ["std", "cosmos",
+
+"cvm-runtime-exchange/cosmwasm",
+"cvm-runtime/cosmwasm",
+"cvm-route/cosmwasm",
+
+]
 
 [dependencies]
 cvm-runtime-exchange ={ workspace = true, default-features = false }

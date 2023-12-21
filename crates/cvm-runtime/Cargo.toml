@@ -44,7 +44,7 @@ ibc-apps-more = { workspace = true, default-features = false }
 prost-build = { workspace = true }
 
 [features]
-default = ["std"]
+default = ["std", "cosmos"]
 # xcm = ["dep:xcm"]
 paroty-scale-codec = [
   "parity-scale-codec",
@@ -54,7 +54,10 @@ paroty-scale-codec = [
   "ibc-app-transfer-types/parity-scale-codec",
   "ibc-core-host-types/parity-scale-codec",
 ]
-cosmos = []
+cosmos = [
+  "cvm-route/cosmos",
+  "cvm/cosmos",
+]
 cosmwasm = ["cw-storage-plus", "cw20", "ibc-apps-more/cosmwasm", "cvm/cosmwasm", "cvm-route/cosmwasm",]
 # substrate = ["xcm"]
 json-schema = [

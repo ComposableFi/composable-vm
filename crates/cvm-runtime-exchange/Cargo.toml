@@ -16,7 +16,7 @@ schemars ={ workspace = true, default-features = false, optional = true}
 thiserror = { workspace = true, default-features = false}
 [features]
 default = [
-    "std",
+    "std", "cosmos",
     ]
 cosmwasm = [
     "cvm/cosmwasm",
@@ -32,6 +32,7 @@ json-schema = [
 ]
 cosmos = [
     "cvm-route/cosmos",
+    "cvm-runtime/cosmos",
 ]
 std = [
     "cvm/std",

@@ -16,7 +16,7 @@ ibc-app-transfer-types = { workspace = true, default-features = false, features 
 cosmwasm-schema = {workspace = true, optional = true}
 
 [features]
-default = ["std"]
+default = ["std", "cosmos",]
 cosmwasm = [
     "cvm/cosmwasm",
     "dep:cw-storage-plus",
@@ -28,7 +28,9 @@ json-schema = [
     "dep:cosmwasm-schema",
     "ibc-app-transfer-types/schema",
 ]
-cosmos = []
+cosmos = [
+    "cvm/cosmos",
+]
 std = [
     "cvm/std",
     "ibc-core-host-types/std",
