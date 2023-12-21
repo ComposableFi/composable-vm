@@ -75,8 +75,6 @@ d, l, p, n = solve(
     OBJ_TOKEN
     )
 
-exit()
-
 to_look_n: list[float] = []
 for i in range(len(all_cfmms)):
     to_look_n.append(n[i].value)

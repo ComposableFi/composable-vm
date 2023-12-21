@@ -1,15 +1,20 @@
 # solves using convex optimization
-
+from typing import TypeVar, Generic
 import numpy as np
 import cvxpy as cp
 
 MAX_RESERVE = 1e10
 
+TAssetId = TypeVar("TAssetId")
+TNetworkId = TypeVar("TNetworkId")
+
+# port this https://github.com/ComposableFi/xc-solver-rs/blob/main/solver/src/data.rs
 class Routes:
     # asset ids and their usd price if available, and for sure their network ids
     # asset globally unique
+    # also known as denom in Cosmos or ERC20 token Ethereum or SPL20 in Solana
     assets = []
-    # network ids
+    # network ids (chain ids, parachains ids, domains, consensus, whatever it is know)
     networks = []
     # is there is possible to send from network to network, and if possible, what is normalized to used
     # and also asset id and price of gas in native token
@@ -23,7 +28,7 @@ class Routes:
 
 
 # simulate denom paths to and from chains, with center node
-def populate_chain_dict(chains: dict[str, list[str]], center_node: str):
+def populate_chain_dict(chains: dict[TNetworkId, list[TAssetId]], center_node: TNetworkId):
     # Add tokens with denom to Center Node
     # Basic IBC transfer
     for chain, tokens in chains.items():
@@ -42,15 +47,15 @@ def populate_chain_dict(chains: dict[str, list[str]], center_node: str):
             )
 
 def solve(
-    all_tokens: list[str],
-    all_cfmms: list[tuple[str, str]],
+    all_tokens: list[TAssetId],
+    all_cfmms: list[tuple[TAssetId, TAssetId]],
     reserves: list[np.ndarray[np.float64]],
     cfmm_tx_cost: list[float],
     fees: list[float],
     ibc_pools: int,
-    origin_token: str,
+    origin_token: TAssetId,
     number_of_init_tokens: float,
-    obj_token: str,
+    obj_token: TAssetId,
     force_eta: list[float] = None,
 ):
     # Build local-global matrices
