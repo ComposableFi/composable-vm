@@ -5,6 +5,22 @@ import cvxpy as cp
 
 MAX_RESERVE = 1e10
 
+class Routes:
+    # asset ids and their usd price if available, and for sure their network ids
+    # asset globally unique
+    assets = []
+    # network ids
+    networks = []
+    # is there is possible to send from network to network, and if possible, what is normalized to used
+    # and also asset id and price of gas in native token
+    network_to_network = []
+    # pools with asset ids they map with reserves, and usd info if available, and swap fee
+    # please note that 
+    # and network id it is on
+    pools = []
+    # when asset moved to network, what asset it becomes
+    asset_to_network = []
+
 
 # simulate denom paths to and from chains, with center node
 def populate_chain_dict(chains: dict[str, list[str]], center_node: str):

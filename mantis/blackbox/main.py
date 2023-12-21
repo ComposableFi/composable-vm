@@ -27,6 +27,13 @@ async def get_data_all()-> AllData:
     result = get_data()
     return result
 
+@app.get("/data/routable") 
+@cache(expire=3)
+async def get_data_routable()-> AllData:
+    result = get_data()
+    
+    return result
+
 def get_data() -> AllData:
     cfg = NetworkConfig(
     chain_id="centauri-1",
