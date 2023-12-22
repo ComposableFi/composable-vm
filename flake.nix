@@ -225,6 +225,9 @@
 
                 curl "${env.SKIP_MONEY_SWAGGER}swagger.yml" > schema/skip_money_swagger.yml
                 datamodel-codegen  --input schema/skip_money_swagger.yml --input-file-type openapi --output mantis/blackbox/skip_money.py  --disable-timestamp --target-python-version "3.10" --use-schema-description --output-model-type "pydantic.BaseModel"
+
+                curl --request GET --url https://api.skip.money/v1/info/chains --header 'accept: application/json' | jq . > schema/skip_money_chain.json
+                curl --request GET --url https://api.skip.money/v1/fungible/assets --header 'accept: application/json' | jq . > schema/skip_money_assets.json
               '';
             };
         in
