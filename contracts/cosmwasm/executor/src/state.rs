@@ -20,7 +20,7 @@ pub const CONFIG: Item<Config> = Item::new("config");
 pub const OWNERS: Map<Addr, ()> = Map::new("owners");
 
 /// This register hold the latest program instruction (index) executed.
-pub const IP_REGISTER: Item<u16> = Item::new("ip_register");
+pub const INSTRUCTION_POINTER_REGISTER: Item<u16> = Item::new("ip_register");
 
 /// This register contains the latest executed instruction result for the program.
 /// It can be either a success `SubMsgResponse` or an error message (in this case changes of message
@@ -49,7 +49,7 @@ impl TryInto<Binary> for State {
 pub(crate) fn read(storage: &dyn Storage) -> StdResult<State> {
     Ok(State {
         result_register: RESULT_REGISTER.load(storage)?,
-        ip_register: IP_REGISTER.load(storage).unwrap_or(0),
+        ip_register: INSTRUCTION_POINTER_REGISTER.load(storage).unwrap_or(0),
         owners: OWNERS
             .range(storage, None, None, Order::Ascending)
             .map(|e| e.map(|(k, _)| k))

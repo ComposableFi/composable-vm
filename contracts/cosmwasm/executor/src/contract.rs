@@ -3,7 +3,7 @@ use crate::{
     error::{ContractError, Result},
     events::*,
     msg::{MigrateMsg, QueryMsg},
-    state::{self, Config, CONFIG, IP_REGISTER, OWNERS, RESULT_REGISTER, TIP_REGISTER},
+    state::{self, Config, CONFIG, INSTRUCTION_POINTER_REGISTER, OWNERS, RESULT_REGISTER, TIP_REGISTER},
 };
 use alloc::borrow::Cow;
 #[cfg(not(feature = "library"))]
@@ -111,7 +111,7 @@ fn initiate_execution(
     program: shared::XcProgram,
 ) -> Result {
     // Reset instruction pointer to zero.
-    IP_REGISTER.save(deps.storage, &0)?;
+    INSTRUCTION_POINTER_REGISTER.save(deps.storage, &0)?;
     Ok(Response::default()
         .add_event(CvmExecutorExecutionStarted::new())
         .add_submessage(SubMsg::reply_on_error(
@@ -187,7 +187,7 @@ pub fn handle_execute_step(
                 salt,
                 assets,
                 program,
-            } => interpret_spawn(&mut deps, &env, network_id, salt, assets, program),
+            } => execute_spawn(&mut deps, &env, network_id, salt, assets, program),
             Instruction::Exchange {
                 exchange_id,
                 give,
@@ -202,7 +202,7 @@ pub fn handle_execute_step(
         }?;
         // Save the intermediate IP so that if the execution fails, we can recover at which
         // instruction it happened.
-        IP_REGISTER.update::<_, ContractError>(deps.storage, |x| Ok(x + 1))?;
+        INSTRUCTION_POINTER_REGISTER.update::<_, ContractError>(deps.storage, |x| Ok(x + 1))?;
         response.add_message(wasm_execute(
             env.contract.address,
             &ExecuteMsg::ExecuteStep {
@@ -216,7 +216,7 @@ pub fn handle_execute_step(
         )?)
     } else {
         // We subtract because of the extra loop to reach the empty instructions case.
-        IP_REGISTER.save(deps.storage, &instruction_pointer.saturating_sub(1))?;
+        INSTRUCTION_POINTER_REGISTER.save(deps.storage, &instruction_pointer.saturating_sub(1))?;
         TIP_REGISTER.save(deps.storage, &tip)?;
         Response::default().add_event(CvmExecutorStepExecuted::new(&program.tag))
     })
@@ -371,7 +371,7 @@ impl<'a> BindingResolver<'a> {
     }
 }
 
-pub fn interpret_spawn(
+pub fn execute_spawn(
     deps: &mut DepsMut,
     env: &Env,
     network_id: NetworkId,
@@ -504,7 +504,7 @@ pub fn interpret_transfer(
 #[cfg_attr(not(feature = "library"), entry_point)]
 pub fn query(deps: Deps, env: Env, msg: QueryMsg) -> StdResult<Binary> {
     match msg {
-        QueryMsg::Register(Register::Ip) => Ok(to_json_binary(&IP_REGISTER.load(deps.storage)?)?),
+        QueryMsg::Register(Register::Ip) => Ok(to_json_binary(&INSTRUCTION_POINTER_REGISTER.load(deps.storage)?)?),
         QueryMsg::Register(Register::Result) => {
             Ok(to_json_binary(&RESULT_REGISTER.load(deps.storage)?)?)
         }
@@ -535,7 +535,7 @@ fn handle_self_call_result(deps: DepsMut, msg: Reply) -> StdResult<Response> {
 			// this way, only the `RESULT_REGISTER` is persisted. All
 			// other state changes are reverted.
 			RESULT_REGISTER.save(deps.storage, &Err(e.clone()))?;
-			let ip = IP_REGISTER.load(deps.storage)?.to_string();
+			let ip = INSTRUCTION_POINTER_REGISTER.load(deps.storage)?.to_string();
 			let event = CvmExecutorSelfFailed::new(e);
 			Ok(Response::default().add_event(event).add_attribute("ip", ip))
 		}
