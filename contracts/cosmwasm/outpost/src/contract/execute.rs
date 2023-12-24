@@ -11,7 +11,7 @@ use crate::{
 
 use cosmwasm_std::{
     entry_point, wasm_execute, Addr, BankMsg, Coin, CosmosMsg, Deps, DepsMut, Env, MessageInfo,
-    Response,
+    Response, StdError,
 };
 use cvm_route::asset::{AssetReference, AssetToNetwork};
 use cw20::{Cw20Contract, Cw20ExecuteMsg};
@@ -261,7 +261,7 @@ pub(crate) fn handle_execute_program_privilleged(
     } else {
         // First, add a callback to instantiate an executor (which we later get the result
         // and save it)
-        let executor_code_id = match config.outpost.expect("expected setup") {
+        let executor_code_id = match config.outpost.ok_or(StdError::generic_err("outpost was was not set"))? {
             msg::OutpostId::CosmWasm {
                 executor_code_id, ..
             } => executor_code_id,
