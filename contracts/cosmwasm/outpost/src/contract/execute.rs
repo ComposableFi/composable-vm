@@ -145,7 +145,7 @@ fn transfer_from_user(
                     } = host_funds
                         .iter()
                         .find(|c| c.denom == denom)
-                        .ok_or(ContractError::ProgramFundsDenomMappingToHostNotFound)?;
+                        .ok_or(ContractError::ProgramFundsDenomMappingToHostNotFound(*asset_id))?;
                     if *program_amount != u128::from(*host_amount) {
                         return Err(ContractError::ProgramAmountNotEqualToHostAmount)?;
                     }
