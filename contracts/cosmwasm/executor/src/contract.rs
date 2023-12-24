@@ -535,9 +535,9 @@ fn handle_self_call_result(deps: DepsMut, msg: Reply) -> StdResult<Response> {
 			// this way, only the `RESULT_REGISTER` is persisted. All
 			// other state changes are reverted.
 			RESULT_REGISTER.save(deps.storage, &Err(e.clone()))?;
-			let ip = INSTRUCTION_POINTER_REGISTER.load(deps.storage)?.to_string();
+			let ipr = INSTRUCTION_POINTER_REGISTER.load(deps.storage)?.to_string();            
 			let event = CvmExecutorSelfFailed::new(e);
-			Ok(Response::default().add_event(event).add_attribute("ip", ip))
+			Ok(Response::default().add_event(event).add_attribute("ip", ipr))
 		}
 	}
 }
