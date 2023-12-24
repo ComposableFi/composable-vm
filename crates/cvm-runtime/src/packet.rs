@@ -65,13 +65,13 @@ impl TryFrom<&[u8]> for XCVMAck {
 #[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub struct Packet<Program> {
-    /// The interpreter that was the origin of this packet.
+    /// The executor that was the origin of this packet.
     #[serde(with = "hex")]
     #[cfg_attr(
         feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
         schemars(with = "String")
     )]
-    pub interpreter: Vec<u8>,
+    pub executor: Vec<u8>,
     /// The user that originated the first XCVM call.
     pub user_origin: UserOrigin,
     /// The salt associated with the program.

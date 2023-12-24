@@ -6,7 +6,7 @@ use cosmwasm_std::StdResult;
 #[cfg(feature = "cosmwasm")]
 use cw_storage_plus::{IntKey, Key, KeyDeserialize, Prefixer, PrimaryKey};
 
-/// The interpreter origin, composite of a user origin and a salt.
+/// The executor origin, composite of a user origin and a salt.
 #[cfg_attr(
     feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
     derive(schemars::JsonSchema)

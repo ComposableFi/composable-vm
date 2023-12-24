@@ -135,7 +135,7 @@ pub fn ibc_packet_timeout(
 }
 
 /// Handle a request gateway message.
-/// The call must originate from an interpreter.
+/// The call must originate from an executor.
 pub(crate) fn handle_bridge_forward_no_assets(
     _: auth::Executor,
     deps: DepsMut,
@@ -154,8 +154,8 @@ pub(crate) fn handle_bridge_forward_no_assets(
         .ics27_channel
         .map(|x| x.id)
         .ok_or(ContractError::UnknownChannel)?;
-    let packet = XcPacket {
-        interpreter: String::from(info.sender).into_bytes(),
+    let executor = XcPacket {
+        executor: String::from(info.sender).into_bytes(),
         user_origin: msg.executor_origin.user_origin,
         salt: msg.msg.salt,
         program: msg.msg.program,
@@ -165,23 +165,23 @@ pub(crate) fn handle_bridge_forward_no_assets(
         .add_attribute("network_id", msg.to.to_string())
         .add_attribute(
             "assets",
-            serde_json_wasm::to_string(&packet.assets)
+            serde_json_wasm::to_string(&executor.assets)
                 .map_err(|_| ContractError::FailedToSerialize)?,
         )
         .add_attribute(
             "program",
-            serde_json_wasm::to_string(&packet.program)
+            serde_json_wasm::to_string(&executor.program)
                 .map_err(|_| ContractError::FailedToSerialize)?,
         );
-    if !packet.salt.is_empty() {
-        let salt_attr = Binary::from(packet.salt.as_slice()).to_string();
+    if !executor.salt.is_empty() {
+        let salt_attr = Binary::from(executor.salt.as_slice()).to_string();
         event = event.add_attribute("salt", salt_attr);
     }
     Ok(Response::default()
         .add_event(event)
         .add_message(IbcMsg::SendPacket {
             channel_id: channel_id.to_string(),
-            data: Binary::from(packet.encode()),
+            data: Binary::from(executor.encode()),
             // TODO: should be a parameter or configuration
             timeout: other.connection.counterparty_timeout.absolute(block),
         }))

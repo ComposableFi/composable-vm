@@ -119,7 +119,7 @@ pub enum ConfigSubMsg {
     /// short cut to rollout config faster
     Force(Vec<ConfigSubMsg>),
 
-    /// instantiates default interpreter on behalf of user
+    /// instantiates default executor on behalf of user
     /// `salt` - human string, converted to hex or base64 depending on implementation
     ForceInstantiate {
         user_origin: Addr,
@@ -159,8 +159,8 @@ pub struct HereItem {
 pub enum OutpostId {
     CosmWasm {
         contract: Addr,
-        /// CVM interpreter contract code
-        interpreter_code_id: u64,
+        /// CVM executor contract code
+        executor_code_id: u64,
         /// admin of everything
         admin: Addr,
     },

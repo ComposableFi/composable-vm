@@ -13,7 +13,7 @@ use crate::ExecutorOrigin;
 pub struct InstantiateMsg {
     /// Address of the gateway.
     pub outpost_address: String,
-    /// The interpreter origin.
+    /// The executor origin.
     pub executor_origin: ExecutorOrigin,
 }
 
@@ -45,7 +45,7 @@ pub enum ExecuteMsg {
     /// Execute an CVM program
     Execute { tip: Addr, program: XcProgram },
 
-    /// This is only meant to be used by the interpreter itself, otherwise it will return an error
+    /// This is only meant to be used by the executor itself, otherwise it will return an error
     /// The existence of this message is to allow the execution of the `Call` instruction. Once we
     /// hit a call, the program queue the call and queue itself after it to ensure that the side
     /// effect of the call has been executed.
@@ -55,20 +55,20 @@ pub enum ExecuteMsg {
     /// Remove owners from the contract
     RemoveOwners { owners: Vec<Addr> },
     /// spawn is cross chain, so sometimes errors are came from other blocks
-    /// so gateway can set that error on interpreter
+    /// so gateway can set that error on executor
     SetErr { reason: String },
 }
 
-impl CvmInterpreterInstantiated {
+impl CvmExecutorInstantiated {
     pub const NAME: &'static str = "cvm.executor.instantiated";
-    pub const INTERPRETER_ORIGIN: &'static str = "interpreter_origin";
+    pub const EXECUTOR_ORIGIN: &'static str = "executor_origin";
     #[cfg(feature = "cosmwasm")]
-    pub fn new(interpreter_origin: &ExecutorOrigin) -> Event {
+    pub fn new(executor_origin: &ExecutorOrigin) -> Event {
         use crate::shared::to_json_base64;
 
         Event::new(Self::NAME).add_attribute(
-            Self::INTERPRETER_ORIGIN,
-            to_json_base64(interpreter_origin).expect("origin is managed by"),
+            Self::EXECUTOR_ORIGIN,
+            to_json_base64(executor_origin).expect("origin is managed by"),
         )
     }
 }
@@ -76,6 +76,6 @@ impl CvmInterpreterInstantiated {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 #[serde(rename = "cvm.executor.instantiated")]
-pub struct CvmInterpreterInstantiated {
-    pub interpreter_origin: String,
+pub struct CvmExecutorInstantiated {
+    pub executor_origin: String,
 }

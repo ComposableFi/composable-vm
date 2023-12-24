@@ -28,7 +28,7 @@ pub fn sudo(deps: DepsMut, env: Env, msg: SudoMsg) -> crate::error::Result {
     }
 }
 
-/// return funds to interpreter and sets final error
+/// return funds to executor and sets final error
 fn handle_transport_failure(
     deps: DepsMut,
     _env: Env,
@@ -45,9 +45,9 @@ fn handle_transport_failure(
     );
     let msg = cvm_runtime::executor::ExecuteMsg::SetErr { reason };
     let bridge_msg =
-        crate::state::tracking::get_interpreter_track(deps.storage, channel.as_str(), sequence)?;
-    let interpreter =
-        crate::state::interpreter::get_by_origin(deps.as_ref(), bridge_msg.executor_origin)?;
+        crate::state::tracking::get_execution_track(deps.storage, channel.as_str(), sequence)?;
+    let executor =
+        crate::state::executors::get_by_origin(deps.as_ref(), bridge_msg.executor_origin)?;
     let mut response = Response::new();
 
     let assets = bridge_msg
@@ -66,6 +66,6 @@ fn handle_transport_failure(
         })
         .collect();
 
-    response = response.add_message(wasm_execute(interpreter.address, &msg, assets)?);
+    response = response.add_message(wasm_execute(executor.address, &msg, assets)?);
     Ok(response.add_event(Event::new("cvm::outpost::handle::transport_failure")))
 }

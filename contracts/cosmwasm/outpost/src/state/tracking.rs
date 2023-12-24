@@ -52,8 +52,8 @@ pub fn bridge_unlock(
     Ok(item)
 }
 
-/// Gets interpreter and gateway owned state on behalf interpreter (coins)
-pub fn get_interpreter_track(
+/// Gets executor and gateway owned state on behalf executor (coins)
+pub fn get_execution_track(
     storage: &dyn Storage,
     channel_id: &str,
     sequence: u64,

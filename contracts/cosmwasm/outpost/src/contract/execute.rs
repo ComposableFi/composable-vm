@@ -18,7 +18,7 @@ use cw20::{Cw20Contract, Cw20ExecuteMsg};
 
 use cvm_runtime::{
     outpost::{BridgeExecuteProgramMsg, ConfigSubMsg},
-    CallOrigin, Funds, ExecutorOrigin,
+    CallOrigin, ExecutorOrigin, Funds,
 };
 
 #[cfg_attr(not(feature = "library"), entry_point)]
@@ -144,8 +144,10 @@ fn transfer_from_user(
                         ..
                     } = host_funds
                         .iter()
-                        .find(|host_coin| host_coin.denom == &denom)
-                        .ok_or(ContractError::ProgramFundsDenomMappingToHostNotFound(*asset_id))?;
+                        .find(|host_coin| host_coin.denom == denom)
+                        .ok_or(ContractError::ProgramFundsDenomMappingToHostNotFound(
+                            *asset_id, denom,
+                        ))?;
                     if *program_amount != u128::from(*host_amount) {
                         return Err(ContractError::ProgramAmountNotEqualToHostAmount)?;
                     }
@@ -233,16 +235,15 @@ pub(crate) fn handle_execute_program_privilleged(
     }: msg::BridgeExecuteProgramMsg,
 ) -> Result {
     let config = load_this(deps.storage)?;
-    let interpreter_origin = ExecutorOrigin {
+    let executor_origin = ExecutorOrigin {
         user_origin: call_origin.user(config.network_id),
         salt: salt.clone(),
     };
-    let interpreter =
-        state::interpreter::get_by_origin(deps.as_ref(), interpreter_origin.clone()).ok();
-    if let Some(state::interpreter::Interpreter { address, .. }) = interpreter {
+    let executor = state::executors::get_by_origin(deps.as_ref(), executor_origin.clone()).ok();
+    if let Some(state::executors::ExecutorItem { address, .. }) = executor {
         deps.api
-            .debug("cvm::outpost::execute:: reusing existing interpreter and adding funds");
-        let response = send_funds_to_interpreter(deps.as_ref(), address.clone(), assets)?;
+            .debug("cvm::outpost::execute:: reusing existing executor and adding funds");
+        let response = send_funds_to_executor(deps.as_ref(), address.clone(), assets)?;
         let wasm_msg = wasm_execute(
             address.clone(),
             &cvm_runtime::executor::ExecuteMsg::Execute {
@@ -256,36 +257,35 @@ pub(crate) fn handle_execute_program_privilleged(
         )?;
         Ok(response
             .add_event(
-                make_event("route.execute").add_attribute("interpreter", address.into_string()),
+                make_event("route.execute").add_attribute("executor", address.into_string()),
             )
             .add_message(wasm_msg))
     } else {
-        // First, add a callback to instantiate an interpreter (which we later get the result
+        // First, add a callback to instantiate an executor (which we later get the result
         // and save it)
-        let interpreter_code_id = match config.outpost.expect("expected setup") {
+        let executor_code_id = match config.outpost.expect("expected setup") {
             msg::OutpostId::CosmWasm {
-                interpreter_code_id,
-                ..
-            } => interpreter_code_id,
+                executor_code_id, ..
+            } => executor_code_id,
             // msg::OutpostId::Evm { .. } => {
             //     Err(ContractError::BadlyConfiguredRouteBecauseThisChainCanSendOnlyFromCosmwasm)?
             // }
         };
-        deps.api.debug("instantiating interpreter");
+        deps.api.debug("instantiating executor");
         let this = msg::Outpost::new(env.contract.address);
 
-        let interpreter_instantiate_submessage = crate::executor::instantiate(
+        let executor_instantiate_submsg = crate::executor::instantiate(
             deps.as_ref(),
             this.address(),
-            interpreter_code_id,
-            &interpreter_origin,
+            executor_code_id,
+            &executor_origin,
             salt,
         )?;
 
         // Secondly, call itself again with the same parameters, so that this functions goes
-        // into `Ok` state and properly executes the interpreter
+        // into `Ok` state and properly executes the executor
         let execute_program = cvm_runtime::outpost::BridgeExecuteProgramMsg {
-            salt: interpreter_origin.salt,
+            salt: executor_origin.salt,
             program,
             assets,
             tip,
@@ -298,19 +298,19 @@ pub(crate) fn handle_execute_program_privilleged(
 
         Ok(Response::new()
             .add_event(make_event("route.create"))
-            .add_submessage(interpreter_instantiate_submessage)
+            .add_submessage(executor_instantiate_submsg)
             .add_message(self_call_message))
     }
 }
 
-/// Transfer funds attached to a [`CVMProgram`] before dispatching the program to the interpreter.
-fn send_funds_to_interpreter(
+/// Transfer funds attached to a [`CVMProgram`] before dispatching the program to the executor.
+fn send_funds_to_executor(
     deps: Deps,
-    interpreter_address: Addr,
+    executor_address: Addr,
     funds: Funds<cvm_runtime::shared::Displayed<u128>>,
 ) -> Result {
     let mut response = Response::new();
-    let interpreter_address = interpreter_address.into_string();
+    let executor_address = executor_address.into_string();
     for (asset_id, amount) in funds.0 {
         // Ignore zero amounts
         if amount == 0 {
@@ -320,14 +320,14 @@ fn send_funds_to_interpreter(
 
         let msg = match assets::get_asset_by_id(deps, asset_id)?.local {
             cvm_route::asset::AssetReference::Native { denom } => BankMsg::Send {
-                to_address: interpreter_address.clone(),
+                to_address: executor_address.clone(),
                 amount: vec![Coin::new(amount.into(), denom)],
             }
             .into(),
             cvm_route::asset::AssetReference::Cw20 { contract } => {
                 let contract = Cw20Contract(contract);
                 contract.call(Cw20ExecuteMsg::Transfer {
-                    recipient: interpreter_address.clone(),
+                    recipient: executor_address.clone(),
                     amount: amount.into(),
                 })?
             } //cvm_route::asset::AssetReference::Erc20 { .. } => Err(ContractError::RuntimeUnsupportedOnNetwork)?,

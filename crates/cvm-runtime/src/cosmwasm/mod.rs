@@ -4,8 +4,8 @@
 //!
 //! XCVM uses what we call `late bindings` which gives users ability to,
 //! specify addresses that are not known to them yet. For example, an
-//! interpreter instance is created upon execution. If so, how will users
-//! transfer funds to interpreter without knowing their address? Although
+//! executor instance is created upon execution. If so, how will users
+//! transfer funds to executor without knowing their address? Although
 //! we solved this problem in our `pallet-cosmwasm` by deterministically
 //! calculating contract addresses prior to execution, we cannot guarantee
 //! this on every chain that XCVM is supported. And also, late binding supports
@@ -35,12 +35,12 @@
 //! by users relative to the payload, not the whole message.
 //!
 //! As a complete example, let's say that I want to use `cw20` contract of `PICA` and
-//! send the interpreter some coins. First, I need to find the indices in the payload.
+//! send the executor some coins. First, I need to find the indices in the payload.
 //! ```json
 //! {"recipient":"","amount":"10000"}
 //! ```
 //! Index of the value of `recipient` is `13` and the binding that I want to use is
-//! `BindingValue::Register(Register::This)`, which is the interpreter.
+//! `BindingValue::Register(Register::This)`, which is the executor.
 //!
 //! And the contract that I want to use is `cw20` for `PICA`, which is `BindingValue::Asset(1)`.
 //! Note that `1` is the identifier of the asset `PICA`. Then, users will call
@@ -152,7 +152,7 @@ where
 /// Bindings for the generic `msg` that are done with indices.
 ///
 /// Eg. Let's say we want to do late binding in the `to` field in the
-/// following payload and want to put the interpreter's address:
+/// following payload and want to put the executor's address:
 /// `{"from":"helloworld","to":""}`
 /// Then the binding is `(26, BindingValue::Register(Register::This))`
 pub enum IndexedBinding<T> {

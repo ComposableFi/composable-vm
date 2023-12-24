@@ -1,7 +1,7 @@
 use cosmwasm_std::{Addr, Event};
 use cvm_runtime::{
-    exchange::ExchangeId, executor::CvmInterpreterInstantiated, shared, ExecutorOrigin,
-    NetworkId, UserId,
+    exchange::ExchangeId, executor::CvmExecutorInstantiated, shared, ExecutorOrigin, NetworkId,
+    UserId,
 };
 use serde::{Deserialize, Serialize};
 
@@ -104,7 +104,7 @@ pub enum CvmInterpreter {
     OwnerAdded(CvmInterpreterOwnerAdded),
     ExecutionStarted(CvmInterpreterExecutionStarted),
     Transferred(CvmInterpreterTransferred),
-    Instantiated(CvmInterpreterInstantiated),
+    Instantiated(CvmExecutorInstantiated),
     Exchanged(CvmInterpreterExchangeSucceeded),
     CrosschainFailed(CvmInterpreterCrosschainFailed),
 }

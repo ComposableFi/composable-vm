@@ -20,7 +20,7 @@ pub enum QueryMsg {
     /// Get a specific register
     #[cfg_attr(feature = "json-schema", returns(QueryStateResponse))]
     Register(Register),
-    /// dumps the whole state of interpreter
+    /// dumps the whole state of executor
     #[cfg_attr(feature = "json-schema", returns(QueryStateResponse))]
     State(),
 }

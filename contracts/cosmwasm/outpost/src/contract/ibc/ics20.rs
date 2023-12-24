@@ -69,7 +69,7 @@ pub(crate) fn handle_bridge_forward(
             .expect("not empty");
 
         let packet = XcPacket {
-            interpreter: String::from(info.sender).into_bytes(),
+            executor: String::from(info.sender).into_bytes(),
             user_origin: msg.executor_origin.user_origin.clone(),
             salt: msg.msg.salt,
             program: msg.msg.program,

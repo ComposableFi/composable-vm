@@ -25,7 +25,7 @@ pub(crate) struct Auth<T>(core::marker::PhantomData<T>);
 /// contract itself.
 pub(crate) type Contract = Auth<policy::Contract>;
 
-/// Authorisation token for messages which come from an interpreter.
+/// Authorisation token for messages which come from an executor.
 pub(crate) type Executor = Auth<policy::Interpreter>;
 
 /// Authorisation token for messages which come from contract’s admin.
@@ -92,12 +92,12 @@ impl Auth<policy::Interpreter> {
     pub(crate) fn authorise(
         deps: Deps,
         info: &MessageInfo,
-        interpreter_origin: cvm_runtime::ExecutorOrigin,
+        executor_origin: cvm_runtime::ExecutorOrigin,
     ) -> Result<Self> {
-        let interpreter_address = state::interpreter::get_by_origin(deps, interpreter_origin)
+        let executor_address = state::executors::get_by_origin(deps, executor_origin)
             .map(|int| int.address)
             .ok();
-        Self::new(Some(&info.sender) == interpreter_address.as_ref())
+        Self::new(Some(&info.sender) == executor_address.as_ref())
     }
 }
 

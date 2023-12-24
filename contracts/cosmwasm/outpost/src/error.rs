@@ -35,8 +35,8 @@ pub enum ContractError {
     ArithmeticOverflow,
     #[error("Not enough funds to cover the operation.")]
     InsufficientFunds,
-    #[error("Program funds denom mapping to host not found for asset {0}")]
-    ProgramFundsDenomMappingToHostNotFound(AssetId),
+    #[error("Program funds denom mapping to host not found for asset_id {0} native = {1}")]
+    ProgramFundsDenomMappingToHostNotFound(AssetId, String),
     #[error("Program amount not equal to host amount")]
     ProgramAmountNotEqualToHostAmount,
     #[error("{0}")]

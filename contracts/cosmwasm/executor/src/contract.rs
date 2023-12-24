@@ -18,7 +18,7 @@ use cvm_runtime::executor::*;
 use cvm_runtime::{
     apply_bindings,
     exchange::*,
-    executor::{CvmInterpreterInstantiated, InstantiateMsg},
+    executor::{CvmExecutorInstantiated, InstantiateMsg},
     outpost::{BridgeExecuteProgramMsg, BridgeForwardMsg},
     shared, Amount, BindingValue, Destination, Funds, Instruction, NetworkId, Register,
 };
@@ -49,7 +49,7 @@ pub fn instantiate(
     };
     CONFIG.save(deps.storage, &config)?;
     OWNERS.save(deps.storage, info.sender, &())?;
-    Ok(Response::new().add_event(CvmInterpreterInstantiated::new(&config.executor_origin)))
+    Ok(Response::new().add_event(CvmExecutorInstantiated::new(&config.executor_origin)))
 }
 
 #[cfg_attr(not(feature = "library"), entry_point)]
@@ -139,7 +139,7 @@ fn add_owners(_: Authenticated, deps: DepsMut, owners: Vec<Addr>) -> Result {
 }
 
 /// Remove a set of owners from the current owners list.
-/// Beware that emptying the set of owners result in a tombstoned interpreter.
+/// Beware that emptying the set of owners result in a tombstoned executor.
 fn remove_owners(_: Authenticated, deps: DepsMut, owners: Vec<Addr>) -> Response {
     for owner in owners.iter() {
         OWNERS.remove(deps.storage, owner.clone());
@@ -230,7 +230,8 @@ fn execute_exchange(
     sender: Addr,
 ) -> Result {
     let Config {
-        outpost_address: gateway_address, ..
+        outpost_address: gateway_address,
+        ..
     } = CONFIG.load(deps.storage)?;
     let exchange: ExchangeItem = gateway_address
         .get_exchange_by_id(deps.querier, exchange_id)
@@ -379,7 +380,7 @@ pub fn interpret_spawn(
     program: shared::XcProgram,
 ) -> Result {
     let Config {
-        executor_origin: interpreter_origin,
+        executor_origin: executor_origin,
         outpost_address: gateway,
         ..
     } = CONFIG.load(deps.storage)?;
@@ -438,13 +439,13 @@ pub fn interpret_spawn(
     };
     Ok(response
         .add_message(gateway.execute(BridgeForwardMsg {
-            executor_origin: interpreter_origin.clone(),
+            executor_origin: executor_origin.clone(),
             msg: execute_program,
             to: network_id,
         })?)
         .add_event(CvmInterpreterInstructionSpawned::new(
-            interpreter_origin.user_origin.network_id,
-            interpreter_origin.user_origin.user_id,
+            executor_origin.user_origin.network_id,
+            executor_origin.user_origin.user_id,
             network_id,
         )))
 }
@@ -530,7 +531,7 @@ fn handle_self_call_result(deps: DepsMut, msg: Reply) -> StdResult<Response> {
     match msg.result.into_result() {
 		Ok(_) => Err(StdError::generic_err("Returned OK from a reply that is called with `reply_on_error`. This should never happen")),
 		Err(e) => {
-			// Save the result that is returned from the sub-interpreter
+			// Save the result that is returned from the sub-executor
 			// this way, only the `RESULT_REGISTER` is persisted. All
 			// other state changes are reverted.
 			RESULT_REGISTER.save(deps.storage, &Err(e.clone()))?;
@@ -573,7 +574,7 @@ fn handle_exchange_result(deps: DepsMut, msg: Reply) -> StdResult<Response> {
 ///
 /// * `balance`: Balance to be transformed into the actual balance
 /// * `contract`: Address of the corresponding cw20 contract
-/// * `self_address`: This interpreter's address
+/// * `self_address`: This executor's address
 fn apply_amount_to_cw20_balance<A: Into<String> + Clone>(
     deps: Deps,
     balance: &Amount,

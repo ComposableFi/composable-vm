@@ -9,8 +9,8 @@ use cvm_route::{
 pub use query::*;
 
 use crate::{
-    exchange::*, prelude::*, transport::ibc::XcMessageData, AssetId, CallOrigin, Funds,
-    ExecutorOrigin, NetworkId,
+    exchange::*, prelude::*, transport::ibc::XcMessageData, AssetId, CallOrigin, ExecutorOrigin,
+    Funds, NetworkId,
 };
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -43,7 +43,7 @@ pub enum ExecuteMsg {
         execute_program: BridgeExecuteProgramMsg,
     },
 
-    /// Message sent from interpreter trying to spawn program on another
+    /// Message sent from executor trying to spawn program on another
     /// network.
     BridgeForward(BridgeForwardMsg),
 
@@ -96,9 +96,9 @@ pub struct ExecuteProgramMsg<Assets = Option<Funds<crate::shared::Displayed<u128
     pub salt: Vec<u8>,
     /// The program.
     pub program: crate::shared::XcProgram,
-    /// Assets to fund the CVM interpreter instance.
-    /// The interpreter is funded prior to execution.
-    /// If None, 100% of received funds go to interpreter.
+    /// Assets to fund the CVM executor instance.
+    /// The executor is funded prior to execution.
+    /// If None, 100% of received funds go to executor.
     pub assets: Assets,
 
     #[serde(skip_serializing_if = "Option::is_none")]

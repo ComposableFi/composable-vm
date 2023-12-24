@@ -1,1 +1,1 @@
-cw-cvm-executor
+composable_cvm_executor

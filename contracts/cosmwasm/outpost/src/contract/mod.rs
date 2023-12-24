@@ -23,7 +23,7 @@ const CONTRACT_VERSION: &str = env!("CARGO_PKG_VERSION");
 #[derive(PartialEq, Debug, Clone, Copy, enumn::N)]
 #[repr(u64)]
 pub enum ReplyId {
-    InstantiateInterpreter = 0,
+    InstantiateExecutor = 0,
     ExecProgram = 2,
     TransportSent = 3,
 }
@@ -55,10 +55,11 @@ pub fn migrate(deps: DepsMut, _env: Env, _msg: msg::MigrateMsg) -> Result {
 
 #[cfg_attr(not(feature = "library"), cosmwasm_std::entry_point)]
 pub fn reply(deps: DepsMut, _env: Env, msg: Reply) -> Result<Response> {
-    deps.api.debug(&format!("cvm::outpost::cosmwasm::reply {msg:?}"));
+    deps.api
+        .debug(&format!("cvm::outpost::cosmwasm::reply {msg:?}"));
     if let Some(reply_id) = ReplyId::n(msg.id) {
         return match reply_id {
-            ReplyId::InstantiateInterpreter => {
+            ReplyId::InstantiateExecutor => {
                 crate::executor::handle_instantiate_reply(deps, msg).map_err(ContractError::from)
             }
             ReplyId::TransportSent => handle_transfer_sent(deps, msg),

@@ -12,7 +12,7 @@ message PacketAsset {
 }
 
 message Packet {
-  bytes interpreter = 1;
+  bytes executor = 1;
   UserOrigin user_origin = 2;
   bytes salt = 3;
   Program program = 4;

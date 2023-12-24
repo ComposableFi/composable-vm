@@ -12,7 +12,7 @@ pub struct Config {
     pub executor_origin: ExecutorOrigin,
 }
 
-/// The interpreter configuration.
+/// The executor configuration.
 pub const CONFIG: Item<Config> = Item::new("config");
 
 /// List of owners able to execute programs on our behalf. Be aware that only `trusted` address must

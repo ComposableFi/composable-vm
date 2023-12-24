@@ -72,7 +72,7 @@ where
 
     fn try_from(packet: pb::program::Packet) -> Result<Self, Self::Error> {
         Ok(CVMPacket {
-            interpreter: packet.interpreter.non_empty()?,
+            executor: packet.executor.non_empty()?,
             user_origin: packet.user_origin.non_empty()?.try_into()?,
             salt: packet.salt,
             program: packet.program.non_empty()?.try_into()?,
@@ -96,7 +96,7 @@ where
 {
     fn from(value: CVMPacket<TAbiEncoded, TAccount, TAssets>) -> Self {
         Self {
-            interpreter: value.interpreter,
+            executor: value.executor,
             user_origin: Some(value.user_origin.into()),
             salt: value.salt,
             program: Some(value.program.into()),
