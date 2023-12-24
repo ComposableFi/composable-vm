@@ -4,15 +4,15 @@ pragma solidity ^0.8.14;
 import "protobuf3-solidity-lib/ProtobufLib.sol";
 import "openzeppelin-contracts/token/ERC20/IERC20.sol";
 import "openzeppelin-contracts/token/ERC20/extensions/IERC20Metadata.sol";
-import "./interfaces/IInterpreter.sol";
+import "./interfaces/IExecutor.sol";
 import "./interfaces/IRouter.sol";
 import "./libraries/SDK.sol";
 
 /**
- * @title Interpreter
- * @notice Custom interpreter
+ * @title Executor
+ * @notice Custom executor
  */
-contract Interpreter is IInterpreter {
+contract Executor is IExecutor {
 
     address public creator;
     address public routerAddress;
@@ -35,14 +35,14 @@ contract Interpreter is IInterpreter {
 
     function addOwners(address[] memory newOwners) public onlyOwnerOrCreator {
         for(uint256 i=0; i<newOwners.length; i++) {
-            require(newOwners[i] != address(0), "Interpreter: invalid address");
+            require(newOwners[i] != address(0), "Executor: invalid address");
             owners[newOwners[i]] = true;
         }
     }
 
     function removeOwners(address[] memory newOwners) public onlyOwnerOrCreator {
         for(uint256 i=0; i<newOwners.length; i++) {
-            require(newOwners[i] != address(0), "Interpreter: invalid address");
+            require(newOwners[i] != address(0), "Executor: invalid address");
             owners[newOwners[i]] = false;
         }
     }

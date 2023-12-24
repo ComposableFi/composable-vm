@@ -4,16 +4,16 @@ import { XCVM } from "xcvm-typescript-sdk";
 
 const protobuf = require("protobufjs");
 
-describe("Interpreter", function () {
+describe("Executor", function () {
   let router: any;
-  let interpreter: any;
+  let executor: any;
   let owner: any;
   let user1: any;
   let user2: any;
   let accounts: any;
-  let interpreterAddress: any;
+  let executorAddress: any;
   let erc20: any;
-  let Interpreter: any;
+  let Executor: any;
   let sdk: any;
   let salt: any;
   beforeEach(async function () {
@@ -23,20 +23,20 @@ describe("Interpreter", function () {
     const SDK = await ethers.getContractFactory("SDK");
     const sdkLib = await SDK.deploy();
 
-    Interpreter = await ethers.getContractFactory("Interpreter", {libraries: {SDK: sdkLib.address}});
+    Executor = await ethers.getContractFactory("Executor", {libraries: {SDK: sdkLib.address}});
     const Router = await ethers.getContractFactory("Router", {libraries: {SDK: sdkLib.address}});
     router = await Router.deploy();
     //register owner as the bridge
     await router.registerBridge(owner.address, 1, 1);
 
     salt = ethers.utils.arrayify("0x11")
-    await router.createInterpreter({
+    await router.createExecutor({
       networkId: 1,
       account: owner.address,
     }, salt);
-    interpreterAddress = await router.userInterpreter(1, owner.address, salt);
+    executorAddress = await router.userExecutor(1, owner.address, salt);
     const ERC20Mock = await ethers.getContractFactory("ERC20Mock");
-    erc20 = await ERC20Mock.deploy("test", "test", interpreterAddress, ethers.utils.parseEther("10000000000000000"));
+    erc20 = await ERC20Mock.deploy("test", "test", executorAddress, ethers.utils.parseEther("10000000000000000"));
     await router.registerAsset(erc20.address, 1);
 
     const SDKMock = await ethers.getContractFactory("SDKMock", 
@@ -48,7 +48,7 @@ describe("Interpreter", function () {
     sdk = await SDKMock.deploy();
   });
 
-  describe("interpreter with protobuf", function () {
+  describe("executor with protobuf", function () {
     it("test program using sdk: transfer unit to relayer", async function () {
       let xcvm = new XCVM();
       let data = xcvm.createProgram(
@@ -289,7 +289,7 @@ describe("Interpreter", function () {
 
   it("test generating uint128", async function () {
     let xcvm = new XCVM();
-    let interpreter = await ethers.getContractAt("Interpreter", interpreterAddress);
+    let executor = await ethers.getContractAt("Executor", executorAddress);
     expect(ethers.utils.hexlify(xcvm.encodeMessage(xcvm.convertUint128("100")))).to.be.equal(
       await sdk.generateUint128("100")
     );
@@ -297,7 +297,7 @@ describe("Interpreter", function () {
 
   it("test generating absolute", async function () {
     let xcvm = new XCVM();
-    let interpreter = await ethers.getContractAt("Interpreter", interpreterAddress);
+    let executor = await ethers.getContractAt("Executor", executorAddress);
     expect(ethers.utils.hexlify(xcvm.encodeMessage(xcvm.createAbsolute("100")))).to.be.equal(
       await sdk.generateAbsolute("100")
     );
@@ -305,7 +305,7 @@ describe("Interpreter", function () {
 
   it("test generating ratio", async function () {
     let xcvm = new XCVM();
-    let interpreter = await ethers.getContractAt("Interpreter", interpreterAddress);
+    let executor = await ethers.getContractAt("Executor", executorAddress);
     expect(ethers.utils.hexlify(xcvm.encodeMessage(xcvm.createRatio("100", "200")))).to.be.equal(
       await sdk.generateRatio("100", "200")
     );
@@ -313,7 +313,7 @@ describe("Interpreter", function () {
 
   it("test generating unit", async function () {
     let xcvm = new XCVM();
-    let interpreter = await ethers.getContractAt("Interpreter", interpreterAddress);
+    let executor = await ethers.getContractAt("Executor", executorAddress);
     expect(
       ethers.utils.hexlify(xcvm.encodeMessage(xcvm.createUnit("100", xcvm.createRatio("100", "200"))))
     ).to.be.equal(await sdk.generateUnit("100", await sdk.generateRatio("100", "200")));
@@ -321,7 +321,7 @@ describe("Interpreter", function () {
 
   it("test generating balance by ratio", async function () {
     let xcvm = new XCVM();
-    let interpreter = await ethers.getContractAt("Interpreter", interpreterAddress);
+    let executor = await ethers.getContractAt("Executor", executorAddress);
     expect(ethers.utils.hexlify(xcvm.encodeMessage(xcvm.createBalance(xcvm.createRatio("100", "200"))))).to.be.equal(
       await sdk.generateBalanceByRatio(await sdk.generateRatio("100", "200"))
     );
@@ -329,7 +329,7 @@ describe("Interpreter", function () {
 
   it("test generating balance by absolute", async function () {
     let xcvm = new XCVM();
-    let interpreter = await ethers.getContractAt("Interpreter", interpreterAddress);
+    let executor = await ethers.getContractAt("Executor", executorAddress);
     expect(ethers.utils.hexlify(xcvm.encodeMessage(xcvm.createBalance(xcvm.createAbsolute("100"))))).to.be.equal(
       await sdk.generateBalanceByAbsolute(await sdk.generateAbsolute("100"))
     );
@@ -337,7 +337,7 @@ describe("Interpreter", function () {
 
   it("test generating balance by unit", async function () {
     let xcvm = new XCVM();
-    let interpreter = await ethers.getContractAt("Interpreter", interpreterAddress);
+    let executor = await ethers.getContractAt("Executor", executorAddress);
     expect(
       ethers.utils.hexlify(
         xcvm.encodeMessage(xcvm.createBalance(xcvm.createUnit("100", xcvm.createRatio("100", "200"))))
@@ -351,7 +351,7 @@ describe("Interpreter", function () {
 
   it("test generating account", async function () {
     let xcvm = new XCVM();
-    let interpreter = await ethers.getContractAt("Interpreter", interpreterAddress);
+    let executor = await ethers.getContractAt("Executor", executorAddress);
     expect(ethers.utils.hexlify(xcvm.encodeMessage(xcvm.createAccount("0x1111")))).to.be.equal(
       await sdk.generateAccount("0x1111")
     );
@@ -359,7 +359,7 @@ describe("Interpreter", function () {
 
   it("test generating assetId by globalId", async function () {
     let xcvm = new XCVM();
-    let interpreter = await ethers.getContractAt("Interpreter", interpreterAddress);
+    let executor = await ethers.getContractAt("Executor", executorAddress);
     expect(
       ethers.utils.hexlify(xcvm.encodeMessage(xcvm.createAssetId(xcvm.createGlobalId(1)))))
         .to.be.equal(
@@ -369,7 +369,7 @@ describe("Interpreter", function () {
 
   it("test generating assetId by localId", async function () {
     let xcvm = new XCVM();
-    let interpreter = await ethers.getContractAt("Interpreter", interpreterAddress);
+    let executor = await ethers.getContractAt("Executor", executorAddress);
     expect(
       ethers.utils.hexlify(xcvm.encodeMessage(xcvm.createAssetId(xcvm.createLocalId(owner.address)))))
         .to.be.equal(
@@ -379,7 +379,7 @@ describe("Interpreter", function () {
 
   it("test generating asset", async function () {
     let xcvm = new XCVM();
-    let interpreter = await ethers.getContractAt("Interpreter", interpreterAddress);
+    let executor = await ethers.getContractAt("Executor", executorAddress);
     expect(
       ethers.utils.hexlify(
         xcvm.encodeMessage(xcvm.createAsset(xcvm.createAssetId(xcvm.createGlobalId(1)), xcvm.createBalance(xcvm.createRatio("100", "200"))))
@@ -394,7 +394,7 @@ describe("Interpreter", function () {
   // self, relayer register
   it("test generating assetAmount ", async function () {
     let xcvm = new XCVM();
-    let interpreter = await ethers.getContractAt("Interpreter", interpreterAddress);
+    let executor = await ethers.getContractAt("Executor", executorAddress);
     expect(
       ethers.utils.hexlify(
         xcvm.encodeMessage(xcvm.createAssetAmount(xcvm.createAssetId(xcvm.createGlobalId(1)), xcvm.createBalance(xcvm.createRatio("100", "200"))))
@@ -409,7 +409,7 @@ describe("Interpreter", function () {
 
   it("test generating bindingValue by globalId ", async function () {
     let xcvm = new XCVM();
-    let interpreter = await ethers.getContractAt("Interpreter", interpreterAddress);
+    let executor = await ethers.getContractAt("Executor", executorAddress);
     expect(ethers.utils.hexlify(xcvm.encodeMessage(xcvm.createBindingValue(xcvm.createGlobalId(1))))).to.be.equal(
       await sdk.generateBindingValueByGlobalId(
         await sdk.generateGlobalId(1)
@@ -419,7 +419,7 @@ describe("Interpreter", function () {
 
   it("test generating bindingValue assetAmount ", async function () {
     let xcvm = new XCVM();
-    let interpreter = await ethers.getContractAt("Interpreter", interpreterAddress);
+    let executor = await ethers.getContractAt("Executor", executorAddress);
     expect(
       ethers.utils.hexlify(
         xcvm.encodeMessage(
@@ -438,7 +438,7 @@ describe("Interpreter", function () {
 
   it("test generating binding", async function () {
     let xcvm = new XCVM();
-    let interpreter = await ethers.getContractAt("Interpreter", interpreterAddress);
+    let executor = await ethers.getContractAt("Executor", executorAddress);
     expect(
       ethers.utils.hexlify(
         xcvm.encodeMessage(
@@ -463,7 +463,7 @@ describe("Interpreter", function () {
 
   it("test generating bindings", async function () {
     let xcvm = new XCVM();
-    let interpreter = await ethers.getContractAt("Interpreter", interpreterAddress);
+    let executor = await ethers.getContractAt("Executor", executorAddress);
     expect(
       ethers.utils.hexlify(
         xcvm.encodeMessage(
@@ -499,7 +499,7 @@ describe("Interpreter", function () {
 
   it("test generating transfer by account", async function () {
     let xcvm = new XCVM();
-    let interpreter = await ethers.getContractAt("Interpreter", interpreterAddress);
+    let executor = await ethers.getContractAt("Executor", executorAddress);
     expect(
       ethers.utils.hexlify(
         xcvm.encodeMessage(
@@ -530,7 +530,7 @@ describe("Interpreter", function () {
 
   it("test generating instruction by transfer", async function () {
     let xcvm = new XCVM();
-    let interpreter = await ethers.getContractAt("Interpreter", interpreterAddress);
+    let executor = await ethers.getContractAt("Executor", executorAddress);
     expect(
       ethers.utils.hexlify(
         xcvm.encodeMessage(
@@ -565,7 +565,7 @@ describe("Interpreter", function () {
 
   it("test generating salt", async function () {
     let xcvm = new XCVM();
-    let interpreter = await ethers.getContractAt("Interpreter", interpreterAddress);
+    let executor = await ethers.getContractAt("Executor", executorAddress);
     expect(ethers.utils.hexlify(xcvm.encodeMessage(xcvm.createSalt("0x1111")))).to.be.equal(
       await sdk.generateSalt("0x1111")
     );
@@ -573,7 +573,7 @@ describe("Interpreter", function () {
 
   it("test generating network", async function () {
     let xcvm = new XCVM();
-    let interpreter = await ethers.getContractAt("Interpreter", interpreterAddress);
+    let executor = await ethers.getContractAt("Executor", executorAddress);
     expect(ethers.utils.hexlify(xcvm.encodeMessage(xcvm.createNetwork(1)))).to.be.equal(
       await sdk.generateNetwork(1)
     );
@@ -581,7 +581,7 @@ describe("Interpreter", function () {
 
   it("test generating spawn", async function () {
     let xcvm = new XCVM();
-    let interpreter = await ethers.getContractAt("Interpreter", interpreterAddress);
+    let executor = await ethers.getContractAt("Executor", executorAddress);
     expect(
       ethers.utils.hexlify(
         xcvm.encodeMessage(
@@ -633,7 +633,7 @@ describe("Interpreter", function () {
 
   it("test generating instruction by spawn", async function () {
     let xcvm = new XCVM();
-    let interpreter = await ethers.getContractAt("Interpreter", interpreterAddress);
+    let executor = await ethers.getContractAt("Executor", executorAddress);
     expect(
       ethers.utils.hexlify(
         xcvm.encodeMessage(
@@ -689,7 +689,7 @@ describe("Interpreter", function () {
 
   it("test generating call", async function () {
     let xcvm = new XCVM();
-    let interpreter = await ethers.getContractAt("Interpreter", interpreterAddress);
+    let executor = await ethers.getContractAt("Executor", executorAddress);
 
     expect(
       ethers.utils.hexlify(
@@ -732,7 +732,7 @@ describe("Interpreter", function () {
 
   it("test generating instruction by call", async function () {
     let xcvm = new XCVM();
-    let interpreter = await ethers.getContractAt("Interpreter", interpreterAddress);
+    let executor = await ethers.getContractAt("Executor", executorAddress);
 
     expect(
       ethers.utils.hexlify(
@@ -779,7 +779,7 @@ describe("Interpreter", function () {
 
   it("test generating instructions", async function () {
     let xcvm = new XCVM();
-    let interpreter = await ethers.getContractAt("Interpreter", interpreterAddress);
+    let executor = await ethers.getContractAt("Executor", executorAddress);
 
     expect(
       ethers.utils.hexlify(
@@ -832,7 +832,7 @@ describe("Interpreter", function () {
 
   it("test generating program", async function () {
     let xcvm = new XCVM();
-    let interpreter = await ethers.getContractAt("Interpreter", interpreterAddress);
+    let executor = await ethers.getContractAt("Executor", executorAddress);
 
     expect(
       ethers.utils.hexlify(
@@ -892,7 +892,7 @@ describe("Interpreter", function () {
   it("test addOwner and removeOwner by Call instruction and self later binding", async function () {
     const abiCoder = ethers.utils.defaultAbiCoder;
 
-    let functionSignature = Interpreter.interface.getSighash("addOwners(address[])");
+    let functionSignature = Executor.interface.getSighash("addOwners(address[])");
     // placeholder 1
     let payload = ethers.utils.concat([
       ethers.utils.arrayify("0x01"),
@@ -913,12 +913,12 @@ describe("Interpreter", function () {
     );
 
     let encodedProgram = xcvm.encodeMessage(programMessage);
-    let interpreter = await ethers.getContractAt("Interpreter", interpreterAddress);
-    expect((await interpreter.owners(user1.address)).toString()).to.be.equal("false");
+    let executor = await ethers.getContractAt("Executor", executorAddress);
+    expect((await executor.owners(user1.address)).toString()).to.be.equal("false");
     await router.runProgram({ networkId: 1, account: owner.address }, salt, encodedProgram, [], []);
-    expect((await interpreter.owners(user1.address)).toString()).to.be.equal("true");
+    expect((await executor.owners(user1.address)).toString()).to.be.equal("true");
 
-    functionSignature = Interpreter.interface.getSighash("removeOwners(address[])");
+    functionSignature = Executor.interface.getSighash("removeOwners(address[])");
     // placeholder 1
     payload = ethers.utils.concat([
       ethers.utils.arrayify("0x01"),
@@ -939,6 +939,6 @@ describe("Interpreter", function () {
 
     encodedProgram = xcvm.encodeMessage(programMessage);
     await router.runProgram({ networkId: 1, account: owner.address }, salt, encodedProgram, [], []);
-    expect((await interpreter.owners(user1.address)).toString()).to.be.equal("false");
+    expect((await executor.owners(user1.address)).toString()).to.be.equal("false");
   });
 });

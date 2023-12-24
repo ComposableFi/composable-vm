@@ -8,52 +8,52 @@ use serde::{Deserialize, Serialize};
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 #[serde(rename = "cvm.executor.exchange.succeeded")]
-pub struct CvmInterpreterExchangeSucceeded {
+pub struct CvmExecutorExchangeSucceeded {
     pub exchange_id: ExchangeId,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 #[serde(rename = "cvm.executor.exchange.started")]
-pub struct CvmInterpreterExchangeStarted {
+pub struct CvmExecutorExchangeStarted {
     pub exchange_id: ExchangeId,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 #[serde(rename = "cvm.executor.execution.started")]
-pub struct CvmInterpreterExecutionStarted {}
+pub struct CvmExecutorExecutionStarted {}
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 #[serde(rename = "cvm.executor.transferred")]
-pub struct CvmInterpreterTransferred {}
+pub struct CvmExecutorTransferred {}
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 #[serde(rename = "cvm.executor.owner.added")]
-pub struct CvmInterpreterOwnerAdded {
+pub struct CvmExecutorOwnerAdded {
     pub owner: Vec<Addr>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 #[serde(rename = "cvm.executor.owner.removed")]
-pub struct CvmInterpreterOwnerRemoved {
+pub struct CvmExecutorOwnerRemoved {
     pub owner: Vec<Addr>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 #[serde(rename = "cvm.executor.execution.failed")]
-pub struct CvmInterpreterExchangeFailed {
+pub struct CvmExecutorExchangeFailed {
     pub reason: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 #[serde(rename = "cvm.executor.instruction.spawned")]
-pub struct CvmInterpreterInstructionSpawned {
+pub struct CvmExecutorInstructionSpawned {
     pub origin_network_id: NetworkId,
     pub origin_user_id: UserId,
 }
@@ -61,26 +61,26 @@ pub struct CvmInterpreterInstructionSpawned {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 #[serde(rename = "cvm.executor.self.failed")]
-pub struct CvmInterpreterSelfFailed {
+pub struct CvmExecutorSelfFailed {
     pub reason: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 #[serde(rename = "cvm.executor.crosschain.failed")]
-pub struct CvmInterpreterCrosschainFailed {
+pub struct CvmExecutorCrosschainFailed {
     pub reason: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 #[serde(rename = "cvm.executor.instruction.call.initiated")]
-pub struct CvmInterpreterInstructionCallInitiated {}
+pub struct CvmExecutorInstructionCallInitiated {}
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
 #[serde(rename = "cvm.executor.step.executed")]
-pub struct CvmInterpreterStepExecuted {
+pub struct CvmExecutorStepExecuted {
     #[serde(
         serialize_with = "hex::serialize",
         deserialize_with = "hex::deserialize"
@@ -93,32 +93,32 @@ pub struct CvmInterpreterStepExecuted {
 /// used to generate schema, so that each events schema is available in one place
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
-pub enum CvmInterpreter {
-    StepExecuted(CvmInterpreterStepExecuted),
-    SelfFailed(CvmInterpreterSelfFailed),
-    ExchangeStarted(CvmInterpreterExchangeStarted),
-    InstructionCallInitiated(CvmInterpreterInstructionCallInitiated),
-    InstructionSpawned(CvmInterpreterInstructionSpawned),
-    ExchangeFailed(CvmInterpreterExchangeFailed),
-    OwnerRemoved(CvmInterpreterOwnerRemoved),
-    OwnerAdded(CvmInterpreterOwnerAdded),
-    ExecutionStarted(CvmInterpreterExecutionStarted),
-    Transferred(CvmInterpreterTransferred),
+pub enum CvmExecutor {
+    StepExecuted(CvmExecutorStepExecuted),
+    SelfFailed(CvmExecutorSelfFailed),
+    ExchangeStarted(CvmExecutorExchangeStarted),
+    InstructionCallInitiated(CvmExecutorInstructionCallInitiated),
+    InstructionSpawned(CvmExecutorInstructionSpawned),
+    ExchangeFailed(CvmExecutorExchangeFailed),
+    OwnerRemoved(CvmExecutorOwnerRemoved),
+    OwnerAdded(CvmExecutorOwnerAdded),
+    ExecutionStarted(CvmExecutorExecutionStarted),
+    Transferred(CvmExecutorTransferred),
     Instantiated(CvmExecutorInstantiated),
-    Exchanged(CvmInterpreterExchangeSucceeded),
-    CrosschainFailed(CvmInterpreterCrosschainFailed),
+    Exchanged(CvmExecutorExchangeSucceeded),
+    CrosschainFailed(CvmExecutorCrosschainFailed),
 }
 
 // beneath is something to be generate by macro
 // https://github.com/CosmWasm/cosmwasm/discussions/1871
 
-impl CvmInterpreterCrosschainFailed {
+impl CvmExecutorCrosschainFailed {
     pub fn new(reason: String) -> Event {
         Event::new("cvm.executor.crosschain.failed").add_attribute("reason", reason)
     }
 }
 
-impl CvmInterpreterStepExecuted {
+impl CvmExecutorStepExecuted {
     pub fn new(tag: &[u8]) -> Event {
         let mut event = Event::new("cvm.executor.step.executed");
         if !tag.is_empty() {
@@ -128,26 +128,26 @@ impl CvmInterpreterStepExecuted {
     }
 }
 
-impl CvmInterpreterSelfFailed {
+impl CvmExecutorSelfFailed {
     pub fn new(reason: String) -> Event {
         Event::new("cvm.executor.self.failed").add_attribute("reason", reason)
     }
 }
 
-impl CvmInterpreterExchangeStarted {
+impl CvmExecutorExchangeStarted {
     pub fn new(exchange_id: ExchangeId) -> Event {
         Event::new("cvm.executor.exchange.started")
             .add_attribute("exchange_id", exchange_id.to_string())
     }
 }
 
-impl CvmInterpreterInstructionCallInitiated {
+impl CvmExecutorInstructionCallInitiated {
     pub fn new() -> Event {
         Event::new("cvm.executor.instruction.call.initiated")
     }
 }
 
-impl CvmInterpreterInstructionSpawned {
+impl CvmExecutorInstructionSpawned {
     pub fn new(
         origin_network_id: NetworkId,
         origin_user_id: UserId,
@@ -172,13 +172,13 @@ impl CvmInterpreterInstructionSpawned {
     }
 }
 
-impl CvmInterpreterExchangeFailed {
+impl CvmExecutorExchangeFailed {
     pub fn new(reason: String) -> Event {
         Event::new("cvm.executor.exchange.failed").add_attribute("reason", reason)
     }
 }
 
-impl CvmInterpreterOwnerRemoved {
+impl CvmExecutorOwnerRemoved {
     pub fn new(owners: Vec<Addr>) -> Event {
         let mut e = Event::new("cvm.executor.owner.removed");
         for owner in owners {
@@ -188,7 +188,7 @@ impl CvmInterpreterOwnerRemoved {
     }
 }
 
-impl CvmInterpreterOwnerAdded {
+impl CvmExecutorOwnerAdded {
     pub fn new(owners: Vec<Addr>) -> Event {
         let mut e = Event::new("cvm.executor.owner.added");
         for owner in owners {
@@ -198,19 +198,19 @@ impl CvmInterpreterOwnerAdded {
     }
 }
 
-impl CvmInterpreterExecutionStarted {
+impl CvmExecutorExecutionStarted {
     pub fn new() -> Event {
         Event::new("cvm.executor.execution.started")
     }
 }
 
-impl CvmInterpreterTransferred {
+impl CvmExecutorTransferred {
     pub fn new() -> Event {
         Event::new("cvm.executor.transferred")
     }
 }
 
-impl CvmInterpreterExchangeSucceeded {
+impl CvmExecutorExchangeSucceeded {
     pub fn new(exchange_id: ExchangeId) -> Event {
         Event::new("cvm.executor.exchanged").add_attribute("exchange_id", exchange_id.to_string())
     }

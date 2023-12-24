@@ -118,7 +118,7 @@ class ForceInstantiate(BaseModel):
 
 class ConfigSubMsg8(BaseModel):
     """
-    instantiates default interpreter on behalf of user `salt` - human string, converted to hex or base64 depending on implementation
+    instantiates default executor on behalf of user `salt` - human string, converted to hex or base64 depending on implementation
     """
 
     class Config:
@@ -228,8 +228,8 @@ class OsmosisIbcHooks(BaseModel):
 class CosmWasm(BaseModel):
     admin: Addr = Field(..., description='admin of everything')
     contract: Addr
-    interpreter_code_id: conint(ge=0) = Field(
-        ..., description='CVM interpreter contract code'
+    executor_code_id: conint(ge=0) = Field(
+        ..., description='CVM executor contract code'
     )
 
 
@@ -316,7 +316,7 @@ class Register2(Enum):
 
 class Register3(Enum):
     """
-    Interpreter's address
+    Executor's address
     """
 
     this = 'this'
@@ -502,7 +502,7 @@ class ExchangeItem(BaseModel):
 
 class ExecutorOrigin(BaseModel):
     """
-    The interpreter origin, composite of a user origin and a salt.
+    The executor origin, composite of a user origin and a salt.
     """
 
     salt: str
@@ -774,7 +774,7 @@ class ExecuteMsg3(BaseModel):
 
 class ExecuteMsg4(BaseModel):
     """
-    Message sent from interpreter trying to spawn program on another network.
+    Message sent from executor trying to spawn program on another network.
     """
 
     class Config:
@@ -840,7 +840,7 @@ class ExecuteProgramMsgForFundsForDisplayedForUint128(BaseModel):
 
     assets: FundsForDisplayedForUint128 = Field(
         ...,
-        description='Assets to fund the CVM interpreter instance. The interpreter is funded prior to execution. If None, 100% of received funds go to interpreter.',
+        description='Assets to fund the CVM executor instance. The executor is funded prior to execution. If None, 100% of received funds go to executor.',
     )
     program: ProgramForArrayOfInstructionForArrayOfUint8AndXcAddrAndFundsForAmount = (
         Field(..., description='The program.')
@@ -859,7 +859,7 @@ class ExecuteProgramMsgForNullableFundsForDisplayedForUint128(BaseModel):
 
     assets: Optional[FundsForDisplayedForUint128] = Field(
         None,
-        description='Assets to fund the CVM interpreter instance. The interpreter is funded prior to execution. If None, 100% of received funds go to interpreter.',
+        description='Assets to fund the CVM executor instance. The executor is funded prior to execution. If None, 100% of received funds go to executor.',
     )
     program: ProgramForArrayOfInstructionForArrayOfUint8AndXcAddrAndFundsForAmount = (
         Field(..., description='The program.')
@@ -912,8 +912,8 @@ class PacketForProgramForArrayOfInstructionForArrayOfUint8AndXcAddrAndFundsForAm
     assets: FundsForDisplayedForUint128 = Field(
         ..., description='The assets that were attached to the program.'
     )
-    interpreter: str = Field(
-        ..., description='The interpreter that was the origin of this packet.'
+    executor: str = Field(
+        ..., description='The executor that was the origin of this packet.'
     )
     program: ProgramForArrayOfInstructionForArrayOfUint8AndXcAddrAndFundsForAmount = (
         Field(..., description='The protobuf encoded program.')

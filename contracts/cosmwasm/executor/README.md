@@ -4,7 +4,7 @@ Receives and stores user funds.
 Fully owned by user.
 Delegates cross chain execution to `outpost`.
 
-Instantiated as many instances of the CVM interpreter contract. On some chains, we can use probabilistically generated sub_accounts, but for most, we instantiate a contract instance.
+Instantiated as many instances of the CVM executor contract. On some chains, we can use probabilistically generated sub_accounts, but for most, we instantiate a contract instance.
 
 ## Events
 
@@ -68,7 +68,7 @@ Note that these events will be yield from the router in production.
 
 ## Usage
 
-The CVM interpreter contract interprets the CVM programs. Available instructions are:
+The CVM executor contract interprets the CVM programs. Available instructions are:
 
 
 ### Call

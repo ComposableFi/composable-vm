@@ -63,7 +63,7 @@
       "additionalProperties": false
     },
     {
-      "description": "Message sent from interpreter trying to spawn program on another network.",
+      "description": "Message sent from executor trying to spawn program on another network.",
       "type": "object",
       "required": [
         "bridge_forward"
@@ -509,7 +509,7 @@
           "additionalProperties": false
         },
         {
-          "description": "instantiates default interpreter on behalf of user `salt` - human string, converted to hex or base64 depending on implementation",
+          "description": "instantiates default executor on behalf of user `salt` - human string, converted to hex or base64 depending on implementation",
           "type": "object",
           "required": [
             "force_instantiate"
@@ -658,7 +658,7 @@
       ],
       "properties": {
         "assets": {
-          "description": "Assets to fund the CVM interpreter instance. The interpreter is funded prior to execution. If None, 100% of received funds go to interpreter.",
+          "description": "Assets to fund the CVM executor instance. The executor is funded prior to execution. If None, 100% of received funds go to executor.",
           "allOf": [
             {
               "$ref": "#/definitions/Funds_for_Displayed_for_uint128"
@@ -693,7 +693,7 @@
       ],
       "properties": {
         "assets": {
-          "description": "Assets to fund the CVM interpreter instance. The interpreter is funded prior to execution. If None, 100% of received funds go to interpreter.",
+          "description": "Assets to fund the CVM executor instance. The executor is funded prior to execution. If None, 100% of received funds go to executor.",
           "anyOf": [
             {
               "$ref": "#/definitions/Funds_for_Displayed_for_uint128"
@@ -724,7 +724,7 @@
       }
     },
     "ExecutorOrigin": {
-      "description": "The interpreter origin, composite of a user origin and a salt.",
+      "description": "The executor origin, composite of a user origin and a salt.",
       "type": "object",
       "required": [
         "salt",
@@ -1198,7 +1198,7 @@
               "required": [
                 "admin",
                 "contract",
-                "interpreter_code_id"
+                "executor_code_id"
               ],
               "properties": {
                 "admin": {
@@ -1212,8 +1212,8 @@
                 "contract": {
                   "$ref": "#/definitions/Addr"
                 },
-                "interpreter_code_id": {
-                  "description": "CVM interpreter contract code",
+                "executor_code_id": {
+                  "description": "CVM executor contract code",
                   "type": "integer",
                   "format": "uint64",
                   "minimum": 0.0
@@ -1232,7 +1232,7 @@
       "type": "object",
       "required": [
         "assets",
-        "interpreter",
+        "executor",
         "program",
         "salt",
         "user_origin"
@@ -1246,8 +1246,8 @@
             }
           ]
         },
-        "interpreter": {
-          "description": "The interpreter that was the origin of this packet.",
+        "executor": {
+          "description": "The executor that was the origin of this packet.",
           "type": "string"
         },
         "program": {
@@ -1357,7 +1357,7 @@
           ]
         },
         {
-          "description": "Interpreter's address",
+          "description": "Executor's address",
           "type": "string",
           "enum": [
             "this"

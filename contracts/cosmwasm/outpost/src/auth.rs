@@ -17,7 +17,7 @@ use cvm_route::transport::*;
 /// `authorise` method will verify caller’s authorisation level.
 ///
 /// For convenience, type aliases are provided for the different
-/// authorisation levels: [`Contract`], [`Interpreter`] and [`Admin`].
+/// authorisation levels: [`Contract`], [`Executor`] and [`Admin`].
 #[derive(Clone, Copy)]
 pub(crate) struct Auth<T>(core::marker::PhantomData<T>);
 
@@ -26,7 +26,7 @@ pub(crate) struct Auth<T>(core::marker::PhantomData<T>);
 pub(crate) type Contract = Auth<policy::Contract>;
 
 /// Authorisation token for messages which come from an executor.
-pub(crate) type Executor = Auth<policy::Interpreter>;
+pub(crate) type Executor = Auth<policy::Executor>;
 
 /// Authorisation token for messages which come from contract’s admin.
 pub(crate) type Admin = Auth<policy::Admin>;
@@ -88,7 +88,7 @@ impl Auth<policy::WasmHook> {
     }
 }
 
-impl Auth<policy::Interpreter> {
+impl Auth<policy::Executor> {
     pub(crate) fn authorise(
         deps: Deps,
         info: &MessageInfo,
@@ -121,7 +121,7 @@ impl<T> Auth<T> {
 pub(crate) mod policy {
     #[derive(Clone, Copy)]
     pub(crate) enum Contract {}
-    pub(crate) enum Interpreter {}
+    pub(crate) enum Executor {}
     #[derive(Clone, Copy)]
     pub(crate) enum Admin {}
     pub(crate) enum WasmHook {}

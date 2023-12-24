@@ -43,8 +43,8 @@ class NetworkId(BaseModel):
 class CosmWasm(BaseModel):
     admin: Addr = Field(..., description='admin of everything')
     contract: Addr
-    interpreter_code_id: conint(ge=0) = Field(
-        ..., description='CVM interpreter contract code'
+    executor_code_id: conint(ge=0) = Field(
+        ..., description='CVM executor contract code'
     )
 
 

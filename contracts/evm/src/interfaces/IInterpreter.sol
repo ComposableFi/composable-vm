@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.14;
 
-interface IInterpreter {
+interface IExecutor {
     function interpret(bytes calldata program, address relayer) external;
 
     function addOwners(address[] calldata newOwners) external;

@@ -623,12 +623,12 @@ library SDK {
     }
 
     // ibc package specific functions
-    function _handleInterpreterOrigin(bytes memory program, uint64 pos) public pure returns(bytes memory originInterpreter, uint64 newPos) {
+    function _handleExecutorOrigin(bytes memory program, uint64 pos) public pure returns(bytes memory originExecutor, uint64 newPos) {
         uint64 size;
         (size, pos) = _getMessageLength(program, pos);
         pos = _checkField(program, 1, ProtobufLib.WireType.LengthDelimited, pos);
         (size, pos) = _getMessageLength(program, pos);
-        originInterpreter = program.slice(pos, size);
+        originExecutor = program.slice(pos, size);
         newPos = pos + size;
     }
 
@@ -921,15 +921,15 @@ library SDK {
         );
     }
     
-    function generateInterpreterOrigin(bytes memory account) public pure returns (bytes memory interpreterOrigin) {
-        interpreterOrigin = abi.encodePacked(
+    function generateExecutorOrigin(bytes memory account) public pure returns (bytes memory executorOrigin) {
+        executorOrigin = abi.encodePacked(
             ProtobufLib.encode_key(1, 2),
             ProtobufLib.encode_length_delimited(generateAccount(account))
         );
     }
 
     function generateIBCSpawn(
-        bytes memory interpreterOrigin,
+        bytes memory executorOrigin,
         bytes memory userOrigin,
         bytes memory _salt,
         bytes memory _spawnedProgram,
@@ -938,7 +938,7 @@ library SDK {
     ) public pure returns (bytes memory spawn) {
         spawn = abi.encodePacked(
             ProtobufLib.encode_key(1, 2),
-            ProtobufLib.encode_length_delimited(interpreterOrigin),
+            ProtobufLib.encode_length_delimited(executorOrigin),
             ProtobufLib.encode_key(2, 2),
             ProtobufLib.encode_length_delimited(userOrigin),
             ProtobufLib.encode_key(3, 2),
@@ -963,7 +963,7 @@ library SDK {
         address routerAddress
     ) public 
     returns (
-        bytes memory originInterpreter, IRouter.Origin memory origin, bytes memory spawnedProgram, bytes memory salt, address[] memory assetAddresses, uint256[] memory assetAmounts)
+        bytes memory originExecutor, IRouter.Origin memory origin, bytes memory spawnedProgram, bytes memory salt, address[] memory assetAddresses, uint256[] memory assetAmounts)
     {
         CvmXcvmPacket.Data memory packet = CvmXcvmPacket.decode(program);
         require(false, "next PRs will switch from manual parser to generated");
@@ -972,7 +972,7 @@ library SDK {
         // uint64 pos;
 
         // pos = _checkField(program, 1, ProtobufLib.WireType.LengthDelimited, pos);
-        // (originInterpreter, pos) = _handleInterpreterOrigin(program, pos);
+        // (originExecutor, pos) = _handleExecutorOrigin(program, pos);
 
         // pos = _checkField(program, 2, ProtobufLib.WireType.LengthDelimited, pos);
         // uint128 networkId;

@@ -8,10 +8,10 @@ import "forge-std/Test.sol";
 import "../src/Router.sol";
 import "../src/mocks/ERC20Mock.sol";
 import "../utils/util.sol";
-import "../src/Interpreter.sol";
+import "../src/Executor.sol";
 import "../src/interfaces/IRouter.sol";
 
-contract test_Interpreter is Test {
+contract test_Executor is Test {
     Utils internal utils;
 
     address internal bridge1;
@@ -19,10 +19,10 @@ contract test_Interpreter is Test {
     address internal user;
     address internal owner;
     uint256 internal defaultTokenAmount = 100000 * 1e18;
-    address internal interpreterAddress;
+    address internal executorAddress;
     ERC20Mock internal assetToken1;
     ERC20Mock internal assetToken2;
-    Interpreter internal interpreter;
+    Executor internal executor;
     Router internal router;
 
     fallback() external payable {}
@@ -42,14 +42,14 @@ contract test_Interpreter is Test {
         router.registerBridge(user, IRouter.BridgeSecurity(1), 1);
 
         vm.prank(user);
-        router.createInterpreter(IRouter.Origin({networkId: 1, account: abi.encodePacked(owner)}), "salt");
-        interpreterAddress = router.userInterpreter(1, abi.encodePacked(owner), "salt");
-        console.log(interpreterAddress);
-        ERC20Mock erc20 = new ERC20Mock("test", "test", interpreterAddress, 100 ether);
+        router.createExecutor(IRouter.Origin({networkId: 1, account: abi.encodePacked(owner)}), "salt");
+        executorAddress = router.userExecutor(1, abi.encodePacked(owner), "salt");
+        console.log(executorAddress);
+        ERC20Mock erc20 = new ERC20Mock("test", "test", executorAddress, 100 ether);
         router.registerAsset(address(erc20), 1);
 
         vm.prank(owner);
-        interpreter = new Interpreter(IRouter.Origin({account: bytes("test"), networkId: 1}), owner, "salt");
+        executor = new Executor(IRouter.Origin({account: bytes("test"), networkId: 1}), owner, "salt");
     }
 
     function testRunProgram(address relayerAddress) private {
@@ -58,6 +58,6 @@ contract test_Interpreter is Test {
         bytes
             memory input = hex"0a3a0a381a360a1a01a9059cbb70997970c51812dc3a010c7d01b50e0d17dc79c80212180a08080012042a0208010a0c081912082206120408c0843d";
         vm.prank(address(router));
-        Interpreter(payable(interpreterAddress)).interpret(input, relayerAddress);
+        Executor(payable(executorAddress)).interpret(input, relayerAddress);
     }
 }

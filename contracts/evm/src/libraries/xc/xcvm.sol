@@ -279,7 +279,7 @@ library CvmXcvmPacket {
 
   //struct definition
   struct Data {
-    bytes interpreter;
+    bytes executor;
     CvmXcvmUserOrigin.Data user_origin;
     bytes salt;
     CvmXcvmProgram.Data program;
@@ -333,7 +333,7 @@ library CvmXcvmPacket {
       (fieldId, wireType, bytesRead) = ProtoBufRuntime._decode_key(pointer, bs);
       pointer += bytesRead;
       if (fieldId == 1) {
-        pointer += _read_interpreter(pointer, bs, r);
+        pointer += _read_executor(pointer, bs, r);
       } else
       if (fieldId == 2) {
         pointer += _read_user_origin(pointer, bs, r);
@@ -380,13 +380,13 @@ library CvmXcvmPacket {
    * @param r The in-memory struct
    * @return The number of bytes decoded
    */
-  function _read_interpreter(
+  function _read_executor(
     uint256 p,
     bytes memory bs,
     Data memory r
   ) internal pure returns (uint) {
     (bytes memory x, uint256 sz) = ProtoBufRuntime._decode_bytes(p, bs);
-    r.interpreter = x;
+    r.executor = x;
     return sz;
   }
 
@@ -559,14 +559,14 @@ library CvmXcvmPacket {
     uint256 offset = p;
     uint256 pointer = p;
     uint256 i;
-    if (r.interpreter.length != 0) {
+    if (r.executor.length != 0) {
     pointer += ProtoBufRuntime._encode_key(
       1,
       ProtoBufRuntime.WireType.LengthDelim,
       pointer,
       bs
     );
-    pointer += ProtoBufRuntime._encode_bytes(r.interpreter, pointer, bs);
+    pointer += ProtoBufRuntime._encode_bytes(r.executor, pointer, bs);
     }
     
     pointer += ProtoBufRuntime._encode_key(
@@ -649,7 +649,7 @@ library CvmXcvmPacket {
     Data memory r
   ) internal pure returns (uint) {
     uint256 e;uint256 i;
-    e += 1 + ProtoBufRuntime._sz_lendelim(r.interpreter.length);
+    e += 1 + ProtoBufRuntime._sz_lendelim(r.executor.length);
     e += 1 + ProtoBufRuntime._sz_lendelim(CvmXcvmUserOrigin._estimate(r.user_origin));
     e += 1 + ProtoBufRuntime._sz_lendelim(r.salt.length);
     e += 1 + ProtoBufRuntime._sz_lendelim(CvmXcvmProgram._estimate(r.program));
@@ -664,7 +664,7 @@ library CvmXcvmPacket {
     Data memory r
   ) internal pure returns (bool) {
     
-  if (r.interpreter.length != 0) {
+  if (r.executor.length != 0) {
     return false;
   }
 
@@ -687,7 +687,7 @@ library CvmXcvmPacket {
    * @param output The in-storage struct
    */
   function store(Data memory input, Data storage output) internal {
-    output.interpreter = input.interpreter;
+    output.executor = input.executor;
     CvmXcvmUserOrigin.store(input.user_origin, output.user_origin);
     output.salt = input.salt;
     CvmXcvmProgram.store(input.program, output.program);

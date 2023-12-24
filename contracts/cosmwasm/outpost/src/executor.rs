@@ -98,7 +98,7 @@ pub(crate) fn handle_instantiate_reply(deps: DepsMut, msg: Reply) -> StdResult<R
         .value;
     let executor_address = deps.api.addr_validate(address)?;
 
-    // Interpreter provides `network_id, user_id` pair as an event for the router to know which
+    // Executor provides `network_id, user_id` pair as an event for the router to know which
     // pair is instantiated
 
     let event_name = format!("wasm-{}", CvmExecutorInstantiated::NAME);

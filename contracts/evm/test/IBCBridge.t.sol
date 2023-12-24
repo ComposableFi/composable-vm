@@ -8,7 +8,7 @@ import "forge-std/Test.sol";
 import "../src/Router.sol";
 import "../src/mocks/ERC20Mock.sol";
 import "../utils/util.sol";
-import "../src/interfaces/IInterpreter.sol";
+import "../src/interfaces/IExecutor.sol";
 import "../src/libraries/SDK.sol";
 import "yui-ibc/core/25-handler/IBCHandler.sol";
 import "yui-ibc/core/24-host/IBCHost.sol";
@@ -74,7 +74,7 @@ contract test_IBCBridge is Test {
             abi.encode(address(assetToken1))
         );
 
-        bytes memory ibcProgram = SDK.generateIBCSpawn(SDK.generateInterpreterOrigin(accountInBytes), 
+        bytes memory ibcProgram = SDK.generateIBCSpawn(SDK.generateExecutorOrigin(accountInBytes), 
             SDK.generateUserOrigin(accountInBytes, networkId), salt, spawnedProgram, assetIds, amounts);
         (   
             , 

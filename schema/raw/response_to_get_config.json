@@ -580,7 +580,7 @@
               "required": [
                 "admin",
                 "contract",
-                "interpreter_code_id"
+                "executor_code_id"
               ],
               "properties": {
                 "admin": {
@@ -594,8 +594,8 @@
                 "contract": {
                   "$ref": "#/definitions/Addr"
                 },
-                "interpreter_code_id": {
-                  "description": "CVM interpreter contract code",
+                "executor_code_id": {
+                  "description": "CVM executor contract code",
                   "type": "integer",
                   "format": "uint64",
                   "minimum": 0.0

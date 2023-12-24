@@ -5,13 +5,13 @@ pragma experimental ABIEncoderV2;
 import "openzeppelin-contracts/access/Ownable.sol";
 import "openzeppelin-contracts/token/ERC20/IERC20.sol";
 
-import "./Interpreter.sol";
+import "./Executor.sol";
 import "./interfaces/IRouter.sol";
 import "./interfaces/IIbcBridge.sol";
 
 contract Router is Ownable, IRouter {
     // network => account => salt
-    mapping(uint128 => mapping(bytes => mapping(bytes => address))) public userInterpreter;
+    mapping(uint128 => mapping(bytes => mapping(bytes => address))) public userExecutor;
 
     mapping(address => Bridge) public bridgesInfo;
     // TODO ? do we have only one bridge per network and security
@@ -90,7 +90,7 @@ contract Router is Ownable, IRouter {
 
     //// TODO ? is the bridge who's gonna to provide internetwork assets transfer?
     function _provisionAssets(
-        address payable interpreterAddress,
+        address payable executorAddress,
         address[] memory erc20AssetList,
         uint256[] memory amounts
     ) internal {
@@ -99,11 +99,11 @@ contract Router is Ownable, IRouter {
             "Router: asset list size should be equal to amount list size"
         );
         if (msg.value > 0) {
-            bool sent = interpreterAddress.send(msg.value);
+            bool sent = executorAddress.send(msg.value);
             require(sent, "Failed to send Ether");
         }
         for (uint256 i = 0; i < erc20AssetList.length; i++) {
-            IERC20(erc20AssetList[i]).transferFrom(msg.sender, interpreterAddress, amounts[i]);
+            IERC20(erc20AssetList[i]).transferFrom(msg.sender, executorAddress, amounts[i]);
         }
     }
 
@@ -114,34 +114,34 @@ contract Router is Ownable, IRouter {
         address[] memory _assets,
         uint256[] memory _amounts
     ) public override payable onlyBridge returns (bool){
-        // a program is a result of spawn function, pull the assets from the bridge to the interpreter
-        address payable interpreterAddress = getOrCreateInterpreter(origin, salt);
-        _provisionAssets(interpreterAddress, _assets, _amounts);
+        // a program is a result of spawn function, pull the assets from the bridge to the executor
+        address payable executorAddress = getOrCreateExecutor(origin, salt);
+        _provisionAssets(executorAddress, _assets, _amounts);
 
-        IInterpreter(interpreterAddress).interpret(program, msg.sender);
+        IExecutor(executorAddress).interpret(program, msg.sender);
         return true;
     }
 
-    function createInterpreter(Origin memory origin, bytes memory salt) public returns(address payable) {
-        address interpreterAddress = userInterpreter[origin.networkId][origin.account][salt];
-        require(interpreterAddress == address(0), "Interpreter already exists");
-        return getOrCreateInterpreter(origin, salt);
+    function createExecutor(Origin memory origin, bytes memory salt) public returns(address payable) {
+        address executorAddress = userExecutor[origin.networkId][origin.account][salt];
+        require(executorAddress == address(0), "Executor already exists");
+        return getOrCreateExecutor(origin, salt);
     }
 
-    function getOrCreateInterpreter(Origin memory origin, bytes memory salt) public returns (address payable) {
-        address interpreterAddress = userInterpreter[origin.networkId][origin.account][salt];
-        if (interpreterAddress == address(0)) {
-            //interpreterAddress = address(new Interpreter(networkId, account));
+    function getOrCreateExecutor(Origin memory origin, bytes memory salt) public returns (address payable) {
+        address executorAddress = userExecutor[origin.networkId][origin.account][salt];
+        if (executorAddress == address(0)) {
+            //executorAddress = address(new Executor(networkId, account));
             require(
                 bridgesInfo[msg.sender].security == BridgeSecurity.Deterministic,
-                "For creating a new interpreter, the sender should be a deterministic bridge"
+                "For creating a new executor, the sender should be a deterministic bridge"
             );
-            interpreterAddress = address(new Interpreter(origin, address(this), salt));
-            userInterpreter[origin.networkId][origin.account][salt] = interpreterAddress;
+            executorAddress = address(new Executor(origin, address(this), salt));
+            userExecutor[origin.networkId][origin.account][salt] = executorAddress;
 
-            emit InstanceCreated(origin.networkId, origin.account, salt, interpreterAddress);
+            emit InstanceCreated(origin.networkId, origin.account, salt, executorAddress);
         }
-        return payable(interpreterAddress);
+        return payable(executorAddress);
     }
 
     function emitSpawn(
@@ -154,8 +154,8 @@ contract Router is Ownable, IRouter {
         uint128[] memory _assetIds,
         uint256[] memory amounts
     ) override external {
-        address payable interpreterAddress = getOrCreateInterpreter(Origin(networkId, account), IInterpreter(msg.sender).salt());
-        require(interpreterAddress == msg.sender, "Router: sender is not an interpreter address");
+        address payable executorAddress = getOrCreateExecutor(Origin(networkId, account), IExecutor(msg.sender).salt());
+        require(executorAddress == msg.sender, "Router: sender is not an executor address");
         emit Spawn(account, networkId, security, salt, spawnedProgram, assetAddresses, amounts);
         if (security == BridgeSecurity.Deterministic) {
             // send through ibc

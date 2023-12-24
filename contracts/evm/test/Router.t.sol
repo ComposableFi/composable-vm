@@ -9,7 +9,7 @@ import "../src/Router.sol";
 import "../src/mocks/ERC20Mock.sol";
 import "../utils/util.sol";
 import "../src/interfaces/IRouter.sol";
-import "../src/interfaces/IInterpreter.sol";
+import "../src/interfaces/IExecutor.sol";
 
 contract test_Router is Test {
     Utils internal utils;
@@ -101,44 +101,44 @@ contract test_Router is Test {
     }
 
 
-    function testCreateInterpreter(uint128 networkId, bytes memory account, bytes memory salt) public {
+    function testCreateExecutor(uint128 networkId, bytes memory account, bytes memory salt) public {
         vm.prank(owner);
         router.registerBridge(bridge1, IRouter.BridgeSecurity(1), 1);
 
         vm.prank(bridge1);
         IRouter.Origin memory origin = IRouter.Origin(networkId, account);
-        address payable interpreterAddress = router.createInterpreter(origin, salt);
-        assertTrue(interpreterAddress != address(0));
+        address payable executorAddress = router.createExecutor(origin, salt);
+        assertTrue(executorAddress != address(0));
     }
 
-    function testCreateInterpreterWithSameSalt(uint128 networkId, bytes memory account, bytes memory salt) public {
+    function testCreateExecutorWithSameSalt(uint128 networkId, bytes memory account, bytes memory salt) public {
         vm.prank(owner);
         router.registerBridge(bridge1, IRouter.BridgeSecurity(1), 1);
 
         vm.prank(bridge1);
         IRouter.Origin memory origin = IRouter.Origin(networkId, account);
-        address payable interpreterAddress = router.createInterpreter(origin, salt);
-        assertTrue(interpreterAddress != address(0));
+        address payable executorAddress = router.createExecutor(origin, salt);
+        assertTrue(executorAddress != address(0));
 
         vm.prank(bridge1);
-        vm.expectRevert('Interpreter already exists');
-        router.createInterpreter(origin, salt);
+        vm.expectRevert('Executor already exists');
+        router.createExecutor(origin, salt);
     }
 
-    function testCreateInterpreterWithDifferentSalt(uint128 networkId, bytes memory account, bytes memory salt, bytes memory salt2) public {
+    function testCreateExecutorWithDifferentSalt(uint128 networkId, bytes memory account, bytes memory salt, bytes memory salt2) public {
         vm.prank(owner);
         router.registerBridge(bridge1, IRouter.BridgeSecurity(1), 1);
 
         vm.prank(bridge1);
         IRouter.Origin memory origin = IRouter.Origin(networkId, account);
-        address payable interpreterAddress = router.createInterpreter(origin, salt);
-        assertTrue(interpreterAddress != address(0));
+        address payable executorAddress = router.createExecutor(origin, salt);
+        assertTrue(executorAddress != address(0));
 
         vm.prank(bridge1);
-        address payable interpreterAddress2 = router.createInterpreter(origin, salt2);
-        assertTrue(interpreterAddress2 != address(0));
+        address payable executorAddress2 = router.createExecutor(origin, salt2);
+        assertTrue(executorAddress2 != address(0));
 
-        assertTrue(interpreterAddress != interpreterAddress2);
+        assertTrue(executorAddress != executorAddress2);
 
     }
 }

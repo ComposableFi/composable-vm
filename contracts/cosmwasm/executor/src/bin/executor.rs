@@ -11,7 +11,7 @@ fn main() {
         execute: ExecuteMsg,
     }
     let events = schemars::gen::SchemaGenerator::default()
-        .into_root_schema_for::<cw_cvm_executor::events::CvmInterpreter>();
+        .into_root_schema_for::<cw_cvm_executor::events::CvmExecutor>();
 
     // same as in above macro
     let mut out_dir = std::env::current_dir().unwrap();

@@ -79,7 +79,7 @@ pub fn execute(
 
 fn handle_set_error(_: Authenticated, deps: DepsMut, reason: String, _env: Env) -> Result {
     RESULT_REGISTER.save(deps.storage, &Err(reason.clone()))?;
-    let event = CvmInterpreterCrosschainFailed::new(reason);
+    let event = CvmExecutorCrosschainFailed::new(reason);
     Ok(Response::default().add_event(event))
 }
 
@@ -113,7 +113,7 @@ fn initiate_execution(
     // Reset instruction pointer to zero.
     IP_REGISTER.save(deps.storage, &0)?;
     Ok(Response::default()
-        .add_event(CvmInterpreterExecutionStarted::new())
+        .add_event(CvmExecutorExecutionStarted::new())
         .add_submessage(SubMsg::reply_on_error(
             wasm_execute(
                 env.contract.address,
@@ -135,7 +135,7 @@ fn add_owners(_: Authenticated, deps: DepsMut, owners: Vec<Addr>) -> Result {
     for owner in owners.iter() {
         OWNERS.save(deps.storage, owner.clone(), &())?;
     }
-    Ok(Response::default().add_event(CvmInterpreterOwnerAdded::new(owners)))
+    Ok(Response::default().add_event(CvmExecutorOwnerAdded::new(owners)))
 }
 
 /// Remove a set of owners from the current owners list.
@@ -144,7 +144,7 @@ fn remove_owners(_: Authenticated, deps: DepsMut, owners: Vec<Addr>) -> Response
     for owner in owners.iter() {
         OWNERS.remove(deps.storage, owner.clone());
     }
-    Response::default().add_event(CvmInterpreterOwnerRemoved::new(owners))
+    Response::default().add_event(CvmExecutorOwnerRemoved::new(owners))
 }
 
 /// Execute an CVM program.
@@ -218,7 +218,7 @@ pub fn handle_execute_step(
         // We subtract because of the extra loop to reach the empty instructions case.
         IP_REGISTER.save(deps.storage, &instruction_pointer.saturating_sub(1))?;
         TIP_REGISTER.save(deps.storage, &tip)?;
-        Response::default().add_event(CvmInterpreterStepExecuted::new(&program.tag))
+        Response::default().add_event(CvmExecutorStepExecuted::new(&program.tag))
     })
 }
 
@@ -248,7 +248,7 @@ fn execute_exchange(
         EXCHANGE_ID,
     )?;
 
-    Ok(response.add_event(CvmInterpreterExchangeStarted::new(exchange_id)))
+    Ok(response.add_event(CvmExecutorExchangeStarted::new(exchange_id)))
 }
 
 /// Interpret the `Call` instruction
@@ -278,7 +278,7 @@ pub fn interpret_call(
     .try_into()
     .map_err(|_| ContractError::DataSerializationError)?;
     Ok(Response::default()
-        .add_event(CvmInterpreterInstructionCallInitiated::new())
+        .add_event(CvmExecutorInstructionCallInitiated::new())
         .add_submessage(SubMsg::reply_on_success(cosmos_msg, CALL_ID)))
 }
 
@@ -443,7 +443,7 @@ pub fn interpret_spawn(
             msg: execute_program,
             to: network_id,
         })?)
-        .add_event(CvmInterpreterInstructionSpawned::new(
+        .add_event(CvmExecutorInstructionSpawned::new(
             executor_origin.user_origin.network_id,
             executor_origin.user_origin.user_id,
             network_id,
@@ -498,7 +498,7 @@ pub fn interpret_transfer(
         };
     }
 
-    Ok(response.add_event(CvmInterpreterTransferred::new()))
+    Ok(response.add_event(CvmExecutorTransferred::new()))
 }
 
 #[cfg_attr(not(feature = "library"), entry_point)]
@@ -536,7 +536,7 @@ fn handle_self_call_result(deps: DepsMut, msg: Reply) -> StdResult<Response> {
 			// other state changes are reverted.
 			RESULT_REGISTER.save(deps.storage, &Err(e.clone()))?;
 			let ip = IP_REGISTER.load(deps.storage)?.to_string();
-			let event = CvmInterpreterSelfFailed::new(e);
+			let event = CvmExecutorSelfFailed::new(e);
 			Ok(Response::default().add_event(event).add_attribute("ip", ip))
 		}
 	}
@@ -560,10 +560,10 @@ fn handle_exchange_result(deps: DepsMut, msg: Reply) -> StdResult<Response> {
                 .and_then(|x| x.attributes.iter().find(|x| x.key == "exchange_id"))
                 .map(|x| x.value.parse().unwrap())
                 .unwrap_or(ExchangeId::default());
-            Response::new().add_event(CvmInterpreterExchangeSucceeded::new(exchange_id))
+            Response::new().add_event(CvmExecutorExchangeSucceeded::new(exchange_id))
         }
         SubMsgResult::Err(err) => {
-            Response::new().add_event(CvmInterpreterExchangeFailed::new(err.clone()))
+            Response::new().add_event(CvmExecutorExchangeFailed::new(err.clone()))
         }
     };
     RESULT_REGISTER.save(deps.storage, &msg.result.into_result())?;
