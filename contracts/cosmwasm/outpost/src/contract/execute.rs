@@ -256,9 +256,7 @@ pub(crate) fn handle_execute_program_privilleged(
             vec![],
         )?;
         Ok(response
-            .add_event(
-                make_event("route.execute").add_attribute("executor", address.into_string()),
-            )
+            .add_event(make_event("route.execute").add_attribute("executor", address.into_string()))
             .add_message(wasm_msg))
     } else {
         // First, add a callback to instantiate an executor (which we later get the result

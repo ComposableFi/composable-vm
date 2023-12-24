@@ -43,8 +43,7 @@ pub(crate) fn force_instantiate(
         salt,
     )?;
     Ok(BatchResponse::new().add_submessage(msg).add_event(
-        make_event("executor.forced")
-            .add_attribute("executor_origin", executor_origin.to_string()),
+        make_event("executor.forced").add_attribute("executor_origin", executor_origin.to_string()),
     ))
 }
 
@@ -126,11 +125,7 @@ pub(crate) fn handle_instantiate_reply(deps: DepsMut, msg: Reply) -> StdResult<R
 
     state::executors::EXECUTORS_COUNT.save(deps.storage, &executor_id)?;
     state::executors::EXECUTORS.save(deps.storage, executor_id, &executor)?;
-    state::executors::EXECUTOR_ORIGIN_TO_ID.save(
-        deps.storage,
-        executor_origin,
-        &executor_id,
-    )?;
+    state::executors::EXECUTOR_ORIGIN_TO_ID.save(deps.storage, executor_origin, &executor_id)?;
 
     deps.api.debug("cvm:: saved executor");
 

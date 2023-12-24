@@ -1,9 +1,11 @@
 use crate::{
     authenticate::{ensure_owner, Authenticated},
     error::{ContractError, Result},
-    events::*,
+    events::{self, *},
     msg::{MigrateMsg, QueryMsg},
-    state::{self, Config, CONFIG, INSTRUCTION_POINTER_REGISTER, OWNERS, RESULT_REGISTER, TIP_REGISTER},
+    state::{
+        self, Config, CONFIG, INSTRUCTION_POINTER_REGISTER, OWNERS, RESULT_REGISTER, TIP_REGISTER,
+    },
 };
 use alloc::borrow::Cow;
 #[cfg(not(feature = "library"))]
@@ -380,16 +382,17 @@ pub fn execute_spawn(
     program: shared::XcProgram,
 ) -> Result {
     let Config {
-        executor_origin: executor_origin,
-        outpost_address: gateway,
+        executor_origin,
+        outpost_address,
         ..
     } = CONFIG.load(deps.storage)?;
 
     let mut normalized_funds = Funds::default();
 
     let mut response = Response::default();
+    response = response.add_event(events::CvmExecutorInstructionSpawning::new(network_id));
     for (asset_id, balance) in assets.0 {
-        let reference = gateway.get_asset_by_id(deps.querier, asset_id)?;
+        let reference = outpost_address.get_asset_by_id(deps.querier, asset_id)?;
         let transfer_amount = match &reference.local {
             AssetReference::Native { denom } => {
                 let coin = deps
@@ -415,7 +418,7 @@ pub fn execute_spawn(
                 .push((asset_id.into(), transfer_amount.into()));
             response = match reference.local {
                 AssetReference::Native { denom } => response.add_message(BankMsg::Send {
-                    to_address: gateway.address().into(),
+                    to_address: outpost_address.address().into(),
                     amount: vec![Coin {
                         denom,
                         amount: transfer_amount.into(),
@@ -423,7 +426,7 @@ pub fn execute_spawn(
                 }),
                 AssetReference::Cw20 { contract } => {
                     response.add_message(Cw20Contract(contract).call(Cw20ExecuteMsg::Transfer {
-                        recipient: gateway.address().into(),
+                        recipient: outpost_address.address().into(),
                         amount: transfer_amount.into(),
                     })?)
                 } // AssetReference::Erc20 { .. } => Err(ContractError::AssetUnsupportedOnThisNetwork)?,
@@ -438,7 +441,7 @@ pub fn execute_spawn(
         tip: None,
     };
     Ok(response
-        .add_message(gateway.execute(BridgeForwardMsg {
+        .add_message(outpost_address.execute(BridgeForwardMsg {
             executor_origin: executor_origin.clone(),
             msg: execute_program,
             to: network_id,
@@ -504,7 +507,9 @@ pub fn interpret_transfer(
 #[cfg_attr(not(feature = "library"), entry_point)]
 pub fn query(deps: Deps, env: Env, msg: QueryMsg) -> StdResult<Binary> {
     match msg {
-        QueryMsg::Register(Register::Ip) => Ok(to_json_binary(&INSTRUCTION_POINTER_REGISTER.load(deps.storage)?)?),
+        QueryMsg::Register(Register::Ip) => Ok(to_json_binary(
+            &INSTRUCTION_POINTER_REGISTER.load(deps.storage)?,
+        )?),
         QueryMsg::Register(Register::Result) => {
             Ok(to_json_binary(&RESULT_REGISTER.load(deps.storage)?)?)
         }
@@ -535,7 +540,7 @@ fn handle_self_call_result(deps: DepsMut, msg: Reply) -> StdResult<Response> {
 			// this way, only the `RESULT_REGISTER` is persisted. All
 			// other state changes are reverted.
 			RESULT_REGISTER.save(deps.storage, &Err(e.clone()))?;
-			let ipr = INSTRUCTION_POINTER_REGISTER.load(deps.storage)?.to_string();            
+			let ipr = INSTRUCTION_POINTER_REGISTER.load(deps.storage)?.to_string();
 			let event = CvmExecutorSelfFailed::new(e);
 			Ok(Response::default().add_event(event).add_attribute("ip", ipr))
 		}

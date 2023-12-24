@@ -90,6 +90,21 @@ pub struct CvmExecutorStepExecuted {
     pub tag: Vec<u8>,
 }
 
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+#[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
+#[serde(rename = "cvm.executor.instruction.spawning")]
+pub struct CvmExecutorInstructionSpawning {
+    #[cfg_attr(feature = "json-schema", schemars(schema_with = "String::json_schema"))]
+    pub network_id: NetworkId,
+}
+
+impl CvmExecutorInstructionSpawning {
+    pub fn new(network_id: NetworkId) -> Event {
+        Event::new("cvm.executor.instruction.spawning")
+            .add_attribute("network_id", network_id.to_string())
+    }
+}
+
 /// used to generate schema, so that each events schema is available in one place
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[cfg_attr(feature = "json-schema", derive(schemars::JsonSchema))]
@@ -107,6 +122,7 @@ pub enum CvmExecutor {
     Instantiated(CvmExecutorInstantiated),
     Exchanged(CvmExecutorExchangeSucceeded),
     CrosschainFailed(CvmExecutorCrosschainFailed),
+    ExecutorInstructionSpawning(CvmExecutorInstructionSpawning),
 }
 
 // beneath is something to be generate by macro
