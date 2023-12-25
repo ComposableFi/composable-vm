@@ -12,7 +12,7 @@ TNetworkId = TypeVar("TNetworkId")
 class Routes:
     # asset ids and their usd price if available, and for sure their network ids
     # asset globally unique
-    # also known as denom in Cosmos or ERC20 token Ethereum or SPL20 in Solana
+    # also known as denom in Cosmos or ERC20 token Ethereum or SPL20 in Solanas
     assets = []
     # network ids (chain ids, parachains ids, domains, consensus, whatever it is know)
     networks = []
@@ -24,4 +24,7 @@ class Routes:
     # and network id it is on
     pools = []
     # when asset moved to network, what asset it becomes
+
     asset_to_network = []
+    
+    
