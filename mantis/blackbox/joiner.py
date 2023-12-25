@@ -2,9 +2,7 @@
 from blackbox.models import AllData
 import pandas as pd
 
-from blackbox.cvm_runtime.execute import AssetId, AssetItem, AssetReference,AssetReference1, Native
-
-from ..simulation.data import TAssetId, TNetworkId 
+from blackbox.cvm_runtime.execute import AssetId, AssetItem, AssetReference,AssetReference1, Native, NetworkId
 
 def merge_join(input: AllData) -> pd.DataFrame:
     raise NotImplementedError()
@@ -13,12 +11,13 @@ def merge_join(input: AllData) -> pd.DataFrame:
 
 # converting raw datas to frames
 def test_bases():
-    asset = AssetItem(asset_id=AssetId("42"), local= AssetReference(AssetReference1(Native("osmo")))
-     
+    asset = AssetItem(asset_id=AssetId(__root__= "42"), local= AssetReference(__root__= AssetReference1(native= Native(denom="osmo"))), network_id= NetworkId(__root__= "2"))
+    assert 3 == 2 
 
 # converting asset A to B with USD price of transfer
 def test_asset_transfers_to_frame():
     raise NotImplementedError()
+    
     
 # converting pools with USD and native amounts, fees 
 def test_pools_to_frame():

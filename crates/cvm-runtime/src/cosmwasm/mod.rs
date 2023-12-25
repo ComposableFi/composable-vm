@@ -1,14 +1,14 @@
-//! XCVM SDK for CosmWasm
+//! CVM SDK for CosmWasm
 //!
 //! # Introduction
 //!
-//! XCVM uses what we call `late bindings` which gives users ability to,
+//! CVM uses what we call `late bindings` which gives users ability to,
 //! specify addresses that are not known to them yet. For example, an
 //! executor instance is created upon execution. If so, how will users
 //! transfer funds to executor without knowing their address? Although
 //! we solved this problem in our `pallet-cosmwasm` by deterministically
 //! calculating contract addresses prior to execution, we cannot guarantee
-//! this on every chain that XCVM is supported. And also, late binding supports
+//! this on every chain that CVM is supported. And also, late binding supports
 //! some non-address bindings as well. Hence, `late bindings` can be used for
 //! situations like this.
 //!

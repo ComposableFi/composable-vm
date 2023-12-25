@@ -90,8 +90,8 @@ impl AsRef<[u8]> for UserId {
     }
 }
 
-/// Newtype for XCVM networks ID. Must be unique for each network and must never change.
-/// This ID is an opaque, arbitrary type from the XCVM protocol and no assumption must be made on
+/// Newtype for CVM networks ID. Must be unique for each network and must never change.
+/// This ID is an opaque, arbitrary type from the CVM protocol and no assumption must be made on
 /// how it is computed.
 #[cfg_attr(
     feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),

@@ -15,7 +15,7 @@ pub enum ContractError {
     InvalidIbcVersion(String),
     #[error("Unexpected IBC channel ordering {0:?}.")]
     InvalidIbcOrdering(IbcOrder),
-    #[error("An invalid XCVM packet has been received.")]
+    #[error("An invalid CVM packet has been received.")]
     InvalidIbcXcvmPacket,
     #[error("No IBC channel is opened to the target network.")]
     UnsupportedNetwork,
