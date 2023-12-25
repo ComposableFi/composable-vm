@@ -49,14 +49,14 @@ class ProtocolRewards(BaseModel):
 
 
 class TotalRewards(BaseModel):
-    apr: float
+    apr: Union[float, str]
     apy: int
     day: Union[float, str]
 
 
 class TradingFees(BaseModel):
     apr: int
-    apy: float
+    apy: Union[float, str]
     day: Union[float, str]
 
 
@@ -97,7 +97,7 @@ class PoolState(BaseModel):
 
 
 class PoolConfig(BaseModel):
-    block_time_last: int
+    block_time_last: Optional[int] = None
     price0_cumulative_last: Optional[str] = None
     price1_cumulative_last: Optional[str] = None
     pool_params: Optional[PoolParams] = None
@@ -119,7 +119,7 @@ class JsonItem(BaseModel):
     tradingFees: TradingFees
     chainId: str
     dayVolumeUsd: float
-    deregistered: None
+    deregistered: Optional[bool]
     feeRate: List[str]
     lpAddress: str
     pairName: Optional[str]

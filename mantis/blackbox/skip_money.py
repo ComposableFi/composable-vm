@@ -397,6 +397,20 @@ class Transfer(BaseModel):
     port: Optional[str] = Field(
         None, description='Port to use to initiate the transfer'
     )
+    supports_memo: Optional[bool] = Field(
+        None, description='Whether the transfer chain supports a memo'
+    )
+    fee_amount: Optional[str] = Field(
+        None,
+        description='Amount of the fee asset to be paid as the transfer fee if applicable.',
+    )
+    usd_fee_amount: Optional[str] = Field(
+        None,
+        description='Amount of the fee asset to be paid as the transfer fee if applicable, converted to USD value',
+    )
+    fee_asset: Optional[Asset] = Field(
+        None, description='Asset to be paid as the transfer fee if applicable.'
+    )
 
 
 class TransferState(Enum):

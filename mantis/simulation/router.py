@@ -1,30 +1,10 @@
 # solves using convex optimization
-from typing import TypeVar, Generic
 import numpy as np
 import cvxpy as cp
 
 MAX_RESERVE = 1e10
 
-TAssetId = TypeVar("TAssetId")
-TNetworkId = TypeVar("TNetworkId")
-
-# port this https://github.com/ComposableFi/xc-solver-rs/blob/main/solver/src/data.rs
-class Routes:
-    # asset ids and their usd price if available, and for sure their network ids
-    # asset globally unique
-    # also known as denom in Cosmos or ERC20 token Ethereum or SPL20 in Solana
-    assets = []
-    # network ids (chain ids, parachains ids, domains, consensus, whatever it is know)
-    networks = []
-    # is there is possible to send from network to network, and if possible, what is normalized to used
-    # and also asset id and price of gas in native token
-    network_to_network = []
-    # pools with asset ids they map with reserves, and usd info if available, and swap fee
-    # please note that 
-    # and network id it is on
-    pools = []
-    # when asset moved to network, what asset it becomes
-    asset_to_network = []
+from data import TAssetId, TNetworkId
 
 
 # simulate denom paths to and from chains, with center node

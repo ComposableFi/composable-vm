@@ -9,27 +9,27 @@
     },
     "total_shares": {
       "denom": "gamm/pool/833",
-      "amount": "17490655974372625507247"
+      "amount": "17480227179659094642453"
     },
-    "liquidityUsd": 37144529.23754826,
-    "liquidity24hUsdChange": -0.7162346315961542,
-    "volume24hUsd": 36327.67979135615,
-    "volume24hUsdChange": -64.71482831339387,
-    "volume7dUsd": 304614.9351728398,
+    "liquidityUsd": 40605396.484862804,
+    "liquidity24hUsdChange": 2.1657879383881693,
+    "volume24hUsd": 3958.513532146322,
+    "volume24hUsdChange": -89.16422127306623,
+    "volume7dUsd": 217082.16354559633,
     "taker_fee": "0.001000000000000000",
     "pool_liquidity": [
       {
         "denom": "ibc/D176154B0C63D1F9C6DCFB4F70349EBF2E2B5A87A05902F57A6AE92B863E9AEC",
-        "amount": "12531344068998"
+        "amount": "12534325503336"
       },
       {
         "denom": "uosmo",
-        "amount": "11018633152103"
+        "amount": "11000097544630"
       }
     ],
     "scaling_factors": [
       "100000",
-      "118872"
+      "119012"
     ],
     "scaling_factor_controller": "osmo12yvjuy69ynnts95ensss4q6480wkvkpnq2z2ntxmfa2qp860xsmq9mzlpn"
   },
@@ -43,26 +43,26 @@
     },
     "total_shares": {
       "denom": "gamm/pool/1",
-      "amount": "77156752422799147853437485"
+      "amount": "76037795379780179342249866"
     },
-    "liquidityUsd": 23618999.205681592,
-    "liquidity24hUsdChange": -1.592282452007813,
-    "volume24hUsd": 1207032.1991952374,
-    "volume24hUsdChange": -11.244033031238494,
-    "volume7dUsd": 11420027.151943091,
+    "liquidityUsd": 25594322.788914405,
+    "liquidity24hUsdChange": 2.183339722525877,
+    "volume24hUsd": 720231.0409585316,
+    "volume24hUsdChange": 32.145056090618766,
+    "volume7dUsd": 7509180.675144442,
     "taker_fee": "0.001000000000000000",
     "pool_assets": [
       {
         "token": {
           "denom": "ibc/27394FB092D2ECCD56123C74F36E4C1F926001CEADA9CA97EA622B25F41E5EB2",
-          "amount": "1101160405453"
+          "amount": "1079649166612"
         },
         "weight": "536870912000000"
       },
       {
         "token": {
           "denom": "uosmo",
-          "amount": "8207593271062"
+          "amount": "8135762976125"
         },
         "weight": "536870912000000"
       }
@@ -79,26 +79,26 @@
     },
     "total_shares": {
       "denom": "gamm/pool/803",
-      "amount": "641012390327975692719216"
+      "amount": "617540940420639045899576"
     },
-    "liquidityUsd": 15476310.33938416,
-    "liquidity24hUsdChange": -0.8048171644541455,
-    "volume24hUsd": 24833.5947897402,
-    "volume24hUsdChange": 40.9771542358655,
-    "volume7dUsd": 150532.64335983637,
+    "liquidityUsd": 16560282.032713354,
+    "liquidity24hUsdChange": 2.3832180040064546,
+    "volume24hUsd": 21010.859325566424,
+    "volume24hUsdChange": 135.85569978016483,
+    "volume7dUsd": 136238.57752405072,
     "taker_fee": "0.001000000000000000",
     "pool_assets": [
       {
         "token": {
           "denom": "ibc/27394FB092D2ECCD56123C74F36E4C1F926001CEADA9CA97EA622B25F41E5EB2",
-          "amount": "721434549785"
+          "amount": "698564520520"
         },
         "weight": "536870912000000"
       },
       {
         "token": {
           "denom": "ibc/C140AFD542AE77BD7DCC83F13FDD8C5E5BB8C4929785E6EC2F4C636F98F17901",
-          "amount": "586014231672"
+          "amount": "561714508804"
         },
         "weight": "536870912000000"
       }
@@ -109,21 +109,21 @@
     "@type": "/osmosis.concentratedliquidity.v1beta1.Pool",
     "address": "osmo1cr0fq7pfhpw08as5dsthzvjnlfdtvsq7kw98lwuqxjzv5jm3j5mqf9k6as",
     "id": "1135",
-    "current_tick_liquidity": "678393876002453.817035592014173481",
+    "current_tick_liquidity": "540946584690485.324241685497243767",
     "token0": "uosmo",
-    "token0Amount": "4621174303892",
+    "token0Amount": "4680351316201",
     "token1": "ibc/27394FB092D2ECCD56123C74F36E4C1F926001CEADA9CA97EA622B25F41E5EB2",
-    "token1Amount": "682004974393",
-    "current_sqrt_price": "0.366684010278767613967917756973337527",
-    "current_tick": "-8655429",
+    "token1Amount": "667621994158",
+    "current_sqrt_price": "0.364342524476742069442160589889343717",
+    "current_tick": "-8672546",
     "tick_spacing": "100",
     "exponent_at_price_one": "-6",
     "spread_factor": "0.002000000000000000",
-    "liquidityUsd": 13963406.19070513,
-    "liquidity24hUsdChange": 1.1910350977621535,
-    "volume24hUsd": 2214885.3677596813,
-    "volume24hUsdChange": -11.297655449214457,
-    "volume7dUsd": 21761417.2618964,
+    "liquidityUsd": 15275339.223860744,
+    "liquidity24hUsdChange": 2.745793429467316,
+    "volume24hUsd": 1701432.9874324563,
+    "volume24hUsdChange": -6.63708085622398,
+    "volume7dUsd": 14854273.630772162,
     "taker_fee": "0.001000000000000000"
   },
   {
@@ -136,26 +136,26 @@
     },
     "total_shares": {
       "denom": "gamm/pool/678",
-      "amount": "361387470276545427611267"
+      "amount": "356261009381090134038205"
     },
-    "liquidityUsd": 4596446.149998604,
-    "liquidity24hUsdChange": -1.3369451546392161,
-    "volume24hUsd": 1016634.353522097,
-    "volume24hUsdChange": -16.737508821776665,
-    "volume7dUsd": 11356055.726457788,
+    "liquidityUsd": 4749818.8490503,
+    "liquidity24hUsdChange": 0.8993374440714973,
+    "volume24hUsd": 671379.2234264724,
+    "volume24hUsdChange": -4.393150687121934,
+    "volume7dUsd": 6664174.598695496,
     "taker_fee": "0.001000000000000000",
     "pool_assets": [
       {
         "token": {
           "denom": "ibc/D189335C6E4A68B513C10AB227BF1C1D38C746766278BA3EEB4FB14124F1D858",
-          "amount": "2299001228682"
+          "amount": "2374597956302"
         },
         "weight": "536870912000000"
       },
       {
         "token": {
           "denom": "uosmo",
-          "amount": "1596722483765"
+          "amount": "1510041410396"
         },
         "weight": "536870912000000"
       }
@@ -166,21 +166,21 @@
     "@type": "/osmosis.concentratedliquidity.v1beta1.Pool",
     "address": "osmo12f8hx2y5qghfyy6dkqwe70kyptd966x9lf7cw272cap3gcggst9q654m5p",
     "id": "1220",
-    "current_tick_liquidity": "260146174493060440.990278760188704412",
+    "current_tick_liquidity": "84202736922656949.082166535926101457",
     "token0": "ibc/4ABBEF4C8926DDDB320AE5188CFD63267ABBCEFC0583E4AE05D6E5AA2401DDAB",
-    "token0Amount": "3585300361023",
+    "token0Amount": "1262675198856",
     "token1": "ibc/498A0751C798A0D9A389AA3691123DADA57DAA4FE165D5C75894505B876BA6E4",
-    "token1Amount": "880592996309",
-    "current_sqrt_price": "0.999606959987511569238994162131996171",
-    "current_tick": "-7860",
+    "token1Amount": "3232413299726",
+    "current_sqrt_price": "1.000335685292074862160557973320138524",
+    "current_tick": "671",
     "tick_spacing": "100",
     "exponent_at_price_one": "-6",
     "spread_factor": "0.000100000000000000",
-    "liquidityUsd": 4470856.081158273,
-    "liquidity24hUsdChange": -0.9119404581645653,
-    "volume24hUsd": 1879460.5333770756,
-    "volume24hUsdChange": 75.0962485147397,
-    "volume7dUsd": 15462549.122722764,
+    "liquidityUsd": 4501231.575708076,
+    "liquidity24hUsdChange": 2.149289834801689,
+    "volume24hUsd": 1265066.1216606593,
+    "volume24hUsdChange": -60.59912293101167,
+    "volume7dUsd": 15383117.277428158,
     "taker_fee": "0.001000000000000000"
   },
   {
@@ -193,26 +193,26 @@
     },
     "total_shares": {
       "denom": "gamm/pool/704",
-      "amount": "104491889229947436019414"
+      "amount": "104498120979886283877104"
     },
-    "liquidityUsd": 3719814.612187775,
-    "liquidity24hUsdChange": -3.6309285923254766,
-    "volume24hUsd": 214861.66156196513,
-    "volume24hUsdChange": -39.21398808185767,
-    "volume7dUsd": 2456591.7745716446,
+    "liquidityUsd": 3956687.4082387276,
+    "liquidity24hUsdChange": 1.2389504606769095,
+    "volume24hUsd": 184280.0003695768,
+    "volume24hUsdChange": 38.844336711348895,
+    "volume7dUsd": 1661915.5821434045,
     "taker_fee": "0.001000000000000000",
     "pool_assets": [
       {
         "token": {
           "denom": "ibc/EA1D43981D5C9A1C4AAEA9C23BB1D4FA126BA9BC7020A25E0AE4AA841EA25DC5",
-          "amount": "836333186487217500000"
+          "amount": "860475266170906300000"
         },
         "weight": "536870912000000"
       },
       {
         "token": {
           "denom": "uosmo",
-          "amount": "1292611691075"
+          "amount": "1257727643909"
         },
         "weight": "536870912000000"
       }
@@ -223,63 +223,63 @@
     "@type": "/osmosis.concentratedliquidity.v1beta1.Pool",
     "address": "osmo15vn4ear9yfsxdj67hltk8wkgefdal8fztqht8eqeaglzqp68e2jszgcv2d",
     "id": "1133",
-    "current_tick_liquidity": "5490118549200.223673279822903159",
+    "current_tick_liquidity": "10240464630710.736786331668139806",
     "token0": "uosmo",
-    "token0Amount": "1205634455225",
+    "token0Amount": "1004340732282",
     "token1": "ibc/D189335C6E4A68B513C10AB227BF1C1D38C746766278BA3EEB4FB14124F1D858",
-    "token1Amount": "1866304397844",
-    "current_sqrt_price": "1.199908882239767943727018885632100372",
-    "current_tick": "439781",
+    "token1Amount": "2187152424225",
+    "current_sqrt_price": "1.253288755332779911542155180400419704",
+    "current_tick": "570732",
     "tick_spacing": "100",
     "exponent_at_price_one": "-6",
     "spread_factor": "0.002000000000000000",
-    "liquidityUsd": 3601032.118950558,
-    "liquidity24hUsdChange": -0.16060734307478133,
-    "volume24hUsd": 2690463.7076668004,
-    "volume24hUsdChange": -0.3008778186478981,
-    "volume7dUsd": 24305883.645514924,
+    "liquidityUsd": 3766931.0192359257,
+    "liquidity24hUsdChange": 1.5283012124750461,
+    "volume24hUsd": 1279474.9218615612,
+    "volume24hUsdChange": 23.17468209378107,
+    "volume7dUsd": 15034712.725658448,
     "taker_fee": "0.001000000000000000"
   },
   {
     "@type": "/osmosis.concentratedliquidity.v1beta1.Pool",
     "address": "osmo1r0ut8fz8w6nue4nr0c4e8jykgtukcpccydn23sfq0fnas05007nsflmxrw",
     "id": "1093",
-    "current_tick_liquidity": "1093836563162.372601123960835675",
+    "current_tick_liquidity": "1228234986739.203251288752056243",
     "token0": "ibc/1480B8FD20AD5FCAE81EA87584D269547DD4D436843C1D20F15E00EB64743EF4",
-    "token0Amount": "730654950128",
+    "token0Amount": "775754531674",
     "token1": "uosmo",
-    "token1Amount": "1230350727649",
-    "current_sqrt_price": "1.304064053027892621391645372717452123",
-    "current_tick": "700583",
+    "token1Amount": "1185461110703",
+    "current_sqrt_price": "1.248023507543468281531180726048303466",
+    "current_tick": "557562",
     "tick_spacing": "100",
     "exponent_at_price_one": "-6",
     "spread_factor": "0.002000000000000000",
-    "liquidityUsd": 3558625.113962836,
-    "liquidity24hUsdChange": 0.017583251509387634,
-    "volume24hUsd": 524421.8598121706,
-    "volume24hUsdChange": -41.92175268849128,
-    "volume7dUsd": 5140584.232678176,
+    "liquidityUsd": 3764600.3553856947,
+    "liquidity24hUsdChange": -1.846717962365338,
+    "volume24hUsd": 292601.5284764493,
+    "volume24hUsdChange": 49.41741047944836,
+    "volume7dUsd": 3323591.0523209427,
     "taker_fee": "0.001000000000000000"
   },
   {
     "@type": "/osmosis.concentratedliquidity.v1beta1.Pool",
     "address": "osmo1n7cmdy4j3n7x24g547c6qd5crtdawephph3mq9a0dw8eh9fadszqu0uwvn",
     "id": "1136",
-    "current_tick_liquidity": "16637079007287.444848189180970086",
+    "current_tick_liquidity": "10898472857792.247930297134557325",
     "token0": "ibc/C140AFD542AE77BD7DCC83F13FDD8C5E5BB8C4929785E6EC2F4C636F98F17901",
-    "token0Amount": "159953431295",
+    "token0Amount": "116950410844",
     "token1": "ibc/27394FB092D2ECCD56123C74F36E4C1F926001CEADA9CA97EA622B25F41E5EB2",
-    "token1Amount": "121224843942",
-    "current_sqrt_price": "1.109600049376467208221380356981128793",
-    "current_tick": "231212",
+    "token1Amount": "166255949663",
+    "current_sqrt_price": "1.116802568454602346912448916623242419",
+    "current_tick": "247247",
     "tick_spacing": "100",
     "exponent_at_price_one": "-6",
     "spread_factor": "0.003000000000000000",
-    "liquidityUsd": 3412517.7953883586,
-    "liquidity24hUsdChange": -2.743362482547051,
-    "volume24hUsd": 330744.1405600306,
-    "volume24hUsdChange": 36.36205389818264,
-    "volume7dUsd": 1563608.815088129,
+    "liquidityUsd": 3694591.7762622787,
+    "liquidity24hUsdChange": -4.359055936173141,
+    "volume24hUsd": 14908.472397980222,
+    "volume24hUsdChange": -85.90050005971081,
+    "volume7dUsd": 1955671.4351149579,
     "taker_fee": "0.001000000000000000"
   },
   {
@@ -292,26 +292,26 @@
     },
     "total_shares": {
       "denom": "gamm/pool/712",
-      "amount": "152730819060028182497760"
+      "amount": "152074146456101729439340"
     },
-    "liquidityUsd": 3396743.8479257775,
-    "liquidity24hUsdChange": -1.7225947811971405,
-    "volume24hUsd": 125757.38789360867,
-    "volume24hUsdChange": 33.38111742684361,
-    "volume7dUsd": 1490946.8994498297,
+    "liquidityUsd": 3543151.140787956,
+    "liquidity24hUsdChange": 1.7427911237002252,
+    "volume24hUsd": 116231.478043877,
+    "volume24hUsdChange": 29.075565640662166,
+    "volume7dUsd": 787235.2608761489,
     "taker_fee": "0.001000000000000000",
     "pool_assets": [
       {
         "token": {
           "denom": "ibc/D1542AA8762DB13087D8364F3EA6509FD6F009A34F00426AF9E4F9FA85CBBF1F",
-          "amount": "3893982586"
+          "amount": "4048623977"
         },
         "weight": "536870912000000"
       },
       {
         "token": {
           "denom": "uosmo",
-          "amount": "1180367199901"
+          "amount": "1126275245148"
         },
         "weight": "536870912000000"
       }
@@ -322,21 +322,21 @@
     "@type": "/osmosis.concentratedliquidity.v1beta1.Pool",
     "address": "osmo197h70g2928254ur22ft3q8ezal4xw329kjs587fxreqnvuqpec2qwqeefz",
     "id": "1134",
-    "current_tick_liquidity": "101842778501227733203.666809938395601298",
+    "current_tick_liquidity": "2814425549464005267.758032894204905816",
     "token0": "uosmo",
-    "token0Amount": "1107317095731",
+    "token0Amount": "1057808521990",
     "token1": "ibc/EA1D43981D5C9A1C4AAEA9C23BB1D4FA126BA9BC7020A25E0AE4AA841EA25DC5",
-    "token1Amount": "718386772950336900000",
-    "current_sqrt_price": "25419.764113197577434959716442022569007897",
-    "current_tick": "77461644",
+    "token1Amount": "729127811839930600000",
+    "current_sqrt_price": "26162.763714847953891466144126425080661371",
+    "current_tick": "77844902",
     "tick_spacing": "100",
     "exponent_at_price_one": "-6",
     "spread_factor": "0.002000000000000000",
-    "liquidityUsd": 3190899.786717711,
-    "liquidity24hUsdChange": 4.168221697691699,
-    "volume24hUsd": 434471.39556232985,
-    "volume24hUsdChange": -36.99515464630931,
-    "volume7dUsd": 5131683.093415094,
+    "liquidityUsd": 3340239.7138682343,
+    "liquidity24hUsdChange": -0.24296386644604306,
+    "volume24hUsd": 619041.1935424376,
+    "volume24hUsdChange": -3.2764663903554285,
+    "volume7dUsd": 4266709.237437623,
     "taker_fee": "0.001000000000000000"
   },
   {
@@ -349,26 +349,26 @@
     },
     "total_shares": {
       "denom": "gamm/pool/812",
-      "amount": "78279550852585274788697"
+      "amount": "78397568668471308789686"
     },
-    "liquidityUsd": 2986809.316650658,
-    "liquidity24hUsdChange": 4.682191209954729,
-    "volume24hUsd": 364571.1848764058,
-    "volume24hUsdChange": -15.031440728702972,
-    "volume7dUsd": 3798606.425906475,
+    "liquidityUsd": 3134855.801391638,
+    "liquidity24hUsdChange": 1.7067220031055403,
+    "volume24hUsd": 323017.5040543287,
+    "volume24hUsdChange": 17.91807981077479,
+    "volume7dUsd": 2562300.2852933845,
     "taker_fee": "0.001000000000000000",
     "pool_assets": [
       {
         "token": {
           "denom": "ibc/903A61A498756EA560B85A85132D3AEE21B5DEDD41213725D22ABF276EA6945E",
-          "amount": "1334542591853"
+          "amount": "1397215251813"
         },
         "weight": "5368709120"
       },
       {
         "token": {
           "denom": "uosmo",
-          "amount": "1037908607585"
+          "amount": "996488814812"
         },
         "weight": "5368709120"
       }
@@ -377,44 +377,44 @@
   },
   {
     "@type": "/osmosis.concentratedliquidity.v1beta1.Pool",
-    "address": "osmo13l9nyqrn2q5fce89hp4jymhsrmn6yh6m4xsjxp4p6pakp82z76nqv6vk7f",
-    "id": "1090",
-    "current_tick_liquidity": "82890475727199.201873799588852511",
-    "token0": "uosmo",
-    "token0Amount": "882063893355",
-    "token1": "ibc/D1542AA8762DB13087D8364F3EA6509FD6F009A34F00426AF9E4F9FA85CBBF1F",
-    "token1Amount": "3048144102",
-    "current_sqrt_price": "0.057436865095674533030843408586711809",
-    "current_tick": "-24701007",
+    "address": "osmo1m263qln83ultreafq7get8690ymukh0sju8jt7w3ae8akvt6ve6sq9ua5w",
+    "id": "1335",
+    "current_tick_liquidity": "23617117877086.080375313785643570",
+    "token0": "factory/osmo1f5vfcph2dvfeqcqkhetwv75fda69z7e5c2dldm3kvgj23crkv6wqcn47a0/umilkTIA",
+    "token0Amount": "158236517627",
+    "token1": "ibc/D79E7D83AB399BFFF93433E54FAA480C191248FC556924A2A8351AE2638B3877",
+    "token1Amount": "58231302709",
+    "current_sqrt_price": "0.997177210285607581134714149346707546",
+    "current_tick": "-56377",
     "tick_spacing": "100",
     "exponent_at_price_one": "-6",
     "spread_factor": "0.002000000000000000",
-    "liquidityUsd": 2598615.053919735,
-    "liquidity24hUsdChange": -2.822238440915696,
-    "volume24hUsd": 296205.3195899077,
-    "volume24hUsdChange": -8.524750926391436,
-    "volume7dUsd": 3058469.0287645506,
+    "liquidityUsd": 3107201.1604892113,
+    "liquidity24hUsdChange": 6.842589835053427,
+    "volume24hUsd": 221273.47777235153,
+    "volume24hUsdChange": 69.71641726346981,
+    "volume7dUsd": 1077514.8537570972,
     "taker_fee": "0.001000000000000000"
   },
   {
     "@type": "/osmosis.concentratedliquidity.v1beta1.Pool",
-    "address": "osmo1m263qln83ultreafq7get8690ymukh0sju8jt7w3ae8akvt6ve6sq9ua5w",
-    "id": "1335",
-    "current_tick_liquidity": "7716871448192.900263480385606753",
-    "token0": "factory/osmo1f5vfcph2dvfeqcqkhetwv75fda69z7e5c2dldm3kvgj23crkv6wqcn47a0/umilkTIA",
-    "token0Amount": "128269280439",
-    "token1": "ibc/D79E7D83AB399BFFF93433E54FAA480C191248FC556924A2A8351AE2638B3877",
-    "token1Amount": "48508462549",
-    "current_sqrt_price": "1.000227740657665334043627760856464135",
-    "current_tick": "455",
+    "address": "osmo13l9nyqrn2q5fce89hp4jymhsrmn6yh6m4xsjxp4p6pakp82z76nqv6vk7f",
+    "id": "1090",
+    "current_tick_liquidity": "6911597067821.075332177542489548",
+    "token0": "uosmo",
+    "token0Amount": "835566942565",
+    "token1": "ibc/D1542AA8762DB13087D8364F3EA6509FD6F009A34F00426AF9E4F9FA85CBBF1F",
+    "token1Amount": "3135215229",
+    "current_sqrt_price": "0.059945477171510293969706074407686417",
+    "current_tick": "-24406540",
     "tick_spacing": "100",
     "exponent_at_price_one": "-6",
     "spread_factor": "0.002000000000000000",
-    "liquidityUsd": 2187854.1494183578,
-    "liquidity24hUsdChange": -1.4726360886739587,
-    "volume24hUsd": 125601.83632111538,
-    "volume24hUsdChange": -38.06421164626142,
-    "volume7dUsd": 459798.86663227226,
+    "liquidityUsd": 2686196.6855317866,
+    "liquidity24hUsdChange": -0.6402806334956082,
+    "volume24hUsd": 446721.651065876,
+    "volume24hUsdChange": 29.015894232687607,
+    "volume7dUsd": 2503210.9512944166,
     "taker_fee": "0.001000000000000000"
   },
   {
@@ -427,26 +427,26 @@
     },
     "total_shares": {
       "denom": "gamm/pool/817",
-      "amount": "5171227449865773015122"
+      "amount": "5170832271863322284032"
     },
-    "liquidityUsd": 2136925.0077626957,
-    "liquidity24hUsdChange": 1.0344867615531723,
-    "volume24hUsd": 870.3192124597595,
-    "volume24hUsdChange": -78.92091624461978,
-    "volume7dUsd": 19960.889502969556,
+    "liquidityUsd": 2235815.6255458267,
+    "liquidity24hUsdChange": 4.839566326172566,
+    "volume24hUsd": 3221.2170406400455,
+    "volume24hUsdChange": -54.33836173655578,
+    "volume7dUsd": 27253.33016974551,
     "taker_fee": "0.001000000000000000",
     "pool_liquidity": [
       {
         "denom": "ibc/46B44899322F3CD854D2D46DEEF881958467CDD4B3B10086DA49296BBED94BED",
-        "amount": "1553195040542"
+        "amount": "1537289858484"
       },
       {
         "denom": "ibc/84502A75BCA4A5F68D464C00B3F610CE2585847D59B52E5FFB7C3C9D2DDCD3FE",
-        "amount": "1254401345937"
+        "amount": "1265629392965"
       }
     ],
     "scaling_factors": [
-      "139932",
+      "140251",
       "100000"
     ],
     "scaling_factor_controller": "osmo1k8c2m5cn322akk5wy8lpt87dd2f4yh9afcd7af"
@@ -455,113 +455,22 @@
     "@type": "/osmosis.concentratedliquidity.v1beta1.Pool",
     "address": "osmo1emr5hycqzrlrd9cdm9j3jxs66detx2j69mde2xxxsj8xhnl3dvmsgpudk6",
     "id": "1248",
-    "current_tick_liquidity": "1480311981185.258768491835716605",
+    "current_tick_liquidity": "1629056836007.206688814306551766",
     "token0": "ibc/D79E7D83AB399BFFF93433E54FAA480C191248FC556924A2A8351AE2638B3877",
-    "token0Amount": "105726409775",
+    "token0Amount": "77464427290",
     "token1": "uosmo",
-    "token1Amount": "370923211460",
-    "current_sqrt_price": "2.931985562129282702758297034422760352",
-    "current_tick": "7596539",
+    "token1Amount": "581597718308",
+    "current_sqrt_price": "3.029912949350262401880922660532495880",
+    "current_tick": "8180372",
     "tick_spacing": "100",
     "exponent_at_price_one": "-6",
     "spread_factor": "0.002000000000000000",
-    "liquidityUsd": 1841796.6541730075,
-    "liquidity24hUsdChange": -2.99371611529185,
-    "volume24hUsd": 3016409.003138067,
-    "volume24hUsdChange": 14.428776383496686,
-    "volume7dUsd": 21540828.92281093,
+    "liquidityUsd": 2031358.152348834,
+    "liquidity24hUsdChange": 8.517146265103042,
+    "volume24hUsd": 3180435.0067765065,
+    "volume24hUsdChange": 13.94949425550063,
+    "volume7dUsd": 16827241.11851236,
     "taker_fee": "0.001000000000000000"
-  },
-  {
-    "@type": "/osmosis.concentratedliquidity.v1beta1.Pool",
-    "address": "osmo17xa9lemlz7fapt77fp7d86kg52z77hz7qhs4sf7j4s2l6u3jsm6q90qa3z",
-    "id": "1314",
-    "current_tick_liquidity": "33679210003333.977755006713215844",
-    "token0": "ibc/1B708808D372E959CD4839C594960309283424C775F4A038AAEBE7F83A988477",
-    "token0Amount": "9706626114402",
-    "token1": "uosmo",
-    "token1Amount": "392878839324",
-    "current_sqrt_price": "0.282336515147703427312204620824016770",
-    "current_tick": "-11028610",
-    "tick_spacing": "100",
-    "exponent_at_price_one": "-6",
-    "spread_factor": "0.002000000000000000",
-    "liquidityUsd": 1679730.168039756,
-    "liquidity24hUsdChange": 1.2844493583522252,
-    "volume24hUsd": 73771.68334285569,
-    "volume24hUsdChange": 240.01970502892354,
-    "volume7dUsd": 451783.1315798269,
-    "taker_fee": "0.001000000000000000"
-  },
-  {
-    "@type": "/osmosis.gamm.poolmodels.stableswap.v1beta1.Pool",
-    "id": "944",
-    "pool_params": {
-      "exit_fee": "0.000000000000000000",
-      "swap_fee": "0.003000000000000000",
-      "smooth_weight_change_params": null
-    },
-    "total_shares": {
-      "denom": "gamm/pool/944",
-      "amount": "7962144884536553865142"
-    },
-    "liquidityUsd": 1664359.8981408612,
-    "liquidity24hUsdChange": 0.057248180232635185,
-    "volume24hUsd": 2551.948820053439,
-    "volume24hUsdChange": -85.2172999939361,
-    "volume7dUsd": 53891.51085584421,
-    "taker_fee": "0.001000000000000000",
-    "pool_liquidity": [
-      {
-        "denom": "ibc/27394FB092D2ECCD56123C74F36E4C1F926001CEADA9CA97EA622B25F41E5EB2",
-        "amount": "54881979056"
-      },
-      {
-        "denom": "ibc/FA602364BEC305A696CBDF987058E99D8B479F0318E47314C49173E8838C5BAC",
-        "amount": "92793827254"
-      }
-    ],
-    "scaling_factors": [
-      "1156170093",
-      "1000000000"
-    ],
-    "scaling_factor_controller": "osmo16x03wcp37kx5e8ehckjxvwcgk9j0cqnhm8m3yy"
-  },
-  {
-    "@type": "/osmosis.gamm.v1beta1.Pool",
-    "id": "3",
-    "pool_params": {
-      "exit_fee": "0.000000000000000000",
-      "swap_fee": "0.002000000000000000",
-      "smooth_weight_change_params": null
-    },
-    "total_shares": {
-      "denom": "gamm/pool/3",
-      "amount": "19885118697664633431386333"
-    },
-    "liquidityUsd": 1504655.1543354057,
-    "liquidity24hUsdChange": -0.5107304453752134,
-    "volume24hUsd": 89550.57509650209,
-    "volume24hUsdChange": -43.94146425160318,
-    "volume7dUsd": 2374321.379603429,
-    "taker_fee": "0.001000000000000000",
-    "pool_assets": [
-      {
-        "token": {
-          "denom": "ibc/1480B8FD20AD5FCAE81EA87584D269547DD4D436843C1D20F15E00EB64743EF4",
-          "amount": "307376449852"
-        },
-        "weight": "536870912000000"
-      },
-      {
-        "token": {
-          "denom": "uosmo",
-          "amount": "522867095555"
-        },
-        "weight": "536870912000000"
-      }
-    ],
-    "total_weight": "1073741824000000"
   },
   {
     "@type": "/osmosis.gamm.v1beta1.Pool",
@@ -573,31 +482,122 @@
     },
     "total_shares": {
       "denom": "gamm/pool/1057",
-      "amount": "24635245544972926066555"
+      "amount": "27152234397965432337812"
     },
-    "liquidityUsd": 1455692.5025122343,
-    "liquidity24hUsdChange": -6.813090340532285,
-    "volume24hUsd": 2569665.3693641145,
-    "volume24hUsdChange": 5.630512536454998,
-    "volume7dUsd": 13877991.946388854,
+    "liquidityUsd": 1908775.3632595786,
+    "liquidity24hUsdChange": 6.824149198502257,
+    "volume24hUsd": 615819.2820876698,
+    "volume24hUsdChange": -36.85057427817566,
+    "volume7dUsd": 11179961.039187957,
     "taker_fee": "0.001000000000000000",
     "pool_assets": [
       {
         "token": {
           "denom": "ibc/56D7C03B8F6A07AD322EEE1BEF3AE996E09D1C1E34C27CF37E0D4A0AC5972516",
-          "amount": "69520199936230760000"
+          "amount": "71090048489454610000"
         },
         "weight": "5368709120"
       },
       {
         "token": {
           "denom": "uosmo",
-          "amount": "505784799530"
+          "amount": "606739854257"
         },
         "weight": "5368709120"
       }
     ],
     "total_weight": "10737418240"
+  },
+  {
+    "@type": "/osmosis.gamm.poolmodels.stableswap.v1beta1.Pool",
+    "id": "944",
+    "pool_params": {
+      "exit_fee": "0.000000000000000000",
+      "swap_fee": "0.003000000000000000",
+      "smooth_weight_change_params": null
+    },
+    "total_shares": {
+      "denom": "gamm/pool/944",
+      "amount": "8124652852293308618652"
+    },
+    "liquidityUsd": 1891073.4109766614,
+    "liquidity24hUsdChange": 2.760737821103306,
+    "volume24hUsd": 4037.1047113266563,
+    "volume24hUsdChange": -34.50535938441272,
+    "volume7dUsd": 47570.543170851,
+    "taker_fee": "0.001000000000000000",
+    "pool_liquidity": [
+      {
+        "denom": "ibc/27394FB092D2ECCD56123C74F36E4C1F926001CEADA9CA97EA622B25F41E5EB2",
+        "amount": "56250198474"
+      },
+      {
+        "denom": "ibc/FA602364BEC305A696CBDF987058E99D8B479F0318E47314C49173E8838C5BAC",
+        "amount": "94462655034"
+      }
+    ],
+    "scaling_factors": [
+      "1172143438",
+      "1000000000"
+    ],
+    "scaling_factor_controller": "osmo16x03wcp37kx5e8ehckjxvwcgk9j0cqnhm8m3yy"
+  },
+  {
+    "@type": "/osmosis.concentratedliquidity.v1beta1.Pool",
+    "address": "osmo17xa9lemlz7fapt77fp7d86kg52z77hz7qhs4sf7j4s2l6u3jsm6q90qa3z",
+    "id": "1314",
+    "current_tick_liquidity": "9640391848612.386697156794771376",
+    "token0": "ibc/1B708808D372E959CD4839C594960309283424C775F4A038AAEBE7F83A988477",
+    "token0Amount": "9713271599430",
+    "token1": "uosmo",
+    "token1Amount": "397271071924",
+    "current_sqrt_price": "0.282595785238480437535671724792589887",
+    "current_tick": "-11013963",
+    "tick_spacing": "100",
+    "exponent_at_price_one": "-6",
+    "spread_factor": "0.002000000000000000",
+    "liquidityUsd": 1846035.405160278,
+    "liquidity24hUsdChange": 2.2887383581477185,
+    "volume24hUsd": 8112.375007078046,
+    "volume24hUsdChange": -62.12261416762585,
+    "volume7dUsd": 243276.91542666176,
+    "taker_fee": "0.001000000000000000"
+  },
+  {
+    "@type": "/osmosis.gamm.v1beta1.Pool",
+    "id": "3",
+    "pool_params": {
+      "exit_fee": "0.000000000000000000",
+      "swap_fee": "0.002000000000000000",
+      "smooth_weight_change_params": null
+    },
+    "total_shares": {
+      "denom": "gamm/pool/3",
+      "amount": "19596759051141333858117889"
+    },
+    "liquidityUsd": 1551749.5894556656,
+    "liquidity24hUsdChange": -2.62978931257553,
+    "volume24hUsd": 87418.29148086978,
+    "volume24hUsdChange": 75.76325683771715,
+    "volume7dUsd": 685787.9592676188,
+    "taker_fee": "0.001000000000000000",
+    "pool_assets": [
+      {
+        "token": {
+          "denom": "ibc/1480B8FD20AD5FCAE81EA87584D269547DD4D436843C1D20F15E00EB64743EF4",
+          "amount": "316795311792"
+        },
+        "weight": "536870912000000"
+      },
+      {
+        "token": {
+          "denom": "uosmo",
+          "amount": "493260682796"
+        },
+        "weight": "536870912000000"
+      }
+    ],
+    "total_weight": "1073741824000000"
   },
   {
     "@type": "/osmosis.gamm.v1beta1.Pool",
@@ -609,52 +609,31 @@
     },
     "total_shares": {
       "denom": "gamm/pool/725",
-      "amount": "3725287540051957447951346"
+      "amount": "3556231134240114496141301"
     },
-    "liquidityUsd": 1446953.6332526547,
-    "liquidity24hUsdChange": 0.2776937578013502,
-    "volume24hUsd": 846047.1146600939,
-    "volume24hUsdChange": 3.031270908514774,
-    "volume7dUsd": 7027873.130881306,
+    "liquidityUsd": 1522635.904317177,
+    "liquidity24hUsdChange": 2.4525063075413973,
+    "volume24hUsd": 304163.03445221484,
+    "volume24hUsdChange": -40.27827535208283,
+    "volume7dUsd": 5308637.7484460715,
     "taker_fee": "0.001000000000000000",
     "pool_assets": [
       {
         "token": {
           "denom": "ibc/64BA6E31FE887D66C6F8F31C7B1A80C7CA179239677B4088BB55F5EA07DBE273",
-          "amount": "18421888616691416000000"
+          "amount": "17594800786749467000000"
         },
         "weight": "536870912000000"
       },
       {
         "token": {
           "denom": "uosmo",
-          "amount": "502936950348"
+          "amount": "483455337819"
         },
         "weight": "536870912000000"
       }
     ],
     "total_weight": "1073741824000000"
-  },
-  {
-    "@type": "/osmosis.concentratedliquidity.v1beta1.Pool",
-    "address": "osmo1ydal8ppkzdg6hggw5uwl5ulw92tq22rhxht9emrfkv92q7y4haaqqnyrtj",
-    "id": "1221",
-    "current_tick_liquidity": "362987566135336.392140778838403276",
-    "token0": "uosmo",
-    "token0Amount": "336424700968",
-    "token1": "ibc/498A0751C798A0D9A389AA3691123DADA57DAA4FE165D5C75894505B876BA6E4",
-    "token1Amount": "939261254498",
-    "current_sqrt_price": "1.198791093219698141008159988300636948",
-    "current_tick": "437100",
-    "tick_spacing": "100",
-    "exponent_at_price_one": "-6",
-    "spread_factor": "0.002000000000000000",
-    "liquidityUsd": 1424721.036343825,
-    "liquidity24hUsdChange": 26.86658311283514,
-    "volume24hUsd": 2942263.9141228762,
-    "volume24hUsdChange": -7.000468675421337,
-    "volume7dUsd": 23341624.059334237,
-    "taker_fee": "0.001000000000000000"
   },
   {
     "@type": "/osmosis.gamm.v1beta1.Pool",
@@ -666,31 +645,73 @@
     },
     "total_shares": {
       "denom": "gamm/pool/604",
-      "amount": "89161093725093068299"
+      "amount": "88757950279004916461"
     },
-    "liquidityUsd": 1356090.102321295,
-    "liquidity24hUsdChange": -0.588371194050483,
-    "volume24hUsd": 23270.05681563735,
-    "volume24hUsdChange": -13.094996230765776,
-    "volume7dUsd": 403964.8610854298,
+    "liquidityUsd": 1474406.3477121084,
+    "liquidity24hUsdChange": 2.375784125071651,
+    "volume24hUsd": 21156.82527103066,
+    "volume24hUsdChange": -7.106101587234762,
+    "volume7dUsd": 207762.64596272,
     "taker_fee": "0.001000000000000000",
     "pool_assets": [
       {
         "token": {
           "denom": "ibc/987C17B11ABC2B20019178ACE62929FE9840202CE79498E29FE8E5CB02B7C0A4",
-          "amount": "21965523985935"
+          "amount": "21899638483736"
         },
         "weight": "21474836480"
       },
       {
         "token": {
           "denom": "uosmo",
-          "amount": "471240797836"
+          "amount": "468675289930"
         },
         "weight": "21474836480"
       }
     ],
     "total_weight": "42949672960"
+  },
+  {
+    "@type": "/osmosis.concentratedliquidity.v1beta1.Pool",
+    "address": "osmo1gj26haupvyh6qun4fmc5xnr0tsrg9fwfvycs567u6d5qmezue22sza64gx",
+    "id": "1251",
+    "current_tick_liquidity": "7866299847452.047850573103312109",
+    "token0": "ibc/27394FB092D2ECCD56123C74F36E4C1F926001CEADA9CA97EA622B25F41E5EB2",
+    "token0Amount": "24579331623",
+    "token1": "ibc/498A0751C798A0D9A389AA3691123DADA57DAA4FE165D5C75894505B876BA6E4",
+    "token1Amount": "1157422074568",
+    "current_sqrt_price": "3.441358163718580913262085950044844767",
+    "current_tick": "9184294",
+    "tick_spacing": "100",
+    "exponent_at_price_one": "-6",
+    "spread_factor": "0.002000000000000000",
+    "liquidityUsd": 1450497.328078476,
+    "liquidity24hUsdChange": -1.701726731172497,
+    "volume24hUsd": 1790460.8048122048,
+    "volume24hUsdChange": -8.63219053330161,
+    "volume7dUsd": 15543961.127478173,
+    "taker_fee": "0.001000000000000000"
+  },
+  {
+    "@type": "/osmosis.concentratedliquidity.v1beta1.Pool",
+    "address": "osmo1cf99g299n5td4fncjentcjrhyzalvrr6fa4ts3amtvddmpydd9fqgypct8",
+    "id": "1319",
+    "current_tick_liquidity": "1344562510678827001.102533815867668854",
+    "token0": "ibc/64BA6E31FE887D66C6F8F31C7B1A80C7CA179239677B4088BB55F5EA07DBE273",
+    "token0Amount": "8690944754681130000000",
+    "token1": "ibc/498A0751C798A0D9A389AA3691123DADA57DAA4FE165D5C75894505B876BA6E4",
+    "token1Amount": "1054651193777",
+    "current_sqrt_price": "0.000006571766611260045060899271780452",
+    "current_tick": "-95681189",
+    "tick_spacing": "100",
+    "exponent_at_price_one": "-6",
+    "spread_factor": "0.002000000000000000",
+    "liquidityUsd": 1432712.352756524,
+    "liquidity24hUsdChange": 13.999418297111813,
+    "volume24hUsd": 1717961.8152758535,
+    "volume24hUsdChange": -49.32547028169091,
+    "volume7dUsd": 14996845.972916897,
+    "taker_fee": "0.001000000000000000"
   },
   {
     "@type": "/osmosis.gamm.v1beta1.Pool",
@@ -702,26 +723,26 @@
     },
     "total_shares": {
       "denom": "gamm/pool/722",
-      "amount": "7852917505547528894092924"
+      "amount": "7823020362205282884747971"
     },
-    "liquidityUsd": 1275391.775133729,
-    "liquidity24hUsdChange": -0.6825337628091801,
-    "volume24hUsd": 130941.73029319683,
-    "volume24hUsdChange": -50.64093442229496,
-    "volume7dUsd": 2453653.025507755,
+    "liquidityUsd": 1264119.219833375,
+    "liquidity24hUsdChange": 3.376914445091294,
+    "volume24hUsd": 165353.05160302232,
+    "volume24hUsdChange": -54.76238912541939,
+    "volume7dUsd": 1352193.0385397505,
     "taker_fee": "0.001000000000000000",
     "pool_assets": [
       {
         "token": {
           "denom": "ibc/6AE98883D4D5D5FF9E50D7130F1305DA2FFA0C652D1DD9C123657C6B4EB2DF8A",
-          "amount": "4099013141592798000000000"
+          "amount": "4498935504314315000000000"
         },
         "weight": "1073741824"
       },
       {
         "token": {
           "denom": "uosmo",
-          "amount": "443198719150"
+          "amount": "401829571764"
         },
         "weight": "1073741824"
       }
@@ -730,44 +751,44 @@
   },
   {
     "@type": "/osmosis.concentratedliquidity.v1beta1.Pool",
-    "address": "osmo1gj26haupvyh6qun4fmc5xnr0tsrg9fwfvycs567u6d5qmezue22sza64gx",
-    "id": "1251",
-    "current_tick_liquidity": "14597217405190.818160175085786537",
-    "token0": "ibc/27394FB092D2ECCD56123C74F36E4C1F926001CEADA9CA97EA622B25F41E5EB2",
-    "token0Amount": "63066158176",
-    "token1": "ibc/498A0751C798A0D9A389AA3691123DADA57DAA4FE165D5C75894505B876BA6E4",
-    "token1Amount": "593414594043",
-    "current_sqrt_price": "3.273695555615630234982028107877641003",
-    "current_tick": "9071708",
+    "address": "osmo1z0j6zm4ndmwl27kekla8un73nfu8rh5dhfg2957yr0kg3uumd9rs9sv5kq",
+    "id": "1283",
+    "current_tick_liquidity": "27869947529451.402107681623494142",
+    "token0": "ibc/C140AFD542AE77BD7DCC83F13FDD8C5E5BB8C4929785E6EC2F4C636F98F17901",
+    "token0Amount": "27004693584",
+    "token1": "ibc/27394FB092D2ECCD56123C74F36E4C1F926001CEADA9CA97EA622B25F41E5EB2",
+    "token1Amount": "72518777367",
+    "current_sqrt_price": "1.115662604577616368859780663752624111",
+    "current_tick": "244703",
     "tick_spacing": "100",
     "exponent_at_price_one": "-6",
-    "spread_factor": "0.002000000000000000",
-    "liquidityUsd": 1270654.9164385402,
-    "liquidity24hUsdChange": 16.006664663581084,
-    "volume24hUsd": 3091735.831072073,
-    "volume24hUsdChange": 66.17584678813606,
-    "volume7dUsd": 16152669.180347204,
+    "spread_factor": "0.000500000000000000",
+    "liquidityUsd": 1257642.5945191411,
+    "liquidity24hUsdChange": 9.334342117341397,
+    "volume24hUsd": 299660.26008841186,
+    "volume24hUsdChange": -47.33284451196737,
+    "volume7dUsd": 5506543.584365089,
     "taker_fee": "0.001000000000000000"
   },
   {
     "@type": "/osmosis.concentratedliquidity.v1beta1.Pool",
     "address": "osmo14dmu2dq3vmw36p7fcz95vkm82dunw9m478xl5v44427pz4ar79xshq9j6w",
     "id": "1096",
-    "current_tick_liquidity": "19262540878972.351019043215061765",
+    "current_tick_liquidity": "18243609031606.898676837003031258",
     "token0": "ibc/987C17B11ABC2B20019178ACE62929FE9840202CE79498E29FE8E5CB02B7C0A4",
-    "token0Amount": "21051872936412",
+    "token0Amount": "21229694780404",
     "token1": "uosmo",
-    "token1Amount": "303361859473",
-    "current_sqrt_price": "0.146607928024930382415501371741625358",
-    "current_tick": "-16850612",
+    "token1Amount": "275136324885",
+    "current_sqrt_price": "0.146280666812515805769817156894985517",
+    "current_tick": "-16860197",
     "tick_spacing": "100",
     "exponent_at_price_one": "-6",
     "spread_factor": "0.003000000000000000",
-    "liquidityUsd": 1086334.2776595373,
-    "liquidity24hUsdChange": -0.0831898353160169,
-    "volume24hUsd": 139236.82812295808,
-    "volume24hUsdChange": 11.605198694170843,
-    "volume7dUsd": 1588013.4411570628,
+    "liquidityUsd": 1147426.8925642013,
+    "liquidity24hUsdChange": 2.412918692909076,
+    "volume24hUsd": 65867.2514080825,
+    "volume24hUsdChange": -9.948116542559811,
+    "volume7dUsd": 966821.7405544502,
     "taker_fee": "0.001000000000000000"
   },
   {
@@ -780,52 +801,31 @@
     },
     "total_shares": {
       "denom": "gamm/pool/9",
-      "amount": "402917739150567140721913507"
+      "amount": "396000194103550063582658337"
     },
-    "liquidityUsd": 1067061.6500863945,
-    "liquidity24hUsdChange": -1.735900604721499,
-    "volume24hUsd": 43645.74625184299,
-    "volume24hUsdChange": -37.647412875391794,
-    "volume7dUsd": 644045.0873836633,
+    "liquidityUsd": 1113393.832708317,
+    "liquidity24hUsdChange": 1.8705960968070663,
+    "volume24hUsd": 40262.20233817593,
+    "volume24hUsdChange": -35.16811249175979,
+    "volume7dUsd": 399012.0308568579,
     "taker_fee": "0.001000000000000000",
     "pool_assets": [
       {
         "token": {
           "denom": "ibc/E6931F78057F7CC5DA0FD6CEF82FF39373A6E0452BF1FD76910B93292CF356C1",
-          "amount": "547935969504149"
+          "amount": "555084181663824"
         },
         "weight": "536870912000000"
       },
       {
         "token": {
           "denom": "uosmo",
-          "amount": "370803518429"
+          "amount": "353918830971"
         },
         "weight": "536870912000000"
       }
     ],
     "total_weight": "1073741824000000"
-  },
-  {
-    "@type": "/osmosis.concentratedliquidity.v1beta1.Pool",
-    "address": "osmo1cf99g299n5td4fncjentcjrhyzalvrr6fa4ts3amtvddmpydd9fqgypct8",
-    "id": "1319",
-    "current_tick_liquidity": "445406134343039500.072609523287920331",
-    "token0": "ibc/64BA6E31FE887D66C6F8F31C7B1A80C7CA179239677B4088BB55F5EA07DBE273",
-    "token0Amount": "14006578373885980000000",
-    "token1": "ibc/498A0751C798A0D9A389AA3691123DADA57DAA4FE165D5C75894505B876BA6E4",
-    "token1Amount": "470009891211",
-    "current_sqrt_price": "0.000006259651318472623707790116545544",
-    "current_tick": "-96081677",
-    "tick_spacing": "100",
-    "exponent_at_price_one": "-6",
-    "spread_factor": "0.002000000000000000",
-    "liquidityUsd": 1020651.2071592154,
-    "liquidity24hUsdChange": 31.357702676618675,
-    "volume24hUsd": 1899057.293457625,
-    "volume24hUsdChange": 0.899707258174438,
-    "volume7dUsd": 10316862.179916913,
-    "taker_fee": "0.001000000000000000"
   },
   {
     "@type": "/osmosis.gamm.v1beta1.Pool",
@@ -837,52 +837,31 @@
     },
     "total_shares": {
       "denom": "gamm/pool/1233",
-      "amount": "189624532968835927623078"
+      "amount": "189652766628482947121448"
     },
-    "liquidityUsd": 1019148.5571194517,
-    "liquidity24hUsdChange": -0.5204210122470015,
-    "volume24hUsd": 4096.212623167145,
-    "volume24hUsdChange": 47.568563402720535,
-    "volume7dUsd": 47122.7506181006,
+    "liquidityUsd": 1101038.643197456,
+    "liquidity24hUsdChange": 1.3485789627064073,
+    "volume24hUsd": 8943.706696505391,
+    "volume24hUsdChange": 142.99778096211378,
+    "volume7dUsd": 42231.88560072098,
     "taker_fee": "0.001000000000000000",
     "pool_assets": [
       {
         "token": {
           "denom": "ibc/27394FB092D2ECCD56123C74F36E4C1F926001CEADA9CA97EA622B25F41E5EB2",
-          "amount": "47508027581"
+          "amount": "46445255404"
         },
         "weight": "536870912000000"
       },
       {
         "token": {
           "denom": "ibc/A1830DECC0B742F0B2044FF74BE727B5CF92C9A28A9235C3BACE4D24A23504FA",
-          "amount": "1517787486100"
+          "amount": "1553173616157"
         },
         "weight": "536870912000000"
       }
     ],
     "total_weight": "1073741824000000"
-  },
-  {
-    "@type": "/osmosis.concentratedliquidity.v1beta1.Pool",
-    "address": "osmo16mu0tqmapcu3m3r7ag2prwh6rdzf6jt47ydymjdwqkmlhq5wu3wqc2d5mc",
-    "id": "1097",
-    "current_tick_liquidity": "960291285270.246798978798061640",
-    "token0": "ibc/46B44899322F3CD854D2D46DEEF881958467CDD4B3B10086DA49296BBED94BED",
-    "token0Amount": "887522364161",
-    "token1": "uosmo",
-    "token1Amount": "299782566207",
-    "current_sqrt_price": "0.669963181917783874775827902101513593",
-    "current_tick": "-5511494",
-    "tick_spacing": "100",
-    "exponent_at_price_one": "-6",
-    "spread_factor": "0.003000000000000000",
-    "liquidityUsd": 1004640.031836319,
-    "liquidity24hUsdChange": 0.38409156227545344,
-    "volume24hUsd": 47152.589881926884,
-    "volume24hUsdChange": -48.83866281422202,
-    "volume7dUsd": 673160.8548769706,
-    "taker_fee": "0.001000000000000000"
   },
   {
     "@type": "/osmosis.gamm.v1beta1.Pool",
@@ -894,26 +873,26 @@
     },
     "total_shares": {
       "denom": "gamm/pool/796",
-      "amount": "100082800592437490849"
+      "amount": "100083727423616033815"
     },
-    "liquidityUsd": 992742.1488027981,
-    "liquidity24hUsdChange": -0.09544773364859224,
-    "volume24hUsd": 15321.066275192832,
-    "volume24hUsdChange": 18.273279434869337,
-    "volume7dUsd": 255445.55567478068,
+    "liquidityUsd": 1099908.6672721773,
+    "liquidity24hUsdChange": 3.052192724067076,
+    "volume24hUsd": 54144.16132189503,
+    "volume24hUsdChange": 40.01169039901512,
+    "volume7dUsd": 221545.20312398992,
     "taker_fee": "0.001000000000000000",
     "pool_assets": [
       {
         "token": {
           "denom": "ibc/E09ED39F390EC51FA9F3F69BEA08B5BBE6A48B3057B2B1C3467FAAE9E58B021B",
-          "amount": "57861859260394946000000000"
+          "amount": "57139918269674090000000000"
         },
         "weight": "5368709120"
       },
       {
         "token": {
           "denom": "uosmo",
-          "amount": "344982636077"
+          "amount": "349625339218"
         },
         "weight": "5368709120"
       }
@@ -921,96 +900,24 @@
     "total_weight": "10737418240"
   },
   {
-    "@type": "/osmosis.gamm.v1beta1.Pool",
-    "id": "4",
-    "pool_params": {
-      "exit_fee": "0.000000000000000000",
-      "swap_fee": "0.003000000000000000",
-      "smooth_weight_change_params": null
-    },
-    "total_shares": {
-      "denom": "gamm/pool/4",
-      "amount": "3997418521497524272723639"
-    },
-    "liquidityUsd": 957963.9918417085,
-    "liquidity24hUsdChange": 0.0655330923864449,
-    "volume24hUsd": 56797.93625032222,
-    "volume24hUsdChange": -62.4318413417903,
-    "volume7dUsd": 1061204.114470364,
-    "taker_fee": "0.001000000000000000",
-    "pool_assets": [
-      {
-        "token": {
-          "denom": "ibc/1480B8FD20AD5FCAE81EA87584D269547DD4D436843C1D20F15E00EB64743EF4",
-          "amount": "258400802690"
-        },
-        "weight": "708669603840000"
-      },
-      {
-        "token": {
-          "denom": "ibc/27394FB092D2ECCD56123C74F36E4C1F926001CEADA9CA97EA622B25F41E5EB2",
-          "amount": "30351550170"
-        },
-        "weight": "365072220160000"
-      }
-    ],
-    "total_weight": "1073741824000000"
-  },
-  {
-    "@type": "/osmosis.gamm.v1beta1.Pool",
-    "id": "806",
-    "pool_params": {
-      "exit_fee": "0.000000000000000000",
-      "swap_fee": "0.002000000000000000",
-      "smooth_weight_change_params": null
-    },
-    "total_shares": {
-      "denom": "gamm/pool/806",
-      "amount": "132511999153121034525"
-    },
-    "liquidityUsd": 911154.5599839031,
-    "liquidity24hUsdChange": 9.515710405324748,
-    "volume24hUsd": 226859.97875171786,
-    "volume24hUsdChange": 86.74877743783414,
-    "volume7dUsd": 790753.3278740688,
-    "taker_fee": "0.001000000000000000",
-    "pool_assets": [
-      {
-        "token": {
-          "denom": "ibc/A8CA5EE328FA10C9519DF6057DA1F69682D28F7D0F5CCC7ECB72E3DCA2D157A4",
-          "amount": "139625937721"
-        },
-        "weight": "536870912000000"
-      },
-      {
-        "token": {
-          "denom": "uosmo",
-          "amount": "316625864246"
-        },
-        "weight": "536870912000000"
-      }
-    ],
-    "total_weight": "1073741824000000"
-  },
-  {
     "@type": "/osmosis.concentratedliquidity.v1beta1.Pool",
-    "address": "osmo1hxx9lxqd78m9svlfd430uxfnqcljykwlmtgaquemay2radkckdgsgprf62",
-    "id": "1150",
-    "current_tick_liquidity": "90811653988496.222801315505663161",
-    "token0": "ibc/8242AD24008032E457D2E12D46588FD39FB54FB29680C6C7663D296B383C37C4",
-    "token0Amount": "482811406894",
-    "token1": "ibc/4ABBEF4C8926DDDB320AE5188CFD63267ABBCEFC0583E4AE05D6E5AA2401DDAB",
-    "token1Amount": "423080063391",
-    "current_sqrt_price": "0.999646311137075424196329024741484881",
-    "current_tick": "-7073",
+    "address": "osmo16mu0tqmapcu3m3r7ag2prwh6rdzf6jt47ydymjdwqkmlhq5wu3wqc2d5mc",
+    "id": "1097",
+    "current_tick_liquidity": "959912083032.674247879447901287",
+    "token0": "ibc/46B44899322F3CD854D2D46DEEF881958467CDD4B3B10086DA49296BBED94BED",
+    "token0Amount": "907511549153",
+    "token1": "uosmo",
+    "token1Amount": "281009995294",
+    "current_sqrt_price": "0.655113400360587444868202058406083349",
+    "current_tick": "-5708265",
     "tick_spacing": "100",
     "exponent_at_price_one": "-6",
-    "spread_factor": "0.000500000000000000",
-    "liquidityUsd": 905929.8234401459,
-    "liquidity24hUsdChange": 0.09483833789652732,
-    "volume24hUsd": 101282.74770183711,
-    "volume24hUsdChange": -57.23904587665467,
-    "volume7dUsd": 1176734.2863665714,
+    "spread_factor": "0.003000000000000000",
+    "liquidityUsd": 1054822.8079077527,
+    "liquidity24hUsdChange": 2.2413938369574673,
+    "volume24hUsd": 47682.35533778814,
+    "volume24hUsdChange": 21.584139123383583,
+    "volume7dUsd": 450511.6284304061,
     "taker_fee": "0.001000000000000000"
   },
   {
@@ -1023,26 +930,26 @@
     },
     "total_shares": {
       "denom": "gamm/pool/832",
-      "amount": "194102720312813291765"
+      "amount": "198985625709926033968"
     },
-    "liquidityUsd": 885024.6016714303,
-    "liquidity24hUsdChange": -1.1369978692321812,
-    "volume24hUsd": 76820.30048727045,
-    "volume24hUsdChange": 9.056153564305996,
-    "volume7dUsd": 905603.2912797782,
+    "liquidityUsd": 996783.76034445,
+    "liquidity24hUsdChange": 3.8224720942953607,
+    "volume24hUsd": 98217.99105106527,
+    "volume24hUsdChange": -39.56285903171834,
+    "volume7dUsd": 849753.3247700576,
     "taker_fee": "0.001000000000000000",
     "pool_assets": [
       {
         "token": {
           "denom": "ibc/8E697BDABE97ACE8773C6DF7402B2D1D5104DD1EEABE12608E3469B7F64C15BA",
-          "amount": "1403183211356"
+          "amount": "1435659449918"
         },
         "weight": "536870912000000"
       },
       {
         "token": {
           "denom": "uosmo",
-          "amount": "307545716149"
+          "amount": "316851534252"
         },
         "weight": "536870912000000"
       }
@@ -1050,66 +957,60 @@
     "total_weight": "1073741824000000"
   },
   {
-    "@type": "/osmosis.concentratedliquidity.v1beta1.Pool",
-    "address": "osmo10mwmk39qvdelddjhwgwuwzhx3587l6yktajc4he77yldv509h2vqnhpd4j",
-    "id": "1094",
-    "current_tick_liquidity": "406225203343.599311515964681832",
-    "token0": "ibc/903A61A498756EA560B85A85132D3AEE21B5DEDD41213725D22ABF276EA6945E",
-    "token0Amount": "393938562940",
-    "token1": "uosmo",
-    "token1Amount": "299315746195",
-    "current_sqrt_price": "0.881937878863045146371762639894209318",
-    "current_tick": "-2221856",
-    "tick_spacing": "100",
-    "exponent_at_price_one": "-6",
-    "spread_factor": "0.002000000000000000",
-    "liquidityUsd": 871505.8214290382,
-    "liquidity24hUsdChange": 4.242134256669359,
-    "volume24hUsd": 83399.16901201608,
-    "volume24hUsdChange": 5.843059176262145,
-    "volume7dUsd": 612366.3654589461,
-    "taker_fee": "0.001000000000000000"
+    "@type": "/osmosis.gamm.v1beta1.Pool",
+    "id": "4",
+    "pool_params": {
+      "exit_fee": "0.000000000000000000",
+      "swap_fee": "0.003000000000000000",
+      "smooth_weight_change_params": null
+    },
+    "total_shares": {
+      "denom": "gamm/pool/4",
+      "amount": "3992007836369139148476851"
+    },
+    "liquidityUsd": 991235.1226298052,
+    "liquidity24hUsdChange": -3.2862405114312576,
+    "volume24hUsd": 52112.70249025797,
+    "volume24hUsdChange": 17.864624391290395,
+    "volume7dUsd": 574749.8488507312,
+    "taker_fee": "0.001000000000000000",
+    "pool_assets": [
+      {
+        "token": {
+          "denom": "ibc/1480B8FD20AD5FCAE81EA87584D269547DD4D436843C1D20F15E00EB64743EF4",
+          "amount": "267105776867"
+        },
+        "weight": "708669603840000"
+      },
+      {
+        "token": {
+          "denom": "ibc/27394FB092D2ECCD56123C74F36E4C1F926001CEADA9CA97EA622B25F41E5EB2",
+          "amount": "28436217535"
+        },
+        "weight": "365072220160000"
+      }
+    ],
+    "total_weight": "1073741824000000"
   },
   {
     "@type": "/osmosis.concentratedliquidity.v1beta1.Pool",
-    "address": "osmo1yzg3ufzupj2mr54l5lmlz9mut9frenp9ft3f2d7e4q682hpsnsrqcvgyk5",
-    "id": "1325",
-    "current_tick_liquidity": "1159583387070742.000656975173927065",
-    "token0": "factory/osmo1mlng7pz4pnyxtpq0akfwall37czyk9lukaucsrn30ameplhhshtqdvfm5c/ulvn",
-    "token0Amount": "1566935486393",
-    "token1": "uosmo",
-    "token1Amount": "268548773979",
-    "current_sqrt_price": "0.463502005960584082142179015449082885",
-    "current_tick": "-7851659",
+    "address": "osmo1ydal8ppkzdg6hggw5uwl5ulw92tq22rhxht9emrfkv92q7y4haaqqnyrtj",
+    "id": "1221",
+    "current_tick_liquidity": "1357055644819292.509487227944900302",
+    "token0": "uosmo",
+    "token0Amount": "149015928144",
+    "token1": "ibc/498A0751C798A0D9A389AA3691123DADA57DAA4FE165D5C75894505B876BA6E4",
+    "token1Amount": "729576035782",
+    "current_sqrt_price": "1.253234530709169894698208831638303980",
+    "current_tick": "570596",
     "tick_spacing": "100",
     "exponent_at_price_one": "-6",
     "spread_factor": "0.002000000000000000",
-    "liquidityUsd": 870893.3288163603,
-    "liquidity24hUsdChange": 36.1336370229042,
-    "volume24hUsd": 1464771.425130731,
-    "volume24hUsdChange": 12.744929974613417,
-    "volume7dUsd": 4018457.4984746478,
-    "taker_fee": "0.001000000000000000"
-  },
-  {
-    "@type": "/osmosis.concentratedliquidity.v1beta1.Pool",
-    "address": "osmo1z0j6zm4ndmwl27kekla8un73nfu8rh5dhfg2957yr0kg3uumd9rs9sv5kq",
-    "id": "1283",
-    "current_tick_liquidity": "229565787419213.622953613384976860",
-    "token0": "ibc/C140AFD542AE77BD7DCC83F13FDD8C5E5BB8C4929785E6EC2F4C636F98F17901",
-    "token0Amount": "55850330762",
-    "token1": "ibc/27394FB092D2ECCD56123C74F36E4C1F926001CEADA9CA97EA622B25F41E5EB2",
-    "token1Amount": "11626082041",
-    "current_sqrt_price": "1.108975822137453518317336963066754420",
-    "current_tick": "229827",
-    "tick_spacing": "100",
-    "exponent_at_price_one": "-6",
-    "spread_factor": "0.000500000000000000",
-    "liquidityUsd": 862274.3110725355,
-    "liquidity24hUsdChange": 0.7188043810208988,
-    "volume24hUsd": 742129.1072759208,
-    "volume24hUsdChange": -8.433159874338973,
-    "volume7dUsd": 4033537.270134369,
+    "liquidityUsd": 965064.0803750509,
+    "liquidity24hUsdChange": 23.19122234117654,
+    "volume24hUsd": 2591355.2069656784,
+    "volume24hUsdChange": -19.843897066326253,
+    "volume7dUsd": 20934050.267024152,
     "taker_fee": "0.001000000000000000"
   },
   {
@@ -1122,26 +1023,26 @@
     },
     "total_shares": {
       "denom": "gamm/pool/1244",
-      "amount": "6824074280394435289400"
+      "amount": "7640641765144229264615"
     },
-    "liquidityUsd": 861597.1266208473,
-    "liquidity24hUsdChange": 0.29827673799261795,
-    "volume24hUsd": 147461.33487026475,
-    "volume24hUsdChange": 2.9717779637088406,
-    "volume7dUsd": 1329017.926041682,
+    "liquidityUsd": 963004.0158745346,
+    "liquidity24hUsdChange": -0.3244049138439663,
+    "volume24hUsd": 100609.20380490134,
+    "volume24hUsdChange": 219.41509392649087,
+    "volume7dUsd": 717384.8683021409,
     "taker_fee": "0.001000000000000000",
     "pool_assets": [
       {
         "token": {
           "denom": "ibc/F3166F4D31D6BA1EC6C9F5536F5DDDD4CC93DBA430F7419E7CDC41C497944A65",
-          "amount": "1908959667142"
+          "amount": "2343225033088"
         },
         "weight": "536870912000000"
       },
       {
         "token": {
           "denom": "uosmo",
-          "amount": "299404679648"
+          "amount": "306113836680"
         },
         "weight": "536870912000000"
       }
@@ -1150,55 +1051,133 @@
   },
   {
     "@type": "/osmosis.concentratedliquidity.v1beta1.Pool",
-    "address": "osmo1q28nyjxzgj9sxmup2sv3wyr6qpmlskacz2fjdgt0ruux75suf3rqn5lstq",
-    "id": "1098",
-    "current_tick_liquidity": "232287194903.428966867896011114",
-    "token0": "ibc/A8CA5EE328FA10C9519DF6057DA1F69682D28F7D0F5CCC7ECB72E3DCA2D157A4",
-    "token0Amount": "127249823650",
-    "token1": "uosmo",
-    "token1Amount": "300860011734",
-    "current_sqrt_price": "1.507791518235609583978865793781164036",
-    "current_tick": "1273435",
+    "address": "osmo1h4ffzselefzgrf63k9n8c098ql849v3jhwjdvf7rzd42xd7m8tmsah4vv0",
+    "id": "1265",
+    "current_tick_liquidity": "310848373634851.996419036496738416",
+    "token0": "uosmo",
+    "token0Amount": "258178814455",
+    "token1": "ibc/27394FB092D2ECCD56123C74F36E4C1F926001CEADA9CA97EA622B25F41E5EB2",
+    "token1Amount": "45209867018",
+    "current_sqrt_price": "0.364532556883523128376452691510894453",
+    "current_tick": "-8671161",
     "tick_spacing": "100",
     "exponent_at_price_one": "-6",
-    "spread_factor": "0.002000000000000000",
-    "liquidityUsd": 848088.558899953,
-    "liquidity24hUsdChange": 9.867827753389994,
-    "volume24hUsd": 447791.9738885474,
-    "volume24hUsdChange": 157.14683628919684,
-    "volume7dUsd": 1387377.9904650128,
+    "spread_factor": "0.000500000000000000",
+    "liquidityUsd": 941978.7401036723,
+    "liquidity24hUsdChange": -10.094851284787756,
+    "volume24hUsd": 3475510.107397302,
+    "volume24hUsdChange": -1.5245474137944037,
+    "volume7dUsd": 21491861.15838767,
+    "taker_fee": "0.001000000000000000"
+  },
+  {
+    "@type": "/osmosis.concentratedliquidity.v1beta1.Pool",
+    "address": "osmo1hxx9lxqd78m9svlfd430uxfnqcljykwlmtgaquemay2radkckdgsgprf62",
+    "id": "1150",
+    "current_tick_liquidity": "90838693309561.481198284084206370",
+    "token0": "ibc/8242AD24008032E457D2E12D46588FD39FB54FB29680C6C7663D296B383C37C4",
+    "token0Amount": "489345333341",
+    "token1": "ibc/4ABBEF4C8926DDDB320AE5188CFD63267ABBCEFC0583E4AE05D6E5AA2401DDAB",
+    "token1Amount": "416595115871",
+    "current_sqrt_price": "0.999574810824993315381639917870632002",
+    "current_tick": "-8502",
+    "tick_spacing": "100",
+    "exponent_at_price_one": "-6",
+    "spread_factor": "0.000500000000000000",
+    "liquidityUsd": 907573.6204493258,
+    "liquidity24hUsdChange": 0.16776595986219908,
+    "volume24hUsd": 55513.34685722632,
+    "volume24hUsdChange": -9.993085009729883,
+    "volume7dUsd": 822612.9099202321,
     "taker_fee": "0.001000000000000000"
   },
   {
     "@type": "/osmosis.gamm.v1beta1.Pool",
-    "id": "1173",
+    "id": "806",
     "pool_params": {
       "exit_fee": "0.000000000000000000",
       "swap_fee": "0.002000000000000000",
       "smooth_weight_change_params": null
     },
     "total_shares": {
-      "denom": "gamm/pool/1173",
-      "amount": "9148565375693764352504739"
+      "denom": "gamm/pool/806",
+      "amount": "132246791890454192043"
     },
-    "liquidityUsd": 810488.5202040998,
-    "liquidity24hUsdChange": -2.023764508405761,
-    "volume24hUsd": 13835.234960242242,
-    "volume24hUsdChange": -2.461964684350706,
-    "volume7dUsd": 217320.88537368237,
+    "liquidityUsd": 904311.941019492,
+    "liquidity24hUsdChange": -3.638651512666566,
+    "volume24hUsd": 86013.88679061408,
+    "volume24hUsdChange": 126.26337282311795,
+    "volume7dUsd": 778086.4645665635,
     "taker_fee": "0.001000000000000000",
     "pool_assets": [
       {
         "token": {
-          "denom": "ibc/95C9B5870F95E21A242E6AF9ADCB1F212EE4A8855087226C36FBE43FC41A77B8",
-          "amount": "1522092596215252300000000"
+          "denom": "ibc/A8CA5EE328FA10C9519DF6057DA1F69682D28F7D0F5CCC7ECB72E3DCA2D157A4",
+          "amount": "153511610895"
         },
         "weight": "536870912000000"
       },
       {
         "token": {
           "denom": "uosmo",
-          "amount": "281606499896"
+          "amount": "287457156733"
+        },
+        "weight": "536870912000000"
+      }
+    ],
+    "total_weight": "1073741824000000"
+  },
+  {
+    "@type": "/osmosis.concentratedliquidity.v1beta1.Pool",
+    "address": "osmo10mwmk39qvdelddjhwgwuwzhx3587l6yktajc4he77yldv509h2vqnhpd4j",
+    "id": "1094",
+    "current_tick_liquidity": "414271938177.937642857048538267",
+    "token0": "ibc/903A61A498756EA560B85A85132D3AEE21B5DEDD41213725D22ABF276EA6945E",
+    "token0Amount": "402799816837",
+    "token1": "uosmo",
+    "token1Amount": "276886986807",
+    "current_sqrt_price": "0.844209345306600747268044244800549704",
+    "current_tick": "-2873106",
+    "tick_spacing": "100",
+    "exponent_at_price_one": "-6",
+    "spread_factor": "0.002000000000000000",
+    "liquidityUsd": 887399.624684326,
+    "liquidity24hUsdChange": 0.9432949962834943,
+    "volume24hUsd": 46309.84008713973,
+    "volume24hUsdChange": 12.542796730407643,
+    "volume7dUsd": 463901.53447606845,
+    "taker_fee": "0.001000000000000000"
+  },
+  {
+    "@type": "/osmosis.gamm.v1beta1.Pool",
+    "id": "497",
+    "pool_params": {
+      "exit_fee": "0.000000000000000000",
+      "swap_fee": "0.003000000000000000",
+      "smooth_weight_change_params": null
+    },
+    "total_shares": {
+      "denom": "gamm/pool/497",
+      "amount": "212515886274478331903422"
+    },
+    "liquidityUsd": 822759.9407719576,
+    "liquidity24hUsdChange": 3.207414922304044,
+    "volume24hUsd": 24960.279673987432,
+    "volume24hUsdChange": 71.15265473380904,
+    "volume7dUsd": 179026.47535837375,
+    "taker_fee": "0.001000000000000000",
+    "pool_assets": [
+      {
+        "token": {
+          "denom": "ibc/46B44899322F3CD854D2D46DEEF881958467CDD4B3B10086DA49296BBED94BED",
+          "amount": "609215501230"
+        },
+        "weight": "536870912000000"
+      },
+      {
+        "token": {
+          "denom": "uosmo",
+          "amount": "261533904323"
         },
         "weight": "536870912000000"
       }
@@ -1215,122 +1194,29 @@
     },
     "total_shares": {
       "denom": "gamm/pool/810",
-      "amount": "1601032829345917154224"
+      "amount": "1532750207377734242680"
     },
-    "liquidityUsd": 783816.351070195,
-    "liquidity24hUsdChange": 0.1824071515415002,
-    "volume24hUsd": 2573.297571930909,
-    "volume24hUsdChange": -20.421745210331046,
-    "volume7dUsd": 20434.76102235248,
+    "liquidityUsd": 810716.0309843456,
+    "liquidity24hUsdChange": 3.1606482820351833,
+    "volume24hUsd": 6136.774018672698,
+    "volume24hUsdChange": 107.19255191033821,
+    "volume7dUsd": 53720.73618391719,
     "taker_fee": "0.001000000000000000",
     "pool_liquidity": [
       {
         "denom": "ibc/5DD1F95ED336014D00CE2520977EC71566D282F9749170ADC83A392E0EA7426A",
-        "amount": "11511184326240"
+        "amount": "11376274102040"
       },
       {
         "denom": "ibc/987C17B11ABC2B20019178ACE62929FE9840202CE79498E29FE8E5CB02B7C0A4",
-        "amount": "9689264948655"
+        "amount": "8798768694637"
       }
     ],
     "scaling_factors": [
       "100000",
-      "140796"
+      "141240"
     ],
     "scaling_factor_controller": "osmo1k8c2m5cn322akk5wy8lpt87dd2f4yh9afcd7af"
-  },
-  {
-    "@type": "/osmosis.gamm.v1beta1.Pool",
-    "id": "497",
-    "pool_params": {
-      "exit_fee": "0.000000000000000000",
-      "swap_fee": "0.003000000000000000",
-      "smooth_weight_change_params": null
-    },
-    "total_shares": {
-      "denom": "gamm/pool/497",
-      "amount": "216421512903907224797370"
-    },
-    "liquidityUsd": 783324.1305736217,
-    "liquidity24hUsdChange": -0.5016255234239786,
-    "volume24hUsd": 22582.40121392501,
-    "volume24hUsdChange": -13.316605361408874,
-    "volume7dUsd": 364894.01965253666,
-    "taker_fee": "0.001000000000000000",
-    "pool_assets": [
-      {
-        "token": {
-          "denom": "ibc/46B44899322F3CD854D2D46DEEF881958467CDD4B3B10086DA49296BBED94BED",
-          "amount": "606332131690"
-        },
-        "weight": "536870912000000"
-      },
-      {
-        "token": {
-          "denom": "uosmo",
-          "amount": "272204839788"
-        },
-        "weight": "536870912000000"
-      }
-    ],
-    "total_weight": "1073741824000000"
-  },
-  {
-    "@type": "/osmosis.gamm.v1beta1.Pool",
-    "id": "681",
-    "pool_params": {
-      "exit_fee": "0.000000000000000000",
-      "swap_fee": "0.003000000000000000",
-      "smooth_weight_change_params": null
-    },
-    "total_shares": {
-      "denom": "gamm/pool/681",
-      "amount": "7065675482348714285717786"
-    },
-    "liquidityUsd": 709271.4741847801,
-    "liquidity24hUsdChange": -2.5860898706298032,
-    "volume24hUsd": 79064.971860132,
-    "volume24hUsdChange": -42.50120192456376,
-    "volume7dUsd": 904278.8719043185,
-    "taker_fee": "0.001000000000000000",
-    "pool_assets": [
-      {
-        "token": {
-          "denom": "ibc/5D1F516200EE8C6B2354102143B78A2DEDA25EDE771AC0F8DC3C1837C8FD4447",
-          "amount": "499788709757144300000000"
-        },
-        "weight": "5368709120"
-      },
-      {
-        "token": {
-          "denom": "uosmo",
-          "amount": "246674749190"
-        },
-        "weight": "5368709120"
-      }
-    ],
-    "total_weight": "10737418240"
-  },
-  {
-    "@type": "/osmosis.concentratedliquidity.v1beta1.Pool",
-    "address": "osmo1yt4t38u442m2rsh3j58ee08yswajf4t264s63r2dcxdndp2kuq7svv74nt",
-    "id": "1223",
-    "current_tick_liquidity": "1022566324928485.849252062076325436",
-    "token0": "ibc/D189335C6E4A68B513C10AB227BF1C1D38C746766278BA3EEB4FB14124F1D858",
-    "token0Amount": "274991319205",
-    "token1": "ibc/498A0751C798A0D9A389AA3691123DADA57DAA4FE165D5C75894505B876BA6E4",
-    "token1Amount": "402812190564",
-    "current_sqrt_price": "0.999987789528435977818203194135929849",
-    "current_tick": "-245",
-    "tick_spacing": "100",
-    "exponent_at_price_one": "-6",
-    "spread_factor": "0.000100000000000000",
-    "liquidityUsd": 678401.7421121274,
-    "liquidity24hUsdChange": -24.252541799914717,
-    "volume24hUsd": 1652033.637730458,
-    "volume24hUsdChange": 72.58498706277663,
-    "volume7dUsd": 10169491.515201116,
-    "taker_fee": "0.001000000000000000"
   },
   {
     "@type": "/osmosis.gamm.v1beta1.Pool",
@@ -1342,26 +1228,26 @@
     },
     "total_shares": {
       "denom": "gamm/pool/584",
-      "amount": "40648499097299178453145"
+      "amount": "40005805150991904881810"
     },
-    "liquidityUsd": 678107.716497077,
-    "liquidity24hUsdChange": 1.725482001842563,
-    "volume24hUsd": 299556.52018316893,
-    "volume24hUsdChange": 85.8237087980934,
-    "volume7dUsd": 1571384.745501342,
+    "liquidityUsd": 776149.9907987665,
+    "liquidity24hUsdChange": 3.096560682174531,
+    "volume24hUsd": 183475.26819596151,
+    "volume24hUsdChange": -55.73379137796534,
+    "volume7dUsd": 1605498.440857691,
     "taker_fee": "0.001000000000000000",
     "pool_assets": [
       {
         "token": {
           "denom": "ibc/0954E1C28EB7AF5B72D24F3BC2B47BBB2FDF91BDDFD57B74B99E133AED40972A",
-          "amount": "752873965237"
+          "amount": "700059525052"
         },
         "weight": "536870912000000"
       },
       {
         "token": {
           "denom": "uosmo",
-          "amount": "235642176052"
+          "amount": "247115115333"
         },
         "weight": "536870912000000"
       }
@@ -1369,104 +1255,138 @@
     "total_weight": "1073741824000000"
   },
   {
+    "@type": "/osmosis.concentratedliquidity.v1beta1.Pool",
+    "address": "osmo1yt4t38u442m2rsh3j58ee08yswajf4t264s63r2dcxdndp2kuq7svv74nt",
+    "id": "1223",
+    "current_tick_liquidity": "1202154794653493.769637659679233156",
+    "token0": "ibc/D189335C6E4A68B513C10AB227BF1C1D38C746766278BA3EEB4FB14124F1D858",
+    "token0Amount": "325125196280",
+    "token1": "ibc/498A0751C798A0D9A389AA3691123DADA57DAA4FE165D5C75894505B876BA6E4",
+    "token1Amount": "450128804428",
+    "current_sqrt_price": "0.999978329945082415550967343595775333",
+    "current_tick": "-434",
+    "tick_spacing": "100",
+    "exponent_at_price_one": "-6",
+    "spread_factor": "0.000100000000000000",
+    "liquidityUsd": 775928.5511359059,
+    "liquidity24hUsdChange": -1.0556050720211463,
+    "volume24hUsd": 712833.560201029,
+    "volume24hUsdChange": -39.58005666315275,
+    "volume7dUsd": 8755539.658025753,
+    "taker_fee": "0.001000000000000000"
+  },
+  {
     "@type": "/osmosis.gamm.v1beta1.Pool",
-    "id": "1041",
+    "id": "681",
+    "pool_params": {
+      "exit_fee": "0.000000000000000000",
+      "swap_fee": "0.003000000000000000",
+      "smooth_weight_change_params": null
+    },
+    "total_shares": {
+      "denom": "gamm/pool/681",
+      "amount": "7078630397205645108763250"
+    },
+    "liquidityUsd": 752883.6654241493,
+    "liquidity24hUsdChange": 0.5708337318204825,
+    "volume24hUsd": 30618.19906039966,
+    "volume24hUsdChange": -47.93047749986137,
+    "volume7dUsd": 617925.7362915014,
+    "taker_fee": "0.001000000000000000",
+    "pool_assets": [
+      {
+        "token": {
+          "denom": "ibc/5D1F516200EE8C6B2354102143B78A2DEDA25EDE771AC0F8DC3C1837C8FD4447",
+          "amount": "518058029127691400000000"
+        },
+        "weight": "5368709120"
+      },
+      {
+        "token": {
+          "denom": "uosmo",
+          "amount": "239322035650"
+        },
+        "weight": "5368709120"
+      }
+    ],
+    "total_weight": "10737418240"
+  },
+  {
+    "@type": "/osmosis.gamm.v1beta1.Pool",
+    "id": "1173",
     "pool_params": {
       "exit_fee": "0.000000000000000000",
       "swap_fee": "0.002000000000000000",
       "smooth_weight_change_params": null
     },
     "total_shares": {
-      "denom": "gamm/pool/1041",
-      "amount": "25501805392898423782765647"
+      "denom": "gamm/pool/1173",
+      "amount": "7873060654107617372454488"
     },
-    "liquidityUsd": 656847.1664851297,
-    "liquidity24hUsdChange": 0.5433210841196333,
-    "volume24hUsd": 23515.67573986951,
-    "volume24hUsdChange": 64.2483809410166,
-    "volume7dUsd": 281619.22190217336,
+    "liquidityUsd": 721044.0860884481,
+    "liquidity24hUsdChange": -11.891676008616848,
+    "volume24hUsd": 39830.90899607926,
+    "volume24hUsdChange": 313.0466843803197,
+    "volume7dUsd": 136876.31847922684,
     "taker_fee": "0.001000000000000000",
     "pool_assets": [
       {
         "token": {
-          "denom": "ibc/D189335C6E4A68B513C10AB227BF1C1D38C746766278BA3EEB4FB14124F1D858",
-          "amount": "328423582994"
+          "denom": "ibc/95C9B5870F95E21A242E6AF9ADCB1F212EE4A8855087226C36FBE43FC41A77B8",
+          "amount": "1385528519639338400000000"
         },
-        "weight": "53687091200"
+        "weight": "536870912000000"
       },
       {
         "token": {
-          "denom": "ibc/D9AFCECDD361D38302AA66EB3BAC23B95234832C51D12489DC451FA2B7C72782",
-          "amount": "4452387125290"
+          "denom": "uosmo",
+          "amount": "229201125381"
         },
-        "weight": "53687091200"
+        "weight": "536870912000000"
       }
     ],
-    "total_weight": "107374182400"
-  },
-  {
-    "@type": "/osmosis.cosmwasmpool.v1beta1.CosmWasmPool",
-    "contract_address": "osmo10c8y69yylnlwrhu32ralf08ekladhfknfqrjsy9yqc9ml8mlxpqq2sttzk",
-    "pool_id": "1212",
-    "code_id": "148",
-    "instantiate_msg": "eyJwb29sX2Fzc2V0X2Rlbm9tcyI6IFsiaWJjL0QxODkzMzVDNkU0QTY4QjUxM0MxMEFCMjI3QkYxQzFEMzhDNzQ2NzY2Mjc4QkEzRUVCNEZCMTQxMjRGMUQ4NTgiLCJpYmMvNDk4QTA3NTFDNzk4QTBEOUEzODlBQTM2OTExMjNEQURBNTdEQUE0RkUxNjVENUM3NTg5NDUwNUI4NzZCQTZFNCJdLCJhZG1pbiI6ICJvc21vMWdteDZ4OGxudmdobnl3YXpxY3l4NTZydDA3amRhdHJhY2hxZDRhZTA3M2doYXo3cmZ5bXFsZDd5NjAifQ==",
-    "tokens": [
-      {
-        "denom": "ibc/498A0751C798A0D9A389AA3691123DADA57DAA4FE165D5C75894505B876BA6E4",
-        "amount": "517798123061"
-      },
-      {
-        "denom": "ibc/D189335C6E4A68B513C10AB227BF1C1D38C746766278BA3EEB4FB14124F1D858",
-        "amount": "132950776939"
-      }
-    ],
-    "liquidityUsd": 651517.9031634852,
-    "liquidity24hUsdChange": 0.12762675172326238,
-    "volume24hUsd": 0,
-    "volume24hUsdChange": 0,
-    "volume7dUsd": 0,
-    "taker_fee": "0.001000000000000000"
+    "total_weight": "1073741824000000"
   },
   {
     "@type": "/osmosis.concentratedliquidity.v1beta1.Pool",
-    "address": "osmo1h4ffzselefzgrf63k9n8c098ql849v3jhwjdvf7rzd42xd7m8tmsah4vv0",
-    "id": "1265",
-    "current_tick_liquidity": "159062481891538.318262812066478857",
-    "token0": "uosmo",
-    "token0Amount": "143141248015",
-    "token1": "ibc/27394FB092D2ECCD56123C74F36E4C1F926001CEADA9CA97EA622B25F41E5EB2",
-    "token1Amount": "39109959597",
-    "current_sqrt_price": "0.366568572041532225508528760916074868",
-    "current_tick": "-8656275",
-    "tick_spacing": "100",
-    "exponent_at_price_one": "-6",
-    "spread_factor": "0.000500000000000000",
-    "liquidityUsd": 625397.3400654383,
-    "liquidity24hUsdChange": 27.844858206099133,
-    "volume24hUsd": 2948557.020227993,
-    "volume24hUsdChange": 19.48686454709622,
-    "volume7dUsd": 16915766.421095256,
-    "taker_fee": "0.001000000000000000"
-  },
-  {
-    "@type": "/osmosis.concentratedliquidity.v1beta1.Pool",
-    "address": "osmo1quk4xdv78eg069qnhlg6wsnzkpswhfavhnkquwppqwgnjk95pwnqhm0djs",
-    "id": "1110",
-    "current_tick_liquidity": "8933143657766.472278389874627675",
-    "token0": "ibc/67795E528DF67C5606FC20F824EA39A6EF55BA133F4DC79C90A8C47A0901E17C",
-    "token0Amount": "55123949306584",
+    "address": "osmo1yzg3ufzupj2mr54l5lmlz9mut9frenp9ft3f2d7e4q682hpsnsrqcvgyk5",
+    "id": "1325",
+    "current_tick_liquidity": "1137549819362050.710362419563750037",
+    "token0": "factory/osmo1mlng7pz4pnyxtpq0akfwall37czyk9lukaucsrn30ameplhhshtqdvfm5c/ulvn",
+    "token0Amount": "2372299024946",
     "token1": "uosmo",
-    "token1Amount": "183323114698",
-    "current_sqrt_price": "0.067646068276604391679371075242879810",
-    "current_tick": "-23424010",
+    "token1Amount": "179354681031",
+    "current_sqrt_price": "0.335821522791556523442033528610340732",
+    "current_tick": "-8872240",
     "tick_spacing": "100",
     "exponent_at_price_one": "-6",
     "spread_factor": "0.002000000000000000",
-    "liquidityUsd": 624591.4062083468,
-    "liquidity24hUsdChange": -1.6924865762486432,
-    "volume24hUsd": 46293.27243791871,
-    "volume24hUsdChange": 33.25687033020502,
-    "volume7dUsd": 374769.76922523073,
+    "liquidityUsd": 702941.1844943203,
+    "liquidity24hUsdChange": -8.578253456748431,
+    "volume24hUsd": 504990.4068488938,
+    "volume24hUsdChange": 25.769378848252998,
+    "volume7dUsd": 6082249.397769268,
+    "taker_fee": "0.001000000000000000"
+  },
+  {
+    "@type": "/osmosis.concentratedliquidity.v1beta1.Pool",
+    "address": "osmo1q28nyjxzgj9sxmup2sv3wyr6qpmlskacz2fjdgt0ruux75suf3rqn5lstq",
+    "id": "1098",
+    "current_tick_liquidity": "236846086347.263062915048676329",
+    "token0": "ibc/A8CA5EE328FA10C9519DF6057DA1F69682D28F7D0F5CCC7ECB72E3DCA2D157A4",
+    "token0Amount": "115910847367",
+    "token1": "uosmo",
+    "token1Amount": "211612736081",
+    "current_sqrt_price": "1.364699299536314934363686106947079533",
+    "current_tick": "862404",
+    "tick_spacing": "100",
+    "exponent_at_price_one": "-6",
+    "spread_factor": "0.002000000000000000",
+    "liquidityUsd": 674262.4050330033,
+    "liquidity24hUsdChange": -3.6235157226395365,
+    "volume24hUsd": 92856.527926736,
+    "volume24hUsdChange": 55.01952960279838,
+    "volume7dUsd": 1176568.1954985866,
     "taker_fee": "0.001000000000000000"
   },
   {
@@ -1481,24 +1401,24 @@
       "denom": "gamm/pool/1241",
       "amount": "5480964628884223657394819"
     },
-    "liquidityUsd": 619870.9867102872,
-    "liquidity24hUsdChange": 0.8525019317932139,
-    "volume24hUsd": 8431.79629511793,
-    "volume24hUsdChange": 4.219440901903484,
-    "volume7dUsd": 87102.86875632175,
+    "liquidityUsd": 651555.4855823214,
+    "liquidity24hUsdChange": 1.615985812176064,
+    "volume24hUsd": 1833.1318957304452,
+    "volume24hUsdChange": -44.268579318186866,
+    "volume7dUsd": 48003.7127866088,
     "taker_fee": "0.001000000000000000",
     "pool_assets": [
       {
         "token": {
           "denom": "ibc/2B30802A0B03F91E4E16D6175C9B70F2911377C1CAE9E50FF011C821465463F9",
-          "amount": "1836862382349487600000000"
+          "amount": "1910387523713198700000000"
         },
         "weight": "536870912000000"
       },
       {
         "token": {
           "denom": "uosmo",
-          "amount": "215376342498"
+          "amount": "207112203880"
         },
         "weight": "536870912000000"
       }
@@ -1506,25 +1426,105 @@
     "total_weight": "1073741824000000"
   },
   {
+    "@type": "/osmosis.cosmwasmpool.v1beta1.CosmWasmPool",
+    "contract_address": "osmo10c8y69yylnlwrhu32ralf08ekladhfknfqrjsy9yqc9ml8mlxpqq2sttzk",
+    "pool_id": "1212",
+    "code_id": "148",
+    "instantiate_msg": "eyJwb29sX2Fzc2V0X2Rlbm9tcyI6IFsiaWJjL0QxODkzMzVDNkU0QTY4QjUxM0MxMEFCMjI3QkYxQzFEMzhDNzQ2NzY2Mjc4QkEzRUVCNEZCMTQxMjRGMUQ4NTgiLCJpYmMvNDk4QTA3NTFDNzk4QTBEOUEzODlBQTM2OTExMjNEQURBNTdEQUE0RkUxNjVENUM3NTg5NDUwNUI4NzZCQTZFNCJdLCJhZG1pbiI6ICJvc21vMWdteDZ4OGxudmdobnl3YXpxY3l4NTZydDA3amRhdHJhY2hxZDRhZTA3M2doYXo3cmZ5bXFsZDd5NjAifQ==",
+    "tokens": [
+      {
+        "denom": "ibc/498A0751C798A0D9A389AA3691123DADA57DAA4FE165D5C75894505B876BA6E4",
+        "amount": "342404638883"
+      },
+      {
+        "denom": "ibc/D189335C6E4A68B513C10AB227BF1C1D38C746766278BA3EEB4FB14124F1D858",
+        "amount": "308344261117"
+      }
+    ],
+    "liquidityUsd": 651262.0184718773,
+    "liquidity24hUsdChange": 0.1283427486333224,
+    "volume24hUsd": 0,
+    "volume24hUsdChange": 0,
+    "volume7dUsd": 0,
+    "taker_fee": "0.001000000000000000"
+  },
+  {
     "@type": "/osmosis.concentratedliquidity.v1beta1.Pool",
     "address": "osmo1hj55ea6dnmv320tmnrejw79f2sse4835uul7yldwvchkgqpqpr8s9slkde",
     "id": "1227",
-    "current_tick_liquidity": "140776227445351.183391773762228359",
+    "current_tick_liquidity": "141024570027171.401265600794110347",
     "token0": "ibc/B66CE615C600ED0A8B5AF425ECFE0D57BE2377587F66C45934A76886F34DC9B7",
-    "token0Amount": "13347292808",
+    "token0Amount": "13347288664",
     "token1": "ibc/27394FB092D2ECCD56123C74F36E4C1F926001CEADA9CA97EA622B25F41E5EB2",
-    "token1Amount": "34520862837",
-    "current_sqrt_price": "1.223787069518505063840910946306614291",
+    "token1Amount": "34531015482",
+    "current_sqrt_price": "1.223787102088575623492483737249587549",
     "current_tick": "497654",
     "tick_spacing": "100",
     "exponent_at_price_one": "-6",
     "spread_factor": "0.002000000000000000",
-    "liquidityUsd": 584661.8787613264,
-    "liquidity24hUsdChange": -0.5230599425825334,
-    "volume24hUsd": 9.502217027752492,
-    "volume24hUsdChange": 14.131554066062806,
-    "volume7dUsd": 60.35064863596601,
+    "liquidityUsd": 646237.584824276,
+    "liquidity24hUsdChange": 2.4676824272101423,
+    "volume24hUsd": 22.817850705581385,
+    "volume24hUsdChange": 121.35134416523188,
+    "volume7dUsd": 78.32262182046153,
     "taker_fee": "0.001000000000000000"
+  },
+  {
+    "@type": "/osmosis.concentratedliquidity.v1beta1.Pool",
+    "address": "osmo1quk4xdv78eg069qnhlg6wsnzkpswhfavhnkquwppqwgnjk95pwnqhm0djs",
+    "id": "1110",
+    "current_tick_liquidity": "8919731342424.033901079763398739",
+    "token0": "ibc/67795E528DF67C5606FC20F824EA39A6EF55BA133F4DC79C90A8C47A0901E17C",
+    "token0Amount": "62502553358802",
+    "token1": "uosmo",
+    "token1Amount": "150926590559",
+    "current_sqrt_price": "0.064025255105406796607208540269096195",
+    "current_tick": "-23900767",
+    "tick_spacing": "100",
+    "exponent_at_price_one": "-6",
+    "spread_factor": "0.002000000000000000",
+    "liquidityUsd": 641025.7265111452,
+    "liquidity24hUsdChange": -0.4773852190519151,
+    "volume24hUsd": 26782.72821385233,
+    "volume24hUsdChange": 74.96936372303927,
+    "volume7dUsd": 182169.5067644006,
+    "taker_fee": "0.001000000000000000"
+  },
+  {
+    "@type": "/osmosis.gamm.v1beta1.Pool",
+    "id": "1041",
+    "pool_params": {
+      "exit_fee": "0.000000000000000000",
+      "swap_fee": "0.002000000000000000",
+      "smooth_weight_change_params": null
+    },
+    "total_shares": {
+      "denom": "gamm/pool/1041",
+      "amount": "25499520535611242727082250"
+    },
+    "liquidityUsd": 628783.7383382662,
+    "liquidity24hUsdChange": 1.7666287899996729,
+    "volume24hUsd": 16977.269779336893,
+    "volume24hUsdChange": -48.91766678528667,
+    "volume7dUsd": 182731.2782705665,
+    "taker_fee": "0.001000000000000000",
+    "pool_assets": [
+      {
+        "token": {
+          "denom": "ibc/D189335C6E4A68B513C10AB227BF1C1D38C746766278BA3EEB4FB14124F1D858",
+          "amount": "314391867328"
+        },
+        "weight": "53687091200"
+      },
+      {
+        "token": {
+          "denom": "ibc/D9AFCECDD361D38302AA66EB3BAC23B95234832C51D12489DC451FA2B7C72782",
+          "amount": "4653870888208"
+        },
+        "weight": "53687091200"
+      }
+    ],
+    "total_weight": "107374182400"
   },
   {
     "@type": "/osmosis.gamm.v1beta1.Pool",
@@ -1536,26 +1536,26 @@
     },
     "total_shares": {
       "denom": "gamm/pool/1225",
-      "amount": "100183376956886972779"
+      "amount": "100095202266763361341"
     },
-    "liquidityUsd": 572678.5385539958,
-    "liquidity24hUsdChange": -0.06741956845191323,
-    "volume24hUsd": 8077.046223495137,
-    "volume24hUsdChange": 61.15914414449225,
-    "volume7dUsd": 66980.8094586065,
+    "liquidityUsd": 622916.0383286423,
+    "liquidity24hUsdChange": 3.5621896789303125,
+    "volume24hUsd": 7746.439023129226,
+    "volume24hUsdChange": 299.5876377043044,
+    "volume7dUsd": 53520.12305412104,
     "taker_fee": "0.001000000000000000",
     "pool_assets": [
       {
         "token": {
           "denom": "factory/osmo1s794h9rxggytja3a4pmwul53u98k06zy2qtrdvjnfuxruh7s8yjs6cyxgd/umbrn",
-          "amount": "1117649888808"
+          "amount": "1121306117484"
         },
         "weight": "53687091200"
       },
       {
         "token": {
           "denom": "uosmo",
-          "amount": "199005573992"
+          "amount": "198008746777"
         },
         "weight": "53687091200"
       }
@@ -1572,26 +1572,26 @@
     },
     "total_shares": {
       "denom": "gamm/pool/560",
-      "amount": "97381271682189671454335"
+      "amount": "96692486197323862814400"
     },
-    "liquidityUsd": 565005.2851170339,
-    "liquidity24hUsdChange": -1.385122763153791,
-    "volume24hUsd": 31905.46522496575,
-    "volume24hUsdChange": 27.074502263537482,
-    "volume7dUsd": 381909.1760065025,
+    "liquidityUsd": 601348.7433666998,
+    "liquidity24hUsdChange": 0.6293593390612368,
+    "volume24hUsd": 21083.84619579843,
+    "volume24hUsdChange": -23.49750303406752,
+    "volume7dUsd": 266742.6598002619,
     "taker_fee": "0.001000000000000000",
     "pool_assets": [
       {
         "token": {
           "denom": "ibc/BE1BB42D4BE3C30D50B68D7C41DB4DFCE9678E8EF8C539F6E6A9345048894FCC",
-          "amount": "8360541840776"
+          "amount": "8480425106915"
         },
         "weight": "536870912000000"
       },
       {
         "token": {
           "denom": "uosmo",
-          "amount": "196339121482"
+          "amount": "191153067187"
         },
         "weight": "536870912000000"
       }
@@ -1602,58 +1602,22 @@
     "@type": "/osmosis.concentratedliquidity.v1beta1.Pool",
     "address": "osmo1wmau9hnrgkpujdd3768fdcp7x3phxv0g3q5leugru0snwlt8kynq8klpqh",
     "id": "1092",
-    "current_tick_liquidity": "7819174400135.936835508910166388",
+    "current_tick_liquidity": "7656631866055.094901285767256785",
     "token0": "ibc/E6931F78057F7CC5DA0FD6CEF82FF39373A6E0452BF1FD76910B93292CF356C1",
-    "token0Amount": "291049821381031",
+    "token0Amount": "302630777471076",
     "token1": "uosmo",
-    "token1Amount": "181468932039",
-    "current_sqrt_price": "0.026026312219057373226381663531530932",
-    "current_tick": "-30226311",
+    "token1Amount": "177913302833",
+    "current_sqrt_price": "0.025260375578673126890082730197901029",
+    "current_tick": "-30619135",
     "tick_spacing": "100",
     "exponent_at_price_one": "-6",
     "spread_factor": "0.002000000000000000",
-    "liquidityUsd": 544504.8327789867,
-    "liquidity24hUsdChange": -0.885596661226134,
-    "volume24hUsd": 12577.865612243291,
-    "volume24hUsdChange": -38.971537079528744,
-    "volume7dUsd": 125971.09031032944,
+    "liquidityUsd": 583358.9132810698,
+    "liquidity24hUsdChange": 1.6247706384321425,
+    "volume24hUsd": 10262.148612392757,
+    "volume24hUsdChange": -51.747920657061854,
+    "volume7dUsd": 126114.02458174393,
     "taker_fee": "0.001000000000000000"
-  },
-  {
-    "@type": "/osmosis.gamm.v1beta1.Pool",
-    "id": "674",
-    "pool_params": {
-      "exit_fee": "0.000000000000000000",
-      "swap_fee": "0.002000000000000000",
-      "smooth_weight_change_params": null
-    },
-    "total_shares": {
-      "denom": "gamm/pool/674",
-      "amount": "69472342474127988525914"
-    },
-    "liquidityUsd": 527172.2366245231,
-    "liquidity24hUsdChange": -0.23118995403921463,
-    "volume24hUsd": 19145.238792778808,
-    "volume24hUsdChange": -18.99181684462487,
-    "volume7dUsd": 259018.8768248074,
-    "taker_fee": "0.001000000000000000",
-    "pool_assets": [
-      {
-        "token": {
-          "denom": "ibc/0CD3A0285E1341859B5E86B6AB7682F023D03E97607CCC1DC95706411D866DF7",
-          "amount": "263839804329899600000000"
-        },
-        "weight": "536870912000000"
-      },
-      {
-        "token": {
-          "denom": "uosmo",
-          "amount": "183188719796"
-        },
-        "weight": "536870912000000"
-      }
-    ],
-    "total_weight": "1073741824000000"
   },
   {
     "@type": "/osmosis.gamm.v1beta1.Pool",
@@ -1665,28 +1629,64 @@
     },
     "total_shares": {
       "denom": "gamm/pool/611",
-      "amount": "304559507113463680994061"
+      "amount": "303972933175785501165693"
     },
-    "liquidityUsd": 519589.46799851453,
-    "liquidity24hUsdChange": -0.2494446237941097,
-    "volume24hUsd": 21270.778483422015,
-    "volume24hUsdChange": 47.613837909422834,
-    "volume7dUsd": 225024.70888920923,
+    "liquidityUsd": 569565.7517759651,
+    "liquidity24hUsdChange": 2.5864879463541164,
+    "volume24hUsd": 13218.058688233892,
+    "volume24hUsdChange": 5.409073967292532,
+    "volume7dUsd": 122830.20185609582,
     "taker_fee": "0.001000000000000000",
     "pool_assets": [
       {
         "token": {
           "denom": "ibc/27394FB092D2ECCD56123C74F36E4C1F926001CEADA9CA97EA622B25F41E5EB2",
-          "amount": "24246335304"
+          "amount": "24055351701"
         },
         "weight": "536870912000000"
       },
       {
         "token": {
           "denom": "ibc/987C17B11ABC2B20019178ACE62929FE9840202CE79498E29FE8E5CB02B7C0A4",
-          "amount": "8408457384881"
+          "amount": "8449556840276"
         },
         "weight": "536870912000000"
+      }
+    ],
+    "total_weight": "1073741824000000"
+  },
+  {
+    "@type": "/osmosis.gamm.v1beta1.Pool",
+    "id": "6",
+    "pool_params": {
+      "exit_fee": "0.000000000000000000",
+      "swap_fee": "0.003000000000000000",
+      "smooth_weight_change_params": null
+    },
+    "total_shares": {
+      "denom": "gamm/pool/6",
+      "amount": "4539511869788688078007644603"
+    },
+    "liquidityUsd": 546307.9738156889,
+    "liquidity24hUsdChange": 22.237624423997655,
+    "volume24hUsd": 235342.69334206815,
+    "volume24hUsdChange": 460.0509875533067,
+    "volume7dUsd": 534398.6643476216,
+    "taker_fee": "0.001000000000000000",
+    "pool_assets": [
+      {
+        "token": {
+          "denom": "ibc/27394FB092D2ECCD56123C74F36E4C1F926001CEADA9CA97EA622B25F41E5EB2",
+          "amount": "13823286511"
+        },
+        "weight": "322122547200000"
+      },
+      {
+        "token": {
+          "denom": "ibc/9712DBB13B9631EDFA9BF61B55F1B2D290B2ADB67E3A4EB3A875F3B6081B3B84",
+          "amount": "143413821827195"
+        },
+        "weight": "751619276800000"
       }
     ],
     "total_weight": "1073741824000000"
@@ -1701,26 +1701,62 @@
     },
     "total_shares": {
       "denom": "gamm/pool/498",
-      "amount": "122668864225908154072788"
+      "amount": "121329762815720461817967"
     },
-    "liquidityUsd": 512343.8952646564,
-    "liquidity24hUsdChange": 0.05746970455110284,
-    "volume24hUsd": 15516.359614051564,
-    "volume24hUsdChange": -29.243239833305402,
-    "volume7dUsd": 255122.03650220603,
+    "liquidityUsd": 545012.5676123467,
+    "liquidity24hUsdChange": 3.6291058913475567,
+    "volume24hUsd": 18925.156279769908,
+    "volume24hUsdChange": 13.628899563118663,
+    "volume7dUsd": 152702.10369290886,
     "taker_fee": "0.001000000000000000",
     "pool_assets": [
       {
         "token": {
           "denom": "ibc/27394FB092D2ECCD56123C74F36E4C1F926001CEADA9CA97EA622B25F41E5EB2",
-          "amount": "23889156381"
+          "amount": "23010280052"
         },
         "weight": "536870912000000"
       },
       {
         "token": {
           "denom": "ibc/46B44899322F3CD854D2D46DEEF881958467CDD4B3B10086DA49296BBED94BED",
-          "amount": "396534052224"
+          "amount": "403206387932"
+        },
+        "weight": "536870912000000"
+      }
+    ],
+    "total_weight": "1073741824000000"
+  },
+  {
+    "@type": "/osmosis.gamm.v1beta1.Pool",
+    "id": "674",
+    "pool_params": {
+      "exit_fee": "0.000000000000000000",
+      "swap_fee": "0.002000000000000000",
+      "smooth_weight_change_params": null
+    },
+    "total_shares": {
+      "denom": "gamm/pool/674",
+      "amount": "68176244243413185788989"
+    },
+    "liquidityUsd": 542105.7284580062,
+    "liquidity24hUsdChange": 0.9039716468930483,
+    "volume24hUsd": 19466.93480380707,
+    "volume24hUsdChange": 77.21024705811863,
+    "volume7dUsd": 125338.15614465902,
+    "taker_fee": "0.001000000000000000",
+    "pool_assets": [
+      {
+        "token": {
+          "denom": "ibc/0CD3A0285E1341859B5E86B6AB7682F023D03E97607CCC1DC95706411D866DF7",
+          "amount": "270287441821494100000000"
+        },
+        "weight": "536870912000000"
+      },
+      {
+        "token": {
+          "denom": "uosmo",
+          "amount": "172321298238"
         },
         "weight": "536870912000000"
       }

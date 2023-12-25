@@ -2,6 +2,8 @@ import itertools
 import numpy as np
 from router import solve,populate_chain_dict
 
+print("=============== chains and tokens ========================")
+
 
 CENTER_NODE = "CENTAURI"  # Name of center Node
 
@@ -24,7 +26,6 @@ tol = 1e-4
 
 populate_chain_dict(chains,CENTER_NODE)
 
-print("=============== chains and tokens ========================")
 print(chains)
 
 # simulate in chain CFMMS

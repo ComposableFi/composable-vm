@@ -272,11 +272,21 @@ paths:
         required: true
         content:
           application/json:
-            example:
-              source_asset_denom: uusdc
-              source_asset_chain_id: axelar-dojo-1
-              allow_multi_tx: false
-              client_id: skip-api-docs
+            examples:
+              uusdc_from_axelar:
+                value:
+                  source_asset_denom: uusdc
+                  source_asset_chain_id: axelar-dojo-1
+                  allow_multi_tx: false
+                  client_id: skip-api-docs
+                summary: "Get transfer assets that can be reached from USDC on Axelar"
+              astro_from_terra:
+                value:
+                  source_asset_denom: cw20:terra1nsuqsk6kh58ulczatwev87ttq2z6r3pusulg9r24mfj2fvtzd4uq3exn26
+                  source_asset_chain_id: phoenix-1
+                  allow_multi_tx: false
+                  client_id: skip-api-docs
+                summary: "Get transfer assets that can be reached from ASTRO on Terra"
             schema:
               type: object
               required:
@@ -382,6 +392,16 @@ paths:
                   cumulative_affiliate_fee_bps: "0"
                   client_id: skip-api-docs
                 summary: "Swap 1 USDC on Axelar to ATOM on the Hub"
+              swap_astro_to_luna:
+                value:
+                  amount_in: "1000000"
+                  source_asset_denom: cw20:terra1nsuqsk6kh58ulczatwev87ttq2z6r3pusulg9r24mfj2fvtzd4uq3exn26
+                  source_asset_chain_id: phoenix-1
+                  dest_asset_denom: uluna
+                  dest_asset_chain_id: phoenix-1
+                  cumulative_affiliate_fee_bps: "0"
+                  client_id: skip-api-docs
+                summary: "Swap 1 ASTRO on Terra to LUNA on Terra"
               transfer_statom_from_osomosis_to_hub:
                 value:
                   amount_in: "1000000"
@@ -402,6 +422,56 @@ paths:
                   cumulative_affiliate_fee_bps: "0"
                   client_id: skip-api-docs
                 summary: "Transfer 3 MATIC from Polygon to Osmosis"
+              transfer_usdc_in_from_noble_to_osmosis:
+                value:
+                  amount_in: "1000000"
+                  source_asset_denom: uusdc
+                  source_asset_chain_id: noble-1
+                  dest_asset_denom: ibc/498A0751C798A0D9A389AA3691123DADA57DAA4FE165D5C75894505B876BA6E4
+                  dest_asset_chain_id: osmosis-1
+                  cumulative_affiliate_fee_bps: "0"
+                  client_id: skip-api-docs
+                summary: "Transfer 1 USDC in from Noble to Osmosis"
+              receive_usdc_out_from_noble_on_osmosis:
+                value:
+                  amount_out: "1000000"
+                  source_asset_denom: uusdc
+                  source_asset_chain_id: noble-1
+                  dest_asset_denom: ibc/498A0751C798A0D9A389AA3691123DADA57DAA4FE165D5C75894505B876BA6E4
+                  dest_asset_chain_id: osmosis-1
+                  cumulative_affiliate_fee_bps: "0"
+                  client_id: skip-api-docs
+                summary: "Receive 1 USDC from Noble on Osmosis"
+              swap_usdc_in_from_noble_to_osmosis:
+                value:
+                  amount_in: "1000000"
+                  source_asset_denom: uusdc
+                  source_asset_chain_id: noble-1
+                  dest_asset_denom: uosmo
+                  dest_asset_chain_id: osmosis-1
+                  cumulative_affiliate_fee_bps: "0"
+                  client_id: skip-api-docs
+                summary: "Swap 1 USDC in from Noble to OSMO on Osmosis"
+              swap_usdc_out_from_noble_to_osmosis:
+                value:
+                  amount_out: "1000000"
+                  source_asset_denom: uusdc
+                  source_asset_chain_id: noble-1
+                  dest_asset_denom: uosmo
+                  dest_asset_chain_id: osmosis-1
+                  cumulative_affiliate_fee_bps: "0"
+                  client_id: skip-api-docs
+                summary: "Receive 1 OSMO on Osmosis from USDC on Noble"
+              swap_usdc_out_from_osmosis_to_cosmoshub:
+                value:
+                  amount_out: "1000000"
+                  source_asset_denom: uosmo
+                  source_asset_chain_id: osmosis-1
+                  dest_asset_denom: ibc/F663521BF1836B00F5F177680F74BFB9A8B5654A694D0D2BC249E03CF2509013
+                  dest_asset_chain_id: cosmoshub-4
+                  cumulative_affiliate_fee_bps: "0"
+                  client_id: skip-api-docs
+                summary: "Receive 1 Noble USDC on Cosmos Hub from OSMO on Osmosis"
             schema:
               type: object
               properties:
@@ -710,6 +780,18 @@ paths:
                   slippage_tolerance_percent: "3"
                   client_id: skip-api-docs
                 summary: "Swap 1 USDC on Axelar to ATOM on the Hub"
+              swap_astro_to_luna:
+                value:
+                  source_asset_denom: cw20:terra1nsuqsk6kh58ulczatwev87ttq2z6r3pusulg9r24mfj2fvtzd4uq3exn26
+                  source_asset_chain_id: phoenix-1
+                  dest_asset_denom: uluna
+                  dest_asset_chain_id: phoenix-1
+                  amount_in: "1000000"
+                  chain_ids_to_addresses:
+                    phoenix-1: terra127qzje4r06q3lgeh6dm2tvsuzc3l2uu4q3ezlz
+                  slippage_tolerance_percent: "3"
+                  client_id: skip-api-docs
+                summary: "Swap 1 ASTRO on Terra to LUNA on Terra"
               transfer_matic_to_osmosis:
                 value:
                   amount_in: "3000000000000000000"
@@ -866,52 +948,24 @@ paths:
       tags:
         - "Fungible"
       description:
-        Request asset recommendations for a given source asset on a given destination chain. The response includes
+        Request asset recommendations for the given source assets on a given destination chain. The response includes
         recommended destination assets and recommendation reasons.
       requestBody:
         required: true
         content:
           application/json:
-            examples:
-              single_asset_recommendation:
-                value:
-                  source_asset_denom: uusdc
+            example:
+              requests:
+                - source_asset_denom: uusdc
                   source_asset_chain_id: axelar-dojo-1
                   dest_chain_id: cosmoshub-4
-                  client_id: skip-api-docs
-                summary: Request recommendations for a single asset
-              multiple_asset_recommendations:
-                value:
-                  requests:
-                    - source_asset_denom: uusdc
-                      source_asset_chain_id: axelar-dojo-1
-                      dest_chain_id: cosmoshub-4
-                    - source_asset_denom: uusdc
-                      source_asset_chain_id: axelar-dojo-1
-                      dest_chain_id: osmosis-1
-                  client_id: skip-api-docs
-                summary: Request recommendations for multiple assets
+                - source_asset_denom: uusdc
+                  source_asset_chain_id: axelar-dojo-1
+                  dest_chain_id: osmosis-1
+              client_id: skip-api-docs
             schema:
               type: object
               properties:
-                source_asset_denom:
-                  type: string
-                  description: Denom of the source asset
-                source_asset_chain_id:
-                  type: string
-                  description: Chain-id of the source asset
-                dest_chain_id:
-                  type: string
-                  nullable: true
-                  description: Chain-id of the recommended destination asset
-                reason:
-                  description: Reason for recommendation (optional)
-                  allOf:
-                    - $ref: "#/components/schemas/Reason"
-                  nullable: true
-                client_id:
-                  type: string
-                  description: Recognizable identifier for callers (e.g. skip-api-docs, best-wallet, etc...)
                 requests:
                   type: array
                   description: Array where each entry corresponds to a distinct asset recommendation request.
@@ -938,10 +992,9 @@ paths:
           description: Recommended destination assets and reasons
           content:
             application/json:
-              examples:
-                single_asset_recommendation:
-                  value:
-                    recommendations:
+              example:
+                recommendation_entries:
+                  - recommendations:
                       - asset:
                           denom: ibc/932D6003DA334ECBC5B23A071B4287D0A5CC97331197FE9F1C0689BA002A8421
                           chain_id: cosmoshub-4
@@ -949,35 +1002,17 @@ paths:
                           origin_chain_id: axelar-dojo-1
                           trace: transfer/channel-293
                         reason: MOST_LIQUID
-                  summary: Response for a single asset recommendation.
-                multiple_asset_recommendations:
-                  value:
-                    recommendation_entries:
-                      - recommendations:
-                          - asset:
-                              denom: ibc/932D6003DA334ECBC5B23A071B4287D0A5CC97331197FE9F1C0689BA002A8421
-                              chain_id: cosmoshub-4
-                              origin_denom: uusdc
-                              origin_chain_id: axelar-dojo-1
-                              trace: transfer/channel-293
-                            reason: MOST_LIQUID
-                      - recommendations:
-                          - asset:
-                              denom: ibc/D189335C6E4A68B513C10AB227BF1C1D38C746766278BA3EEB4FB14124F1D858
-                              chain_id: osmosis-1
-                              origin_denom: uusdc
-                              origin_chain_id: axelar-dojo-1
-                              trace: transfer/channel-208
-                            reason: MOST_LIQUID
-                  summary: Response for multiple asset recommendations.
+                  - recommendations:
+                      - asset:
+                          denom: ibc/D189335C6E4A68B513C10AB227BF1C1D38C746766278BA3EEB4FB14124F1D858
+                          chain_id: osmosis-1
+                          origin_denom: uusdc
+                          origin_chain_id: axelar-dojo-1
+                          trace: transfer/channel-208
+                        reason: MOST_LIQUID
               schema:
                 type: object
                 properties:
-                  recommendations: 
-                    type: array
-                    description: Array of AssetRecommendations for the source asset on the destination chain
-                    items:
-                      $ref: "#/components/schemas/AssetRecommendation"
                   recommendation_entries:
                     type: array
                     description: Array of recommendations for each entry in the `request` field.
@@ -2383,6 +2418,22 @@ components:
         port:
           description: Port to use to initiate the transfer
           type: string
+        supports_memo:
+          description: Whether the transfer chain supports a memo
+          type: boolean
+        fee_amount:
+          description: Amount of the fee asset to be paid as the transfer fee if applicable.
+          type: string
+          nullable: true
+        usd_fee_amount:
+          description: Amount of the fee asset to be paid as the transfer fee if applicable,
+            converted to USD value
+          type: string
+          nullable: true
+        fee_asset:
+          description: Asset to be paid as the transfer fee if applicable.
+          $ref: '#/components/schemas/Asset'
+          nullable: true
       type: object
     TransferEvent:
       oneOf:
