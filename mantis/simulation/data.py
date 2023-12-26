@@ -47,6 +47,6 @@ class AllData():
     asset_pairs_xyk : DataSet[AssetPairsXyk]
 
 def test_all_data() -> AllData:
-    asset_transfers: DataSet[AssetTransfers] = pd.read_csv("asset_transfers.csv")
-    assets_pairs_xyk: DataSet[AssetPairsXyk] = pd.read_csv("assets_pairs_xyk.csv")
+    asset_transfers =  DataSet[AssetTransfers](pd.read_csv("asset_transfers.csv"))
+    assets_pairs_xyk=  DataSet[AssetPairsXyk](pd.read_csv("assets_pairs_xyk.csv"))
     return AllData(assets_pairs_xyk, asset_transfers)
