@@ -1267,7 +1267,8 @@
         "networks": "networks",
         "nixpkgs": "nixpkgs_4",
         "poetry2nix": "poetry2nix",
-        "rust-overlay": "rust-overlay"
+        "rust-overlay": "rust-overlay",
+        "strictly-typed-pandas-src": "strictly-typed-pandas-src"
       }
     },
     "rust-overlay": {
@@ -1390,6 +1391,22 @@
       "original": {
         "owner": "freshautomations",
         "repo": "stoml",
+        "type": "github"
+      }
+    },
+    "strictly-typed-pandas-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1703527275,
+        "narHash": "sha256-DtQvwpUyAAqz2a5FdO6iMH9ooFgn8u7Gic2mjiEaWyA=",
+        "owner": "nanne-aben",
+        "repo": "strictly_typed_pandas",
+        "rev": "c961a553188c3159f7dbcf3f78e8b4b74763f514",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nanne-aben",
+        "repo": "strictly_typed_pandas",
         "type": "github"
       }
     },

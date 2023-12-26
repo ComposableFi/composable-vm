@@ -38,7 +38,7 @@
     };
 
     strictly-typed-pandas-src = {
-      url = "github:long2ice/strictly-typed-pandas";
+      url = "github:nanne-aben/strictly_typed_pandas";
       flake = false;
     };
 
@@ -197,6 +197,21 @@
           ];
         };
 
+
+        strictly-typed-pandas = pkgs.python3Packages.buildPythonPackage {
+          name = "strictly-typed-pandas";
+          version = "0.0.1";
+          format = "pyproject";
+
+          src = inputs.strictly-typed-pandas-src;
+
+          nativeBuildInputs = with  pkgs.python3Packages; [
+            poetry-core
+            setuptools
+            setuptools-git-versioning
+          ];
+        };
+
         python-packages = ps:
           with ps; [
             bech32
@@ -223,6 +238,7 @@
             uvicorn
             virtualenv
             wheel
+            setuptools
             strictly-typed-pandas
           ];
         python = pkgs.python3.withPackages python-packages;
