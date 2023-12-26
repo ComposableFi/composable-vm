@@ -16,7 +16,7 @@ class AssetTransfers:
     usd_fee_transfer: int | None
     
     # do not care
-    metadata: str
+    metadata: str | None
     
 class AssetPairsXyk:
     # set key
@@ -30,6 +30,8 @@ class AssetPairsXyk:
     pool_value_in_usd: int | None
     a_amount: int
     b_amount: int
+    
+    metadata: str | None
     
 # this is what user asks for
 class Input:
