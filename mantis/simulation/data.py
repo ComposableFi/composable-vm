@@ -39,6 +39,9 @@ class Input:
     out_token_id: int
     in_amount: int
     out_amount: int
+    # if max is true, user wants to spent all in to get at least out
+    # if max is false, user wants to get exact out, but spent as small as possible in
+    max: bool
 
 class AllData():
     # DataSet inherits from DataFrame
