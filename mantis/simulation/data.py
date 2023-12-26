@@ -2,36 +2,42 @@
 import pandas as pd
 
 from typing import TypeVar
+from strictly_typed_pandas import DataSet
 
 TAssetId = TypeVar("TAssetId")
 TNetworkId = TypeVar("TNetworkId")
 
-class AllData:
-    simulate_transfers
-
-def simulate_assets_transfers() -> AllData:
-    asset_transfers = pd.read_csv("asset_transfers.csv")
+class AssetTransfers:
+    # positive whole numbers, set key
+    in_asset_id: int
+    out_asset_id: int
     
-
-
-
-# port this https://github.com/ComposableFi/xc-solver-rs/blob/main/solver/src/data.rs
-class Routes:
-    # asset ids and their usd price if available, and for sure their network ids
-    # asset globally unique
-    # also known as denom in Cosmos or ERC20 token Ethereum or SPL20 in Solanas
-    assets = []
-    # network ids (chain ids, parachains ids, domains, consensus, whatever it is know)
-    networks = []
-    # is there is possible to send from network to network, and if possible, what is normalized to used
-    # and also asset id and price of gas in native token
-    network_to_network = []
-    # pools with asset ids they map with reserves, and usd info if available, and swap fee
-    # please note that 
-    # and network id it is on
-    pools = []
-    # when asset moved to network, what asset it becomes
-
-    asset_to_network = []
+    # this is positive whole number too
+    usd_fee_transfer: int | None
     
+    # do not care
+    metadata: str
     
+class AssetPairsXyk:
+    # set key
+    in_asset_id: int
+    out_asset_id: int
+    
+    fee_of_in_per_million: int
+    fee_of_out_per_million: int 
+    weight_of_a: int 
+    weight_of_b: int 
+    pool_value_in_usd: int | None
+    a_amount: int
+    b_amount: int
+    
+class AllData():
+    # DataSet inherits from DataFrame
+    # If key is in first set, it cannot be in second set, and other way around
+    asset_transfers : DataSet[AssetTransfers]
+    asset_pairs_xyk : DataSet[AssetPairsXyk]
+
+def test_all_data() -> AllData:
+    asset_transfers: DataSet[AssetTransfers] = pd.read_csv("asset_transfers.csv")
+    assets_pairs_xyk: DataSet[AssetPairsXyk] = pd.read_csv("assets_pairs_xyk.csv")
+    return AllData(assets_pairs_xyk, asset_transfers)

@@ -9,5 +9,7 @@ in_asset_id,out_asset_id,usd_fee_transfer,metadata
 6,5,1000, "sometimes back price is different"
 8,9,2,
 9,10,4,
+3,666,,"Not all assets may have USD transfer"
 10,11,8,
 11,12,16,"sometimes there is no B to A, only A to B"
+42,123,0, "(in id, out id) is set id"
