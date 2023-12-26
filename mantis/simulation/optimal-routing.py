@@ -1,8 +1,8 @@
 import itertools
 import numpy as np
 from router import solve,populate_chain_dict
-
 print("=============== chains and tokens ========================")
+
 
 
 CENTER_NODE = "CENTAURI"  # Name of center Node
@@ -15,6 +15,8 @@ chains: dict[str, list[str]] = {
     CENTER_NODE: [],
     "OSMOSIS": ["ATOM","SCRT"],
 }
+populate_chain_dict(chains,CENTER_NODE)
+
 
 all_tokens = []
 all_cfmms = []
@@ -24,7 +26,6 @@ cfmm_tx_cost = []
 ibc_pools = 0
 tol = 1e-4
 
-populate_chain_dict(chains,CENTER_NODE)
 
 print(chains)
 

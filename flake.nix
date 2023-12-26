@@ -37,6 +37,12 @@
       flake = false;
     };
 
+    strictly-typed-pandas-src = {
+      url = "github:long2ice/strictly-typed-pandas";
+      flake = false;
+    };
+
+
     devour-flake = {
       url = "github:srid/devour-flake";
       flake = false;
@@ -217,6 +223,7 @@
             uvicorn
             virtualenv
             wheel
+            strictly-typed-pandas
           ];
         python = pkgs.python3.withPackages python-packages;
         inherit (poetry2nix.lib.mkPoetry2Nix {inherit pkgs;}) mkPoetryApplication mkPoetryPackages;

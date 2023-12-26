@@ -1,11 +1,11 @@
 # solves using convex optimization
 import numpy as np
 import cvxpy as cp
+import pandas as pd
 
 MAX_RESERVE = 1e10
 
-from data import TAssetId, TNetworkId
-
+from mantis.simulation.data import TAssetId, TNetworkId
 
 # simulate denom paths to and from chains, with center node
 def populate_chain_dict(chains: dict[TNetworkId, list[TAssetId]], center_node: TNetworkId):

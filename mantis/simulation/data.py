@@ -1,11 +1,18 @@
 # for alignment on input and output of algorithm
-
+import pandas as pd
 
 from typing import TypeVar
 
-
 TAssetId = TypeVar("TAssetId")
 TNetworkId = TypeVar("TNetworkId")
+
+class AllData:
+    simulate_transfers
+
+def simulate_assets_transfers() -> AllData:
+    asset_transfers = pd.read_csv("asset_transfers.csv")
+    
+
 
 
 # port this https://github.com/ComposableFi/xc-solver-rs/blob/main/solver/src/data.rs
