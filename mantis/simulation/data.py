@@ -31,6 +31,13 @@ class AssetPairsXyk:
     a_amount: int
     b_amount: int
     
+# this is what user asks for
+class Input:
+    in_token_id: int
+    out_token_id: int
+    in_amount: int
+    out_amount: int
+
 class AllData():
     # DataSet inherits from DataFrame
     # If key is in first set, it cannot be in second set, and other way around
