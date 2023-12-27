@@ -146,23 +146,24 @@
         cosmwasm-json-schema-ts = pkgs.writeShellApplication {
           name = "cosmwasm-json-schema-ts";
           runtimeInputs = with pkgs; [
-            rust
+            rust.rustc
+            rust.cargo
             nodejs
             nodePackages.npm
           ];
           text = ''
             echo "generating TypeScript types and client definitions from JSON schema of CosmWasm contracts"
-            cd contracts/cosmwasm/cvm-runtime
+            cd contracts/cosmwasm/
             npm install
             rm --recursive --force dist
 
             rm --recursive --force schema
-            cargo run --bin order --package cw-mantis-order
+            cargo run --bin order --package cw-mantis-order --features=std,json-schema
             npm run build-cw-mantis-order
 
             rm --recursive --force schema
-            cargo run --bin outpost --package xc-core
-            npm run build-xc-core
+            cargo run --bin outpost --package cvm-runtime --features=std,json-schema,cosmos,cosmwasm
+            npm run build-cvm-runtime
 
             npm publish
           '';
@@ -295,6 +296,8 @@
             rust.cargo
             rust.rustc
             devour-flake
+            pkgs.nodejs
+            pkgs.nodePackages.npm
           ];
           shellHook = ''
             if [[ -f ./.env ]]; then
@@ -304,7 +307,7 @@
         };
         formatter = pkgs.alejandra;
         packages = rec {
-          inherit cw-mantis-order cw-cvm-executor cw-cvm-outpost cosmwasm-contracts cosmwasm-json-schema-py datamodel-code-generator;
+          inherit cw-mantis-order cw-cvm-executor cw-cvm-outpost cosmwasm-contracts cosmwasm-json-schema-py datamodel-code-generator cosmwasm-json-schema-ts;
 
           mantis = rust.buildPackage (rust-attrs
             // {
