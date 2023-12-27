@@ -20,6 +20,9 @@ hex ={ workspace = true, default-features = false, features = ["serde"]}
 bech32 = { workspace = true, default-features = false}
 derive_more = { workspace = true, default-features = false}
 
+[dev-dependencies]
+serde-json-wasm = { workspace = true, default-features = false }
+
 [build-dependencies]
 prost-build = { workspace = true }
 

@@ -732,6 +732,7 @@ dependencies = [
  "scale-info",
  "schemars",
  "serde",
+ "serde-json-wasm 1.0.0",
 ]
 
 [[package]]
@@ -764,6 +765,7 @@ dependencies = [
  "ibc-app-transfer-types",
  "ibc-apps-more",
  "ibc-core-host-types",
+ "ibc-primitives",
  "ibc-proto 0.39.1",
  "num",
  "parity-scale-codec",

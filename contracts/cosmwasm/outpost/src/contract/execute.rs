@@ -61,13 +61,19 @@ pub fn execute(deps: DepsMut, env: Env, info: MessageInfo, msg: msg::ExecuteMsg)
         }
         msg::ExecuteMsg::MessageHook(msg) => {
             deps.api
-                .debug(&format!("cvm::outpost::execute::message_hook {:?}", msg));
-
-            let auth = auth::WasmHook::authorise(deps.as_ref(), &env, &info, msg.from_network_id)?;
-
-            super::ibc::ics20::ics20_message_hook(auth, deps.as_ref(), msg, env, info)
+            .debug(&format!("cvm::outpost::execute::message_hook {:?}", msg));
+        
+        let auth = auth::WasmHook::authorise(deps.as_ref(), &env, &info, msg.from_network_id)?;
+        
+        super::ibc::ics20::ics20_message_hook(auth, deps.as_ref(), msg, env, info)
+    }
+    msg::ExecuteMsg::Shortcut(msg) => handle_shortcut(deps, env, info, msg),
+    msg::ExecuteMsg::Admin(msg) => {
+            let auth = auth::Admin::authorise(deps.as_ref(), &info)?;
+            match msg {
+                msg::AdminSubMsg::ExecutePacketICS20(msg) => panic!("{:?}", msg),
+            }
         }
-        msg::ExecuteMsg::Shortcut(msg) => handle_shortcut(deps, env, info, msg),
     }
 }
 

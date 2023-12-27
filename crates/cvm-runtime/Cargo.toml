@@ -31,6 +31,7 @@ strum.workspace = { workspace = true }
 thiserror = { workspace = true }
 ibc-proto = { workspace = true, default-features = false, features = ["serde"] }
 serde-cw-value = { workspace = true, default-features = false }
+ibc-primitives = { workspace = true, default-features = false }
 # xcm = { workspace = true, default-features = false, optional = true }
 # primitive-types = { workspace = true, features = [
 #   "serde_no_std",
@@ -53,6 +54,7 @@ paroty-scale-codec = [
   "scale-info",
   "ibc-app-transfer-types/parity-scale-codec",
   "ibc-core-host-types/parity-scale-codec",
+  "ibc-primitives/parity-scale-codec",
 ]
 cosmos = [
   "cvm-route/cosmos",
@@ -68,6 +70,7 @@ json-schema = [
   "dep:cosmwasm-schema",
   "dep:schemars",
   "ibc-app-transfer-types/schema",
+  "ibc-primitives/schema",
   "ibc-core-host-types/schema",
   #"primitive-types/json-schema",
   "serde-cw-value/schema",
@@ -81,6 +84,7 @@ std = [
   "serde-json-wasm/std",
   "ibc-app-transfer-types/schema",
   "ibc-core-host-types/schema",
+  "ibc-primitives/schema",
   "num/std",
   "thiserror/std",
 ]

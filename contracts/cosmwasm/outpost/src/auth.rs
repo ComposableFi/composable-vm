@@ -46,6 +46,9 @@ impl Auth<policy::WasmHook> {
         info: &MessageInfo,
         network_id: NetworkId,
     ) -> Result<Self> {
+        if let Ok(_) = Admin::authorise(deps, info) {
+            return Self::new(true)
+        };
         let this = state::network::load_this(deps.storage)?;
         let this_to_other: NetworkToNetworkItem = state::network::NETWORK_TO_NETWORK
             .load(deps.storage, (this.network_id, network_id))
