@@ -309,6 +309,7 @@
               devour-flake
               pkgs.poetry
               pkgs.nodejs
+              pkgs.python3Packages.uvicorn
               pkgs.nodePackages.npm
               
             ];

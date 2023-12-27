@@ -11,5 +11,6 @@ class Settings(BaseModel):
     neutron_rpc : str = None
     osmosis_rpc : str = None
     skip_money : str = env("SKIP_MONEY")
+    port : int = env("LISTEN_PORT", 8000)
 
 setting = Settings()

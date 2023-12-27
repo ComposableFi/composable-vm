@@ -1,6 +1,5 @@
 from typing import Dict
-
-from fastapi_cache import FastAPICache
+#from fastapi_cache import FastAPICache
 from blackbox.cvm_runtime.response_to_get_config import GetConfigResponse
 from blackbox.models import AllData, CosmosChains, NeutronPoolsResponse, OsmosisPoolsResponse
 from blackbox.neutron_pools import Model as NeutronPoolsModel
@@ -11,6 +10,7 @@ from fastapi import FastAPI
 import blackbox.cvm_runtime.query as cvm_query
 import requests
 from fastapi_cache.backends.inmemory import InMemoryBackend
+import uvicorn
 
 from fastapi_cache.decorator import cache
 
@@ -22,13 +22,13 @@ async def status():
 
 # gets all data from all sources
 @app.get("/data/all") 
-@cache(expire=3)
+#@cache(expire=3)
 async def get_data_all()-> AllData:
     result = get_data()
     return result
 
 @app.get("/data/routable") 
-@cache(expire=3)
+#@cache(expire=3)
 async def get_data_routable()-> AllData:
     result = get_data()
     
@@ -59,3 +59,8 @@ def get_data() -> AllData:
 @app.on_event("startup")
 async def startup():
     FastAPICache.init(InMemoryBackend())
+    
+    
+def start():
+    print("starting")
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True, log_level="trace", workers= 4)
