@@ -33,9 +33,29 @@ pub(crate) type Admin = Auth<policy::Admin>;
 
 pub(crate) type WasmHook = Auth<policy::WasmHook>;
 
+pub(crate) type Sudo = Auth<policy::Sudo>;
+
 impl Auth<policy::Contract> {
     pub(crate) fn authorise(env: &Env, info: &MessageInfo) -> Result<Self> {
         Self::new(info.sender == env.contract.address)
+    }
+}
+
+impl Auth<policy::Sudo> {
+    pub(crate) fn authorise(
+        deps: Deps,
+        env: &Env,
+        info: &MessageInfo,
+        network_id: NetworkId,
+    ) -> Result<Self> {
+        if Admin::authorise(deps, info).is_ok()
+            || Contract::authorise(env, info).is_ok()
+            || WasmHook::authorise(deps, env, info, network_id).is_ok()
+        {
+            Self::new(true)
+        } else {
+            Err(ContractError::NotAuthorized)
+        }
     }
 }
 
@@ -46,9 +66,6 @@ impl Auth<policy::WasmHook> {
         info: &MessageInfo,
         network_id: NetworkId,
     ) -> Result<Self> {
-        if let Ok(_) = Admin::authorise(deps, info) {
-            return Self::new(true)
-        };
         let this = state::network::load_this(deps.storage)?;
         let this_to_other: NetworkToNetworkItem = state::network::NETWORK_TO_NETWORK
             .load(deps.storage, (this.network_id, network_id))
@@ -127,5 +144,9 @@ pub(crate) mod policy {
     pub(crate) enum Executor {}
     #[derive(Clone, Copy)]
     pub(crate) enum Admin {}
+    #[derive(Clone, Copy)]
     pub(crate) enum WasmHook {}
+
+    #[derive(Clone, Copy)]
+    pub(crate) enum Sudo {}
 }

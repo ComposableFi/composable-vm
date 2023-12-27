@@ -3,7 +3,7 @@ mod query;
 
 use alloc::fmt::format;
 pub use config::*;
-use cosmwasm_std::{StdError, ensure};
+use cosmwasm_std::{ensure, StdError};
 use cvm_route::{
     asset::{AssetItem, AssetReference},
     exchange::ExchangeItem,
@@ -65,7 +65,7 @@ pub enum ExecuteMsg {
     derive(schemars::JsonSchema)
 )]
 pub enum AdminSubMsg {
-    ExecutePacketICS20(ExecutePacketICS20Msg),   
+    ExecutePacketICS20(ExecutePacketICS20Msg),
 }
 
 /// can only be executed by gov or admin
@@ -75,8 +75,7 @@ pub enum AdminSubMsg {
     feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
     derive(schemars::JsonSchema)
 )]
-pub struct ExecutePacketICS20Msg
-{
+pub struct ExecutePacketICS20Msg {
     #[serde(
         serialize_with = "hex::serialize",
         deserialize_with = "hex::deserialize"
@@ -86,20 +85,29 @@ pub struct ExecutePacketICS20Msg
 
 impl ExecutePacketICS20Msg {
     pub fn into_packet(self) -> Result<ibc_app_transfer_types::packet::PacketData, StdError> {
-        let ics20 = serde_json_wasm::from_slice(&self.packet_data_hex).map_err(|x| StdError::generic_err(format!("{:?}", x)))?;
+        let ics20 = serde_json_wasm::from_slice(&self.packet_data_hex)
+            .map_err(|x| StdError::generic_err(format!("{:?}", x)))?;
         Ok(ics20)
     }
 
-    pub fn into_wasm_hook(self, contract : ibc_primitives::Signer) -> Result<ExecuteMsg, StdError> {
+    pub fn into_wasm_hook(self, contract: ibc_primitives::Signer) -> Result<ExecuteMsg, StdError> {
         let ics20 = self.into_packet()?;
-        let memo : ibc_apps_more::memo::Memo = serde_json_wasm::from_str(&ics20.memo.to_string()).map_err(|x| StdError::generic_err(format!("{:?}", x)))?;
-        let wasm: ibc_apps_more::hook::Callback = memo.wasm.ok_or(StdError::generic_err(format!("no wasm in memo")))?;
-        ensure!(wasm.contract == contract, StdError::generic_err(format!("wasm contract mismatch {}", wasm.contract)));
-        let hook: ExecuteMsg = wasm.msg.deserialize_into().map_err(|x| StdError::generic_err(format!("{:?}", x)))?; 
+        let memo: ibc_apps_more::memo::Memo = serde_json_wasm::from_str(&ics20.memo.to_string())
+            .map_err(|x| StdError::generic_err(format!("{:?}", x)))?;
+        let wasm: ibc_apps_more::hook::Callback = memo
+            .wasm
+            .ok_or(StdError::generic_err(format!("no wasm in memo")))?;
+        ensure!(
+            wasm.contract == contract,
+            StdError::generic_err(format!("wasm contract mismatch {}", wasm.contract))
+        );
+        let hook: ExecuteMsg = wasm
+            .msg
+            .deserialize_into()
+            .map_err(|x| StdError::generic_err(format!("{:?}", x)))?;
         Ok(hook)
     }
 }
-
 
 #[cfg(test)]
 pub mod test {
@@ -111,11 +119,17 @@ pub mod test {
     pub fn decode() {
         let example = r#"{"packet_data_hex": "7b22616d6f756e74223a22313030303030222c2264656e6f6d223a227472616e736665722f6368616e6e656c2d31382f756e74726e222c226d656d6f223a227b5c227761736d5c223a7b5c22636f6e74726163745c223a5c226e657574726f6e31737567717a66736e3466753761706361683538657a32346a72663765776d3678326330737a306a7776706b64756b3464733838736c616e3532775c222c5c226d73675c223a7b5c226d6573736167655f686f6f6b5c223a7b5c2266726f6d5f6e6574776f726b5f69645c223a322c5c227061636b65745c223a7b5c226173736574735c223a5b5b5c223135383435363332353032383532383637353138373038373930303637375c222c5c223130303030305c225d5d2c5c226578656375746f725c223a5c2236333635366537343631373537323639333136373332376136313662363136633635373337373636373537343638373633333664373536373335366237363730363336653339373037353634376137313661373633363738333333363631373033303664363436353338333437303661373736653636373637333739373737353337363336375c222c5c2270726f6772616d5c223a7b5c22696e737472756374696f6e735c223a5b5d7d2c5c2273616c745c223a5c225c222c5c22757365725f6f726967696e5c223a7b5c226e6574776f726b5f69645c223a322c5c22757365725f69645c223a5c22363336353665373436313735373236393331373533323733373233303730333236613337333536363735363537613735333933323665363637383637333537373664333433363637373533323332373937373636363737353663333636625c227d7d7d7d7d7d222c227265636569766572223a226e657574726f6e31737567717a66736e3466753761706361683538657a32346a72663765776d3678326330737a306a7776706b64756b3464733838736c616e353277222c2273656e646572223a2263656e746175726931766c68366b6e79783837306b326d63396673707830386b613466756464737878367338746a7038336e37786b79636b6b676d387132356d777236227d"}"#;
         let parsed: ExecutePacketICS20Msg = serde_json_wasm::from_str(example).unwrap();
-        let hook = parsed.into_wasm_hook(("neutron1sugqzfsn4fu7apcah58ez24jrf7ewm6x2c0sz0jwvpkduk4ds88slan52w".to_string().into())).unwrap();        
+        let hook = parsed
+            .into_wasm_hook(
+                ("neutron1sugqzfsn4fu7apcah58ez24jrf7ewm6x2c0sz0jwvpkduk4ds88slan52w"
+                    .to_string()
+                    .into()),
+            )
+            .unwrap();
     }
 }
 
-// 
+//
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "snake_case")]
 #[cfg_attr(

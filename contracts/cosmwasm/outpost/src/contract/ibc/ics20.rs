@@ -228,7 +228,7 @@ pub fn get_this_route(
 }
 
 pub(crate) fn ics20_message_hook(
-    _: auth::WasmHook,
+    _: auth::Sudo,
     deps: Deps,
     msg: XcMessageData,
     env: Env,

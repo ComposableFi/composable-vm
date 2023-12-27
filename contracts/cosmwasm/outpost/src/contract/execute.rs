@@ -61,17 +61,21 @@ pub fn execute(deps: DepsMut, env: Env, info: MessageInfo, msg: msg::ExecuteMsg)
         }
         msg::ExecuteMsg::MessageHook(msg) => {
             deps.api
-            .debug(&format!("cvm::outpost::execute::message_hook {:?}", msg));
-        
-        let auth = auth::WasmHook::authorise(deps.as_ref(), &env, &info, msg.from_network_id)?;
-        
-        super::ibc::ics20::ics20_message_hook(auth, deps.as_ref(), msg, env, info)
-    }
-    msg::ExecuteMsg::Shortcut(msg) => handle_shortcut(deps, env, info, msg),
-    msg::ExecuteMsg::Admin(msg) => {
-            let auth = auth::Admin::authorise(deps.as_ref(), &info)?;
+                .debug(&format!("cvm::outpost::execute::message_hook {:?}", msg));
+
+            let auth = auth::Sudo::authorise(deps.as_ref(), &env, &info, msg.from_network_id)?;
+
+            super::ibc::ics20::ics20_message_hook(auth, deps.as_ref(), msg, env, info)
+        }
+        msg::ExecuteMsg::Shortcut(msg) => handle_shortcut(deps, env, info, msg),
+        msg::ExecuteMsg::Admin(msg) => {
+            let _auth = auth::Admin::authorise(deps.as_ref(), &info)?;
             match msg {
-                msg::AdminSubMsg::ExecutePacketICS20(msg) => panic!("{:?}", msg),
+                msg::AdminSubMsg::ExecutePacketICS20(msg) => {
+                    let msg = msg.into_wasm_hook(env.contract.address.to_string().into())?;
+                    let msg = wasm_execute(env.contract.address, &msg, info.funds)?;
+                    Ok(Response::new().add_message(msg))
+                }
             }
         }
     }
@@ -267,7 +271,10 @@ pub(crate) fn handle_execute_program_privilleged(
     } else {
         // First, add a callback to instantiate an executor (which we later get the result
         // and save it)
-        let executor_code_id = match config.outpost.ok_or(StdError::generic_err("outpost was was not set"))? {
+        let executor_code_id = match config
+            .outpost
+            .ok_or(StdError::generic_err("outpost was was not set"))?
+        {
             msg::OutpostId::CosmWasm {
                 executor_code_id, ..
             } => executor_code_id,
