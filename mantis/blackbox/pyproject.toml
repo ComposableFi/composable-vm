@@ -3,7 +3,7 @@ name = "mantis-blackbox"
 version = "0.0.1"
 description = "Python server which solves problems from provided input and additional data obtained from chains/indexers and outputs single route solution."
 authors = []
-packages = [{include = "../simluations"}]
+# packages = [{include = ""}]
 
 [tool.poetry.dependencies]
 python = "^3.11"
@@ -16,7 +16,10 @@ jsonschema = ">=3.2.0,<5"
 python-dateutil = "*"
 pycryptodome = "^3.18.0"
 googleapis-common-protos = "*"
+simulation = { path = "../simulation/", develop = false }
 
+[tool.poetry.dev-dependencies]
+uvicorn = "^0.25.0"
 
 [build-system]
 requires = ["poetry-core"]
