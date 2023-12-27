@@ -60,7 +60,9 @@ def get_data() -> AllData:
 async def startup():
     FastAPICache.init(InMemoryBackend())
     
-    
+import simulation.data as data
+
 def start():
-    print("starting")
+    print("asdsadaasd")
+    data.Input(in_token_id=42, out_token_id=42, in_amount=42, out_amount=42, max=True)
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True, log_level="trace", workers= 4)

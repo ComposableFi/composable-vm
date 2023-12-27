@@ -3,7 +3,12 @@ name = "mantis"
 version = "0.0.1"
 description = "Python server which solves problems from provided input and additional data obtained from chains/indexers and outputs single route solution."
 authors = []
-packages = [{include = "simulation" },{ include = "blackbox" },{ include= "cvm_runtime", from = "blackbox" }]
+packages = [
+    { include = "simulation" },
+    { include = "blackbox" },
+    { include = "cvm_runtime", from = "blackbox" },
+    { include = "main.py", from = "blackbox" },
+]
 
 [tool.poetry.dependencies]
 python = "^3.11"
@@ -20,9 +25,14 @@ numpy = "^1.26.2"
 cvxpy = "^1.4.1"
 pydantic = "^2.5.3"
 strictly-typed-pandas = "^0.1.24"
-fastapi = {extras = ["all"], version = "^0.108.0"}
+fastapi = { extras = ["all"], version = "^0.108.0" }
 uvicorn = "^0.25.0"
 fastapi-cache2 = "^0.2.1"
+blackbox = "^0.7.1"
+pandas = "^2.1.4"
+
+[tool.poetry.dev-dependencies]
+pytest = "^7.4.3"
 
 [build-system]
 requires = ["poetry-core"]
