@@ -21,6 +21,7 @@ numpy = "^1.26.2"
 cvxpy = "^1.4.1"
 pydantic = "^2.5.3"
 strictly-typed-pandas = "^0.1.24"
+fastapi = {extras = ["all"], version = "^0.108.0"}
 
 [tool.poetry.dev-dependencies]
 uvicorn = "^0.25.0"
