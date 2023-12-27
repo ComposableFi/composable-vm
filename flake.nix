@@ -223,6 +223,7 @@
               cvxpy
               ecdsa
               environs
+              poetry-core
               fastapi
               fastapi-cache2
               googleapis-common-protos
@@ -306,8 +307,10 @@
               rust.cargo
               rust.rustc
               devour-flake
+              pkgs.poetry
               pkgs.nodejs
               pkgs.nodePackages.npm
+              
             ];
             shellHook = ''
               if [[ -f ./.env ]]; then

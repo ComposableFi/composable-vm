@@ -17,6 +17,10 @@ python-dateutil = "*"
 pycryptodome = "^3.18.0"
 googleapis-common-protos = "*"
 
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+blackbox = 'uvicorn blackbox.main:app --reload --log-level trace --host "0.0.0.0"'
