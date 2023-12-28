@@ -209,139 +209,80 @@
             ];
           };
 
-          fastapi-cache2 = pkgs.python3Packages.buildPythonPackage {
-            name = "fastapi-cache2";
-            version = "0.2.1";
-            format = "pyproject";
+          # fastapi-cache2 = pkgs.python3Packages.buildPythonPackage {
+          #   name = "fastapi-cache2";
+          #   version = "0.2.1";
+          #   format = "pyproject";
 
-            src = inputs.fastapi-cache-src;
+          #   cargoDeps = pkgs.rustPlatform.fetchCargoTarball {
+          #     src = inputs.pydantic-core-src;
+          #     name = "pydantic-core";
+          #     version = "2.14.5";
+          #     hash = "sha256-DBH81UzDIoJH5k9O6OjXOlqD3G/mSKsCYhateWnknyM=";
+          #   };
 
-            nativeBuildInputs = [
-              pkgs.python3Packages.poetry-core
-            ];
-          };
+          #   src = inputs.fastapi-cache-src;
 
-          fastapi-latest = pkgs.python3Packages.buildPythonPackage {
-            name = "fastapi";
-            version = "0.108.0";
-            format = "pyproject";
+          #   nativeBuildInputs = [
+          #     pkgs.python3Packages.poetry-core
+          #     pkgs.rustPlatform.cargoSetupHook
+          #     pkgs.rustPlatform.maturinBuildHook          
+          #   ];
+          # };
+          # python-packages = ps:
+          #   with ps; [
+          #     bech32
+          #     cosmpy
+          #     cvxpy
+          #     ecdsa
+          #     environs
+          #     fastapi-cache2
+          #     fastapi-latest
+          #     googleapis-common-protos
+          #     grpcio
 
-            src = inputs.fastapi-src;
-
-            nativeBuildInputs = [
-              pkgs.python3Packages.poetry-core
-              pkgs.python3Packages.hatchling
-            ];
-          };
-
-          hatch = pkgs.python3Packages.buildPythonPackage {
-            name = "hatch";
-            version = "v1.8.0";
-            format = "pyproject";
-
-            src = inputs.hatch-src;
-
-            nativeBuildInputs = [
-              pkgs.python3Packages.poetry-core
-              pkgs.python3Packages.hatchling
-              # pkgs.python3Packages.hatch-fancy-pypi-readme
-            ];
-          };
-
-          pydantic-2 = pkgs.python3Packages.buildPythonPackage {
-            name = "pydantic";
-            version = "v2.5.3";
-            format = "pyproject";
-
-            src = inputs.pydantic-src;
-
-            nativeBuildInputs = [
-              pkgs.python3Packages.poetry-core
-              pkgs.python3Packages.hatchling
-              pkgs.python3Packages.hatch-fancy-pypi-readme
-            ];
-          };
-
-          pydantic-core-2 = pkgs.python3Packages.buildPythonPackage {
-            name = "pydantic-core";
-            version = "v2.14.5";
-            format = "pyproject";
-
-            src = inputs.pydantic-core-src;
-
-            cargoDeps = pkgs.rustPlatform.fetchCargoTarball {
-              src = inputs.pydantic-core-src;
-              name = "pydantic-core";
-              version = "2.14.5";
-              hash = "sha256-DBH81UzDIoJH5k9O6OjXOlqD3G/mSKsCYhateWnknyM=";
-            };
-
-            nativeBuildInputs = [
-              pkgs.python3Packages.poetry-core
-              pkgs.python3Packages.hatchling
-              pkgs.python3Packages.typing-extensions
-              pkgs.python3Packages.hatch-fancy-pypi-readme
-              pkgs.rustPlatform.cargoSetupHook
-              pkgs.rustPlatform.maturinBuildHook
-            ];
-          };
-
-          strictly-typed-pandas = pkgs.python3Packages.buildPythonPackage {
-            name = "strictly-typed-pandas";
-            version = "0.0.1";
-            format = "pyproject";
-
-            src = inputs.strictly-typed-pandas-src;
-
-            nativeBuildInputs = with pkgs.python3Packages; [
-              poetry-core
-              setuptools
-              setuptools-git-versioning
-            ];
-          };
-
-          python-packages = ps:
-            with ps; [
-              bech32
-              cosmpy
-              cvxpy
-              ecdsa
-              environs
-              fastapi-cache2
-              fastapi-latest
-              googleapis-common-protos
-              grpcio
-
-              hatch
-              jsonschema
-              matplotlib
-              numpy
-              pandas
-              pandas-datareader
-              pendulum
-              pip
-              poetry-core
-              protobuf
-              pycryptodome
-              pydantic-2
-              pydantic-core-2
-              pytest
-              annotated-types
-              python-dateutil
-              requests
-              setuptools
-              strictly-typed-pandas
-              typing-extensions
-              uvicorn
-              virtualenv
-              wheel
-            ];
+          #     hatch
+          #     jsonschema
+          #     matplotlib
+          #     numpy
+          #     pandas
+          #     pandas-datareader
+          #     pendulum
+          #     pip
+          #     poetry-core
+          #     protobuf
+          #     pycryptodome
+          #     pydantic-2
+          #     pydantic-core-2
+          #     pytest
+          #     annotated-types
+          #     python-dateutil
+          #     requests
+          #     setuptools
+          #     strictly-typed-pandas
+          #     typing-extensions
+          #     uvicorn
+          #     virtualenv
+          #     wheel
+          #   ];
 
           envShell = mkPoetryEnv {
             projectDir = ./mantis;
+            overrides = overrides.withDefaults (self: super: {
+              editables = super.editables.overridePythonAttrs (old: {
+                buildInputs = old.buildInputs or [ ] ++ [ self.python.pkgs.flit-core ];
+              });
+              pydantic-extra-types = super.pydantic-extra-types.overridePythonAttrs (old: {
+                buildInputs = old.buildInputs or [ ] ++ [ self.python.pkgs.hatchling ];
+              });  
+              fastapi-cache = super.fastapi-cache.overridePythonAttrs (old: {
+                buildInputs = old.buildInputs or [ ] ++ [ self.python.pkgs.maturin ];
+              });             
+              # scipy  = pkgs.python3Packages.scipy; 
+              # pandas  = pkgs.python3Packages.pandas; 
+            });            
           };
-          python = pkgs.python3.withPackages python-packages;
-          inherit (poetry2nix.lib.mkPoetry2Nix { inherit pkgs; }) mkPoetryApplication mkPoetryPackages mkPoetryEnv poetry;
+          inherit (poetry2nix.lib.mkPoetry2Nix { inherit pkgs; }) mkPoetryApplication mkPoetryPackages mkPoetryEnv poetry overrides;
           env = {
             OSMOSIS_POOLS = "https://app.osmosis.zone/api/pools?page=1&limit=1000&min_liquidity=500000";
             ASTROPORT_POOLS = "https://app.astroport.fi/api/trpc/pools.getAll?input=%7B%22json%22%3A%7B%22chainId%22%3A%5B%22neutron-1%22%5D%7D%7D";
@@ -384,16 +325,13 @@
             ];
           };
           devShells.default = pkgs.mkShell {
-            #VIRTUALENV_PYTHON = "${python}/bin/python3.11";
-            #VIRTUAL_ENV = 1;
             OSMOSIS_POOLS = env.OSMOSIS_POOLS;
             ASTROPORT_POOLS = env.ASTROPORT_POOLS;
             SKIP_MONEY = env.SKIP_MONEY;
             COMPOSABLE_COSMOS_GRPC = inputs.networks.lib.pica.mainnet.GRPC;
             CVM_ADDRESS = inputs.networks.lib.pica.mainnet.CVM_OUTPOST_CONTRACT_ADDRESS;
-            #nativeBuildInputs = [ python pkgs.cbc ];
+            nativeBuildInputs = [ pkgs.cbc ];
             buildInputs = [
-              #python
               devour-flake
               pkgs.virtualenv
               pkgs.conda
@@ -403,6 +341,8 @@
               devour-flake
               pkgs.nodejs
               pkgs.python3Packages.uvicorn
+              pkgs.python3Packages.flit
+              pkgs.python3Packages.flit-core
               pkgs.nodePackages.npm
               envShell
             ];
@@ -429,7 +369,6 @@
             mantis-blackbox = pkgs.writeShellApplication {
               name = "run";
               runtimeInputs = [
-                python
                 pkgs.cbc
               ];
               text = ''

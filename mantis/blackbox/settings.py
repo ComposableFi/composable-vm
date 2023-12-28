@@ -1,16 +1,14 @@
-from environs import Env
-env = Env()
-env.read_env()
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
-class Settings(BaseModel):
-    osmosis_pools: str = env("OSMOSIS_POOLS")
-    composable_cosmos_grpc : str = env("COMPOSABLE_COSMOS_GRPC")
-    cvm_address : str = env("CVM_ADDRESS")
-    astroport_pools: str = env("ASTROPORT_POOLS")
+class Settings(BaseSettings):
+    osmosis_pools: str = Field(alias="OSMOSIS_POOLS")
+    composable_cosmos_grpc : str = Field(alias="COMPOSABLE_COSMOS_GRPC")
+    cvm_address : str = Field(alias="CVM_ADDRESS")
+    astroport_pools: str = Field(alias="ASTROPORT_POOLS")
     neutron_rpc : str = None
     osmosis_rpc : str = None
-    skip_money : str = env("SKIP_MONEY")
-    port : int = env("LISTEN_PORT", 8000)
+    skip_money : str = Field(alias="SKIP_MONEY")
+    port : int = Field(default= 8000, alias="LISTEN_PORT")
 
 setting = Settings()
