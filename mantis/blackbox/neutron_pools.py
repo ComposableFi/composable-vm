@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-from typing import List, Optional, Union
+from typing import List, Optional
 
 from pydantic import BaseModel, Field
 
@@ -22,7 +22,7 @@ class AstroRewards(BaseModel):
 
 
 class Config(BaseModel):
-    migrateToAddress: Optional[str]
+    migrateToAddress: Optional[str] = None
 
 
 class MarketStats(BaseModel):
@@ -43,21 +43,21 @@ class Prices(BaseModel):
 
 
 class ProtocolRewards(BaseModel):
-    apr: float
-    apy: float
-    day: float
+    apr: int
+    apy: int
+    day: int
 
 
 class TotalRewards(BaseModel):
-    apr: Union[float, str]
+    apr: float
     apy: int
-    day: Union[float, str]
+    day: float
 
 
 class TradingFees(BaseModel):
     apr: int
-    apy: Union[float, str]
-    day: Union[float, str]
+    apy: float
+    day: float
 
 
 class PoolParams(BaseModel):
@@ -111,24 +111,24 @@ class PoolConfig(BaseModel):
 class JsonItem(BaseModel):
     assets: List[Asset]
     astroRewards: AstroRewards
-    config: Optional[Config]
-    marketStats: Optional[MarketStats]
+    config: Optional[Config] = None
+    marketStats: Optional[MarketStats] = None
     prices: Prices
     protocolRewards: ProtocolRewards
     totalRewards: TotalRewards
     tradingFees: TradingFees
     chainId: str
     dayVolumeUsd: float
-    deregistered: Optional[bool]
+    deregistered: Optional[bool] = None
     feeRate: List[str]
     lpAddress: str
-    pairName: Optional[str]
+    pairName: Optional[str] = None
     poolAddress: str
     poolDescription: str
     poolLiquidity: int
     poolLiquidityUsd: float
     poolType: str
-    rewardTokenSymbol: Optional[str]
+    rewardTokenSymbol: Optional[str] = None
     stakeable: bool
     tags: List[str]
     token0Address: str

@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from typing import Any, Dict, Union
 
-from pydantic import BaseModel, Extra, Field, conint
+from pydantic import BaseModel, ConfigDict, Field, RootModel, conint
 
 
 class QueryMsg5(BaseModel):
@@ -13,21 +13,21 @@ class QueryMsg5(BaseModel):
     Get all information this CVM knows about local and foreign assets/exchanges/networks
     """
 
-    class Config:
-        extra = Extra.forbid
-
+    model_config = ConfigDict(
+        extra='forbid',
+    )
     get_config: Dict[str, Any]
 
 
-class Addr(BaseModel):
-    __root__: str = Field(
+class Addr(RootModel[str]):
+    root: str = Field(
         ...,
         description="A human readable address.\n\nIn Cosmos, this is typically bech32 encoded. But for multi-chain smart contracts no assumptions should be made other than being UTF-8 encoded and of reasonable length.\n\nThis type represents a validated address. It can be created in the following ways 1. Use `Addr::unchecked(input)` 2. Use `let checked: Addr = deps.api.addr_validate(input)?` 3. Use `let checked: Addr = deps.api.addr_humanize(canonical_addr)?` 4. Deserialize from JSON. This must only be done from JSON that was validated before such as a contract's state. `Addr` must not be used in messages sent by the user because this would result in unvalidated instances.\n\nThis type is immutable. If you really need to mutate it (Really? Are you sure?), create a mutable copy using `let mut mutable = Addr::to_string()` and operate on that `String` instance.",
     )
 
 
-class AssetId(BaseModel):
-    __root__: str = Field(
+class AssetId(RootModel[str]):
+    root: str = Field(
         ...,
         description='Newtype for XCVM assets ID. Must be unique for each asset and must never change. This ID is an opaque, arbitrary type from the XCVM protocol and no assumption must be made on how it is computed.',
     )
@@ -42,9 +42,9 @@ class AssetReference3(BaseModel):
     Definition of an asset native to some chain to operate on. For example for Cosmos CW and EVM chains both CW20 and ERC20 can be actual. So if asset is local or only remote to some chain depends on context of network or connection. this design leads to some dummy matches, but in general unifies code (so that if one have to solve other chain route it can)
     """
 
-    class Config:
-        extra = Extra.forbid
-
+    model_config = ConfigDict(
+        extra='forbid',
+    )
     native: Native
 
 
@@ -57,30 +57,30 @@ class AssetReference4(BaseModel):
     Definition of an asset native to some chain to operate on. For example for Cosmos CW and EVM chains both CW20 and ERC20 can be actual. So if asset is local or only remote to some chain depends on context of network or connection. this design leads to some dummy matches, but in general unifies code (so that if one have to solve other chain route it can)
     """
 
-    class Config:
-        extra = Extra.forbid
-
+    model_config = ConfigDict(
+        extra='forbid',
+    )
     cw20: Cw20
 
 
-class AssetReference(BaseModel):
-    __root__: Union[AssetReference3, AssetReference4] = Field(
+class AssetReference(RootModel[Union[AssetReference3, AssetReference4]]):
+    root: Union[AssetReference3, AssetReference4] = Field(
         ...,
         description='Definition of an asset native to some chain to operate on. For example for Cosmos CW and EVM chains both CW20 and ERC20 can be actual. So if asset is local or only remote to some chain depends on context of network or connection. this design leads to some dummy matches, but in general unifies code (so that if one have to solve other chain route it can)',
     )
 
 
-class DisplayedForUint128(BaseModel):
-    __root__: str = Field(
+class DisplayedForUint128(RootModel[str]):
+    root: str = Field(
         ...,
         description='A wrapper around a type which is serde-serialised as a string.\n\nFor serde-serialisation to be implemented for the type `T` must implement `Display` and `FromStr` traits.\n\n```rust use cvm::shared::Displayed;\n\n#[derive(serde::Serialize, serde::Deserialize)] struct Foo { value: Displayed<u64> }\n\nlet encoded = serde_json_wasm::to_string(&Foo { value: Displayed(42) }).unwrap(); assert_eq!(r#"{"value":"42"}"#, encoded);\n\nlet decoded = serde_json_wasm::from_str::<Foo>(r#"{"value":"42"}"#).unwrap(); assert_eq!(Displayed(42), decoded.value); ```',
     )
 
 
-class NetworkId(BaseModel):
-    __root__: conint(ge=0) = Field(
+class NetworkId(RootModel[conint(ge=0)]):
+    root: conint(ge=0) = Field(
         ...,
-        description='Newtype for XCVM networks ID. Must be unique for each network and must never change. This ID is an opaque, arbitrary type from the XCVM protocol and no assumption must be made on how it is computed.',
+        description='Newtype for CVM networks ID. Must be unique for each network and must never change. This ID is an opaque, arbitrary type from the CVM protocol and no assumption must be made on how it is computed.',
     )
 
 
@@ -93,9 +93,9 @@ class QueryMsg1(BaseModel):
     Returns [`AssetReference`] for an asset with given id.
     """
 
-    class Config:
-        extra = Extra.forbid
-
+    model_config = ConfigDict(
+        extra='forbid',
+    )
     get_asset_by_id: GetAssetById
 
 
@@ -108,9 +108,9 @@ class QueryMsg2(BaseModel):
     Returns [`AssetItem`] for an asset with given local reference.
     """
 
-    class Config:
-        extra = Extra.forbid
-
+    model_config = ConfigDict(
+        extra='forbid',
+    )
     get_local_asset_by_reference: GetLocalAssetByReference
 
 
@@ -120,9 +120,9 @@ class GetIbcIcs20Route(BaseModel):
 
 
 class QueryMsg3(BaseModel):
-    class Config:
-        extra = Extra.forbid
-
+    model_config = ConfigDict(
+        extra='forbid',
+    )
     get_ibc_ics20_route: GetIbcIcs20Route
 
 
@@ -131,13 +131,13 @@ class GetExchangeById(BaseModel):
 
 
 class QueryMsg4(BaseModel):
-    class Config:
-        extra = Extra.forbid
-
+    model_config = ConfigDict(
+        extra='forbid',
+    )
     get_exchange_by_id: GetExchangeById
 
 
-class QueryMsg(BaseModel):
-    __root__: Union[QueryMsg1, QueryMsg2, QueryMsg3, QueryMsg4, QueryMsg5] = Field(
+class QueryMsg(RootModel[Union[QueryMsg1, QueryMsg2, QueryMsg3, QueryMsg4, QueryMsg5]]):
+    root: Union[QueryMsg1, QueryMsg2, QueryMsg3, QueryMsg4, QueryMsg5] = Field(
         ..., title='QueryMsg'
     )

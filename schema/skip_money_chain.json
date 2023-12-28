@@ -1,6 +1,35 @@
 {
   "chains": [
     {
+      "chain_name": "lum",
+      "chain_id": "lum-network-1",
+      "pfm_enabled": false,
+      "cosmos_module_support": {
+        "authz": true,
+        "feegrant": true
+      },
+      "supports_memo": true,
+      "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/lumnetwork/images/lum.png",
+      "bech32_prefix": "lum",
+      "fee_assets": [
+        {
+          "denom": "ulum",
+          "gas_price": {
+            "low": "0.01",
+            "average": "0.025",
+            "high": "0.04"
+          }
+        }
+      ],
+      "chain_type": "cosmos",
+      "ibc_capabilities": {
+        "cosmos_pfm": false,
+        "cosmos_ibc_hooks": false,
+        "cosmos_memo": true,
+        "cosmos_autopilot": false
+      }
+    },
+    {
       "chain_name": "empower",
       "chain_id": "empowerchain-1",
       "pfm_enabled": false,
@@ -36,35 +65,6 @@
         "cosmos_pfm": false,
         "cosmos_ibc_hooks": false,
         "cosmos_memo": false,
-        "cosmos_autopilot": false
-      }
-    },
-    {
-      "chain_name": "lum",
-      "chain_id": "lum-network-1",
-      "pfm_enabled": false,
-      "cosmos_module_support": {
-        "authz": true,
-        "feegrant": true
-      },
-      "supports_memo": true,
-      "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/lumnetwork/images/lum.png",
-      "bech32_prefix": "lum",
-      "fee_assets": [
-        {
-          "denom": "ulum",
-          "gas_price": {
-            "low": "0.01",
-            "average": "0.025",
-            "high": "0.04"
-          }
-        }
-      ],
-      "chain_type": "cosmos",
-      "ibc_capabilities": {
-        "cosmos_pfm": false,
-        "cosmos_ibc_hooks": false,
-        "cosmos_memo": true,
         "cosmos_autopilot": false
       }
     },
@@ -139,35 +139,6 @@
       }
     },
     {
-      "chain_name": "sei",
-      "chain_id": "pacific-1",
-      "pfm_enabled": false,
-      "cosmos_module_support": {
-        "authz": true,
-        "feegrant": true
-      },
-      "supports_memo": false,
-      "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/sei/images/sei.png",
-      "bech32_prefix": "sei",
-      "fee_assets": [
-        {
-          "denom": "usei",
-          "gas_price": {
-            "low": "0.1",
-            "average": "0.2",
-            "high": "0.3"
-          }
-        }
-      ],
-      "chain_type": "cosmos",
-      "ibc_capabilities": {
-        "cosmos_pfm": false,
-        "cosmos_ibc_hooks": false,
-        "cosmos_memo": false,
-        "cosmos_autopilot": false
-      }
-    },
-    {
       "chain_name": "quicksilver",
       "chain_id": "quicksilver-2",
       "pfm_enabled": false,
@@ -193,6 +164,35 @@
         "cosmos_pfm": false,
         "cosmos_ibc_hooks": false,
         "cosmos_memo": true,
+        "cosmos_autopilot": false
+      }
+    },
+    {
+      "chain_name": "sei",
+      "chain_id": "pacific-1",
+      "pfm_enabled": false,
+      "cosmos_module_support": {
+        "authz": true,
+        "feegrant": true
+      },
+      "supports_memo": false,
+      "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/sei/images/sei.png",
+      "bech32_prefix": "sei",
+      "fee_assets": [
+        {
+          "denom": "usei",
+          "gas_price": {
+            "low": "0.1",
+            "average": "0.2",
+            "high": "0.3"
+          }
+        }
+      ],
+      "chain_type": "cosmos",
+      "ibc_capabilities": {
+        "cosmos_pfm": false,
+        "cosmos_ibc_hooks": false,
+        "cosmos_memo": false,
         "cosmos_autopilot": false
       }
     },
@@ -275,6 +275,35 @@
       }
     },
     {
+      "chain_name": "chihuahua",
+      "chain_id": "chihuahua-1",
+      "pfm_enabled": false,
+      "cosmos_module_support": {
+        "authz": true,
+        "feegrant": true
+      },
+      "supports_memo": true,
+      "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/chihuahua/images/huahua.png",
+      "bech32_prefix": "chihuahua",
+      "fee_assets": [
+        {
+          "denom": "uhuahua",
+          "gas_price": {
+            "low": "500",
+            "average": "1250",
+            "high": "2000"
+          }
+        }
+      ],
+      "chain_type": "cosmos",
+      "ibc_capabilities": {
+        "cosmos_pfm": false,
+        "cosmos_ibc_hooks": true,
+        "cosmos_memo": true,
+        "cosmos_autopilot": false
+      }
+    },
+    {
       "chain_name": "agoric",
       "chain_id": "agoric-3",
       "pfm_enabled": false,
@@ -312,35 +341,6 @@
       }
     },
     {
-      "chain_name": "chihuahua",
-      "chain_id": "chihuahua-1",
-      "pfm_enabled": false,
-      "cosmos_module_support": {
-        "authz": true,
-        "feegrant": true
-      },
-      "supports_memo": true,
-      "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/chihuahua/images/huahua.png",
-      "bech32_prefix": "chihuahua",
-      "fee_assets": [
-        {
-          "denom": "uhuahua",
-          "gas_price": {
-            "low": "500",
-            "average": "1250",
-            "high": "2000"
-          }
-        }
-      ],
-      "chain_type": "cosmos",
-      "ibc_capabilities": {
-        "cosmos_pfm": false,
-        "cosmos_ibc_hooks": true,
-        "cosmos_memo": true,
-        "cosmos_autopilot": false
-      }
-    },
-    {
       "chain_name": "secret",
       "chain_id": "secret-4",
       "pfm_enabled": true,
@@ -358,35 +358,6 @@
             "low": "0.1",
             "average": "0.25",
             "high": "0.5"
-          }
-        }
-      ],
-      "chain_type": "cosmos",
-      "ibc_capabilities": {
-        "cosmos_pfm": true,
-        "cosmos_ibc_hooks": true,
-        "cosmos_memo": true,
-        "cosmos_autopilot": false
-      }
-    },
-    {
-      "chain_name": "terra2",
-      "chain_id": "phoenix-1",
-      "pfm_enabled": true,
-      "cosmos_module_support": {
-        "authz": true,
-        "feegrant": true
-      },
-      "supports_memo": true,
-      "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/terra2/images/luna.png",
-      "bech32_prefix": "terra",
-      "fee_assets": [
-        {
-          "denom": "uluna",
-          "gas_price": {
-            "low": "0.015",
-            "average": "0.025",
-            "high": "0.04"
           }
         }
       ],
@@ -476,6 +447,35 @@
       }
     },
     {
+      "chain_name": "terra2",
+      "chain_id": "phoenix-1",
+      "pfm_enabled": true,
+      "cosmos_module_support": {
+        "authz": true,
+        "feegrant": true
+      },
+      "supports_memo": true,
+      "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/terra2/images/luna.png",
+      "bech32_prefix": "terra",
+      "fee_assets": [
+        {
+          "denom": "uluna",
+          "gas_price": {
+            "low": "0.015",
+            "average": "0.025",
+            "high": "0.04"
+          }
+        }
+      ],
+      "chain_type": "cosmos",
+      "ibc_capabilities": {
+        "cosmos_pfm": true,
+        "cosmos_ibc_hooks": true,
+        "cosmos_memo": true,
+        "cosmos_autopilot": false
+      }
+    },
+    {
       "chain_name": "crescent",
       "chain_id": "crescent-1",
       "pfm_enabled": false,
@@ -520,19 +520,19 @@
           }
         },
         {
-          "denom": "ibc/BFF0D3805B50D93E2FA5C0B2DDF7E0B30A631076CD80BC12A48C0E95404B4A41",
-          "gas_price": {
-            "low": "0.000842",
-            "average": "0.002105",
-            "high": "0.002526"
-          }
-        },
-        {
           "denom": "ibc/C4CFF46FD6DE35CA4CF4CE031E643C8FDC9BA4B99AE598E9B0ED98FE3A2319F9",
           "gas_price": {
             "low": "0.000063",
             "average": "0.0001575",
             "high": "0.000189"
+          }
+        },
+        {
+          "denom": "ibc/BFF0D3805B50D93E2FA5C0B2DDF7E0B30A631076CD80BC12A48C0E95404B4A41",
+          "gas_price": {
+            "low": "0.000842",
+            "average": "0.002105",
+            "high": "0.002526"
           }
         },
         {
@@ -633,35 +633,6 @@
       }
     },
     {
-      "chain_name": "kyve",
-      "chain_id": "kyve-1",
-      "pfm_enabled": false,
-      "cosmos_module_support": {
-        "authz": true,
-        "feegrant": true
-      },
-      "supports_memo": true,
-      "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/kyve/images/kyve.png",
-      "bech32_prefix": "kyve",
-      "fee_assets": [
-        {
-          "denom": "ukyve",
-          "gas_price": {
-            "low": "0.02",
-            "average": "0.03",
-            "high": "0.06"
-          }
-        }
-      ],
-      "chain_type": "cosmos",
-      "ibc_capabilities": {
-        "cosmos_pfm": false,
-        "cosmos_ibc_hooks": false,
-        "cosmos_memo": true,
-        "cosmos_autopilot": false
-      }
-    },
-    {
       "chain_name": "nyx",
       "chain_id": "nyx",
       "pfm_enabled": false,
@@ -674,11 +645,11 @@
       "bech32_prefix": "n",
       "fee_assets": [
         {
-          "denom": "unym",
+          "denom": "unyx",
           "gas_price": null
         },
         {
-          "denom": "unyx",
+          "denom": "unym",
           "gas_price": null
         }
       ],
@@ -687,55 +658,6 @@
         "cosmos_pfm": false,
         "cosmos_ibc_hooks": false,
         "cosmos_memo": true,
-        "cosmos_autopilot": false
-      }
-    },
-    {
-      "chain_name": "osmosis",
-      "chain_id": "osmosis-1",
-      "pfm_enabled": true,
-      "cosmos_module_support": {
-        "authz": true,
-        "feegrant": false
-      },
-      "supports_memo": true,
-      "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/osmosis/images/osmosis-chain-logo.png",
-      "bech32_prefix": "osmo",
-      "fee_assets": [
-        {
-          "denom": "uosmo",
-          "gas_price": {
-            "low": "0.0025",
-            "average": "0.025",
-            "high": "0.04"
-          }
-        }
-      ],
-      "chain_type": "cosmos",
-      "ibc_capabilities": {
-        "cosmos_pfm": true,
-        "cosmos_ibc_hooks": true,
-        "cosmos_memo": true,
-        "cosmos_autopilot": false
-      }
-    },
-    {
-      "chain_name": "bitsong",
-      "chain_id": "bitsong-2b",
-      "pfm_enabled": true,
-      "cosmos_module_support": {
-        "authz": true,
-        "feegrant": true
-      },
-      "supports_memo": false,
-      "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/bitsong/images/btsg.png",
-      "bech32_prefix": "bitsong",
-      "fee_assets": [],
-      "chain_type": "cosmos",
-      "ibc_capabilities": {
-        "cosmos_pfm": true,
-        "cosmos_ibc_hooks": false,
-        "cosmos_memo": false,
         "cosmos_autopilot": false
       }
     },
@@ -759,68 +681,22 @@
       }
     },
     {
-      "chain_name": "fetchhub",
-      "chain_id": "fetchhub-4",
-      "pfm_enabled": false,
-      "cosmos_module_support": {
-        "authz": true,
-        "feegrant": true
-      },
-      "supports_memo": false,
-      "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/fetchhub/images/fet.png",
-      "bech32_prefix": "fetch",
-      "fee_assets": [
-        {
-          "denom": "afet",
-          "gas_price": {
-            "low": "0.025",
-            "average": "0.025",
-            "high": "0.035"
-          }
-        }
-      ],
-      "chain_type": "cosmos",
-      "ibc_capabilities": {
-        "cosmos_pfm": false,
-        "cosmos_ibc_hooks": false,
-        "cosmos_memo": false,
-        "cosmos_autopilot": false
-      }
-    },
-    {
-      "chain_name": "noble",
-      "chain_id": "noble-1",
+      "chain_name": "bitsong",
+      "chain_id": "bitsong-2b",
       "pfm_enabled": true,
       "cosmos_module_support": {
         "authz": true,
         "feegrant": true
       },
-      "supports_memo": true,
-      "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/noble/images/stake.png",
-      "bech32_prefix": "noble",
-      "fee_assets": [
-        {
-          "denom": "ibc/EF48E6B1A1A19F47ECAEA62F5670C37C0580E86A9E88498B7E393EB6F49F33C0",
-          "gas_price": {
-            "low": "0.01",
-            "average": "0.01",
-            "high": "0.02"
-          }
-        },
-        {
-          "denom": "uusdc",
-          "gas_price": {
-            "low": "0.1",
-            "average": "0.1",
-            "high": "0.2"
-          }
-        }
-      ],
+      "supports_memo": false,
+      "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/bitsong/images/btsg.png",
+      "bech32_prefix": "bitsong",
+      "fee_assets": [],
       "chain_type": "cosmos",
       "ibc_capabilities": {
         "cosmos_pfm": true,
         "cosmos_ibc_hooks": false,
-        "cosmos_memo": true,
+        "cosmos_memo": false,
         "cosmos_autopilot": false
       }
     },
@@ -1038,22 +914,97 @@
       }
     },
     {
-      "chain_name": "cronos",
-      "chain_id": "cronosmainnet_25-1",
+      "chain_name": "kyve",
+      "chain_id": "kyve-1",
       "pfm_enabled": false,
       "cosmos_module_support": {
         "authz": true,
         "feegrant": true
       },
       "supports_memo": true,
-      "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/cronos/images/cronos.png",
-      "bech32_prefix": "crc",
-      "fee_assets": [],
+      "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/kyve/images/kyve.png",
+      "bech32_prefix": "kyve",
+      "fee_assets": [
+        {
+          "denom": "ukyve",
+          "gas_price": {
+            "low": "0.02",
+            "average": "0.03",
+            "high": "0.06"
+          }
+        }
+      ],
       "chain_type": "cosmos",
       "ibc_capabilities": {
         "cosmos_pfm": false,
         "cosmos_ibc_hooks": false,
         "cosmos_memo": true,
+        "cosmos_autopilot": false
+      }
+    },
+    {
+      "chain_name": "noble",
+      "chain_id": "noble-1",
+      "pfm_enabled": true,
+      "cosmos_module_support": {
+        "authz": true,
+        "feegrant": true
+      },
+      "supports_memo": true,
+      "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/noble/images/stake.png",
+      "bech32_prefix": "noble",
+      "fee_assets": [
+        {
+          "denom": "ibc/EF48E6B1A1A19F47ECAEA62F5670C37C0580E86A9E88498B7E393EB6F49F33C0",
+          "gas_price": {
+            "low": "0.01",
+            "average": "0.01",
+            "high": "0.02"
+          }
+        },
+        {
+          "denom": "uusdc",
+          "gas_price": {
+            "low": "0.1",
+            "average": "0.1",
+            "high": "0.2"
+          }
+        }
+      ],
+      "chain_type": "cosmos",
+      "ibc_capabilities": {
+        "cosmos_pfm": true,
+        "cosmos_ibc_hooks": false,
+        "cosmos_memo": true,
+        "cosmos_autopilot": false
+      }
+    },
+    {
+      "chain_name": "fetchhub",
+      "chain_id": "fetchhub-4",
+      "pfm_enabled": false,
+      "cosmos_module_support": {
+        "authz": true,
+        "feegrant": true
+      },
+      "supports_memo": false,
+      "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/fetchhub/images/fet.png",
+      "bech32_prefix": "fetch",
+      "fee_assets": [
+        {
+          "denom": "afet",
+          "gas_price": {
+            "low": "0.025",
+            "average": "0.025",
+            "high": "0.035"
+          }
+        }
+      ],
+      "chain_type": "cosmos",
+      "ibc_capabilities": {
+        "cosmos_pfm": false,
+        "cosmos_ibc_hooks": false,
+        "cosmos_memo": false,
         "cosmos_autopilot": false
       }
     },
@@ -1124,35 +1075,6 @@
       }
     },
     {
-      "chain_name": "jackal",
-      "chain_id": "jackal-1",
-      "pfm_enabled": false,
-      "cosmos_module_support": {
-        "authz": true,
-        "feegrant": true
-      },
-      "supports_memo": true,
-      "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/jackal/images/jkl.png",
-      "bech32_prefix": "jkl",
-      "fee_assets": [
-        {
-          "denom": "ujkl",
-          "gas_price": {
-            "low": "0.002",
-            "average": "0.002",
-            "high": "0.02"
-          }
-        }
-      ],
-      "chain_type": "cosmos",
-      "ibc_capabilities": {
-        "cosmos_pfm": false,
-        "cosmos_ibc_hooks": false,
-        "cosmos_memo": true,
-        "cosmos_autopilot": false
-      }
-    },
-    {
       "chain_name": "sentinel",
       "chain_id": "sentinelhub-2",
       "pfm_enabled": false,
@@ -1170,6 +1092,84 @@
             "low": "0.1",
             "average": "0.25",
             "high": "0.4"
+          }
+        }
+      ],
+      "chain_type": "cosmos",
+      "ibc_capabilities": {
+        "cosmos_pfm": false,
+        "cosmos_ibc_hooks": false,
+        "cosmos_memo": true,
+        "cosmos_autopilot": false
+      }
+    },
+    {
+      "chain_name": "cronos",
+      "chain_id": "cronosmainnet_25-1",
+      "pfm_enabled": false,
+      "cosmos_module_support": {
+        "authz": true,
+        "feegrant": true
+      },
+      "supports_memo": true,
+      "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/cronos/images/cronos.png",
+      "bech32_prefix": "crc",
+      "fee_assets": [],
+      "chain_type": "cosmos",
+      "ibc_capabilities": {
+        "cosmos_pfm": false,
+        "cosmos_ibc_hooks": false,
+        "cosmos_memo": true,
+        "cosmos_autopilot": false
+      }
+    },
+    {
+      "chain_name": "osmosis",
+      "chain_id": "osmosis-1",
+      "pfm_enabled": true,
+      "cosmos_module_support": {
+        "authz": true,
+        "feegrant": false
+      },
+      "supports_memo": true,
+      "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/osmosis/images/osmosis-chain-logo.png",
+      "bech32_prefix": "osmo",
+      "fee_assets": [
+        {
+          "denom": "uosmo",
+          "gas_price": {
+            "low": "0.0025",
+            "average": "0.025",
+            "high": "0.04"
+          }
+        }
+      ],
+      "chain_type": "cosmos",
+      "ibc_capabilities": {
+        "cosmos_pfm": true,
+        "cosmos_ibc_hooks": true,
+        "cosmos_memo": true,
+        "cosmos_autopilot": false
+      }
+    },
+    {
+      "chain_name": "jackal",
+      "chain_id": "jackal-1",
+      "pfm_enabled": false,
+      "cosmos_module_support": {
+        "authz": true,
+        "feegrant": true
+      },
+      "supports_memo": true,
+      "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/jackal/images/jkl.png",
+      "bech32_prefix": "jkl",
+      "fee_assets": [
+        {
+          "denom": "ujkl",
+          "gas_price": {
+            "low": "0.002",
+            "average": "0.002",
+            "high": "0.02"
           }
         }
       ],
@@ -1231,6 +1231,35 @@
       }
     },
     {
+      "chain_name": "assetmantle",
+      "chain_id": "mantle-1",
+      "pfm_enabled": true,
+      "cosmos_module_support": {
+        "authz": true,
+        "feegrant": true
+      },
+      "supports_memo": true,
+      "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/assetmantle/images/AM_Logo.png",
+      "bech32_prefix": "mantle",
+      "fee_assets": [
+        {
+          "denom": "umntl",
+          "gas_price": {
+            "low": "0.01",
+            "average": "0.025",
+            "high": "0.04"
+          }
+        }
+      ],
+      "chain_type": "cosmos",
+      "ibc_capabilities": {
+        "cosmos_pfm": true,
+        "cosmos_ibc_hooks": false,
+        "cosmos_memo": true,
+        "cosmos_autopilot": false
+      }
+    },
+    {
       "chain_name": "xpla",
       "chain_id": "dimension_37-1",
       "pfm_enabled": true,
@@ -1279,35 +1308,6 @@
       }
     },
     {
-      "chain_name": "assetmantle",
-      "chain_id": "mantle-1",
-      "pfm_enabled": true,
-      "cosmos_module_support": {
-        "authz": true,
-        "feegrant": true
-      },
-      "supports_memo": true,
-      "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/assetmantle/images/AM_Logo.png",
-      "bech32_prefix": "mantle",
-      "fee_assets": [
-        {
-          "denom": "umntl",
-          "gas_price": {
-            "low": "0.01",
-            "average": "0.025",
-            "high": "0.04"
-          }
-        }
-      ],
-      "chain_type": "cosmos",
-      "ibc_capabilities": {
-        "cosmos_pfm": true,
-        "cosmos_ibc_hooks": false,
-        "cosmos_memo": true,
-        "cosmos_autopilot": false
-      }
-    },
-    {
       "chain_name": "regen",
       "chain_id": "regen-1",
       "pfm_enabled": false,
@@ -1325,6 +1325,35 @@
             "low": "0.015",
             "average": "0.025",
             "high": "0.04"
+          }
+        }
+      ],
+      "chain_type": "cosmos",
+      "ibc_capabilities": {
+        "cosmos_pfm": false,
+        "cosmos_ibc_hooks": false,
+        "cosmos_memo": true,
+        "cosmos_autopilot": false
+      }
+    },
+    {
+      "chain_name": "sifchain",
+      "chain_id": "sifchain-1",
+      "pfm_enabled": false,
+      "cosmos_module_support": {
+        "authz": true,
+        "feegrant": true
+      },
+      "supports_memo": true,
+      "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/sifchain/images/rowan.png",
+      "bech32_prefix": "sif",
+      "fee_assets": [
+        {
+          "denom": "rowan",
+          "gas_price": {
+            "low": "1000000000000",
+            "average": "1500000000000",
+            "high": "2000000000000"
           }
         }
       ],
@@ -1385,6 +1414,84 @@
       "ibc_capabilities": {
         "cosmos_pfm": false,
         "cosmos_ibc_hooks": true,
+        "cosmos_memo": true,
+        "cosmos_autopilot": false
+      }
+    },
+    {
+      "chain_name": "bitcanna",
+      "chain_id": "bitcanna-1",
+      "pfm_enabled": false,
+      "cosmos_module_support": {
+        "authz": true,
+        "feegrant": true
+      },
+      "supports_memo": true,
+      "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/bitcanna/images/bcna.png",
+      "bech32_prefix": "bcna",
+      "fee_assets": [],
+      "chain_type": "cosmos",
+      "ibc_capabilities": {
+        "cosmos_pfm": false,
+        "cosmos_ibc_hooks": false,
+        "cosmos_memo": true,
+        "cosmos_autopilot": false
+      }
+    },
+    {
+      "chain_name": "planq",
+      "chain_id": "planq_7070-2",
+      "pfm_enabled": false,
+      "cosmos_module_support": {
+        "authz": true,
+        "feegrant": true
+      },
+      "supports_memo": true,
+      "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/planq/images/planq.png",
+      "bech32_prefix": "plq",
+      "fee_assets": [
+        {
+          "denom": "aplanq",
+          "gas_price": {
+            "low": "30000000000",
+            "average": "35000000000",
+            "high": "40000000000"
+          }
+        }
+      ],
+      "chain_type": "cosmos",
+      "ibc_capabilities": {
+        "cosmos_pfm": false,
+        "cosmos_ibc_hooks": false,
+        "cosmos_memo": true,
+        "cosmos_autopilot": false
+      }
+    },
+    {
+      "chain_name": "evmos",
+      "chain_id": "evmos_9001-2",
+      "pfm_enabled": false,
+      "cosmos_module_support": {
+        "authz": true,
+        "feegrant": true
+      },
+      "supports_memo": true,
+      "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/evmos/images/evmos.png",
+      "bech32_prefix": "evmos",
+      "fee_assets": [
+        {
+          "denom": "aevmos",
+          "gas_price": {
+            "low": "80000000000",
+            "average": "80000000000",
+            "high": "80000000000"
+          }
+        }
+      ],
+      "chain_type": "cosmos",
+      "ibc_capabilities": {
+        "cosmos_pfm": false,
+        "cosmos_ibc_hooks": false,
         "cosmos_memo": true,
         "cosmos_autopilot": false
       }
@@ -1458,19 +1565,19 @@
           }
         },
         {
-          "denom": "usdc.1.2.343151",
-          "gas_price": {
-            "low": "0.07692307692307693",
-            "average": "0.09615384615384616",
-            "high": "0.11538461538461539"
-          }
-        },
-        {
           "denom": "swth",
           "gas_price": {
             "low": "769.2307692307693",
             "average": "961.5384615384615",
             "high": "1153.8461538461538"
+          }
+        },
+        {
+          "denom": "usdc.1.2.343151",
+          "gas_price": {
+            "low": "0.07692307692307693",
+            "average": "0.09615384615384616",
+            "high": "0.11538461538461539"
           }
         },
         {
@@ -1595,97 +1702,19 @@
       }
     },
     {
-      "chain_name": "bitcanna",
-      "chain_id": "bitcanna-1",
+      "chain_name": "archway",
+      "chain_id": "archway-1",
       "pfm_enabled": false,
       "cosmos_module_support": {
         "authz": true,
         "feegrant": true
       },
       "supports_memo": true,
-      "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/bitcanna/images/bcna.png",
-      "bech32_prefix": "bcna",
-      "fee_assets": [],
-      "chain_type": "cosmos",
-      "ibc_capabilities": {
-        "cosmos_pfm": false,
-        "cosmos_ibc_hooks": false,
-        "cosmos_memo": true,
-        "cosmos_autopilot": false
-      }
-    },
-    {
-      "chain_name": "evmos",
-      "chain_id": "evmos_9001-2",
-      "pfm_enabled": false,
-      "cosmos_module_support": {
-        "authz": true,
-        "feegrant": true
-      },
-      "supports_memo": true,
-      "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/evmos/images/evmos.png",
-      "bech32_prefix": "evmos",
+      "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/archway/images/archway.png",
+      "bech32_prefix": "archway",
       "fee_assets": [
         {
-          "denom": "aevmos",
-          "gas_price": {
-            "low": "80000000000",
-            "average": "80000000000",
-            "high": "80000000000"
-          }
-        }
-      ],
-      "chain_type": "cosmos",
-      "ibc_capabilities": {
-        "cosmos_pfm": false,
-        "cosmos_ibc_hooks": false,
-        "cosmos_memo": true,
-        "cosmos_autopilot": false
-      }
-    },
-    {
-      "chain_name": "planq",
-      "chain_id": "planq_7070-2",
-      "pfm_enabled": false,
-      "cosmos_module_support": {
-        "authz": true,
-        "feegrant": true
-      },
-      "supports_memo": true,
-      "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/planq/images/planq.png",
-      "bech32_prefix": "plq",
-      "fee_assets": [
-        {
-          "denom": "aplanq",
-          "gas_price": {
-            "low": "30000000000",
-            "average": "35000000000",
-            "high": "40000000000"
-          }
-        }
-      ],
-      "chain_type": "cosmos",
-      "ibc_capabilities": {
-        "cosmos_pfm": false,
-        "cosmos_ibc_hooks": false,
-        "cosmos_memo": true,
-        "cosmos_autopilot": false
-      }
-    },
-    {
-      "chain_name": "sifchain",
-      "chain_id": "sifchain-1",
-      "pfm_enabled": false,
-      "cosmos_module_support": {
-        "authz": true,
-        "feegrant": true
-      },
-      "supports_memo": true,
-      "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/sifchain/images/rowan.png",
-      "bech32_prefix": "sif",
-      "fee_assets": [
-        {
-          "denom": "rowan",
+          "denom": "aarch",
           "gas_price": {
             "low": "1000000000000",
             "average": "1500000000000",
@@ -1731,26 +1760,6 @@
       }
     },
     {
-      "chain_name": "ununifi",
-      "chain_id": "ununifi-beta-v1",
-      "pfm_enabled": false,
-      "cosmos_module_support": {
-        "authz": true,
-        "feegrant": true
-      },
-      "supports_memo": true,
-      "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/ununifi/images/ununifi.png",
-      "bech32_prefix": "ununifi",
-      "fee_assets": [],
-      "chain_type": "cosmos",
-      "ibc_capabilities": {
-        "cosmos_pfm": false,
-        "cosmos_ibc_hooks": false,
-        "cosmos_memo": true,
-        "cosmos_autopilot": false
-      }
-    },
-    {
       "chain_name": "canto",
       "chain_id": "canto_7700-1",
       "pfm_enabled": false,
@@ -1780,26 +1789,17 @@
       }
     },
     {
-      "chain_name": "archway",
-      "chain_id": "archway-1",
+      "chain_name": "ununifi",
+      "chain_id": "ununifi-beta-v1",
       "pfm_enabled": false,
       "cosmos_module_support": {
         "authz": true,
         "feegrant": true
       },
       "supports_memo": true,
-      "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/archway/images/archway.png",
-      "bech32_prefix": "archway",
-      "fee_assets": [
-        {
-          "denom": "aarch",
-          "gas_price": {
-            "low": "1000000000000",
-            "average": "1500000000000",
-            "high": "2000000000000"
-          }
-        }
-      ],
+      "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/ununifi/images/ununifi.png",
+      "bech32_prefix": "ununifi",
+      "fee_assets": [],
       "chain_type": "cosmos",
       "ibc_capabilities": {
         "cosmos_pfm": false,
@@ -1809,48 +1809,19 @@
       }
     },
     {
-      "chain_name": "mars",
-      "chain_id": "mars-1",
-      "pfm_enabled": false,
-      "cosmos_module_support": {
-        "authz": true,
-        "feegrant": true
-      },
-      "supports_memo": true,
-      "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/mars/images/mars-protocol.png",
-      "bech32_prefix": "mars",
-      "fee_assets": [
-        {
-          "denom": "umars",
-          "gas_price": {
-            "low": "0",
-            "average": "0",
-            "high": "0.01"
-          }
-        }
-      ],
-      "chain_type": "cosmos",
-      "ibc_capabilities": {
-        "cosmos_pfm": false,
-        "cosmos_ibc_hooks": false,
-        "cosmos_memo": true,
-        "cosmos_autopilot": false
-      }
-    },
-    {
-      "chain_name": "teritori",
-      "chain_id": "teritori-1",
+      "chain_name": "comdex",
+      "chain_id": "comdex-1",
       "pfm_enabled": true,
       "cosmos_module_support": {
         "authz": true,
-        "feegrant": true
+        "feegrant": false
       },
       "supports_memo": true,
-      "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/teritori/images/chain.png",
-      "bech32_prefix": "tori",
+      "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/comdex/images/cmdx.png",
+      "bech32_prefix": "comdex",
       "fee_assets": [
         {
-          "denom": "utori",
+          "denom": "ucmdx",
           "gas_price": {
             "low": "0",
             "average": "0.025",
@@ -1896,19 +1867,19 @@
       }
     },
     {
-      "chain_name": "comdex",
-      "chain_id": "comdex-1",
+      "chain_name": "teritori",
+      "chain_id": "teritori-1",
       "pfm_enabled": true,
       "cosmos_module_support": {
         "authz": true,
-        "feegrant": false
+        "feegrant": true
       },
       "supports_memo": true,
-      "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/comdex/images/cmdx.png",
-      "bech32_prefix": "comdex",
+      "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/teritori/images/chain.png",
+      "bech32_prefix": "tori",
       "fee_assets": [
         {
-          "denom": "ucmdx",
+          "denom": "utori",
           "gas_price": {
             "low": "0",
             "average": "0.025",
@@ -1919,6 +1890,35 @@
       "chain_type": "cosmos",
       "ibc_capabilities": {
         "cosmos_pfm": true,
+        "cosmos_ibc_hooks": false,
+        "cosmos_memo": true,
+        "cosmos_autopilot": false
+      }
+    },
+    {
+      "chain_name": "mars",
+      "chain_id": "mars-1",
+      "pfm_enabled": false,
+      "cosmos_module_support": {
+        "authz": true,
+        "feegrant": true
+      },
+      "supports_memo": true,
+      "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/mars/images/mars-protocol.png",
+      "bech32_prefix": "mars",
+      "fee_assets": [
+        {
+          "denom": "umars",
+          "gas_price": {
+            "low": "0",
+            "average": "0",
+            "high": "0.01"
+          }
+        }
+      ],
+      "chain_type": "cosmos",
+      "ibc_capabilities": {
+        "cosmos_pfm": false,
         "cosmos_ibc_hooks": false,
         "cosmos_memo": true,
         "cosmos_autopilot": false
@@ -2109,6 +2109,108 @@
       }
     },
     {
+      "chain_name": "kujira",
+      "chain_id": "kaiyo-1",
+      "pfm_enabled": false,
+      "cosmos_module_support": {
+        "authz": true,
+        "feegrant": true
+      },
+      "supports_memo": true,
+      "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/kujira/images/kujira-chain-logo.png",
+      "bech32_prefix": "kujira",
+      "fee_assets": [
+        {
+          "denom": "ibc/EFF323CC632EC4F747C61BCE238A758EFDB7699C3226565F7C20DA06509D59A5",
+          "gas_price": null
+        },
+        {
+          "denom": "ibc/004EBF085BBED1029326D56BE8A2E67C08CECE670A94AC1947DF413EF5130EB2",
+          "gas_price": null
+        },
+        {
+          "denom": "ibc/27394FB092D2ECCD56123C74F36E4C1F926001CEADA9CA97EA622B25F41E5EB2",
+          "gas_price": null
+        },
+        {
+          "denom": "ibc/4F393C3FCA4190C0A6756CE7F6D897D5D1BE57D6CCB80D0BC87393566A7B6602",
+          "gas_price": null
+        },
+        {
+          "denom": "ibc/A358D7F19237777AF6D8AD0E0F53268F8B18AE8A53ED318095C14D6D7F3B2DB5",
+          "gas_price": null
+        },
+        {
+          "denom": "ukuji",
+          "gas_price": null
+        },
+        {
+          "denom": "ibc/F3AA7EF362EC5E791FE78A0F4CCC69FEE1F9A7485EB1A8CAB3F6601C00522F10",
+          "gas_price": null
+        },
+        {
+          "denom": "ibc/47BD209179859CDE4A2806763D7189B6E6FE13A17880FE2B42DE1E6C1E329E23",
+          "gas_price": null
+        },
+        {
+          "denom": "factory/kujira1643jxg8wasy5cfcn7xm8rd742yeazcksqlg4d7/umnta",
+          "gas_price": null
+        },
+        {
+          "denom": "factory/kujira1qk00h5atutpsv900x202pxx42npjr9thg58dnqpa72f2p7m2luase444a7/uusk",
+          "gas_price": null
+        },
+        {
+          "denom": "ibc/295548A78785A1007F232DE286149A6FF512F180AF5657780FC89C009E2C348F",
+          "gas_price": null
+        },
+        {
+          "denom": "ibc/1B38805B1C75352B28169284F96DF56BDEBD9E8FAC005BDCC8CF0378C82AA8E7",
+          "gas_price": null
+        },
+        {
+          "denom": "ibc/3607EB5B5E64DD1C0E12E07F077FF470D5BC4706AFCBC98FE1BA960E5AE4CE07",
+          "gas_price": null
+        }
+      ],
+      "chain_type": "cosmos",
+      "ibc_capabilities": {
+        "cosmos_pfm": false,
+        "cosmos_ibc_hooks": false,
+        "cosmos_memo": true,
+        "cosmos_autopilot": false
+      }
+    },
+    {
+      "chain_name": "cosmoshub",
+      "chain_id": "cosmoshub-4",
+      "pfm_enabled": true,
+      "cosmos_module_support": {
+        "authz": true,
+        "feegrant": true
+      },
+      "supports_memo": true,
+      "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/cosmoshub/images/atom.png",
+      "bech32_prefix": "cosmos",
+      "fee_assets": [
+        {
+          "denom": "uatom",
+          "gas_price": {
+            "low": "0.005",
+            "average": "0.025",
+            "high": "0.03"
+          }
+        }
+      ],
+      "chain_type": "cosmos",
+      "ibc_capabilities": {
+        "cosmos_pfm": true,
+        "cosmos_ibc_hooks": false,
+        "cosmos_memo": true,
+        "cosmos_autopilot": false
+      }
+    },
+    {
       "chain_name": "stride",
       "chain_id": "stride-1",
       "pfm_enabled": false,
@@ -2167,108 +2269,6 @@
         "cosmos_ibc_hooks": false,
         "cosmos_memo": true,
         "cosmos_autopilot": true
-      }
-    },
-    {
-      "chain_name": "kujira",
-      "chain_id": "kaiyo-1",
-      "pfm_enabled": false,
-      "cosmos_module_support": {
-        "authz": true,
-        "feegrant": true
-      },
-      "supports_memo": true,
-      "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/kujira/images/kujira-chain-logo.png",
-      "bech32_prefix": "kujira",
-      "fee_assets": [
-        {
-          "denom": "ukuji",
-          "gas_price": null
-        },
-        {
-          "denom": "ibc/47BD209179859CDE4A2806763D7189B6E6FE13A17880FE2B42DE1E6C1E329E23",
-          "gas_price": null
-        },
-        {
-          "denom": "ibc/4F393C3FCA4190C0A6756CE7F6D897D5D1BE57D6CCB80D0BC87393566A7B6602",
-          "gas_price": null
-        },
-        {
-          "denom": "ibc/A358D7F19237777AF6D8AD0E0F53268F8B18AE8A53ED318095C14D6D7F3B2DB5",
-          "gas_price": null
-        },
-        {
-          "denom": "ibc/F3AA7EF362EC5E791FE78A0F4CCC69FEE1F9A7485EB1A8CAB3F6601C00522F10",
-          "gas_price": null
-        },
-        {
-          "denom": "factory/kujira1643jxg8wasy5cfcn7xm8rd742yeazcksqlg4d7/umnta",
-          "gas_price": null
-        },
-        {
-          "denom": "ibc/1B38805B1C75352B28169284F96DF56BDEBD9E8FAC005BDCC8CF0378C82AA8E7",
-          "gas_price": null
-        },
-        {
-          "denom": "ibc/3607EB5B5E64DD1C0E12E07F077FF470D5BC4706AFCBC98FE1BA960E5AE4CE07",
-          "gas_price": null
-        },
-        {
-          "denom": "factory/kujira1qk00h5atutpsv900x202pxx42npjr9thg58dnqpa72f2p7m2luase444a7/uusk",
-          "gas_price": null
-        },
-        {
-          "denom": "ibc/295548A78785A1007F232DE286149A6FF512F180AF5657780FC89C009E2C348F",
-          "gas_price": null
-        },
-        {
-          "denom": "ibc/27394FB092D2ECCD56123C74F36E4C1F926001CEADA9CA97EA622B25F41E5EB2",
-          "gas_price": null
-        },
-        {
-          "denom": "ibc/004EBF085BBED1029326D56BE8A2E67C08CECE670A94AC1947DF413EF5130EB2",
-          "gas_price": null
-        },
-        {
-          "denom": "ibc/EFF323CC632EC4F747C61BCE238A758EFDB7699C3226565F7C20DA06509D59A5",
-          "gas_price": null
-        }
-      ],
-      "chain_type": "cosmos",
-      "ibc_capabilities": {
-        "cosmos_pfm": false,
-        "cosmos_ibc_hooks": false,
-        "cosmos_memo": true,
-        "cosmos_autopilot": false
-      }
-    },
-    {
-      "chain_name": "cosmoshub",
-      "chain_id": "cosmoshub-4",
-      "pfm_enabled": true,
-      "cosmos_module_support": {
-        "authz": true,
-        "feegrant": true
-      },
-      "supports_memo": true,
-      "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/cosmoshub/images/atom.png",
-      "bech32_prefix": "cosmos",
-      "fee_assets": [
-        {
-          "denom": "uatom",
-          "gas_price": {
-            "low": "0.005",
-            "average": "0.025",
-            "high": "0.03"
-          }
-        }
-      ],
-      "chain_type": "cosmos",
-      "ibc_capabilities": {
-        "cosmos_pfm": true,
-        "cosmos_ibc_hooks": false,
-        "cosmos_memo": true,
-        "cosmos_autopilot": false
       }
     },
     {

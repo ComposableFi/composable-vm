@@ -6,7 +6,7 @@ from __future__ import annotations
 from enum import Enum
 from typing import Any, List, Optional, Union
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, RootModel
 
 
 class AcknowledgementErrorDetails(BaseModel):
@@ -243,8 +243,8 @@ class FeeAsset(BaseModel):
     gas_price_info: Optional[GasPriceInfo] = Field(None, description='Gas price tiers')
 
 
-class GRPCStatusCode(BaseModel):
-    __root__: float = Field(
+class GRPCStatusCode(RootModel[float]):
+    root: float = Field(
         ...,
         description='grpc status codes as defined [here](https://grpc.github.io/grpc/core/md_doc_statuscodes.html)',
     )
@@ -299,8 +299,8 @@ class PacketTransaction(BaseModel):
     )
 
 
-class PostHandler(BaseModel):
-    __root__: Union[CosmWasmContractMsgWrapper, AutopilotMsgWrapper]
+class PostHandler(RootModel[Union[CosmWasmContractMsgWrapper, AutopilotMsgWrapper]]):
+    root: Union[CosmWasmContractMsgWrapper, AutopilotMsgWrapper]
 
 
 class Reason(Enum):
@@ -509,8 +509,8 @@ class Error(BaseModel):
     message: Optional[str] = Field(None, description='Error message')
 
 
-class Msg(BaseModel):
-    __root__: Union[MultiChainMsgWrapper, EvmTxWrapper]
+class Msg(RootModel[Union[MultiChainMsgWrapper, EvmTxWrapper]]):
+    root: Union[MultiChainMsgWrapper, EvmTxWrapper]
 
 
 class PacketError(BaseModel):
@@ -620,8 +620,8 @@ class Swap2(SwapOutWrapper):
     )
 
 
-class Swap(BaseModel):
-    __root__: Union[Swap1, Swap2]
+class Swap(RootModel[Union[Swap1, Swap2]]):
+    root: Union[Swap1, Swap2]
 
 
 class SwapWrapper(BaseModel):
@@ -643,10 +643,12 @@ class IBCTransferInfo(BaseModel):
     ibc_transfer: Optional[TransferInfo] = None
 
 
-class Operation(BaseModel):
-    __root__: Union[
-        TransferWrapper, SwapWrapper, AxelarTransferWrapper, BankSendWrapper
+class Operation(
+    RootModel[
+        Union[TransferWrapper, SwapWrapper, AxelarTransferWrapper, BankSendWrapper]
     ]
+):
+    root: Union[TransferWrapper, SwapWrapper, AxelarTransferWrapper, BankSendWrapper]
 
 
 class RouteResponse(BaseModel):
@@ -701,8 +703,8 @@ class RouteResponse(BaseModel):
     )
 
 
-class TransferEvent(BaseModel):
-    __root__: Union[IBCTransferInfo, AxelarTransferInfo]
+class TransferEvent(RootModel[Union[IBCTransferInfo, AxelarTransferInfo]]):
+    root: Union[IBCTransferInfo, AxelarTransferInfo]
 
 
 class TransferStatus(BaseModel):

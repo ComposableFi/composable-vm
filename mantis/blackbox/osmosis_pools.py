@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from typing import List, Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, RootModel
 
 
 class PoolParams(BaseModel):
@@ -68,5 +68,5 @@ class ModelItem(BaseModel):
     tokens: Optional[List[Token]] = None
 
 
-class Model(BaseModel):
-    __root__: List[ModelItem]
+class Model(RootModel[List[ModelItem]]):
+    root: List[ModelItem]

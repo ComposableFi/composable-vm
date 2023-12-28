@@ -6,11 +6,11 @@ from __future__ import annotations
 from enum import Enum
 from typing import List, Optional, Union
 
-from pydantic import BaseModel, Extra, Field, conint
+from pydantic import BaseModel, ConfigDict, Field, RootModel, conint
 
 
-class Addr(BaseModel):
-    __root__: str = Field(
+class Addr(RootModel[str]):
+    root: str = Field(
         ...,
         description="A human readable address.\n\nIn Cosmos, this is typically bech32 encoded. But for multi-chain smart contracts no assumptions should be made other than being UTF-8 encoded and of reasonable length.\n\nThis type represents a validated address. It can be created in the following ways 1. Use `Addr::unchecked(input)` 2. Use `let checked: Addr = deps.api.addr_validate(input)?` 3. Use `let checked: Addr = deps.api.addr_humanize(canonical_addr)?` 4. Deserialize from JSON. This must only be done from JSON that was validated before such as a contract's state. `Addr` must not be used in messages sent by the user because this would result in unvalidated instances.\n\nThis type is immutable. If you really need to mutate it (Really? Are you sure?), create a mutable copy using `let mut mutable = Addr::to_string()` and operate on that `String` instance.",
     )
@@ -22,8 +22,8 @@ class Adr08IbcCallbacks(BaseModel):
     """
 
 
-class AssetId(BaseModel):
-    __root__: str = Field(
+class AssetId(RootModel[str]):
+    root: str = Field(
         ...,
         description='Newtype for XCVM assets ID. Must be unique for each asset and must never change. This ID is an opaque, arbitrary type from the XCVM protocol and no assumption must be made on how it is computed.',
     )
@@ -38,9 +38,9 @@ class AssetReference7(BaseModel):
     Definition of an asset native to some chain to operate on. For example for Cosmos CW and EVM chains both CW20 and ERC20 can be actual. So if asset is local or only remote to some chain depends on context of network or connection. this design leads to some dummy matches, but in general unifies code (so that if one have to solve other chain route it can)
     """
 
-    class Config:
-        extra = Extra.forbid
-
+    model_config = ConfigDict(
+        extra='forbid',
+    )
     native: Native
 
 
@@ -53,29 +53,29 @@ class AssetReference8(BaseModel):
     Definition of an asset native to some chain to operate on. For example for Cosmos CW and EVM chains both CW20 and ERC20 can be actual. So if asset is local or only remote to some chain depends on context of network or connection. this design leads to some dummy matches, but in general unifies code (so that if one have to solve other chain route it can)
     """
 
-    class Config:
-        extra = Extra.forbid
-
+    model_config = ConfigDict(
+        extra='forbid',
+    )
     cw20: Cw20
 
 
-class AssetReference(BaseModel):
-    __root__: Union[AssetReference7, AssetReference8] = Field(
+class AssetReference(RootModel[Union[AssetReference7, AssetReference8]]):
+    root: Union[AssetReference7, AssetReference8] = Field(
         ...,
         description='Definition of an asset native to some chain to operate on. For example for Cosmos CW and EVM chains both CW20 and ERC20 can be actual. So if asset is local or only remote to some chain depends on context of network or connection. this design leads to some dummy matches, but in general unifies code (so that if one have to solve other chain route it can)',
     )
 
 
-class ChannelId(BaseModel):
-    __root__: str
+class ChannelId(RootModel[str]):
+    root: str
 
 
-class ConnectionId(BaseModel):
-    __root__: str
+class ConnectionId(RootModel[str]):
+    root: str
 
 
-class DisplayedForUint128(BaseModel):
-    __root__: str = Field(
+class DisplayedForUint128(RootModel[str]):
+    root: str = Field(
         ...,
         description='A wrapper around a type which is serde-serialised as a string.\n\nFor serde-serialisation to be implemented for the type `T` must implement `Display` and `FromStr` traits.\n\n```rust use cvm::shared::Displayed;\n\n#[derive(serde::Serialize, serde::Deserialize)] struct Foo { value: Displayed<u64> }\n\nlet encoded = serde_json_wasm::to_string(&Foo { value: Displayed(42) }).unwrap(); assert_eq!(r#"{"value":"42"}"#, encoded);\n\nlet decoded = serde_json_wasm::from_str::<Foo>(r#"{"value":"42"}"#).unwrap(); assert_eq!(Displayed(42), decoded.value); ```',
     )
@@ -88,9 +88,9 @@ class OsmosisPoolManagerModuleV1Beta1(BaseModel):
 
 
 class ExchangeType3(BaseModel):
-    class Config:
-        extra = Extra.forbid
-
+    model_config = ConfigDict(
+        extra='forbid',
+    )
     osmosis_pool_manager_module_v1_beta1: OsmosisPoolManagerModuleV1Beta1
 
 
@@ -101,14 +101,14 @@ class AstroportRouterContract(BaseModel):
 
 
 class ExchangeType4(BaseModel):
-    class Config:
-        extra = Extra.forbid
-
+    model_config = ConfigDict(
+        extra='forbid',
+    )
     astroport_router_contract: AstroportRouterContract
 
 
-class ExchangeType(BaseModel):
-    __root__: Union[ExchangeType3, ExchangeType4]
+class ExchangeType(RootModel[Union[ExchangeType3, ExchangeType4]]):
+    root: Union[ExchangeType3, ExchangeType4]
 
 
 class IbcEndpoint(BaseModel):
@@ -132,10 +132,10 @@ class IcsPair(BaseModel):
     source: ChannelId
 
 
-class NetworkId(BaseModel):
-    __root__: conint(ge=0) = Field(
+class NetworkId(RootModel[conint(ge=0)]):
+    root: conint(ge=0) = Field(
         ...,
-        description='Newtype for XCVM networks ID. Must be unique for each network and must never change. This ID is an opaque, arbitrary type from the XCVM protocol and no assumption must be made on how it is computed.',
+        description='Newtype for CVM networks ID. Must be unique for each network and must never change. This ID is an opaque, arbitrary type from the CVM protocol and no assumption must be made on how it is computed.',
     )
 
 
@@ -156,14 +156,14 @@ class OutpostId2(BaseModel):
     when message is sent to other side, we should identify receiver of some kind
     """
 
-    class Config:
-        extra = Extra.forbid
-
+    model_config = ConfigDict(
+        extra='forbid',
+    )
     cosm_wasm: CosmWasm
 
 
-class OutpostId(BaseModel):
-    __root__: OutpostId2 = Field(
+class OutpostId(RootModel[OutpostId2]):
+    root: OutpostId2 = Field(
         ...,
         description='when message is sent to other side, we should identify receiver of some kind',
     )
@@ -178,9 +178,9 @@ class Prefix3(BaseModel):
     given prefix you may form accounts from 32 bit addresses or partially identify chains
     """
 
-    class Config:
-        extra = Extra.forbid
-
+    model_config = ConfigDict(
+        extra='forbid',
+    )
     s_s58: conint(ge=0)
 
 
@@ -189,14 +189,14 @@ class Prefix4(BaseModel):
     given prefix you may form accounts from 32 bit addresses or partially identify chains
     """
 
-    class Config:
-        extra = Extra.forbid
-
+    model_config = ConfigDict(
+        extra='forbid',
+    )
     bech: str
 
 
-class Prefix(BaseModel):
-    __root__: Union[Prefix3, Prefix4] = Field(
+class Prefix(RootModel[Union[Prefix3, Prefix4]]):
+    root: Union[Prefix3, Prefix4] = Field(
         ...,
         description='given prefix you may form accounts from 32 bit addresses or partially identify chains',
     )
@@ -221,14 +221,14 @@ class RelativeTimeout2(BaseModel):
     Timeout is relative to the current block timestamp of counter party
     """
 
-    class Config:
-        extra = Extra.forbid
-
+    model_config = ConfigDict(
+        extra='forbid',
+    )
     seconds: conint(ge=0)
 
 
-class RelativeTimeout(BaseModel):
-    __root__: RelativeTimeout2 = Field(
+class RelativeTimeout(RootModel[RelativeTimeout2]):
+    root: RelativeTimeout2 = Field(
         ...,
         description='relative timeout to CW/IBC-rs time. very small, assumed messages are arriving fast enough, like less than hours',
     )
@@ -260,14 +260,14 @@ class ExchangeItem(BaseModel):
 
 
 class ForeignAssetId3(BaseModel):
-    class Config:
-        extra = Extra.forbid
-
+    model_config = ConfigDict(
+        extra='forbid',
+    )
     ibc_ics20: PrefixedDenom
 
 
-class ForeignAssetId(BaseModel):
-    __root__: ForeignAssetId3
+class ForeignAssetId(RootModel[ForeignAssetId3]):
+    root: ForeignAssetId3
 
 
 class Ics20Features(BaseModel):

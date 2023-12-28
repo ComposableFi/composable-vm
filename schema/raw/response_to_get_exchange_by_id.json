@@ -102,7 +102,7 @@
       ]
     },
     "NetworkId": {
-      "description": "Newtype for XCVM networks ID. Must be unique for each network and must never change. This ID is an opaque, arbitrary type from the XCVM protocol and no assumption must be made on how it is computed.",
+      "description": "Newtype for CVM networks ID. Must be unique for each network and must never change. This ID is an opaque, arbitrary type from the CVM protocol and no assumption must be made on how it is computed.",
       "type": "integer",
       "format": "uint32",
       "minimum": 0.0

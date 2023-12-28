@@ -3,20 +3,20 @@
 
 from __future__ import annotations
 
-from pydantic import BaseModel, Field, conint
+from pydantic import BaseModel, Field, RootModel, conint
 
 
-class Addr(BaseModel):
-    __root__: str = Field(
+class Addr(RootModel[str]):
+    root: str = Field(
         ...,
         description="A human readable address.\n\nIn Cosmos, this is typically bech32 encoded. But for multi-chain smart contracts no assumptions should be made other than being UTF-8 encoded and of reasonable length.\n\nThis type represents a validated address. It can be created in the following ways 1. Use `Addr::unchecked(input)` 2. Use `let checked: Addr = deps.api.addr_validate(input)?` 3. Use `let checked: Addr = deps.api.addr_humanize(canonical_addr)?` 4. Deserialize from JSON. This must only be done from JSON that was validated before such as a contract's state. `Addr` must not be used in messages sent by the user because this would result in unvalidated instances.\n\nThis type is immutable. If you really need to mutate it (Really? Are you sure?), create a mutable copy using `let mut mutable = Addr::to_string()` and operate on that `String` instance.",
     )
 
 
-class NetworkId(BaseModel):
-    __root__: conint(ge=0) = Field(
+class NetworkId(RootModel[conint(ge=0)]):
+    root: conint(ge=0) = Field(
         ...,
-        description='Newtype for XCVM networks ID. Must be unique for each network and must never change. This ID is an opaque, arbitrary type from the XCVM protocol and no assumption must be made on how it is computed.',
+        description='Newtype for CVM networks ID. Must be unique for each network and must never change. This ID is an opaque, arbitrary type from the CVM protocol and no assumption must be made on how it is computed.',
     )
 
 

@@ -5,38 +5,38 @@
         {
           "id": "657ba88ee71d0f468fea9a3f",
           "address": "untrn",
-          "amount": "10789562856765",
+          "amount": "11595462702461",
           "symbol": "NTRN"
         },
         {
           "id": "657ba88ee71d0f468fea9a40",
           "address": "ibc/C4CFF46FD6DE35CA4CF4CE031E643C8FDC9BA4B99AE598E9B0ED98FE3A2319F9",
-          "amount": "1180845329602",
+          "amount": "1101168429898",
           "symbol": "ATOM"
         }
       ],
       "astroRewards": {
-        "apr": 0.05392,
-        "apy": 0.05539,
-        "day": 4138.88071
+        "apr": 0.05603,
+        "apy": 0.05762,
+        "day": 4022.85983
       },
       "config": {
         "migrateToAddress": null
       },
       "marketStats": {
-        "lastSwapPrice": 0.10912661,
-        "token0DayVolume": 4238050.815523,
+        "lastSwapPrice": 0.09524902,
+        "token0DayVolume": 1901806.272972,
         "token0Name": "untrn",
         "token0Symbol": "NTRN",
-        "token1DayVolume": 436448.669402,
+        "token1DayVolume": 188252.00828,
         "token1Name": "Atom",
         "token1Symbol": "ATOM"
       },
       "prices": {
         "token1Address": "untrn",
-        "token1PriceUsd": 1.3,
+        "token1PriceUsd": 1.13,
         "token2Address": "ibc/C4CFF46FD6DE35CA4CF4CE031E643C8FDC9BA4B99AE598E9B0ED98FE3A2319F9",
-        "token2PriceUsd": 11.85
+        "token2PriceUsd": 11.9
       },
       "protocolRewards": {
         "apr": 0,
@@ -44,17 +44,17 @@
         "day": 0
       },
       "totalRewards": {
-        "apr": 0.18398,
+        "apr": 0.11838,
         "apy": 0,
-        "day": 38.6923
+        "day": 23.28709
       },
       "tradingFees": {
         "apr": 0,
-        "apy": 0.13006,
-        "day": 9983.80791
+        "apy": 0.06235,
+        "day": 4476.92692
       },
       "chainId": "neutron-1",
-      "dayVolumeUsd": 4991903.9558,
+      "dayVolumeUsd": 2238463.4579,
       "deregistered": null,
       "feeRate": [
         "0.30"
@@ -63,8 +63,8 @@
       "pairName": "NTRN/ATOM",
       "poolAddress": "neutron1e22zh5p8meddxjclevuhjmfj69jxfsa8uu3jvht72rv9d8lkhves6t8veq",
       "poolDescription": "untrn - Atom ,  untrn - ATOM , untrn - atom ,  untrn - atom",
-      "poolLiquidity": 3478494067333,
-      "poolLiquidityUsd": 28019448.8695782,
+      "poolLiquidity": 3479317433665,
+      "poolLiquidityUsd": 26206777.16956713,
       "poolType": "xyk",
       "rewardTokenSymbol": null,
       "stakeable": true,
@@ -94,38 +94,38 @@
         {
           "id": "657ba8934405ce212e2447f0",
           "address": "untrn",
-          "amount": "3413069198819",
+          "amount": "3669747278129",
           "symbol": "NTRN"
         },
         {
           "id": "657ba8934405ce212e2447f1",
           "address": "ibc/F082B65C88E4B6D5EF1DB243CDA1D331D002759E938A0F5CD3FFDC5D53B3E349",
-          "amount": "4429920954078",
+          "amount": "4143415111068",
           "symbol": "USDC.axl"
         }
       ],
       "astroRewards": {
-        "apr": 0.16004,
-        "apy": 0.17352,
-        "day": 3886.18779
+        "apr": 0.16632,
+        "apy": 0.18091,
+        "day": 3775.30971
       },
       "config": {
         "migrateToAddress": null
       },
       "marketStats": {
-        "lastSwapPrice": 1.29563895,
-        "token0DayVolume": 2319992.677829,
+        "lastSwapPrice": 1.12596968,
+        "token0DayVolume": 1294132.881466,
         "token0Name": "untrn",
         "token0Symbol": "NTRN",
-        "token1DayVolume": 2740344.027015,
+        "token1DayVolume": 1527503.516363,
         "token1Name": "Axelar USDC",
         "token1Symbol": "USDC.axl"
       },
       "prices": {
         "token1Address": "untrn",
-        "token1PriceUsd": 1.3,
+        "token1PriceUsd": 1.13,
         "token2Address": "ibc/F082B65C88E4B6D5EF1DB243CDA1D331D002759E938A0F5CD3FFDC5D53B3E349",
-        "token2PriceUsd": 0.999157
+        "token2PriceUsd": 0.998754
       },
       "protocolRewards": {
         "apr": 0,
@@ -133,17 +133,17 @@
         "day": 0
       },
       "totalRewards": {
-        "apr": 0.38488,
+        "apr": 0.30063,
         "apy": 0,
-        "day": 25.60532
+        "day": 18.69557
       },
       "tradingFees": {
         "apr": 0,
-        "apy": 0.22484,
-        "day": 5459.75457
+        "apy": 0.13431,
+        "day": 3048.57334
       },
       "chainId": "neutron-1",
-      "dayVolumeUsd": 2729877.2865,
+      "dayVolumeUsd": 1524286.6691,
       "deregistered": null,
       "feeRate": [
         "0.30"
@@ -152,8 +152,8 @@
       "pairName": "NTRN/USDC.axl",
       "poolAddress": "neutron1l3gtxnwjuy65rzk63k352d52ad0f2sh89kgrqwczgt56jc8nmc3qh5kag3",
       "poolDescription": "untrn - USDC ,  untrn - USDC , untrn - usdc ,  untrn - usdc",
-      "poolLiquidity": 3714403293900,
-      "poolLiquidityUsd": 8863176.48917841,
+      "poolLiquidity": 3718473275868,
+      "poolLiquidityUsd": 8285066.84012537,
       "poolType": "xyk",
       "rewardTokenSymbol": null,
       "stakeable": true,
@@ -183,13 +183,13 @@
         {
           "id": "657b973ac427e416a805bec1",
           "address": "factory/neutron1ug740qrkquxzrk2hh29qrlx3sktkfml3je7juusc2te7xmvsscns0n2wry/wstETH",
-          "amount": "1365919953959000349101",
+          "amount": "1361861537155695257682",
           "symbol": "wstETH"
         },
         {
           "id": "657b973ac427e416a805bec2",
           "address": "ibc/A585C2D15DCD3B010849B453A2CFCB5E213208A5AB665691792684C26274304D",
-          "amount": "1576685645176689695748",
+          "amount": "1555455717570631949925",
           "symbol": "WETH.axl"
         }
       ],
@@ -202,37 +202,37 @@
         "migrateToAddress": null
       },
       "marketStats": {
-        "lastSwapPrice": 1.15460308,
-        "token0DayVolume": 2.20955906,
+        "lastSwapPrice": 1.14378958,
+        "token0DayVolume": 6.31020165,
         "token0Name": "factory/neutron1ug740qrkquxzrk2hh29qrlx3sktkfml3je7juusc2te7xmvsscns0n2wry/wstETH",
         "token0Symbol": "wstETH",
-        "token1DayVolume": 2.54725641,
+        "token1DayVolume": 7.23575751,
         "token1Name": "Wrapped Ether (wei)",
         "token1Symbol": "wETH"
       },
       "prices": {
         "token1Address": "factory/neutron1ug740qrkquxzrk2hh29qrlx3sktkfml3je7juusc2te7xmvsscns0n2wry/wstETH",
-        "token1PriceUsd": 2629.97,
+        "token1PriceUsd": 2753.91,
         "token2Address": "ibc/A585C2D15DCD3B010849B453A2CFCB5E213208A5AB665691792684C26274304D",
-        "token2PriceUsd": 2290.15
+        "token2PriceUsd": 2386.17
       },
       "protocolRewards": {
-        "apr": 0.10744,
-        "apy": 0.11,
-        "day": 2120.39768
+        "apr": 0,
+        "apy": 0,
+        "day": 0
       },
       "totalRewards": {
-        "apr": 0.10803,
+        "apr": 0.00167,
         "apy": 0,
-        "day": 0.03201
+        "day": 0.09355
       },
       "tradingFees": {
         "apr": 0,
-        "apy": 0.00059,
-        "day": 11.57719
+        "apy": 0.00167,
+        "day": 34.14432
       },
       "chainId": "neutron-1",
-      "dayVolumeUsd": 5788.5929,
+      "dayVolumeUsd": 17072.1614,
       "deregistered": null,
       "feeRate": [
         "0.03",
@@ -242,16 +242,16 @@
       "pairName": "wstETH/wETH",
       "poolAddress": "neutron1yw0a7nxa8jdgzmdsme4gwxhj76n44z305qgwrzvlfavgna9epcys3k9m2f",
       "poolDescription": "factory/neutron1ug740qrkquxzrk2hh29qrlx3sktkfml3je7juusc2te7xmvsscns0n2wry/wstETH - Wrapped Ether (wei) ,  factory/neutron1ug740qrkquxzrk2hh29qrlx3sktkfml3je7juusc2te7xmvsscns0n2wry/wstETH - wETH , factory/neutron1ug740qrkquxzrk2hh29qrlx3sktkfml3je7juusc2te7xmvsscns0n2wry/wsteth - wrapped ether (wei) ,  factory/neutron1ug740qrkquxzrk2hh29qrlx3sktkfml3je7juusc2te7xmvsscns0n2wry/wsteth - weth",
-      "poolLiquidity": 1467413638,
-      "poolLiquidityUsd": 7203175.13161494,
+      "poolLiquidity": 1455332227,
+      "poolLiquidityUsd": 7462025.87538395,
       "poolType": "concentrated",
       "rewardTokenSymbol": "wstETH",
-      "stakeable": true,
+      "stakeable": false,
       "tags": [],
       "token0Address": "factory/neutron1ug740qrkquxzrk2hh29qrlx3sktkfml3je7juusc2te7xmvsscns0n2wry/wstETH",
       "token1Address": "ibc/A585C2D15DCD3B010849B453A2CFCB5E213208A5AB665691792684C26274304D",
       "poolConfig": {
-        "block_time_last": 1703516823,
+        "block_time_last": 1703762165,
         "pool_params": {
           "mid_fee": "0.0003",
           "out_fee": "0.0045",
@@ -272,12 +272,12 @@
           "future_time": 1700651353,
           "initial_time": 0,
           "price_state": {
-            "oracle_price": "0.866604749862945588",
-            "last_price": "0.866228453284790492",
-            "price_scale": "0.867286025295884933",
-            "last_price_update": 1703516823,
-            "xcp_profit": "1.00007434011488512",
-            "xcp_profit_real": "1.000075139762037403"
+            "oracle_price": "0.872578486642845216",
+            "last_price": "0.874155486211927025",
+            "price_scale": "0.871844715621111773",
+            "last_price_update": 1703762165,
+            "xcp_profit": "1.000075558675303676",
+            "xcp_profit_real": "1.00007635104692566"
           }
         }
       },
@@ -299,13 +299,13 @@
         {
           "id": "657ba53d568c6c3042b8843c",
           "address": "ibc/B7864B03E1B9FD4F049243E92ABD691586F682137037A9F3FCA5222815620B3C",
-          "amount": "184520942103",
+          "amount": "184477828042",
           "symbol": "stATOM"
         },
         {
           "id": "657ba53d568c6c3042b8843d",
           "address": "ibc/C4CFF46FD6DE35CA4CF4CE031E643C8FDC9BA4B99AE598E9B0ED98FE3A2319F9",
-          "amount": "229551924375",
+          "amount": "229605759588",
           "symbol": "ATOM"
         }
       ],
@@ -318,19 +318,19 @@
         "migrateToAddress": null
       },
       "marketStats": {
-        "lastSwapPrice": 1.24031081,
-        "token0DayVolume": 8.060251,
+        "lastSwapPrice": 1.24089453,
+        "token0DayVolume": 13.325952,
         "token0Name": "stuatom",
         "token0Symbol": "stATOM",
-        "token1DayVolume": 10.050517,
+        "token1DayVolume": 16.566374,
         "token1Name": "Atom",
         "token1Symbol": "ATOM"
       },
       "prices": {
         "token1Address": "ibc/B7864B03E1B9FD4F049243E92ABD691586F682137037A9F3FCA5222815620B3C",
-        "token1PriceUsd": 14.592492888551,
+        "token1PriceUsd": 14.62420057382189,
         "token2Address": "ibc/C4CFF46FD6DE35CA4CF4CE031E643C8FDC9BA4B99AE598E9B0ED98FE3A2319F9",
-        "token2PriceUsd": 11.73
+        "token2PriceUsd": 11.75
       },
       "protocolRewards": {
         "apr": 0,
@@ -338,17 +338,17 @@
         "day": 0
       },
       "totalRewards": {
-        "apr": 2e-05,
+        "apr": 0.00003,
         "apy": 0,
-        "day": 0.00061
+        "day": 0.00109
       },
       "tradingFees": {
         "apr": 0,
-        "apy": 2e-05,
-        "day": 0.22428
+        "apy": 0.00003,
+        "day": 0.39857
       },
       "chainId": "neutron-1",
-      "dayVolumeUsd": 112.1413,
+      "dayVolumeUsd": 199.2864,
       "deregistered": null,
       "feeRate": [
         "0.30"
@@ -358,7 +358,7 @@
       "poolAddress": "neutron1l7ny0rckx9rks2p2aq94wd74sehjczym6n9y4yax8lcy9s39uans4uga62",
       "poolDescription": "stAtom - Atom ,  STATOM - ATOM , statom - atom , statom - atom",
       "poolLiquidity": 205514765347,
-      "poolLiquidityUsd": 5385264.6083455,
+      "poolLiquidityUsd": 5395708.43386823,
       "poolType": "xyk",
       "rewardTokenSymbol": null,
       "stakeable": false,
@@ -388,13 +388,13 @@
         {
           "id": "65771bda5ae0109d7d38288f",
           "address": "ibc/C4CFF46FD6DE35CA4CF4CE031E643C8FDC9BA4B99AE598E9B0ED98FE3A2319F9",
-          "amount": "174696777021",
+          "amount": "174864246294",
           "symbol": "ATOM"
         },
         {
           "id": "65771bda5ae0109d7d382890",
           "address": "ibc/3649CE0C8A2C79048D8C6F31FF18FA69C9BC7EB193512E0BD03B733011290445",
-          "amount": "146777839674",
+          "amount": "146637253116",
           "symbol": "stkATOM"
         }
       ],
@@ -407,17 +407,17 @@
         "migrateToAddress": null
       },
       "marketStats": {
-        "lastSwapPrice": 0.8407313,
-        "token0DayVolume": 4.509009,
+        "lastSwapPrice": 0.83890205,
+        "token0DayVolume": 232.525847,
         "token0Name": "Atom",
         "token0Symbol": "ATOM",
-        "token1DayVolume": 3.790865,
+        "token1DayVolume": 195.133369,
         "token1Name": "stk/uatom",
         "token1Symbol": "ibc/3649CE0C8A2C79048D8C6F31FF18FA69C9BC7EB193512E0BD03B733011290445"
       },
       "prices": {
         "token1Address": "ibc/C4CFF46FD6DE35CA4CF4CE031E643C8FDC9BA4B99AE598E9B0ED98FE3A2319F9",
-        "token1PriceUsd": 11.6,
+        "token1PriceUsd": 11.68,
         "token2Address": "ibc/3649CE0C8A2C79048D8C6F31FF18FA69C9BC7EB193512E0BD03B733011290445",
         "token2PriceUsd": 13.76
       },
@@ -427,17 +427,17 @@
         "day": 0
       },
       "totalRewards": {
-        "apr": 1e-05,
+        "apr": 0.0005,
         "apy": 0,
-        "day": 0.00029
+        "day": 0.01527
       },
       "tradingFees": {
         "apr": 0,
-        "apy": 1e-05,
-        "day": 0.10461
+        "apy": 0.0005,
+        "day": 5.57367
       },
       "chainId": "neutron-1",
-      "dayVolumeUsd": 52.3045,
+      "dayVolumeUsd": 2786.8332,
       "deregistered": null,
       "feeRate": [
         "0.03",
@@ -448,7 +448,7 @@
       "poolAddress": "neutron1d73vc84e36d4mmm9dwqql4sty3fx4usjmupxewx36e4qudm5auqs0yryma",
       "poolDescription": "Atom -  ,  ATOM -  , atom -  ,  atom -",
       "poolLiquidity": 160129807549,
-      "poolLiquidityUsd": 4046145.68735784,
+      "poolLiquidityUsd": 4060142.99959008,
       "poolType": "concentrated",
       "rewardTokenSymbol": null,
       "stakeable": false,
@@ -456,7 +456,7 @@
       "token0Address": "ibc/C4CFF46FD6DE35CA4CF4CE031E643C8FDC9BA4B99AE598E9B0ED98FE3A2319F9",
       "token1Address": "ibc/3649CE0C8A2C79048D8C6F31FF18FA69C9BC7EB193512E0BD03B733011290445",
       "poolConfig": {
-        "block_time_last": 1703424127,
+        "block_time_last": 1703630088,
         "pool_params": {
           "mid_fee": "0.0003",
           "out_fee": "0.0045",
@@ -477,12 +477,12 @@
           "future_time": 1702304317,
           "initial_time": 0,
           "price_state": {
-            "oracle_price": "1.190157323861553196",
-            "last_price": "1.18961940022228482",
-            "price_scale": "1.188333503516276286",
-            "last_price_update": 1703424127,
-            "xcp_profit": "1.000001624472351366",
-            "xcp_profit_real": "1.000001329661708218"
+            "oracle_price": "1.191379950381893263",
+            "last_price": "1.192213168130954199",
+            "price_scale": "1.188753878906377197",
+            "last_price_update": 1703630088,
+            "xcp_profit": "1.000001724329700927",
+            "xcp_profit_real": "1.000001404958261748"
           }
         }
       },
@@ -504,13 +504,13 @@
         {
           "id": "657ba89d750df6a352a4a4ad",
           "address": "ibc/F082B65C88E4B6D5EF1DB243CDA1D331D002759E938A0F5CD3FFDC5D53B3E349",
-          "amount": "1498863709875",
+          "amount": "1550879671837",
           "symbol": "USDC.axl"
         },
         {
           "id": "657ba89d750df6a352a4a4ae",
           "address": "ibc/2CB87BCE0937B1D1DFCEE79BE4501AAF3C265E923509AEAC410AD85D27F35130",
-          "amount": "480056402128480589785631",
+          "amount": "463994897524726180173072",
           "symbol": "DYDX"
         }
       ],
@@ -523,19 +523,19 @@
         "migrateToAddress": null
       },
       "marketStats": {
-        "lastSwapPrice": 325431732490.4389,
-        "token0DayVolume": 167520.381263,
+        "lastSwapPrice": 303926930722.998,
+        "token0DayVolume": 132954.346456,
         "token0Name": "Axelar USDC",
         "token0Symbol": "USDC.axl",
-        "token1DayVolume": 55056.30532057,
+        "token1DayVolume": 39835.62217139,
         "token1Name": "DYDX",
         "token1Symbol": "DYDX"
       },
       "prices": {
         "token1Address": "ibc/F082B65C88E4B6D5EF1DB243CDA1D331D002759E938A0F5CD3FFDC5D53B3E349",
-        "token1PriceUsd": 1.001,
+        "token1PriceUsd": 0.99827,
         "token2Address": "ibc/2CB87BCE0937B1D1DFCEE79BE4501AAF3C265E923509AEAC410AD85D27F35130",
-        "token2PriceUsd": 3.06619765408385
+        "token2PriceUsd": 3.261923412829764
       },
       "protocolRewards": {
         "apr": 0,
@@ -543,17 +543,17 @@
         "day": 0
       },
       "totalRewards": {
-        "apr": 0.04109,
+        "apr": 0.0316,
         "apy": 0,
-        "day": 0.91684
+        "day": 0.7261
       },
       "tradingFees": {
         "apr": 0,
-        "apy": 0.04109,
-        "day": 334.64826
+        "apy": 0.0316,
+        "day": 265.02698
       },
       "chainId": "neutron-1",
-      "dayVolumeUsd": 167324.1302,
+      "dayVolumeUsd": 132513.4878,
       "deregistered": null,
       "feeRate": [
         "0.26",
@@ -564,7 +564,7 @@
       "poolAddress": "neutron1hk5nfsc2dc3hjf0pulnlxlcqdyxdturz6jvkx8z63u4vpjnz2a8ssqd9fz",
       "poolDescription": "USDC -  ,  USDC -  , usdc -  ,  usdc -",
       "poolLiquidity": 847225277365,
-      "poolLiquidityUsd": 2972310.38761915,
+      "poolLiquidityUsd": 3061712.46967417,
       "poolType": "concentrated",
       "rewardTokenSymbol": null,
       "stakeable": false,
@@ -572,7 +572,7 @@
       "token0Address": "ibc/F082B65C88E4B6D5EF1DB243CDA1D331D002759E938A0F5CD3FFDC5D53B3E349",
       "token1Address": "ibc/2CB87BCE0937B1D1DFCEE79BE4501AAF3C265E923509AEAC410AD85D27F35130",
       "poolConfig": {
-        "block_time_last": 1703513259,
+        "block_time_last": 1703762033,
         "pool_params": {
           "mid_fee": "0.0026",
           "out_fee": "0.0045",
@@ -593,12 +593,12 @@
           "future_time": 1701521864,
           "initial_time": 0,
           "price_state": {
-            "oracle_price": "3.065358597802546473",
-            "last_price": "3.06754608366718143",
-            "price_scale": "3.039052300701499032",
-            "last_price_update": 1703513259,
-            "xcp_profit": "1.002581035188462699",
-            "xcp_profit_real": "1.001292778365610473"
+            "oracle_price": "3.268571864093339294",
+            "last_price": "3.283440966250708375",
+            "price_scale": "3.139441340171009478",
+            "last_price_update": 1703762033,
+            "xcp_profit": "1.003004222409118514",
+            "xcp_profit_real": "1.00150819544630575"
           }
         }
       },
@@ -620,13 +620,13 @@
         {
           "id": "657ba6d36fce3c3f5562314b",
           "address": "ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD",
-          "amount": "1075925067094",
+          "amount": "989506269336",
           "symbol": "AXL"
         },
         {
           "id": "657ba6d36fce3c3f5562314c",
           "address": "untrn",
-          "amount": "939826950938",
+          "amount": "1014711688300",
           "symbol": "NTRN"
         }
       ],
@@ -639,19 +639,19 @@
         "migrateToAddress": "neutron174wu6vgx4p6vqtzfuyfqrxfmx9xkzm7cv7pydd4k27zlleefrmrsy36jep"
       },
       "marketStats": {
-        "lastSwapPrice": 0.87125152,
-        "token0DayVolume": 82830.742746,
+        "lastSwapPrice": 1.02839424,
+        "token0DayVolume": 63995.274091,
         "token0Name": "Axelar",
         "token0Symbol": "AXL",
-        "token1DayVolume": 77123.624817,
+        "token1DayVolume": 63558.134087,
         "token1Name": "untrn",
         "token1Symbol": "NTRN"
       },
       "prices": {
         "token1Address": "ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD",
-        "token1PriceUsd": 1.1,
+        "token1PriceUsd": 1.16,
         "token2Address": "untrn",
-        "token2PriceUsd": 1.29
+        "token2PriceUsd": 1.12
       },
       "protocolRewards": {
         "apr": 0,
@@ -659,17 +659,17 @@
         "day": 0
       },
       "totalRewards": {
-        "apr": 0.02836,
+        "apr": 0.02417,
         "apy": 0,
-        "day": 0.51
+        "day": 0.4144
       },
       "tradingFees": {
         "apr": 0,
-        "apy": 0.02836,
-        "day": 186.15099
+        "apy": 0.02417,
+        "day": 151.25662
       },
       "chainId": "neutron-1",
-      "dayVolumeUsd": 93075.493,
+      "dayVolumeUsd": 75628.3095,
       "deregistered": null,
       "feeRate": [
         "0.30"
@@ -678,8 +678,8 @@
       "pairName": "AXL/NTRN",
       "poolAddress": "neutron18aud0kjwzdjj3m2cqm7gqyyw556ctgp3h4metpe0kxad0ewx6s8sp3zknv",
       "poolDescription": "Axelar - untrn ,  AXL - untrn , axelar - untrn ,  axl - untrn",
-      "poolLiquidity": 878343198595,
-      "poolLiquidityUsd": 2395894.34051342,
+      "poolLiquidity": 875050646371,
+      "poolLiquidityUsd": 2284304.36332576,
       "poolType": "xyk",
       "rewardTokenSymbol": null,
       "stakeable": false,
@@ -711,38 +711,38 @@
         {
           "id": "657ba8934ac79bdd01a903ff",
           "address": "ibc/5751B8BCDA688FD0A8EC0B292EEF1CDEAB4B766B63EC632778B196D317C40C3A",
-          "amount": "1991441879091",
+          "amount": "2218186645320",
           "symbol": "ASTRO"
         },
         {
           "id": "657ba8934ac79bdd01a90400",
           "address": "ibc/F082B65C88E4B6D5EF1DB243CDA1D331D002759E938A0F5CD3FFDC5D53B3E349",
-          "amount": "472342259731",
+          "amount": "491333964752",
           "symbol": "USDC.axl"
         }
       ],
       "astroRewards": {
-        "apr": 0.69019,
-        "apy": 0.99279,
-        "day": 1769.37595
+        "apr": 0.63218,
+        "apy": 0.88068,
+        "day": 1715.96383
       },
       "config": {
         "migrateToAddress": null
       },
       "marketStats": {
-        "lastSwapPrice": 0.23351087,
-        "token0DayVolume": 465520.032958,
+        "lastSwapPrice": 0.22656235,
+        "token0DayVolume": 503160.722988,
         "token0Name": "Astroport",
         "token0Symbol": "ASTRO",
-        "token1DayVolume": 109647.804464,
+        "token1DayVolume": 117790.843056,
         "token1Name": "Axelar USDC",
         "token1Symbol": "USDC.axl"
       },
       "prices": {
         "token1Address": "ibc/5751B8BCDA688FD0A8EC0B292EEF1CDEAB4B766B63EC632778B196D317C40C3A",
-        "token1PriceUsd": 0.2326843063676907,
+        "token1PriceUsd": 0.225660268771802,
         "token2Address": "ibc/F082B65C88E4B6D5EF1DB243CDA1D331D002759E938A0F5CD3FFDC5D53B3E349",
-        "token2PriceUsd": 1
+        "token2PriceUsd": 0.997657
       },
       "protocolRewards": {
         "apr": 0,
@@ -750,17 +750,17 @@
         "day": 0
       },
       "totalRewards": {
-        "apr": 0.77594,
+        "apr": 0.71878,
         "apy": 0,
-        "day": 5.4499
+        "day": 5.34525
       },
       "tradingFees": {
         "apr": 0,
-        "apy": 0.08575,
-        "day": 219.83774
+        "apy": 0.0866,
+        "day": 235.05074
       },
       "chainId": "neutron-1",
-      "dayVolumeUsd": 109918.8684,
+      "dayVolumeUsd": 117525.3679,
       "deregistered": null,
       "feeRate": [
         "0.26",
@@ -770,8 +770,8 @@
       "pairName": "ASTRO/USDC.axl",
       "poolAddress": "neutron1jh27klc7z8xk3nr32nynvk40qm9f64eypq7nj2w48egtehu35n3q59pkfn",
       "poolDescription": "- USDC ,   - USDC ,  - usdc ,   - usdc",
-      "poolLiquidity": 965547963864,
-      "poolLiquidityUsd": 935719.53203885,
+      "poolLiquidity": 1039212674682,
+      "poolLiquidityUsd": 990739.36384151,
       "poolType": "concentrated",
       "rewardTokenSymbol": null,
       "stakeable": true,
@@ -779,7 +779,7 @@
       "token0Address": "ibc/5751B8BCDA688FD0A8EC0B292EEF1CDEAB4B766B63EC632778B196D317C40C3A",
       "token1Address": "ibc/F082B65C88E4B6D5EF1DB243CDA1D331D002759E938A0F5CD3FFDC5D53B3E349",
       "poolConfig": {
-        "block_time_last": 1703516762,
+        "block_time_last": 1703762387,
         "pool_params": {
           "mid_fee": "0.0026",
           "out_fee": "0.0045",
@@ -800,12 +800,12 @@
           "future_time": 1702221320,
           "initial_time": 0,
           "price_state": {
-            "oracle_price": "4.300007210768050867",
-            "last_price": "4.289829312353282388",
-            "price_scale": "4.330473049412699475",
-            "last_price_update": 1703516762,
-            "xcp_profit": "1.009091955185986704",
-            "xcp_profit_real": "1.004547880636023158"
+            "oracle_price": "4.423455166926784243",
+            "last_price": "4.422851143254777985",
+            "price_scale": "4.262441216395167817",
+            "last_price_update": 1703762387,
+            "xcp_profit": "1.009584639815147792",
+            "xcp_profit_real": "1.004802052025721756"
           }
         }
       },
@@ -827,13 +827,13 @@
         {
           "id": "656b20c1335acd8ad9341d18",
           "address": "ibc/C4CFF46FD6DE35CA4CF4CE031E643C8FDC9BA4B99AE598E9B0ED98FE3A2319F9",
-          "amount": "20474539204",
+          "amount": "18321876893",
           "symbol": "ATOM"
         },
         {
           "id": "656b20c1335acd8ad9341d19",
           "address": "factory/neutron10sr06r3qkhn7xzpw3339wuj77hu06mzna6uht0/eclip",
-          "amount": "543598084454",
+          "amount": "602697604168",
           "symbol": "ECLIP"
         }
       ],
@@ -846,19 +846,19 @@
         "migrateToAddress": null
       },
       "marketStats": {
-        "lastSwapPrice": 27.01705775,
-        "token0DayVolume": 10586.073482,
+        "lastSwapPrice": 32.44890791,
+        "token0DayVolume": 5458.246712,
         "token0Name": "Atom",
         "token0Symbol": "ATOM",
-        "token1DayVolume": 305830.223924,
+        "token1DayVolume": 177069.490411,
         "token1Name": "factory/neutron10sr06r3qkhn7xzpw3339wuj77hu06mzna6uht0/eclip",
         "token1Symbol": "factory/neutron10sr06r3qkhn7xzpw3339wuj77hu06mzna6uht0/eclip"
       },
       "prices": {
         "token1Address": "ibc/C4CFF46FD6DE35CA4CF4CE031E643C8FDC9BA4B99AE598E9B0ED98FE3A2319F9",
-        "token1PriceUsd": 11.86,
+        "token1PriceUsd": 11.96,
         "token2Address": "factory/neutron10sr06r3qkhn7xzpw3339wuj77hu06mzna6uht0/eclip",
-        "token2PriceUsd": 0.4499765675346978
+        "token2PriceUsd": 0.3717209217060146
       },
       "protocolRewards": {
         "apr": 0,
@@ -866,17 +866,17 @@
         "day": 0
       },
       "totalRewards": {
-        "apr": 0.17968,
+        "apr": 0.10766,
         "apy": 0,
-        "day": 0.65739
+        "day": 0.35811
       },
       "tradingFees": {
         "apr": 0,
-        "apy": 0.17968,
-        "day": 239.94679
+        "apy": 0.10766,
+        "day": 130.71067
       },
       "chainId": "neutron-1",
-      "dayVolumeUsd": 119973.393,
+      "dayVolumeUsd": 65355.3361,
       "deregistered": false,
       "feeRate": [
         "0.26",
@@ -886,14 +886,12 @@
       "pairName": "ATOM/factory/neutron10sr06r3qkhn7xzpw3339wuj77hu06mzna6uht0/eclip",
       "poolAddress": "neutron1vxfnhwxdpr8gq3e5vkkcq5hsdhagk289458z8m77hgrx3tha252s25j6p4",
       "poolDescription": "USDC - ECLIP",
-      "poolLiquidity": 105375258025,
-      "poolLiquidityUsd": 487434.43512048,
+      "poolLiquidity": 104896858571,
+      "poolLiquidityUsd": 443164.95657161,
       "poolType": "concentrated",
       "rewardTokenSymbol": null,
       "stakeable": false,
-      "tags": [
-        "NEW"
-      ],
+      "tags": [],
       "token0Address": "ibc/C4CFF46FD6DE35CA4CF4CE031E643C8FDC9BA4B99AE598E9B0ED98FE3A2319F9",
       "token1Address": "factory/neutron10sr06r3qkhn7xzpw3339wuj77hu06mzna6uht0/eclip",
       "poolConfig": {
@@ -917,18 +915,18 @@
           "future_time": 1703250216,
           "initial_time": 0,
           "price_state": {
-            "oracle_price": "0.037693167540472228",
-            "last_price": "0.037087265709415346",
-            "price_scale": "0.033109065394894232",
-            "last_price_update": 1703516862,
-            "xcp_profit": "1.003264621406997188",
-            "xcp_profit_real": "1.001671657969640377"
+            "oracle_price": "0.031000289365772415",
+            "last_price": "0.030875772236440891",
+            "price_scale": "0.032485953445160208",
+            "last_price_update": 1703761464,
+            "xcp_profit": "1.004073463071208336",
+            "xcp_profit_real": "1.002044819888620213"
           }
         }
       },
       "isBlocked": false,
       "name": "ATOM - ECLIP",
-      "isNew": true,
+      "isNew": false,
       "isIlliquid": false,
       "isDeregistered": false,
       "sortingAssets": [
@@ -944,38 +942,38 @@
         {
           "id": "657ba53de71d0f468fea4cf4",
           "address": "ibc/F082B65C88E4B6D5EF1DB243CDA1D331D002759E938A0F5CD3FFDC5D53B3E349",
-          "amount": "199331410215",
+          "amount": "195739906607",
           "symbol": "USDC.axl"
         },
         {
           "id": "657ba53de71d0f468fea4cf5",
           "address": "ibc/57503D7852EF4E1899FE6D71C5E81D7C839F76580F86F21E39348FC2BC9D7CE2",
-          "amount": "193619179980",
+          "amount": "196222075406",
           "symbol": "USDT.axl"
         }
       ],
       "astroRewards": {
-        "apr": 0.16232,
-        "apy": 0.17619,
-        "day": 174.74876
+        "apr": 0.16436,
+        "apy": 0.17859,
+        "day": 176.54501
       },
       "config": {
         "migrateToAddress": null
       },
       "marketStats": {
-        "lastSwapPrice": 0.99686428,
-        "token0DayVolume": 3134.063277,
+        "lastSwapPrice": 1.00072124,
+        "token0DayVolume": 52.934537,
         "token0Name": "Axelar USDC",
         "token0Symbol": "USDC.axl",
-        "token1DayVolume": 3130.277088,
+        "token1DayVolume": 52.953203,
         "token1Name": "USDT",
         "token1Symbol": "USDT"
       },
       "prices": {
         "token1Address": "ibc/F082B65C88E4B6D5EF1DB243CDA1D331D002759E938A0F5CD3FFDC5D53B3E349",
-        "token1PriceUsd": 1,
+        "token1PriceUsd": 0.999528,
         "token2Address": "ibc/57503D7852EF4E1899FE6D71C5E81D7C839F76580F86F21E39348FC2BC9D7CE2",
-        "token2PriceUsd": 1
+        "token2PriceUsd": 1.001
       },
       "protocolRewards": {
         "apr": 0,
@@ -983,17 +981,17 @@
         "day": 0
       },
       "totalRewards": {
-        "apr": 0.16305,
+        "apr": 0.16437,
         "apy": 0,
-        "day": 0.48091
+        "day": 0.48372
       },
       "tradingFees": {
         "apr": 0,
-        "apy": 0.00073,
-        "day": 0.78322
+        "apy": 0.00001,
+        "day": 0.01323
       },
       "chainId": "neutron-1",
-      "dayVolumeUsd": 3132.8861,
+      "dayVolumeUsd": 52.9355,
       "deregistered": null,
       "feeRate": [
         "0.05"
@@ -1002,8 +1000,8 @@
       "pairName": "USDC.axl/USDT",
       "poolAddress": "neutron1adk7gupr0thjr3e6wcnlxr7ugclcg4cukv2np8la29dz38zuzymqjcv5s4",
       "poolDescription": "USDC - USDT ,  USDC - USDT , usdc - usdt ,  usdc - usdt",
-      "poolLiquidity": 392538262348,
-      "poolLiquidityUsd": 392950.590195,
+      "poolLiquidity": 391553447855,
+      "poolLiquidityUsd": 392065.81485248,
       "poolType": "stable",
       "rewardTokenSymbol": null,
       "stakeable": true,
@@ -1035,13 +1033,13 @@
         {
           "id": "65793dc5e21c1a9d87a26f7d",
           "address": "factory/neutron1p8d89wvxyjcnawmgw72klknr3lg9gwwl6ypxda/newt",
-          "amount": "2279686648822",
+          "amount": "2275696678998",
           "symbol": "NEWT"
         },
         {
           "id": "65793dc5e21c1a9d87a26f7e",
           "address": "untrn",
-          "amount": "123127076398",
+          "amount": "123448218147",
           "symbol": "NTRN"
         }
       ],
@@ -1054,19 +1052,19 @@
         "migrateToAddress": null
       },
       "marketStats": {
-        "lastSwapPrice": 0.05416795,
-        "token0DayVolume": 367052.061426,
+        "lastSwapPrice": 0.0541652,
+        "token0DayVolume": 216330.041054,
         "token0Name": "factory/neutron1p8d89wvxyjcnawmgw72klknr3lg9gwwl6ypxda/newt",
         "token0Symbol": "factory/neutron1p8d89wvxyjcnawmgw72klknr3lg9gwwl6ypxda/newt",
-        "token1DayVolume": 19964.312729,
+        "token1DayVolume": 12215.731159,
         "token1Name": "untrn",
         "token1Symbol": "NTRN"
       },
       "prices": {
         "token1Address": "factory/neutron1p8d89wvxyjcnawmgw72klknr3lg9gwwl6ypxda/newt",
-        "token1PriceUsd": 0.06966046097986936,
+        "token1PriceUsd": 0.06148366171750334,
         "token2Address": "untrn",
-        "token2PriceUsd": 1.29
+        "token2PriceUsd": 1.13
       },
       "protocolRewards": {
         "apr": 0,
@@ -1074,17 +1072,17 @@
         "day": 0
       },
       "totalRewards": {
-        "apr": 0.05354,
+        "apr": 0.03742,
         "apy": 0,
-        "day": 0.12765
+        "day": 0.07849
       },
       "tradingFees": {
         "apr": 0,
-        "apy": 0.05354,
-        "day": 46.59307
+        "apy": 0.03742,
+        "day": 28.64933
       },
       "chainId": "neutron-1",
-      "dayVolumeUsd": 23296.5367,
+      "dayVolumeUsd": 14324.6626,
       "deregistered": null,
       "feeRate": [
         "0.30"
@@ -1094,7 +1092,7 @@
       "poolAddress": "neutron1f2ufsltxt9w0puxqsesacsl83t54qgmlehag762h3whjg9y66epstear2d",
       "poolDescription": "factory/neutron1p8d89wvxyjcnawmgw72klknr3lg9gwwl6ypxda/newt - untrn ,  factory/neutron1p8d89wvxyjcnawmgw72klknr3lg9gwwl6ypxda/newt - untrn , factory/neutron1p8d89wvxyjcnawmgw72klknr3lg9gwwl6ypxda/newt - untrn ,  factory/neutron1p8d89wvxyjcnawmgw72klknr3lg9gwwl6ypxda/newt - untrn",
       "poolLiquidity": 529209222968,
-      "poolLiquidityUsd": 317637.95140001,
+      "poolLiquidityUsd": 279414.65128926,
       "poolType": "xyk",
       "rewardTokenSymbol": null,
       "stakeable": false,
@@ -1124,13 +1122,13 @@
         {
           "id": "657b9b9f2c53c2de989c2e19",
           "address": "untrn",
-          "amount": "76415679774",
+          "amount": "84845861694",
           "symbol": "NTRN"
         },
         {
           "id": "657b9b9f2c53c2de989c2e1a",
           "address": "factory/neutron1ug740qrkquxzrk2hh29qrlx3sktkfml3je7juusc2te7xmvsscns0n2wry/wstETH",
-          "amount": "37399419927581390945",
+          "amount": "34830793366224870687",
           "symbol": "wstETH"
         }
       ],
@@ -1143,19 +1141,19 @@
         "migrateToAddress": null
       },
       "marketStats": {
-        "lastSwapPrice": 484580643.738618,
-        "token0DayVolume": 7110.028067,
+        "lastSwapPrice": 415369797.05077064,
+        "token0DayVolume": 7149.648396,
         "token0Name": "untrn",
         "token0Symbol": "NTRN",
-        "token1DayVolume": 3.20733145,
+        "token1DayVolume": 3.20007202,
         "token1Name": "factory/neutron1ug740qrkquxzrk2hh29qrlx3sktkfml3je7juusc2te7xmvsscns0n2wry/wstETH",
         "token1Symbol": "wstETH"
       },
       "prices": {
         "token1Address": "untrn",
-        "token1PriceUsd": 1.29,
+        "token1PriceUsd": 1.12,
         "token2Address": "factory/neutron1ug740qrkquxzrk2hh29qrlx3sktkfml3je7juusc2te7xmvsscns0n2wry/wstETH",
-        "token2PriceUsd": 2629.97
+        "token2PriceUsd": 2742.32
       },
       "protocolRewards": {
         "apr": 0,
@@ -1163,17 +1161,17 @@
         "day": 0
       },
       "totalRewards": {
-        "apr": 0.03167,
+        "apr": 0.03303,
         "apy": 0,
-        "day": 0.04682
+        "day": 0.04724
       },
       "tradingFees": {
         "apr": 0,
-        "apy": 0.03167,
-        "day": 17.08996
+        "apy": 0.03303,
+        "day": 17.24228
       },
       "chainId": "neutron-1",
-      "dayVolumeUsd": 8544.9809,
+      "dayVolumeUsd": 8621.1404,
       "deregistered": null,
       "feeRate": [
         "0.26",
@@ -1183,8 +1181,8 @@
       "pairName": "NTRN/wstETH",
       "poolAddress": "neutron1fr3h0w6sg62agzpvu42ewj8m6rn9x45py77egd8xefp2682st39suqnx6n",
       "poolDescription": "untrn - factory/neutron1ug740qrkquxzrk2hh29qrlx3sktkfml3je7juusc2te7xmvsscns0n2wry/wstETH ,  untrn - factory/neutron1ug740qrkquxzrk2hh29qrlx3sktkfml3je7juusc2te7xmvsscns0n2wry/wstETH , untrn - factory/neutron1ug740qrkquxzrk2hh29qrlx3sktkfml3je7juusc2te7xmvsscns0n2wry/wsteth ,  untrn - factory/neutron1ug740qrkquxzrk2hh29qrlx3sktkfml3je7juusc2te7xmvsscns0n2wry/wsteth",
-      "poolLiquidity": 1685984130,
-      "poolLiquidityUsd": 196935.5793354,
+      "poolLiquidity": 1713726826,
+      "poolLiquidityUsd": 190544.54636134,
       "poolType": "concentrated",
       "rewardTokenSymbol": null,
       "stakeable": false,
@@ -1192,7 +1190,7 @@
       "token0Address": "untrn",
       "token1Address": "factory/neutron1ug740qrkquxzrk2hh29qrlx3sktkfml3je7juusc2te7xmvsscns0n2wry/wstETH",
       "poolConfig": {
-        "block_time_last": 1703516823,
+        "block_time_last": 1703758155,
         "pool_params": {
           "mid_fee": "0.0026",
           "out_fee": "0.0045",
@@ -1213,12 +1211,12 @@
           "future_time": 1701874872,
           "initial_time": 0,
           "price_state": {
-            "oracle_price": "2103.686893063881915002",
-            "last_price": "2068.218830106852485778",
-            "price_scale": "2357.485955896150415859",
-            "last_price_update": 1703516823,
-            "xcp_profit": "1.006467354890847908",
-            "xcp_profit_real": "1.0032480887988233"
+            "oracle_price": "2393.96732858614365059",
+            "last_price": "2402.212320474035578196",
+            "price_scale": "2169.86643870140878781",
+            "last_price_update": 1703758155,
+            "xcp_profit": "1.007106737584951967",
+            "xcp_profit_real": "1.003583990279946134"
           }
         }
       },
@@ -1238,104 +1236,15 @@
     {
       "assets": [
         {
-          "id": "657b340958343f3c5b9f2a84",
-          "address": "untrn",
-          "amount": "5953281516",
-          "symbol": "NTRN"
-        },
-        {
-          "id": "657b340958343f3c5b9f2a85",
-          "address": "ibc/58923AAE6E879D7CB5FB0F2F05550FD4F696099AB0F5CDF0A05CC0309DD8BC78",
-          "amount": "280135856304224",
-          "symbol": "CRBRUS"
-        }
-      ],
-      "astroRewards": {
-        "apr": 0,
-        "apy": 0,
-        "day": 0
-      },
-      "config": {
-        "migrateToAddress": null
-      },
-      "marketStats": {
-        "lastSwapPrice": 46947.38766882,
-        "token0DayVolume": 624.879972,
-        "token0Name": "untrn",
-        "token0Symbol": "NTRN",
-        "token1DayVolume": 27032286.976925,
-        "token1Name": "ucrbrus",
-        "token1Symbol": "ibc/58923AAE6E879D7CB5FB0F2F05550FD4F696099AB0F5CDF0A05CC0309DD8BC78"
-      },
-      "prices": {
-        "token1Address": "untrn",
-        "token1PriceUsd": 1.29,
-        "token2Address": "ibc/58923AAE6E879D7CB5FB0F2F05550FD4F696099AB0F5CDF0A05CC0309DD8BC78",
-        "token2PriceUsd": 0.00051287
-      },
-      "protocolRewards": {
-        "apr": 0,
-        "apy": 0,
-        "day": 0
-      },
-      "totalRewards": {
-        "apr": 0.00775,
-        "apy": 0,
-        "day": 0.0088
-      },
-      "tradingFees": {
-        "apr": 0,
-        "apy": 0.00775,
-        "day": 3.21175
-      },
-      "chainId": "neutron-1",
-      "dayVolumeUsd": 1605.8757,
-      "deregistered": null,
-      "feeRate": [
-        "0.30"
-      ],
-      "lpAddress": "neutron1svx3sa9u8apwfgknp3jf4wzuel5km6s83pm0errfrklchgzend2s575m27",
-      "pairName": "NTRN/ibc/58923AAE6E879D7CB5FB0F2F05550FD4F696099AB0F5CDF0A05CC0309DD8BC78",
-      "poolAddress": "neutron1eqcl88ek70zp4pms4q3e3qff56lmf67dqg7nd57as0ge67geh5rqse5sph",
-      "poolDescription": "untrn -  ,  untrn -  , untrn -  ,  untrn -",
-      "poolLiquidity": 1282091910045,
-      "poolLiquidityUsd": 151353.00977838,
-      "poolType": "xyk",
-      "rewardTokenSymbol": null,
-      "stakeable": false,
-      "tags": [],
-      "token0Address": "untrn",
-      "token1Address": "ibc/58923AAE6E879D7CB5FB0F2F05550FD4F696099AB0F5CDF0A05CC0309DD8BC78",
-      "poolConfig": {
-        "block_time_last": 0,
-        "price0_cumulative_last": "0",
-        "price1_cumulative_last": "0"
-      },
-      "isBlocked": false,
-      "name": "NTRN - CRBRUS",
-      "isNew": false,
-      "isIlliquid": false,
-      "isDeregistered": false,
-      "sortingAssets": [
-        "NTRN",
-        "ibc/58923AAE6E879D7CB5FB0F2F05550FD4F696099AB0F5CDF0A05CC0309DD8BC78",
-        "untrn",
-        "ibc/58923AAE6E879D7CB5FB0F2F05550FD4F696099AB0F5CDF0A05CC0309DD8BC78",
-        "neutron1eqcl88ek70zp4pms4q3e3qff56lmf67dqg7nd57as0ge67geh5rqse5sph"
-      ]
-    },
-    {
-      "assets": [
-        {
           "id": "657b9b9f6fce3c3f5561a159",
           "address": "factory/neutron1ug740qrkquxzrk2hh29qrlx3sktkfml3je7juusc2te7xmvsscns0n2wry/wstETH",
-          "amount": "20007374773364530274",
+          "amount": "19818095792733947022",
           "symbol": "wstETH"
         },
         {
           "id": "657b9b9f6fce3c3f5561a15a",
           "address": "ibc/F082B65C88E4B6D5EF1DB243CDA1D331D002759E938A0F5CD3FFDC5D53B3E349",
-          "amount": "53667306415",
+          "amount": "54274798861",
           "symbol": "USDC.axl"
         }
       ],
@@ -1349,18 +1258,18 @@
       },
       "marketStats": {
         "lastSwapPrice": 0,
-        "token0DayVolume": 2.21957227,
+        "token0DayVolume": 4.64733521,
         "token0Name": "factory/neutron1ug740qrkquxzrk2hh29qrlx3sktkfml3je7juusc2te7xmvsscns0n2wry/wstETH",
         "token0Symbol": "wstETH",
-        "token1DayVolume": 5891.142873,
+        "token1DayVolume": 12407.237956,
         "token1Name": "Axelar USDC",
         "token1Symbol": "USDC.axl"
       },
       "prices": {
         "token1Address": "factory/neutron1ug740qrkquxzrk2hh29qrlx3sktkfml3je7juusc2te7xmvsscns0n2wry/wstETH",
-        "token1PriceUsd": 2627.78,
+        "token1PriceUsd": 2753.79,
         "token2Address": "ibc/F082B65C88E4B6D5EF1DB243CDA1D331D002759E938A0F5CD3FFDC5D53B3E349",
-        "token2PriceUsd": 1
+        "token2PriceUsd": 1.001
       },
       "protocolRewards": {
         "apr": 0,
@@ -1368,17 +1277,17 @@
         "day": 0
       },
       "totalRewards": {
-        "apr": 0.04016,
+        "apr": 0.08362,
         "apy": 0,
-        "day": 0.03202
+        "day": 0.06836
       },
       "tradingFees": {
         "apr": 0,
-        "apy": 0.04016,
-        "day": 11.68822
+        "apy": 0.08362,
+        "day": 24.95012
       },
       "chainId": "neutron-1",
-      "dayVolumeUsd": 5844.1078,
+      "dayVolumeUsd": 12475.0576,
       "deregistered": null,
       "feeRate": [
         "0.30"
@@ -1388,7 +1297,7 @@
       "poolAddress": "neutron17hdxfavyu4qen5fy8cy09js2qud02h6d97dvx72m4uhtjryhdcks8de0wq",
       "poolDescription": "factory/neutron1ug740qrkquxzrk2hh29qrlx3sktkfml3je7juusc2te7xmvsscns0n2wry/wstETH - USDC ,  factory/neutron1ug740qrkquxzrk2hh29qrlx3sktkfml3je7juusc2te7xmvsscns0n2wry/wstETH - USDC , factory/neutron1ug740qrkquxzrk2hh29qrlx3sktkfml3je7juusc2te7xmvsscns0n2wry/wsteth - usdc ,  factory/neutron1ug740qrkquxzrk2hh29qrlx3sktkfml3je7juusc2te7xmvsscns0n2wry/wsteth - usdc",
       "poolLiquidity": 644741801060747,
-      "poolLiquidityUsd": 106242.28569695,
+      "poolLiquidityUsd": 108903.94767293,
       "poolType": "xyk",
       "rewardTokenSymbol": null,
       "stakeable": false,
@@ -1420,13 +1329,13 @@
         {
           "id": "657ba893eacdd4555fc74667",
           "address": "ibc/5751B8BCDA688FD0A8EC0B292EEF1CDEAB4B766B63EC632778B196D317C40C3A",
-          "amount": "57334969932",
+          "amount": "50175338797",
           "symbol": "ASTRO"
         },
         {
           "id": "657ba893eacdd4555fc74668",
           "address": "untrn",
-          "amount": "10184858908",
+          "amount": "9972091024",
           "symbol": "NTRN"
         }
       ],
@@ -1439,19 +1348,19 @@
         "migrateToAddress": null
       },
       "marketStats": {
-        "lastSwapPrice": 0.17982533,
-        "token0DayVolume": 16912.875812,
+        "lastSwapPrice": 0.20267261,
+        "token0DayVolume": 10467.073737,
         "token0Name": "Astroport",
         "token0Symbol": "ASTRO",
-        "token1DayVolume": 3487.754361,
+        "token1DayVolume": 2114.456961,
         "token1Name": "untrn",
         "token1Symbol": "NTRN"
       },
       "prices": {
         "token1Address": "ibc/5751B8BCDA688FD0A8EC0B292EEF1CDEAB4B766B63EC632778B196D317C40C3A",
-        "token1PriceUsd": 0.2326843063676907,
+        "token1PriceUsd": 0.2273302284037423,
         "token2Address": "untrn",
-        "token2PriceUsd": 1.29
+        "token2PriceUsd": 1.13
       },
       "protocolRewards": {
         "apr": 0,
@@ -1459,17 +1368,17 @@
         "day": 0
       },
       "totalRewards": {
-        "apr": 0.11323,
+        "apr": 0.07846,
         "apy": 0,
-        "day": 0.02251
+        "day": 0.01335
       },
       "tradingFees": {
         "apr": 0,
-        "apy": 0.11323,
-        "day": 8.21449
+        "apy": 0.07846,
+        "day": 4.87437
       },
       "chainId": "neutron-1",
-      "dayVolumeUsd": 4107.2433,
+      "dayVolumeUsd": 2437.1875,
       "deregistered": null,
       "feeRate": [
         "0.26",
@@ -1479,8 +1388,8 @@
       "pairName": "ASTRO/NTRN",
       "poolAddress": "neutron1wj4tfjdd8qgzet4m8nv6v27j42qnz6j6cty5apy3vtcn45edspwsu4vt25",
       "poolDescription": "- untrn ,   - untrn ,  - untrn ,   - untrn",
-      "poolLiquidity": 24037122994,
-      "poolLiquidityUsd": 26479.41570055,
+      "poolLiquidity": 22230115057,
+      "poolLiquidityUsd": 22674.83408607,
       "poolType": "concentrated",
       "rewardTokenSymbol": null,
       "stakeable": false,
@@ -1490,7 +1399,7 @@
       "token0Address": "ibc/5751B8BCDA688FD0A8EC0B292EEF1CDEAB4B766B63EC632778B196D317C40C3A",
       "token1Address": "untrn",
       "poolConfig": {
-        "block_time_last": 1703516762,
+        "block_time_last": 1703760593,
         "pool_params": {
           "mid_fee": "0.0026",
           "out_fee": "0.0045",
@@ -1511,12 +1420,12 @@
           "future_time": 1702221320,
           "initial_time": 0,
           "price_state": {
-            "oracle_price": "5.449307824233669097",
-            "last_price": "5.548543667105471541",
-            "price_scale": "4.65452832117633158",
-            "last_price_update": 1703516762,
-            "xcp_profit": "1.011996830376466603",
-            "xcp_profit_real": "1.006016090113738802"
+            "oracle_price": "4.899891449387075222",
+            "last_price": "4.925541641855257373",
+            "price_scale": "4.896994939552374721",
+            "last_price_update": 1703760593,
+            "xcp_profit": "1.012571240671392362",
+            "xcp_profit_real": "1.006304812766002396"
           }
         }
       },
@@ -1536,107 +1445,15 @@
     {
       "assets": [
         {
-          "id": "6583551f8c4c7910aa87f5ca",
-          "address": "untrn",
-          "amount": "9969256861",
-          "symbol": "NTRN"
-        },
-        {
-          "id": "6583551f8c4c7910aa87f5cb",
-          "address": "factory/neutron108x7vp9zv22d6wxrs9as8dshd3pd5vsga463yd/JIMMY",
-          "amount": "671588183757049",
-          "symbol": "JIMMY"
-        }
-      ],
-      "astroRewards": {
-        "apr": 0,
-        "apy": 0,
-        "day": 0
-      },
-      "config": {
-        "migrateToAddress": null
-      },
-      "marketStats": {
-        "lastSwapPrice": 68716.45046533,
-        "token0DayVolume": 25049.930973,
-        "token0Name": "untrn",
-        "token0Symbol": "NTRN",
-        "token1DayVolume": 1833329934.162592,
-        "token1Name": "factory/neutron108x7vp9zv22d6wxrs9as8dshd3pd5vsga463yd/JIMMY",
-        "token1Symbol": "factory/neutron108x7vp9zv22d6wxrs9as8dshd3pd5vsga463yd/JIMMY"
-      },
-      "prices": {
-        "token1Address": "untrn",
-        "token1PriceUsd": 1.29,
-        "token2Address": "factory/neutron108x7vp9zv22d6wxrs9as8dshd3pd5vsga463yd/JIMMY",
-        "token2PriceUsd": 1.821991882438387e-05
-      },
-      "protocolRewards": {
-        "apr": 0,
-        "apy": 0,
-        "day": 0
-      },
-      "totalRewards": {
-        "apr": 0.8394,
-        "apy": 0,
-        "day": 0.15812
-      },
-      "tradingFees": {
-        "apr": 0,
-        "apy": 0.8394,
-        "day": 57.71539
-      },
-      "chainId": "neutron-1",
-      "dayVolumeUsd": 28857.6965,
-      "deregistered": null,
-      "feeRate": [
-        "0.30"
-      ],
-      "lpAddress": "neutron1zpmq58ffj9572pqywfh98nqnuy4reqgsz6pvdc5uquzauk7jwkusp4s4t8",
-      "pairName": "NTRN/factory/neutron108x7vp9zv22d6wxrs9as8dshd3pd5vsga463yd/JIMMY",
-      "poolAddress": "neutron1ylks7ezlht2r6n9yejvtk24r9s7j6m097zuh4htd8hrp2auyx72qu7ghzy",
-      "poolDescription": "untrn - factory/neutron108x7vp9zv22d6wxrs9as8dshd3pd5vsga463yd/JIMMY ,  untrn - factory/neutron108x7vp9zv22d6wxrs9as8dshd3pd5vsga463yd/JIMMY , untrn - factory/neutron108x7vp9zv22d6wxrs9as8dshd3pd5vsga463yd/jimmy ,  untrn - factory/neutron108x7vp9zv22d6wxrs9as8dshd3pd5vsga463yd/jimmy",
-      "poolLiquidity": 2566828378315,
-      "poolLiquidityUsd": 25096.62354215,
-      "poolType": "xyk",
-      "rewardTokenSymbol": null,
-      "stakeable": false,
-      "tags": [
-        "ILLIQUID",
-        "NEW"
-      ],
-      "token0Address": "untrn",
-      "token1Address": "factory/neutron108x7vp9zv22d6wxrs9as8dshd3pd5vsga463yd/JIMMY",
-      "poolConfig": {
-        "block_time_last": 1703105884,
-        "price0_cumulative_last": "0",
-        "price1_cumulative_last": "0"
-      },
-      "isBlocked": false,
-      "name": "NTRN - JIMMY",
-      "isNew": true,
-      "isIlliquid": true,
-      "isDeregistered": false,
-      "sortingAssets": [
-        "untrn",
-        "factory/neutron108x7vp9zv22d6wxrs9as8dshd3pd5vsga463yd/JIMMY",
-        "untrn",
-        "factory/neutron108x7vp9zv22d6wxrs9as8dshd3pd5vsga463yd/JIMMY",
-        "neutron1ylks7ezlht2r6n9yejvtk24r9s7j6m097zuh4htd8hrp2auyx72qu7ghzy"
-      ]
-    },
-    {
-      "assets": [
-        {
           "id": "657dc5e9e8125415cfb3fae0",
           "address": "untrn",
-          "amount": "7909386656",
+          "amount": "9838440451",
           "symbol": "NTRN"
         },
         {
           "id": "657dc5e9e8125415cfb3fae1",
           "address": "factory/neutron1tklm6cvr2wxg8k65t8gh5ewslnzdfd5fsk0w3f/corgi",
-          "amount": "80872104230549",
+          "amount": "65182030565782",
           "symbol": "CORGI"
         }
       ],
@@ -1649,19 +1466,19 @@
         "migrateToAddress": null
       },
       "marketStats": {
-        "lastSwapPrice": 10129.03417147,
-        "token0DayVolume": 397.435547,
+        "lastSwapPrice": 6531.20321717,
+        "token0DayVolume": 7210.052169,
         "token0Name": "untrn",
         "token0Symbol": "NTRN",
-        "token1DayVolume": 3928672.107333,
+        "token1DayVolume": 36859713.011521,
         "token1Name": "factory/neutron1tklm6cvr2wxg8k65t8gh5ewslnzdfd5fsk0w3f/corgi",
         "token1Symbol": "factory/neutron1tklm6cvr2wxg8k65t8gh5ewslnzdfd5fsk0w3f/corgi"
       },
       "prices": {
         "token1Address": "untrn",
-        "token1PriceUsd": 1.25,
+        "token1PriceUsd": 1.13,
         "token2Address": "factory/neutron1tklm6cvr2wxg8k65t8gh5ewslnzdfd5fsk0w3f/corgi",
-        "token2PriceUsd": 0.0001253286714139344
+        "token2PriceUsd": 0.0001765706636557363
       },
       "protocolRewards": {
         "apr": 0,
@@ -1669,17 +1486,17 @@
         "day": 0
       },
       "totalRewards": {
-        "apr": 0.01713,
+        "apr": 0.27423,
         "apy": 0,
-        "day": 0.00257
+        "day": 0.04658
       },
       "tradingFees": {
         "apr": 0,
-        "apy": 0.01713,
-        "day": 0.93941
+        "apy": 0.27423,
+        "day": 17.00003
       },
       "chainId": "neutron-1",
-      "dayVolumeUsd": 469.704,
+      "dayVolumeUsd": 8500.017,
       "deregistered": null,
       "feeRate": [
         "0.30"
@@ -1689,7 +1506,7 @@
       "poolAddress": "neutron1ps5gjwq8e4pxprw30q5xyka0sttf84z46xlg0vtt0walnyl49ckqsqdtha",
       "poolDescription": "untrn - factory/neutron1tklm6cvr2wxg8k65t8gh5ewslnzdfd5fsk0w3f/corgi ,  untrn - factory/neutron1tklm6cvr2wxg8k65t8gh5ewslnzdfd5fsk0w3f/corgi , untrn - factory/neutron1tklm6cvr2wxg8k65t8gh5ewslnzdfd5fsk0w3f/corgi ,  untrn - factory/neutron1tklm6cvr2wxg8k65t8gh5ewslnzdfd5fsk0w3f/corgi",
       "poolLiquidity": 1010,
-      "poolLiquidityUsd": 20022.32669766,
+      "poolLiquidityUsd": 22626.67210505,
       "poolType": "xyk",
       "rewardTokenSymbol": null,
       "stakeable": false,
@@ -1721,13 +1538,13 @@
         {
           "id": "657ba85d750df6a352a4989d",
           "address": "ibc/F082B65C88E4B6D5EF1DB243CDA1D331D002759E938A0F5CD3FFDC5D53B3E349",
-          "amount": "6915055836",
+          "amount": "7275960818",
           "symbol": "USDC.axl"
         },
         {
           "id": "657ba85d750df6a352a4989e",
           "address": "factory/neutron14henrqx9y328fjrdvz6l6d92r0t7g5hk86q5nd/uastropepe",
-          "amount": "59361030277342",
+          "amount": "59176735454776",
           "symbol": "ASTROPEPE"
         }
       ],
@@ -1740,19 +1557,19 @@
         "migrateToAddress": null
       },
       "marketStats": {
-        "lastSwapPrice": 8608.25245198,
-        "token0DayVolume": 201.846741,
+        "lastSwapPrice": 7886.92101594,
+        "token0DayVolume": 1429.752798,
         "token0Name": "Axelar USDC",
         "token0Symbol": "USDC.axl",
-        "token1DayVolume": 1736853.107075,
+        "token1DayVolume": 11106501.097084,
         "token1Name": "factory/neutron14henrqx9y328fjrdvz6l6d92r0t7g5hk86q5nd/uastropepe",
         "token1Symbol": "factory/neutron14henrqx9y328fjrdvz6l6d92r0t7g5hk86q5nd/uastropepe"
       },
       "prices": {
         "token1Address": "ibc/F082B65C88E4B6D5EF1DB243CDA1D331D002759E938A0F5CD3FFDC5D53B3E349",
-        "token1PriceUsd": 0.999769,
+        "token1PriceUsd": 1.001,
         "token2Address": "factory/neutron14henrqx9y328fjrdvz6l6d92r0t7g5hk86q5nd/uastropepe",
-        "token2PriceUsd": 0.000116515815649544
+        "token2PriceUsd": 0.0001316798449413899
       },
       "protocolRewards": {
         "apr": 0,
@@ -1760,17 +1577,17 @@
         "day": 0
       },
       "totalRewards": {
-        "apr": 0.01061,
+        "apr": 0.06943,
         "apy": 0,
-        "day": 0.0011
+        "day": 0.00786
       },
       "tradingFees": {
         "apr": 0,
-        "apy": 0.01061,
-        "day": 0.40206
+        "apy": 0.06943,
+        "day": 2.86777
       },
       "chainId": "neutron-1",
-      "dayVolumeUsd": 201.0277,
+      "dayVolumeUsd": 1433.8859,
       "deregistered": null,
       "feeRate": [
         "0.30"
@@ -1779,8 +1596,8 @@
       "pairName": "USDC.axl/factory/neutron14henrqx9y328fjrdvz6l6d92r0t7g5hk86q5nd/uastropepe",
       "poolAddress": "neutron1uecnt9mmvxfy35f9slnqaje36yx6qgm5gz2cre0wf63wpgr9da9qjup07a",
       "poolDescription": "USDC - factory/neutron14henrqx9y328fjrdvz6l6d92r0t7g5hk86q5nd/uastropepe ,  USDC - factory/neutron14henrqx9y328fjrdvz6l6d92r0t7g5hk86q5nd/uastropepe , usdc - factory/neutron14henrqx9y328fjrdvz6l6d92r0t7g5hk86q5nd/uastropepe ,  usdc - factory/neutron14henrqx9y328fjrdvz6l6d92r0t7g5hk86q5nd/uastropepe",
-      "poolLiquidity": 633659945386,
-      "poolLiquidityUsd": 13829.95731866,
+      "poolLiquidity": 648237880861,
+      "poolLiquidityUsd": 15075.62012764,
       "poolType": "xyk",
       "rewardTokenSymbol": null,
       "stakeable": false,
@@ -1810,15 +1627,407 @@
     {
       "assets": [
         {
+          "id": "657b340958343f3c5b9f2a84",
+          "address": "untrn",
+          "amount": "6129164326",
+          "symbol": "NTRN"
+        },
+        {
+          "id": "657b340958343f3c5b9f2a85",
+          "address": "ibc/58923AAE6E879D7CB5FB0F2F05550FD4F696099AB0F5CDF0A05CC0309DD8BC78",
+          "amount": "269192571073805",
+          "symbol": "CRBRUS"
+        }
+      ],
+      "astroRewards": {
+        "apr": 0,
+        "apy": 0,
+        "day": 0
+      },
+      "config": {
+        "migrateToAddress": null
+      },
+      "marketStats": {
+        "lastSwapPrice": 44512.98319429,
+        "token0DayVolume": 268.381638,
+        "token0Name": "untrn",
+        "token0Symbol": "NTRN",
+        "token1DayVolume": 12145299.72837,
+        "token1Name": "ucrbrus",
+        "token1Symbol": "ibc/58923AAE6E879D7CB5FB0F2F05550FD4F696099AB0F5CDF0A05CC0309DD8BC78"
+      },
+      "prices": {
+        "token1Address": "untrn",
+        "token1PriceUsd": 1.13,
+        "token2Address": "ibc/58923AAE6E879D7CB5FB0F2F05550FD4F696099AB0F5CDF0A05CC0309DD8BC78",
+        "token2PriceUsd": 0.00002547
+      },
+      "protocolRewards": {
+        "apr": 0,
+        "apy": 0,
+        "day": 0
+      },
+      "totalRewards": {
+        "apr": 0.01655,
+        "apy": 0,
+        "day": 0.00171
+      },
+      "tradingFees": {
+        "apr": 0,
+        "apy": 0.01655,
+        "day": 0.6248
+      },
+      "chainId": "neutron-1",
+      "dayVolumeUsd": 312.401,
+      "deregistered": null,
+      "feeRate": [
+        "0.30"
+      ],
+      "lpAddress": "neutron1svx3sa9u8apwfgknp3jf4wzuel5km6s83pm0errfrklchgzend2s575m27",
+      "pairName": "NTRN/ibc/58923AAE6E879D7CB5FB0F2F05550FD4F696099AB0F5CDF0A05CC0309DD8BC78",
+      "poolAddress": "neutron1eqcl88ek70zp4pms4q3e3qff56lmf67dqg7nd57as0ge67geh5rqse5sph",
+      "poolDescription": "untrn -  ,  untrn -  , untrn -  ,  untrn -",
+      "poolLiquidity": 1275109140128,
+      "poolLiquidityUsd": 13782.29047362,
+      "poolType": "xyk",
+      "rewardTokenSymbol": null,
+      "stakeable": false,
+      "tags": [
+        "ILLIQUID"
+      ],
+      "token0Address": "untrn",
+      "token1Address": "ibc/58923AAE6E879D7CB5FB0F2F05550FD4F696099AB0F5CDF0A05CC0309DD8BC78",
+      "poolConfig": {
+        "block_time_last": 0,
+        "price0_cumulative_last": "0",
+        "price1_cumulative_last": "0"
+      },
+      "isBlocked": false,
+      "name": "NTRN - CRBRUS",
+      "isNew": false,
+      "isIlliquid": true,
+      "isDeregistered": false,
+      "sortingAssets": [
+        "NTRN",
+        "ibc/58923AAE6E879D7CB5FB0F2F05550FD4F696099AB0F5CDF0A05CC0309DD8BC78",
+        "untrn",
+        "ibc/58923AAE6E879D7CB5FB0F2F05550FD4F696099AB0F5CDF0A05CC0309DD8BC78",
+        "neutron1eqcl88ek70zp4pms4q3e3qff56lmf67dqg7nd57as0ge67geh5rqse5sph"
+      ]
+    },
+    {
+      "assets": [
+        {
+          "id": "6583551f8c4c7910aa87f5ca",
+          "address": "untrn",
+          "amount": "5548903155",
+          "symbol": "NTRN"
+        },
+        {
+          "id": "6583551f8c4c7910aa87f5cb",
+          "address": "factory/neutron108x7vp9zv22d6wxrs9as8dshd3pd5vsga463yd/JIMMY",
+          "amount": "1207719313515562",
+          "symbol": "JIMMY"
+        }
+      ],
+      "astroRewards": {
+        "apr": 0,
+        "apy": 0,
+        "day": 0
+      },
+      "config": {
+        "migrateToAddress": null
+      },
+      "marketStats": {
+        "lastSwapPrice": 217581.27500062,
+        "token0DayVolume": 5043.091842,
+        "token0Name": "untrn",
+        "token0Symbol": "NTRN",
+        "token1DayVolume": 775989628.880793,
+        "token1Name": "factory/neutron108x7vp9zv22d6wxrs9as8dshd3pd5vsga463yd/JIMMY",
+        "token1Symbol": "factory/neutron108x7vp9zv22d6wxrs9as8dshd3pd5vsga463yd/JIMMY"
+      },
+      "prices": {
+        "token1Address": "untrn",
+        "token1PriceUsd": 1.12,
+        "token2Address": "factory/neutron108x7vp9zv22d6wxrs9as8dshd3pd5vsga463yd/JIMMY",
+        "token2PriceUsd": 0.000005180368898315579
+      },
+      "protocolRewards": {
+        "apr": 0,
+        "apy": 0,
+        "day": 0
+      },
+      "totalRewards": {
+        "apr": 0.3465,
+        "apy": 0,
+        "day": 0.03244
+      },
+      "tradingFees": {
+        "apr": 0,
+        "apy": 0.3465,
+        "day": 11.83911
+      },
+      "chainId": "neutron-1",
+      "dayVolumeUsd": 5919.5564,
+      "deregistered": null,
+      "feeRate": [
+        "0.30"
+      ],
+      "lpAddress": "neutron1zpmq58ffj9572pqywfh98nqnuy4reqgsz6pvdc5uquzauk7jwkusp4s4t8",
+      "pairName": "NTRN/factory/neutron108x7vp9zv22d6wxrs9as8dshd3pd5vsga463yd/JIMMY",
+      "poolAddress": "neutron1ylks7ezlht2r6n9yejvtk24r9s7j6m097zuh4htd8hrp2auyx72qu7ghzy",
+      "poolDescription": "untrn - factory/neutron108x7vp9zv22d6wxrs9as8dshd3pd5vsga463yd/JIMMY ,  untrn - factory/neutron108x7vp9zv22d6wxrs9as8dshd3pd5vsga463yd/JIMMY , untrn - factory/neutron108x7vp9zv22d6wxrs9as8dshd3pd5vsga463yd/jimmy ,  untrn - factory/neutron108x7vp9zv22d6wxrs9as8dshd3pd5vsga463yd/jimmy",
+      "poolLiquidity": 2557477975850,
+      "poolLiquidityUsd": 12471.20310323,
+      "poolType": "xyk",
+      "rewardTokenSymbol": null,
+      "stakeable": false,
+      "tags": [
+        "ILLIQUID"
+      ],
+      "token0Address": "untrn",
+      "token1Address": "factory/neutron108x7vp9zv22d6wxrs9as8dshd3pd5vsga463yd/JIMMY",
+      "poolConfig": {
+        "block_time_last": 1703105884,
+        "price0_cumulative_last": "0",
+        "price1_cumulative_last": "0"
+      },
+      "isBlocked": false,
+      "name": "NTRN - JIMMY",
+      "isNew": false,
+      "isIlliquid": true,
+      "isDeregistered": false,
+      "sortingAssets": [
+        "untrn",
+        "factory/neutron108x7vp9zv22d6wxrs9as8dshd3pd5vsga463yd/JIMMY",
+        "untrn",
+        "factory/neutron108x7vp9zv22d6wxrs9as8dshd3pd5vsga463yd/JIMMY",
+        "neutron1ylks7ezlht2r6n9yejvtk24r9s7j6m097zuh4htd8hrp2auyx72qu7ghzy"
+      ]
+    },
+    {
+      "assets": [
+        {
+          "id": "657b8c20c361c1dafb0301a3",
+          "address": "ibc/9598CDEB7C6DB7FC21E746C8E0250B30CD5154F39CA111A9D4948A4362F638BD",
+          "amount": "24431928671",
+          "symbol": "MARS"
+        },
+        {
+          "id": "657b8c20c361c1dafb0301a4",
+          "address": "ibc/F082B65C88E4B6D5EF1DB243CDA1D331D002759E938A0F5CD3FFDC5D53B3E349",
+          "amount": "5757375650",
+          "symbol": "USDC.axl"
+        }
+      ],
+      "astroRewards": {
+        "apr": 0,
+        "apy": 0,
+        "day": 0
+      },
+      "config": {
+        "migrateToAddress": null
+      },
+      "marketStats": {
+        "lastSwapPrice": 0.22288924,
+        "token0DayVolume": 2162.204529,
+        "token0Name": "umars",
+        "token0Symbol": "ibc/9598CDEB7C6DB7FC21E746C8E0250B30CD5154F39CA111A9D4948A4362F638BD",
+        "token1DayVolume": 477.755674,
+        "token1Name": "Axelar USDC",
+        "token1Symbol": "USDC.axl"
+      },
+      "prices": {
+        "token1Address": "ibc/9598CDEB7C6DB7FC21E746C8E0250B30CD5154F39CA111A9D4948A4362F638BD",
+        "token1PriceUsd": 0.236736,
+        "token2Address": "ibc/F082B65C88E4B6D5EF1DB243CDA1D331D002759E938A0F5CD3FFDC5D53B3E349",
+        "token2PriceUsd": 0.999273
+      },
+      "protocolRewards": {
+        "apr": 0,
+        "apy": 0,
+        "day": 0
+      },
+      "totalRewards": {
+        "apr": 0.0313,
+        "apy": 0,
+        "day": 0.00271
+      },
+      "tradingFees": {
+        "apr": 0,
+        "apy": 0.0313,
+        "day": 0.98922
+      },
+      "chainId": "neutron-1",
+      "dayVolumeUsd": 494.6098,
+      "deregistered": null,
+      "feeRate": [
+        "0.26",
+        "0.45"
+      ],
+      "lpAddress": "neutron1x0h37skwnddy3emjkdhfetwmdcyarrf9ftlg6mk905lkmfesj9xsdjumfk",
+      "pairName": "ibc/9598CDEB7C6DB7FC21E746C8E0250B30CD5154F39CA111A9D4948A4362F638BD/USDC.axl",
+      "poolAddress": "neutron14qaye93htdks0gfan7l2m3jfrzfm9x8xl677l9yn2tyy2x6fc6mqrqmjdq",
+      "poolDescription": "- USDC ,   - USDC ,  - usdc ,   - usdc",
+      "poolLiquidity": 9996103144,
+      "poolLiquidityUsd": 11537.10710376,
+      "poolType": "concentrated",
+      "rewardTokenSymbol": null,
+      "stakeable": false,
+      "tags": [
+        "ILLIQUID"
+      ],
+      "token0Address": "ibc/9598CDEB7C6DB7FC21E746C8E0250B30CD5154F39CA111A9D4948A4362F638BD",
+      "token1Address": "ibc/F082B65C88E4B6D5EF1DB243CDA1D331D002759E938A0F5CD3FFDC5D53B3E349",
+      "poolConfig": {
+        "block_time_last": 1703584555,
+        "pool_params": {
+          "mid_fee": "0.0026",
+          "out_fee": "0.0045",
+          "fee_gamma": "0.00023",
+          "repeg_profit_threshold": "0.000002",
+          "min_price_scale_delta": "0.000146",
+          "ma_half_time": 600
+        },
+        "pool_state": {
+          "initial": {
+            "amp": "0",
+            "gamma": "0"
+          },
+          "future": {
+            "amp": "10",
+            "gamma": "0.000145"
+          },
+          "future_time": 1702221320,
+          "initial_time": 0,
+          "price_state": {
+            "oracle_price": "4.567133568270932792",
+            "last_price": "4.496601225754768315",
+            "price_scale": "5.276650385325093371",
+            "last_price_update": 1703584555,
+            "xcp_profit": "1.189174943565225086",
+            "xcp_profit_real": "1.187392184786264471"
+          }
+        }
+      },
+      "isBlocked": false,
+      "name": "MARS - USDC.axl",
+      "isNew": false,
+      "isIlliquid": true,
+      "isDeregistered": false,
+      "sortingAssets": [
+        "ibc/9598CDEB7C6DB7FC21E746C8E0250B30CD5154F39CA111A9D4948A4362F638BD",
+        "USDC.axl",
+        "ibc/9598CDEB7C6DB7FC21E746C8E0250B30CD5154F39CA111A9D4948A4362F638BD",
+        "ibc/F082B65C88E4B6D5EF1DB243CDA1D331D002759E938A0F5CD3FFDC5D53B3E349",
+        "neutron14qaye93htdks0gfan7l2m3jfrzfm9x8xl677l9yn2tyy2x6fc6mqrqmjdq"
+      ]
+    },
+    {
+      "assets": [
+        {
+          "id": "658b398cacdb67e3934f599f",
+          "address": "factory/neutron1lg8nydf8nagrrp2f72y5mk9newv2gs6a3mm3cn/GAY",
+          "amount": "3358086050459268",
+          "symbol": "GAY"
+        },
+        {
+          "id": "658b398cacdb67e3934f59a0",
+          "address": "untrn",
+          "amount": "5179372526",
+          "symbol": "NTRN"
+        }
+      ],
+      "astroRewards": {
+        "apr": 0,
+        "apy": 0,
+        "day": 0
+      },
+      "config": {
+        "migrateToAddress": null
+      },
+      "marketStats": {
+        "lastSwapPrice": 0.00000153,
+        "token0DayVolume": 752752850.741774,
+        "token0Name": "factory/neutron1lg8nydf8nagrrp2f72y5mk9newv2gs6a3mm3cn/GAY",
+        "token0Symbol": "factory/neutron1lg8nydf8nagrrp2f72y5mk9newv2gs6a3mm3cn/GAY",
+        "token1DayVolume": 1349.932542,
+        "token1Name": "untrn",
+        "token1Symbol": "NTRN"
+      },
+      "prices": {
+        "token1Address": "factory/neutron1lg8nydf8nagrrp2f72y5mk9newv2gs6a3mm3cn/GAY",
+        "token1PriceUsd": 0.000001694283194053957,
+        "token2Address": "untrn",
+        "token2PriceUsd": 1.12
+      },
+      "protocolRewards": {
+        "apr": 0,
+        "apy": 0,
+        "day": 0
+      },
+      "totalRewards": {
+        "apr": 0.09734,
+        "apy": 0,
+        "day": 0.0084
+      },
+      "tradingFees": {
+        "apr": 0,
+        "apy": 0.09734,
+        "day": 3.06442
+      },
+      "chainId": "neutron-1",
+      "dayVolumeUsd": 1532.2082,
+      "deregistered": null,
+      "feeRate": [
+        "0.30"
+      ],
+      "lpAddress": "neutron1lr46a8u7ln262a8ygz23natyx77qwsqr80wmxfxuhp27zh6yap4sq6c24y",
+      "pairName": "factory/neutron1lg8nydf8nagrrp2f72y5mk9newv2gs6a3mm3cn/GAY/NTRN",
+      "poolAddress": "neutron1epg2h5cnz9m677xe82r2zqdrj90u2th6spadm09mezcfwcxq9zwschacrj",
+      "poolDescription": "factory/neutron1lg8nydf8nagrrp2f72y5mk9newv2gs6a3mm3cn/GAY - untrn ,  factory/neutron1lg8nydf8nagrrp2f72y5mk9newv2gs6a3mm3cn/GAY - untrn , factory/neutron1lg8nydf8nagrrp2f72y5mk9newv2gs6a3mm3cn/gay - untrn ,  factory/neutron1lg8nydf8nagrrp2f72y5mk9newv2gs6a3mm3cn/gay - untrn",
+      "poolLiquidity": 4165882504708,
+      "poolLiquidityUsd": 11490.4459886,
+      "poolType": "xyk",
+      "rewardTokenSymbol": null,
+      "stakeable": false,
+      "tags": [
+        "ILLIQUID",
+        "NEW"
+      ],
+      "token0Address": "factory/neutron1lg8nydf8nagrrp2f72y5mk9newv2gs6a3mm3cn/GAY",
+      "token1Address": "untrn",
+      "poolConfig": {
+        "block_time_last": 0,
+        "price0_cumulative_last": "0",
+        "price1_cumulative_last": "0"
+      },
+      "isBlocked": false,
+      "name": "GAY - NTRN",
+      "isNew": true,
+      "isIlliquid": true,
+      "isDeregistered": false,
+      "sortingAssets": [
+        "factory/neutron1lg8nydf8nagrrp2f72y5mk9newv2gs6a3mm3cn/GAY",
+        "untrn",
+        "factory/neutron1lg8nydf8nagrrp2f72y5mk9newv2gs6a3mm3cn/GAY",
+        "untrn",
+        "neutron1epg2h5cnz9m677xe82r2zqdrj90u2th6spadm09mezcfwcxq9zwschacrj"
+      ]
+    },
+    {
+      "assets": [
+        {
           "id": "657ba6b283cb746a55cea61f",
           "address": "ibc/5751B8BCDA688FD0A8EC0B292EEF1CDEAB4B766B63EC632778B196D317C40C3A",
-          "amount": "26540448242",
+          "amount": "21082810116",
           "symbol": "ASTRO"
         },
         {
           "id": "657ba6b283cb746a55cea620",
           "address": "ibc/F082B65C88E4B6D5EF1DB243CDA1D331D002759E938A0F5CD3FFDC5D53B3E349",
-          "amount": "6178468013",
+          "amount": "4784730213",
           "symbol": "USDC.axl"
         }
       ],
@@ -1831,19 +2040,19 @@
         "migrateToAddress": "neutron1jh27klc7z8xk3nr32nynvk40qm9f64eypq7nj2w48egtehu35n3q59pkfn"
       },
       "marketStats": {
-        "lastSwapPrice": 0.23293666,
-        "token0DayVolume": 2114.572303,
+        "lastSwapPrice": 0.22822207,
+        "token0DayVolume": 1270.153996,
         "token0Name": "Astroport",
         "token0Symbol": "ASTRO",
-        "token1DayVolume": 508.756031,
+        "token1DayVolume": 300.618671,
         "token1Name": "Axelar USDC",
         "token1Symbol": "USDC.axl"
       },
       "prices": {
         "token1Address": "ibc/5751B8BCDA688FD0A8EC0B292EEF1CDEAB4B766B63EC632778B196D317C40C3A",
-        "token1PriceUsd": 0.2323328751238073,
+        "token1PriceUsd": 0.2293317683567022,
         "token2Address": "ibc/F082B65C88E4B6D5EF1DB243CDA1D331D002759E938A0F5CD3FFDC5D53B3E349",
-        "token2PriceUsd": 0.99899
+        "token2PriceUsd": 0.998639
       },
       "protocolRewards": {
         "apr": 0,
@@ -1851,17 +2060,17 @@
         "day": 0
       },
       "totalRewards": {
-        "apr": 0.03011,
+        "apr": 0.02272,
         "apy": 0,
-        "day": 0.00279
+        "day": 0.00164
       },
       "tradingFees": {
         "apr": 0,
-        "apy": 0.03011,
-        "day": 1.01773
+        "apy": 0.02272,
+        "day": 0.59841
       },
       "chainId": "neutron-1",
-      "dayVolumeUsd": 508.865,
+      "dayVolumeUsd": 299.206,
       "deregistered": null,
       "feeRate": [
         "0.30"
@@ -1870,8 +2079,8 @@
       "pairName": "ASTRO/USDC.axl",
       "poolAddress": "neutron1jpm7j2cmj2mmk5pnxv20dxz869tw2vyy87qdl0xjasqnn23l04psudtf2y",
       "poolDescription": "- USDC ,   - USDC ,  - usdc ,   - usdc",
-      "poolLiquidity": 11150266079,
-      "poolLiquidityUsd": 12338.44640744,
+      "poolLiquidity": 8744431632,
+      "poolLiquidityUsd": 9613.17632101,
       "poolType": "xyk",
       "rewardTokenSymbol": null,
       "stakeable": false,
@@ -1897,124 +2106,6 @@
         "ibc/5751B8BCDA688FD0A8EC0B292EEF1CDEAB4B766B63EC632778B196D317C40C3A",
         "ibc/F082B65C88E4B6D5EF1DB243CDA1D331D002759E938A0F5CD3FFDC5D53B3E349",
         "neutron1jpm7j2cmj2mmk5pnxv20dxz869tw2vyy87qdl0xjasqnn23l04psudtf2y"
-      ]
-    },
-    {
-      "assets": [
-        {
-          "id": "657b8c20c361c1dafb0301a3",
-          "address": "ibc/9598CDEB7C6DB7FC21E746C8E0250B30CD5154F39CA111A9D4948A4362F638BD",
-          "amount": "25651846330",
-          "symbol": "MARS"
-        },
-        {
-          "id": "657b8c20c361c1dafb0301a4",
-          "address": "ibc/F082B65C88E4B6D5EF1DB243CDA1D331D002759E938A0F5CD3FFDC5D53B3E349",
-          "amount": "5486077930",
-          "symbol": "USDC.axl"
-        }
-      ],
-      "astroRewards": {
-        "apr": 0,
-        "apy": 0,
-        "day": 0
-      },
-      "config": {
-        "migrateToAddress": null
-      },
-      "marketStats": {
-        "lastSwapPrice": 0.2184698,
-        "token0DayVolume": 945.018273,
-        "token0Name": "umars",
-        "token0Symbol": "ibc/9598CDEB7C6DB7FC21E746C8E0250B30CD5154F39CA111A9D4948A4362F638BD",
-        "token1DayVolume": 206.457954,
-        "token1Name": "Axelar USDC",
-        "token1Symbol": "USDC.axl"
-      },
-      "prices": {
-        "token1Address": "ibc/9598CDEB7C6DB7FC21E746C8E0250B30CD5154F39CA111A9D4948A4362F638BD",
-        "token1PriceUsd": 0.204278,
-        "token2Address": "ibc/F082B65C88E4B6D5EF1DB243CDA1D331D002759E938A0F5CD3FFDC5D53B3E349",
-        "token2PriceUsd": 1
-      },
-      "protocolRewards": {
-        "apr": 0,
-        "apy": 0,
-        "day": 0
-      },
-      "totalRewards": {
-        "apr": 0.01405,
-        "apy": 0,
-        "day": 0.00113
-      },
-      "tradingFees": {
-        "apr": 0,
-        "apy": 0.01405,
-        "day": 0.41292
-      },
-      "chainId": "neutron-1",
-      "dayVolumeUsd": 206.458,
-      "deregistered": null,
-      "feeRate": [
-        "0.26",
-        "0.45"
-      ],
-      "lpAddress": "neutron1x0h37skwnddy3emjkdhfetwmdcyarrf9ftlg6mk905lkmfesj9xsdjumfk",
-      "pairName": "ibc/9598CDEB7C6DB7FC21E746C8E0250B30CD5154F39CA111A9D4948A4362F638BD/USDC.axl",
-      "poolAddress": "neutron14qaye93htdks0gfan7l2m3jfrzfm9x8xl677l9yn2tyy2x6fc6mqrqmjdq",
-      "poolDescription": "- USDC ,   - USDC ,  - usdc ,   - usdc",
-      "poolLiquidity": 9996103144,
-      "poolLiquidityUsd": 10726.18579459,
-      "poolType": "concentrated",
-      "rewardTokenSymbol": null,
-      "stakeable": false,
-      "tags": [
-        "ILLIQUID"
-      ],
-      "token0Address": "ibc/9598CDEB7C6DB7FC21E746C8E0250B30CD5154F39CA111A9D4948A4362F638BD",
-      "token1Address": "ibc/F082B65C88E4B6D5EF1DB243CDA1D331D002759E938A0F5CD3FFDC5D53B3E349",
-      "poolConfig": {
-        "block_time_last": 1703509097,
-        "pool_params": {
-          "mid_fee": "0.0026",
-          "out_fee": "0.0045",
-          "fee_gamma": "0.00023",
-          "repeg_profit_threshold": "0.000002",
-          "min_price_scale_delta": "0.000146",
-          "ma_half_time": 600
-        },
-        "pool_state": {
-          "initial": {
-            "amp": "0",
-            "gamma": "0"
-          },
-          "future": {
-            "amp": "10",
-            "gamma": "0.000145"
-          },
-          "future_time": 1702221320,
-          "initial_time": 0,
-          "price_state": {
-            "oracle_price": "4.469338978055835617",
-            "last_price": "4.567133568270932792",
-            "price_scale": "5.355485587220000111",
-            "last_price_update": 1703509097,
-            "xcp_profit": "1.189108822257539473",
-            "xcp_profit_real": "1.187373550766844772"
-          }
-        }
-      },
-      "isBlocked": false,
-      "name": "MARS - USDC.axl",
-      "isNew": false,
-      "isIlliquid": true,
-      "isDeregistered": false,
-      "sortingAssets": [
-        "ibc/9598CDEB7C6DB7FC21E746C8E0250B30CD5154F39CA111A9D4948A4362F638BD",
-        "USDC.axl",
-        "ibc/9598CDEB7C6DB7FC21E746C8E0250B30CD5154F39CA111A9D4948A4362F638BD",
-        "ibc/F082B65C88E4B6D5EF1DB243CDA1D331D002759E938A0F5CD3FFDC5D53B3E349",
-        "neutron14qaye93htdks0gfan7l2m3jfrzfm9x8xl677l9yn2tyy2x6fc6mqrqmjdq"
       ]
     },
     {
@@ -2115,13 +2206,13 @@
         {
           "id": "657ba6b2eacdd4555fc6fcdd",
           "address": "ibc/5751B8BCDA688FD0A8EC0B292EEF1CDEAB4B766B63EC632778B196D317C40C3A",
-          "amount": "6659377156",
+          "amount": "6231561313",
           "symbol": "ASTRO"
         },
         {
           "id": "657ba6b2eacdd4555fc6fcde",
           "address": "untrn",
-          "amount": "1195690044",
+          "amount": "1275332133",
           "symbol": "NTRN"
         }
       ],
@@ -2134,19 +2225,19 @@
         "migrateToAddress": "neutron1wj4tfjdd8qgzet4m8nv6v27j42qnz6j6cty5apy3vtcn45edspwsu4vt25"
       },
       "marketStats": {
-        "lastSwapPrice": 0.1817359,
-        "token0DayVolume": 1145.891219,
+        "lastSwapPrice": 0.20454691,
+        "token0DayVolume": 212.515616,
         "token0Name": "Astroport",
         "token0Symbol": "ASTRO",
-        "token1DayVolume": 233.956952,
+        "token1DayVolume": 42.679515,
         "token1Name": "untrn",
         "token1Symbol": "NTRN"
       },
       "prices": {
         "token1Address": "ibc/5751B8BCDA688FD0A8EC0B292EEF1CDEAB4B766B63EC632778B196D317C40C3A",
-        "token1PriceUsd": 0.2326843063676907,
+        "token1PriceUsd": 0.2281373933560975,
         "token2Address": "untrn",
-        "token2PriceUsd": 1.29
+        "token2PriceUsd": 1.12
       },
       "protocolRewards": {
         "apr": 0,
@@ -2154,17 +2245,17 @@
         "day": 0
       },
       "totalRewards": {
-        "apr": 0.06611,
+        "apr": 0.01276,
         "apy": 0,
-        "day": 0.00153
+        "day": 0.00027
       },
       "tradingFees": {
         "apr": 0,
-        "apy": 0.06611,
-        "day": 0.56005
+        "apy": 0.01276,
+        "day": 0.0996
       },
       "chainId": "neutron-1",
-      "dayVolumeUsd": 280.0265,
+      "dayVolumeUsd": 49.8004,
       "deregistered": null,
       "feeRate": [
         "0.30"
@@ -2173,8 +2264,8 @@
       "pairName": "ASTRO/NTRN",
       "poolAddress": "neutron1s2lr8u69xammmg3s8hemegcz57y07ae0wa7c7d2adupp6du3neyqd8ygp7",
       "poolDescription": "- untrn ,   - untrn ,  - untrn ,   - untrn",
-      "poolLiquidity": 2070297560,
-      "poolLiquidityUsd": 3091.97271114,
+      "poolLiquidity": 2067757615,
+      "poolLiquidityUsd": 2850.02414344,
       "poolType": "xyk",
       "rewardTokenSymbol": null,
       "stakeable": false,
@@ -2207,13 +2298,13 @@
         {
           "id": "657b93ba88779c34563a14cf",
           "address": "factory/neutron1ug740qrkquxzrk2hh29qrlx3sktkfml3je7juusc2te7xmvsscns0n2wry/wstETH",
-          "amount": "421301958009942269",
+          "amount": "422152076975987006",
           "symbol": "wstETH"
         },
         {
           "id": "657b93ba88779c34563a14d0",
           "address": "ibc/A585C2D15DCD3B010849B453A2CFCB5E213208A5AB665691792684C26274304D",
-          "amount": "481782197081789210",
+          "amount": "480892701325569510",
           "symbol": "WETH.axl"
         }
       ],
@@ -2226,19 +2317,19 @@
         "migrateToAddress": "neutron1yw0a7nxa8jdgzmdsme4gwxhj76n44z305qgwrzvlfavgna9epcys3k9m2f"
       },
       "marketStats": {
-        "lastSwapPrice": 1.15466051,
-        "token0DayVolume": 0.00059016,
+        "lastSwapPrice": 1.16709648,
+        "token0DayVolume": 0.0340771,
         "token0Name": "factory/neutron1ug740qrkquxzrk2hh29qrlx3sktkfml3je7juusc2te7xmvsscns0n2wry/wstETH",
         "token0Symbol": "wstETH",
-        "token1DayVolume": 0.00068144,
+        "token1DayVolume": 0.04052873,
         "token1Name": "Wrapped Ether (wei)",
         "token1Symbol": "wETH"
       },
       "prices": {
         "token1Address": "factory/neutron1ug740qrkquxzrk2hh29qrlx3sktkfml3je7juusc2te7xmvsscns0n2wry/wstETH",
-        "token1PriceUsd": 2544.77,
+        "token1PriceUsd": 2577.51,
         "token2Address": "ibc/A585C2D15DCD3B010849B453A2CFCB5E213208A5AB665691792684C26274304D",
-        "token2PriceUsd": 2210.62
+        "token2PriceUsd": 2253.08
       },
       "protocolRewards": {
         "apr": 0,
@@ -2246,17 +2337,17 @@
         "day": 0
       },
       "totalRewards": {
-        "apr": 0.00051,
+        "apr": 0.03,
         "apy": 0,
-        "day": 1e-05
+        "day": 0.00049
       },
       "tradingFees": {
         "apr": 0,
-        "apy": 0.00051,
-        "day": 0.003
+        "apy": 0.03,
+        "day": 0.17851
       },
       "chainId": "neutron-1",
-      "dayVolumeUsd": 1.5018,
+      "dayVolumeUsd": 89.2556,
       "deregistered": null,
       "feeRate": [
         "0.30"
@@ -2266,7 +2357,7 @@
       "poolAddress": "neutron1wzsewgysr8ttdlw96lp7u2j55z3sg7rtuvfjmd70ajavvpr3308s3zekqu",
       "poolDescription": "factory/neutron1ug740qrkquxzrk2hh29qrlx3sktkfml3je7juusc2te7xmvsscns0n2wry/wstETH - Wrapped Ether (wei) ,  factory/neutron1ug740qrkquxzrk2hh29qrlx3sktkfml3je7juusc2te7xmvsscns0n2wry/wstETH - wETH , factory/neutron1ug740qrkquxzrk2hh29qrlx3sktkfml3je7juusc2te7xmvsscns0n2wry/wsteth - wrapped ether (wei) ,  factory/neutron1ug740qrkquxzrk2hh29qrlx3sktkfml3je7juusc2te7xmvsscns0n2wry/wsteth - weth",
       "poolLiquidity": 446052009563644400,
-      "poolLiquidityUsd": 2137.07795035,
+      "poolLiquidityUsd": 2171.59092742,
       "poolType": "xyk",
       "rewardTokenSymbol": "wstETH",
       "stakeable": true,
@@ -2388,15 +2479,107 @@
     {
       "assets": [
         {
+          "id": "6588a19afbb4c9d91fa989d1",
+          "address": "untrn",
+          "amount": "1420662166",
+          "symbol": "NTRN"
+        },
+        {
+          "id": "6588a19afbb4c9d91fa989d2",
+          "address": "factory/neutron143wp6g8paqasnuuey6zyapucknwy9rhnld8hkr/bad",
+          "amount": "31446888037537",
+          "symbol": "BAD"
+        }
+      ],
+      "astroRewards": {
+        "apr": 0,
+        "apy": 0,
+        "day": 0
+      },
+      "config": {
+        "migrateToAddress": null
+      },
+      "marketStats": {
+        "lastSwapPrice": 22178.570174,
+        "token0DayVolume": 2785.384832,
+        "token0Name": "untrn",
+        "token0Symbol": "NTRN",
+        "token1DayVolume": 65023686.558933,
+        "token1Name": "factory/neutron143wp6g8paqasnuuey6zyapucknwy9rhnld8hkr/bad",
+        "token1Symbol": "factory/neutron143wp6g8paqasnuuey6zyapucknwy9rhnld8hkr/bad"
+      },
+      "prices": {
+        "token1Address": "untrn",
+        "token1PriceUsd": 1.12,
+        "token2Address": "factory/neutron143wp6g8paqasnuuey6zyapucknwy9rhnld8hkr/bad",
+        "token2PriceUsd": 0
+      },
+      "protocolRewards": {
+        "apr": 0,
+        "apy": 0,
+        "day": 0
+      },
+      "totalRewards": {
+        "apr": 1.50954,
+        "apy": 0,
+        "day": 0.01803
+      },
+      "tradingFees": {
+        "apr": 0,
+        "apy": 1.50954,
+        "day": 6.58052
+      },
+      "chainId": "neutron-1",
+      "dayVolumeUsd": 3290.2587,
+      "deregistered": null,
+      "feeRate": [
+        "0.30"
+      ],
+      "lpAddress": "neutron1knz3a9pau2nwxcwwspc8e23s5drzstaewtar9szv40hwwqnze5xszg645a",
+      "pairName": "NTRN/factory/neutron143wp6g8paqasnuuey6zyapucknwy9rhnld8hkr/bad",
+      "poolAddress": "neutron1c9m39c3c2xr0axplqh4zaznx8chx3e5f368ddhwqcputuxmyckfsxra8xk",
+      "poolDescription": "untrn - factory/neutron143wp6g8paqasnuuey6zyapucknwy9rhnld8hkr/bad ,  untrn - factory/neutron143wp6g8paqasnuuey6zyapucknwy9rhnld8hkr/bad , untrn - factory/neutron143wp6g8paqasnuuey6zyapucknwy9rhnld8hkr/bad ,  untrn - factory/neutron143wp6g8paqasnuuey6zyapucknwy9rhnld8hkr/bad",
+      "poolLiquidity": 192831896557,
+      "poolLiquidityUsd": 1591.14162592,
+      "poolType": "xyk",
+      "rewardTokenSymbol": null,
+      "stakeable": false,
+      "tags": [
+        "ILLIQUID",
+        "NEW"
+      ],
+      "token0Address": "untrn",
+      "token1Address": "factory/neutron143wp6g8paqasnuuey6zyapucknwy9rhnld8hkr/bad",
+      "poolConfig": {
+        "block_time_last": 0,
+        "price0_cumulative_last": "0",
+        "price1_cumulative_last": "0"
+      },
+      "isBlocked": false,
+      "name": "NTRN - BAD",
+      "isNew": true,
+      "isIlliquid": true,
+      "isDeregistered": false,
+      "sortingAssets": [
+        "untrn",
+        "factory/neutron143wp6g8paqasnuuey6zyapucknwy9rhnld8hkr/bad",
+        "untrn",
+        "factory/neutron143wp6g8paqasnuuey6zyapucknwy9rhnld8hkr/bad",
+        "neutron1c9m39c3c2xr0axplqh4zaznx8chx3e5f368ddhwqcputuxmyckfsxra8xk"
+      ]
+    },
+    {
+      "assets": [
+        {
           "id": "657ba1662d294335e4f31516",
           "address": "ibc/773B4D0A3CD667B2275D5A4A7A2F0909C0BA0F4059C0B9181E680DDF4965DCC7",
-          "amount": "48460719",
+          "amount": "57518995",
           "symbol": "TIA"
         },
         {
           "id": "657ba1662d294335e4f31517",
           "address": "untrn",
-          "amount": "599475413",
+          "amount": "671356926",
           "symbol": "NTRN"
         }
       ],
@@ -2409,19 +2592,19 @@
         "migrateToAddress": null
       },
       "marketStats": {
-        "lastSwapPrice": 12.21072289,
-        "token0DayVolume": 35.546117,
+        "lastSwapPrice": 11.55778,
+        "token0DayVolume": 30.520624,
         "token0Name": "utia",
         "token0Symbol": "ibc/773B4D0A3CD667B2275D5A4A7A2F0909C0BA0F4059C0B9181E680DDF4965DCC7",
-        "token1DayVolume": 413.568073,
+        "token1DayVolume": 332.738687,
         "token1Name": "untrn",
         "token1Symbol": "NTRN"
       },
       "prices": {
         "token1Address": "ibc/773B4D0A3CD667B2275D5A4A7A2F0909C0BA0F4059C0B9181E680DDF4965DCC7",
-        "token1PriceUsd": 14.28,
+        "token1PriceUsd": 12.37,
         "token2Address": "untrn",
-        "token2PriceUsd": 1.29
+        "token2PriceUsd": 1.13
       },
       "protocolRewards": {
         "apr": 0,
@@ -2429,17 +2612,17 @@
         "day": 0
       },
       "totalRewards": {
-        "apr": 0.24529,
+        "apr": 0.19172,
         "apy": 0,
-        "day": 0.0027
+        "day": 0.00212
       },
       "tradingFees": {
         "apr": 0,
-        "apy": 0.24529,
-        "day": 0.98473
+        "apy": 0.19172,
+        "day": 0.77219
       },
       "chainId": "neutron-1",
-      "dayVolumeUsd": 492.3662,
+      "dayVolumeUsd": 386.0973,
       "deregistered": null,
       "feeRate": [
         "0.26",
@@ -2449,8 +2632,8 @@
       "pairName": "ibc/773B4D0A3CD667B2275D5A4A7A2F0909C0BA0F4059C0B9181E680DDF4965DCC7/NTRN",
       "poolAddress": "neutron1c4p33xy3ps35gs7w3mcc5vzsdfkwqd3klhnxry0yn2nhl4wnwhxslcp8g8",
       "poolDescription": "- untrn ,   - untrn ,  - untrn ,   - untrn",
-      "poolLiquidity": 140998771,
-      "poolLiquidityUsd": 1465.34235009,
+      "poolLiquidity": 162508603,
+      "poolLiquidityUsd": 1470.14329453,
       "poolType": "concentrated",
       "rewardTokenSymbol": null,
       "stakeable": false,
@@ -2460,7 +2643,7 @@
       "token0Address": "ibc/773B4D0A3CD667B2275D5A4A7A2F0909C0BA0F4059C0B9181E680DDF4965DCC7",
       "token1Address": "untrn",
       "poolConfig": {
-        "block_time_last": 1703516647,
+        "block_time_last": 1703761831,
         "pool_params": {
           "mid_fee": "0.0026",
           "out_fee": "0.0045",
@@ -2481,12 +2664,12 @@
           "future_time": 1699447716,
           "initial_time": 0,
           "price_state": {
-            "oracle_price": "0.081520014264292152",
-            "last_price": "0.081725986011442963",
-            "price_scale": "0.085494684262168687",
-            "last_price_update": 1703516647,
-            "xcp_profit": "1.233834063032285138",
-            "xcp_profit_real": "1.209093305125367144"
+            "oracle_price": "0.086410875429980682",
+            "last_price": "0.08640396970094201",
+            "price_scale": "0.086363313225597742",
+            "last_price_update": 1703761831,
+            "xcp_profit": "1.235501922924692421",
+            "xcp_profit_real": "1.209231059132054262"
           }
         }
       },
@@ -2508,13 +2691,13 @@
         {
           "id": "657b64dd3e3065bec9abd6b2",
           "address": "ibc/F082B65C88E4B6D5EF1DB243CDA1D331D002759E938A0F5CD3FFDC5D53B3E349",
-          "amount": "706910006",
+          "amount": "707397341",
           "symbol": "USDC.axl"
         },
         {
           "id": "657b64dd3e3065bec9abd6b3",
           "address": "ibc/27F48DA7E6C8C1203C9EB2BB225C876F3A600C6C3C1DD94CE283D5D027BD91E4",
-          "amount": "793879932846",
+          "amount": "793336417464",
           "symbol": "DOT"
         }
       ],
@@ -2527,19 +2710,19 @@
         "migrateToAddress": null
       },
       "marketStats": {
-        "lastSwapPrice": 1158.06042431,
-        "token0DayVolume": 75.269451,
+        "lastSwapPrice": 1124.04814976,
+        "token0DayVolume": 1.512152,
         "token0Name": "Axelar USDC",
         "token0Symbol": "USDC.axl",
-        "token1DayVolume": 9.36424805,
+        "token1DayVolume": 0.1693761,
         "token1Name": "79228162514264337593543950342",
         "token1Symbol": "ibc/27F48DA7E6C8C1203C9EB2BB225C876F3A600C6C3C1DD94CE283D5D027BD91E4"
       },
       "prices": {
         "token1Address": "ibc/F082B65C88E4B6D5EF1DB243CDA1D331D002759E938A0F5CD3FFDC5D53B3E349",
-        "token1PriceUsd": 1,
+        "token1PriceUsd": 0.999102,
         "token2Address": "ibc/27F48DA7E6C8C1203C9EB2BB225C876F3A600C6C3C1DD94CE283D5D027BD91E4",
-        "token2PriceUsd": 9
+        "token2PriceUsd": 8.66
       },
       "protocolRewards": {
         "apr": 0,
@@ -2547,17 +2730,17 @@
         "day": 0
       },
       "totalRewards": {
-        "apr": 0.04262,
+        "apr": 0.00079,
         "apy": 0,
-        "day": 0.00045
+        "day": 0.00001
       },
       "tradingFees": {
         "apr": 0,
-        "apy": 0.04262,
-        "day": 0.16596
+        "apy": 0.00079,
+        "day": 0.00302
       },
       "chainId": "neutron-1",
-      "dayVolumeUsd": 82.9814,
+      "dayVolumeUsd": 1.5124,
       "deregistered": null,
       "feeRate": [
         "0.30"
@@ -2567,7 +2750,7 @@
       "poolAddress": "neutron14fv4gvf962xf565k53mx2zv6nj4cqwdz6ft8gv628046hv3c79asvntft2",
       "poolDescription": "USDC -  ,  USDC -  , usdc -  ,  usdc -",
       "poolLiquidity": 23577777624,
-      "poolLiquidityUsd": 1421.40194556,
+      "poolLiquidityUsd": 1393.79143571,
       "poolType": "xyk",
       "rewardTokenSymbol": null,
       "stakeable": false,
@@ -2599,13 +2782,13 @@
         {
           "id": "657ba53d6fce3c3f556217ef",
           "address": "ibc/F082B65C88E4B6D5EF1DB243CDA1D331D002759E938A0F5CD3FFDC5D53B3E349",
-          "amount": "632946512",
+          "amount": "623216580",
           "symbol": "USDC.axl"
         },
         {
           "id": "657ba53d6fce3c3f556217f0",
           "address": "factory/neutron1ug740qrkquxzrk2hh29qrlx3sktkfml3je7juusc2te7xmvsscns0n2wry/wstETH",
-          "amount": "227263414448118026",
+          "amount": "230910248887360872",
           "symbol": "wstETH"
         }
       ],
@@ -2618,19 +2801,19 @@
         "migrateToAddress": null
       },
       "marketStats": {
-        "lastSwapPrice": 373577086.40053076,
-        "token0DayVolume": 85.684198,
+        "lastSwapPrice": 378846401.8146837,
+        "token0DayVolume": 35.038184,
         "token0Name": "Axelar USDC",
         "token0Symbol": "USDC.axl",
-        "token1DayVolume": 0.03217021,
+        "token1DayVolume": 0.01368072,
         "token1Name": "factory/neutron1ug740qrkquxzrk2hh29qrlx3sktkfml3je7juusc2te7xmvsscns0n2wry/wstETH",
         "token1Symbol": "wstETH"
       },
       "prices": {
         "token1Address": "ibc/F082B65C88E4B6D5EF1DB243CDA1D331D002759E938A0F5CD3FFDC5D53B3E349",
-        "token1PriceUsd": 1,
+        "token1PriceUsd": 0.999968,
         "token2Address": "factory/neutron1ug740qrkquxzrk2hh29qrlx3sktkfml3je7juusc2te7xmvsscns0n2wry/wstETH",
-        "token2PriceUsd": 2625.91
+        "token2PriceUsd": 2728.68
       },
       "protocolRewards": {
         "apr": 0,
@@ -2638,17 +2821,17 @@
         "day": 0
       },
       "totalRewards": {
-        "apr": 0.05038,
+        "apr": 0.02069,
         "apy": 0,
-        "day": 0.00047
+        "day": 0.00019
       },
       "tradingFees": {
         "apr": 0,
-        "apy": 0.05038,
-        "day": 0.16974
+        "apy": 0.02069,
+        "day": 0.07104
       },
       "chainId": "neutron-1",
-      "dayVolumeUsd": 84.869,
+      "dayVolumeUsd": 35.5217,
       "deregistered": null,
       "feeRate": [
         "0.26",
@@ -2659,7 +2842,7 @@
       "poolAddress": "neutron1p04tjcuh33p7ruag3h7mh6pe30mujkcs9kkz4634gqpaah4fg20qdlpgla",
       "poolDescription": "USDC - factory/neutron1ug740qrkquxzrk2hh29qrlx3sktkfml3je7juusc2te7xmvsscns0n2wry/wstETH ,  USDC - factory/neutron1ug740qrkquxzrk2hh29qrlx3sktkfml3je7juusc2te7xmvsscns0n2wry/wstETH , usdc - factory/neutron1ug740qrkquxzrk2hh29qrlx3sktkfml3je7juusc2te7xmvsscns0n2wry/wsteth ,  usdc - factory/neutron1ug740qrkquxzrk2hh29qrlx3sktkfml3je7juusc2te7xmvsscns0n2wry/wsteth",
       "poolLiquidity": 11980020,
-      "poolLiquidityUsd": 1229.71978463,
+      "poolLiquidityUsd": 1253.276815,
       "poolType": "concentrated",
       "rewardTokenSymbol": null,
       "stakeable": false,
@@ -2669,7 +2852,7 @@
       "token0Address": "ibc/F082B65C88E4B6D5EF1DB243CDA1D331D002759E938A0F5CD3FFDC5D53B3E349",
       "token1Address": "factory/neutron1ug740qrkquxzrk2hh29qrlx3sktkfml3je7juusc2te7xmvsscns0n2wry/wstETH",
       "poolConfig": {
-        "block_time_last": 1703514706,
+        "block_time_last": 1703720499,
         "pool_params": {
           "mid_fee": "0.0026",
           "out_fee": "0.0045",
@@ -2690,12 +2873,12 @@
           "future_time": 1702221320,
           "initial_time": 0,
           "price_state": {
-            "oracle_price": "2617.630181022807513449",
-            "last_price": "2671.42493339742673067",
-            "price_scale": "2640.073568721293931261",
-            "last_price_update": 1703514706,
-            "xcp_profit": "1.002511675391797914",
-            "xcp_profit_real": "1.001336606985628756"
+            "oracle_price": "2592.490655399687918307",
+            "last_price": "2634.120308206551445217",
+            "price_scale": "2541.225576417112793963",
+            "last_price_update": 1703720499,
+            "xcp_profit": "1.003084381422395665",
+            "xcp_profit_real": "1.00158204287875232"
           }
         }
       },
@@ -2717,13 +2900,13 @@
         {
           "id": "657b91554a02d1029803f07d",
           "address": "ibc/F082B65C88E4B6D5EF1DB243CDA1D331D002759E938A0F5CD3FFDC5D53B3E349",
-          "amount": "572395955",
+          "amount": "567227515",
           "symbol": "USDC.axl"
         },
         {
           "id": "657b91554a02d1029803f07e",
           "address": "ibc/A585C2D15DCD3B010849B453A2CFCB5E213208A5AB665691792684C26274304D",
-          "amount": "244645169330441716",
+          "amount": "240300150343654777",
           "symbol": "WETH.axl"
         }
       ],
@@ -2736,19 +2919,19 @@
         "migrateToAddress": null
       },
       "marketStats": {
-        "lastSwapPrice": 434824530.5727074,
-        "token0DayVolume": 3.09044,
+        "lastSwapPrice": 429710273.73255277,
+        "token0DayVolume": 52.47901,
         "token0Name": "Axelar USDC",
         "token0Symbol": "USDC.axl",
-        "token1DayVolume": 0.00134379,
+        "token1DayVolume": 0.02332403,
         "token1Name": "Wrapped Ether (wei)",
         "token1Symbol": "wETH"
       },
       "prices": {
         "token1Address": "ibc/F082B65C88E4B6D5EF1DB243CDA1D331D002759E938A0F5CD3FFDC5D53B3E349",
-        "token1PriceUsd": 0.999623,
+        "token1PriceUsd": 0.997671,
         "token2Address": "ibc/A585C2D15DCD3B010849B453A2CFCB5E213208A5AB665691792684C26274304D",
-        "token2PriceUsd": 2292.54
+        "token2PriceUsd": 2378.24
       },
       "protocolRewards": {
         "apr": 0,
@@ -2756,17 +2939,17 @@
         "day": 0
       },
       "totalRewards": {
-        "apr": 0.00199,
+        "apr": 0.03409,
         "apy": 0,
-        "day": 2e-05
+        "day": 0.00029
       },
       "tradingFees": {
         "apr": 0,
-        "apy": 0.00199,
-        "day": 0.00618
+        "apy": 0.03409,
+        "day": 0.10622
       },
       "chainId": "neutron-1",
-      "dayVolumeUsd": 3.0893,
+      "dayVolumeUsd": 53.1093,
       "deregistered": null,
       "feeRate": [
         "0.26",
@@ -2776,8 +2959,8 @@
       "pairName": "USDC.axl/wETH",
       "poolAddress": "neutron1jpzzw0wzrerac8dm5kcxhwgl4r3jsux2c8qrkp09a5ch6myfgj4qzptxm8",
       "poolDescription": "USDC - Wrapped Ether (wei) ,  USDC - wETH , usdc - wrapped ether (wei) ,  usdc - weth",
-      "poolLiquidity": 11825831,
-      "poolLiquidityUsd": 1133.03899822,
+      "poolLiquidity": 11665341,
+      "poolLiquidityUsd": 1137.39787167,
       "poolType": "concentrated",
       "rewardTokenSymbol": null,
       "stakeable": false,
@@ -2787,7 +2970,7 @@
       "token0Address": "ibc/F082B65C88E4B6D5EF1DB243CDA1D331D002759E938A0F5CD3FFDC5D53B3E349",
       "token1Address": "ibc/A585C2D15DCD3B010849B453A2CFCB5E213208A5AB665691792684C26274304D",
       "poolConfig": {
-        "block_time_last": 1703431647,
+        "block_time_last": 1703744763,
         "pool_params": {
           "mid_fee": "0.0026",
           "out_fee": "0.0045",
@@ -2808,12 +2991,12 @@
           "future_time": 1702221320,
           "initial_time": 0,
           "price_state": {
-            "oracle_price": "2323.6497765506513891",
-            "last_price": "2304.392924179592244573",
-            "price_scale": "2234.289342579458833924",
-            "last_price_update": 1703431647,
-            "xcp_profit": "1.001262348206143651",
-            "xcp_profit_real": "1.000826646479738417"
+            "oracle_price": "2302.677507705450391196",
+            "last_price": "2331.835645232018320364",
+            "price_scale": "2247.961230240692968951",
+            "last_price_update": 1703744763,
+            "xcp_profit": "1.001493851242131152",
+            "xcp_profit_real": "1.001008998745804302"
           }
         }
       },
@@ -2835,13 +3018,13 @@
         {
           "id": "657b6571dee02e013ce405cf",
           "address": "untrn",
-          "amount": "331183358",
+          "amount": "352970433",
           "symbol": "NTRN"
         },
         {
           "id": "657b6571dee02e013ce405d0",
           "address": "ibc/57503D7852EF4E1899FE6D71C5E81D7C839F76580F86F21E39348FC2BC9D7CE2",
-          "amount": "423063043",
+          "amount": "397247842",
           "symbol": "USDT.axl"
         }
       ],
@@ -2854,19 +3037,19 @@
         "migrateToAddress": null
       },
       "marketStats": {
-        "lastSwapPrice": 1.24383279,
-        "token0DayVolume": 39.334338,
+        "lastSwapPrice": 1.1591072,
+        "token0DayVolume": 43.30556,
         "token0Name": "untrn",
         "token0Symbol": "NTRN",
-        "token1DayVolume": 46.082762,
+        "token1DayVolume": 51.685759,
         "token1Name": "USDT",
         "token1Symbol": "USDT"
       },
       "prices": {
         "token1Address": "untrn",
-        "token1PriceUsd": 1.26,
+        "token1PriceUsd": 1.14,
         "token2Address": "ibc/57503D7852EF4E1899FE6D71C5E81D7C839F76580F86F21E39348FC2BC9D7CE2",
-        "token2PriceUsd": 1
+        "token2PriceUsd": 1.001
       },
       "protocolRewards": {
         "apr": 0,
@@ -2874,17 +3057,17 @@
         "day": 0
       },
       "totalRewards": {
-        "apr": 0.04113,
+        "apr": 0.0473,
         "apy": 0,
-        "day": 0.00026
+        "day": 0.00028
       },
       "tradingFees": {
         "apr": 0,
-        "apy": 0.04113,
-        "day": 0.0947
+        "apy": 0.0473,
+        "day": 0.10368
       },
       "chainId": "neutron-1",
-      "dayVolumeUsd": 47.3493,
+      "dayVolumeUsd": 51.8386,
       "deregistered": null,
       "feeRate": [
         "0.26",
@@ -2895,7 +3078,7 @@
       "poolAddress": "neutron1lw4fslhahxchrw6kjq60hl7x4vskxy75ym4x537dzr788cqv0k2q9vum75",
       "poolDescription": "untrn - USDT ,  untrn - USDT , untrn - usdt ,  untrn - usdt",
       "poolLiquidity": 373870088,
-      "poolLiquidityUsd": 840.35407408,
+      "poolLiquidityUsd": 800.03138346,
       "poolType": "concentrated",
       "rewardTokenSymbol": null,
       "stakeable": false,
@@ -2905,7 +3088,7 @@
       "token0Address": "untrn",
       "token1Address": "ibc/57503D7852EF4E1899FE6D71C5E81D7C839F76580F86F21E39348FC2BC9D7CE2",
       "poolConfig": {
-        "block_time_last": 1703515234,
+        "block_time_last": 1703744688,
         "pool_params": {
           "mid_fee": "0.0026",
           "out_fee": "0.0045",
@@ -2926,12 +3109,12 @@
           "future_time": 1702221320,
           "initial_time": 0,
           "price_state": {
-            "oracle_price": "0.847202581065506097",
-            "last_price": "0.805741843297610088",
-            "price_scale": "0.88436366262834785",
-            "last_price_update": 1703515234,
-            "xcp_profit": "1.003003506175817459",
-            "xcp_profit_real": "1.001668112258027851"
+            "oracle_price": "0.845792828085359254",
+            "last_price": "0.860940555897134944",
+            "price_scale": "0.83513180354821034",
+            "last_price_update": 1703744688,
+            "xcp_profit": "1.003313005202868252",
+            "xcp_profit_real": "1.001810703483192468"
           }
         }
       },
@@ -2951,316 +3134,15 @@
     {
       "assets": [
         {
-          "id": "658375db8c4c7910aa881124",
-          "address": "ibc/5751B8BCDA688FD0A8EC0B292EEF1CDEAB4B766B63EC632778B196D317C40C3A",
-          "amount": "1121450930",
-          "symbol": "ASTRO"
-        },
-        {
-          "id": "658375db8c4c7910aa881125",
-          "address": "factory/neutron108x7vp9zv22d6wxrs9as8dshd3pd5vsga463yd/JIMMY",
-          "amount": "13802142149304",
-          "symbol": "JIMMY"
-        }
-      ],
-      "astroRewards": {
-        "apr": 0,
-        "apy": 0,
-        "day": 0
-      },
-      "config": {
-        "migrateToAddress": null
-      },
-      "marketStats": {
-        "lastSwapPrice": 13005.89935692,
-        "token0DayVolume": 2047.195497,
-        "token0Name": "Astroport",
-        "token0Symbol": "ASTRO",
-        "token1DayVolume": 31145108.384794,
-        "token1Name": "factory/neutron108x7vp9zv22d6wxrs9as8dshd3pd5vsga463yd/JIMMY",
-        "token1Symbol": "factory/neutron108x7vp9zv22d6wxrs9as8dshd3pd5vsga463yd/JIMMY"
-      },
-      "prices": {
-        "token1Address": "ibc/5751B8BCDA688FD0A8EC0B292EEF1CDEAB4B766B63EC632778B196D317C40C3A",
-        "token1PriceUsd": 0.2323328751238073,
-        "token2Address": "factory/neutron108x7vp9zv22d6wxrs9as8dshd3pd5vsga463yd/JIMMY",
-        "token2PriceUsd": 1.821991882438387e-05
-      },
-      "protocolRewards": {
-        "apr": 0,
-        "apy": 0,
-        "day": 0
-      },
-      "totalRewards": {
-        "apr": 0.70411,
-        "apy": 0,
-        "day": 0.00271
-      },
-      "tradingFees": {
-        "apr": 0,
-        "apy": 0.70411,
-        "day": 0.98773
-      },
-      "chainId": "neutron-1",
-      "dayVolumeUsd": 493.8661,
-      "deregistered": null,
-      "feeRate": [
-        "0.30"
-      ],
-      "lpAddress": "neutron1jg3z6x63pdxc7yxscn23de8vp7cw79wuw37aufy5zqfcg6je934sslfdlg",
-      "pairName": "ASTRO/factory/neutron108x7vp9zv22d6wxrs9as8dshd3pd5vsga463yd/JIMMY",
-      "poolAddress": "neutron1nxzdx9uyhcwfn7rpjska0qwmyj6vq2cqt493d0jw79ytcj35zt2qqt4cvt",
-      "poolDescription": "- factory/neutron108x7vp9zv22d6wxrs9as8dshd3pd5vsga463yd/JIMMY ,   - factory/neutron108x7vp9zv22d6wxrs9as8dshd3pd5vsga463yd/JIMMY ,  - factory/neutron108x7vp9zv22d6wxrs9as8dshd3pd5vsga463yd/jimmy ,   - factory/neutron108x7vp9zv22d6wxrs9as8dshd3pd5vsga463yd/jimmy",
-      "poolLiquidity": 123624235811,
-      "poolLiquidityUsd": 512.02382844,
-      "poolType": "xyk",
-      "rewardTokenSymbol": null,
-      "stakeable": false,
-      "tags": [
-        "ILLIQUID",
-        "NEW"
-      ],
-      "token0Address": "ibc/5751B8BCDA688FD0A8EC0B292EEF1CDEAB4B766B63EC632778B196D317C40C3A",
-      "token1Address": "factory/neutron108x7vp9zv22d6wxrs9as8dshd3pd5vsga463yd/JIMMY",
-      "poolConfig": {
-        "block_time_last": 0,
-        "price0_cumulative_last": "0",
-        "price1_cumulative_last": "0"
-      },
-      "isBlocked": false,
-      "name": "ASTRO - JIMMY",
-      "isNew": true,
-      "isIlliquid": true,
-      "isDeregistered": false,
-      "sortingAssets": [
-        "ibc/5751B8BCDA688FD0A8EC0B292EEF1CDEAB4B766B63EC632778B196D317C40C3A",
-        "factory/neutron108x7vp9zv22d6wxrs9as8dshd3pd5vsga463yd/JIMMY",
-        "ibc/5751B8BCDA688FD0A8EC0B292EEF1CDEAB4B766B63EC632778B196D317C40C3A",
-        "factory/neutron108x7vp9zv22d6wxrs9as8dshd3pd5vsga463yd/JIMMY",
-        "neutron1nxzdx9uyhcwfn7rpjska0qwmyj6vq2cqt493d0jw79ytcj35zt2qqt4cvt"
-      ]
-    },
-    {
-      "assets": [
-        {
-          "id": "657ba28f568c6c3042b85e43",
-          "address": "ibc/5751B8BCDA688FD0A8EC0B292EEF1CDEAB4B766B63EC632778B196D317C40C3A",
-          "amount": "1027163859",
-          "symbol": "ASTRO"
-        },
-        {
-          "id": "657ba28f568c6c3042b85e44",
-          "address": "ibc/B7864B03E1B9FD4F049243E92ABD691586F682137037A9F3FCA5222815620B3C",
-          "amount": "16362457",
-          "symbol": "stATOM"
-        }
-      ],
-      "astroRewards": {
-        "apr": 0,
-        "apy": 0,
-        "day": 0
-      },
-      "config": {
-        "migrateToAddress": null
-      },
-      "marketStats": {
-        "lastSwapPrice": 0.01613636,
-        "token0DayVolume": 53.459523,
-        "token0Name": "Astroport",
-        "token0Symbol": "ASTRO",
-        "token1DayVolume": 0.895589,
-        "token1Name": "stuatom",
-        "token1Symbol": "stATOM"
-      },
-      "prices": {
-        "token1Address": "ibc/5751B8BCDA688FD0A8EC0B292EEF1CDEAB4B766B63EC632778B196D317C40C3A",
-        "token1PriceUsd": 0.2326611365426524,
-        "token2Address": "ibc/B7864B03E1B9FD4F049243E92ABD691586F682137037A9F3FCA5222815620B3C",
-        "token2PriceUsd": 14.592492888551
-      },
-      "protocolRewards": {
-        "apr": 0,
-        "apy": 0,
-        "day": 0
-      },
-      "totalRewards": {
-        "apr": 0.01957,
-        "apy": 0,
-        "day": 7e-05
-      },
-      "tradingFees": {
-        "apr": 0,
-        "apy": 0.01957,
-        "day": 0.02561
-      },
-      "chainId": "neutron-1",
-      "dayVolumeUsd": 12.806,
-      "deregistered": null,
-      "feeRate": [
-        "0.30"
-      ],
-      "lpAddress": "neutron18ut0pkc574g2tmg67zs64lsndm3fxffz2qql850tac20l5g95ces9tdgph",
-      "pairName": "ASTRO/stATOM",
-      "poolAddress": "neutron18dll2ugfwfhjsytrm46r5dyv7gfka8q334wvxu824s0glev0hdlsg8757n",
-      "poolDescription": "-  ,   -  ,  -  ,   -",
-      "poolLiquidity": 123589178,
-      "poolLiquidityUsd": 477.75014826,
-      "poolType": "xyk",
-      "rewardTokenSymbol": null,
-      "stakeable": false,
-      "tags": [
-        "ILLIQUID"
-      ],
-      "token0Address": "ibc/5751B8BCDA688FD0A8EC0B292EEF1CDEAB4B766B63EC632778B196D317C40C3A",
-      "token1Address": "ibc/B7864B03E1B9FD4F049243E92ABD691586F682137037A9F3FCA5222815620B3C",
-      "poolConfig": {
-        "block_time_last": 1701452565,
-        "price0_cumulative_last": "40318543285",
-        "price1_cumulative_last": "5668653245692522"
-      },
-      "isBlocked": false,
-      "name": "ASTRO - stATOM",
-      "isNew": false,
-      "isIlliquid": true,
-      "isDeregistered": false,
-      "sortingAssets": [
-        "ASTRO",
-        "stATOM",
-        "ibc/5751B8BCDA688FD0A8EC0B292EEF1CDEAB4B766B63EC632778B196D317C40C3A",
-        "ibc/B7864B03E1B9FD4F049243E92ABD691586F682137037A9F3FCA5222815620B3C",
-        "neutron18dll2ugfwfhjsytrm46r5dyv7gfka8q334wvxu824s0glev0hdlsg8757n"
-      ]
-    },
-    {
-      "assets": [
-        {
-          "id": "657ba53d83cb746a55cea517",
-          "address": "ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD",
-          "amount": "159122170",
-          "symbol": "AXL"
-        },
-        {
-          "id": "657ba53d83cb746a55cea518",
-          "address": "untrn",
-          "amount": "141151212",
-          "symbol": "NTRN"
-        }
-      ],
-      "astroRewards": {
-        "apr": 0,
-        "apy": 0,
-        "day": 0
-      },
-      "config": {
-        "migrateToAddress": null
-      },
-      "marketStats": {
-        "lastSwapPrice": 0.93707762,
-        "token0DayVolume": 7.098302,
-        "token0Name": "Axelar",
-        "token0Symbol": "AXL",
-        "token1DayVolume": 6.65166,
-        "token1Name": "untrn",
-        "token1Symbol": "NTRN"
-      },
-      "prices": {
-        "token1Address": "ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD",
-        "token1PriceUsd": 1.097,
-        "token2Address": "untrn",
-        "token2PriceUsd": 1.25
-      },
-      "protocolRewards": {
-        "apr": 0,
-        "apy": 0,
-        "day": 0
-      },
-      "totalRewards": {
-        "apr": 0.01729,
-        "apy": 0,
-        "day": 5e-05
-      },
-      "tradingFees": {
-        "apr": 0,
-        "apy": 0.01729,
-        "day": 0.01663
-      },
-      "chainId": "neutron-1",
-      "dayVolumeUsd": 8.3146,
-      "deregistered": null,
-      "feeRate": [
-        "0.26",
-        "0.45"
-      ],
-      "lpAddress": "neutron1kuty0egqv9dpj58kwkch0ylvyj9wvfqlwcnmde7rmrzczlt92jzsqcrc72",
-      "pairName": "AXL/NTRN",
-      "poolAddress": "neutron174wu6vgx4p6vqtzfuyfqrxfmx9xkzm7cv7pydd4k27zlleefrmrsy36jep",
-      "poolDescription": "Axelar - untrn ,  AXL - untrn , axelar - untrn ,  axl - untrn",
-      "poolLiquidity": 127965659,
-      "poolLiquidityUsd": 350.99603549,
-      "poolType": "concentrated",
-      "rewardTokenSymbol": null,
-      "stakeable": false,
-      "tags": [
-        "ILLIQUID"
-      ],
-      "token0Address": "ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD",
-      "token1Address": "untrn",
-      "poolConfig": {
-        "block_time_last": 1703514393,
-        "pool_params": {
-          "mid_fee": "0.0026",
-          "out_fee": "0.0045",
-          "fee_gamma": "0.00023",
-          "repeg_profit_threshold": "0.000002",
-          "min_price_scale_delta": "0.000146",
-          "ma_half_time": 600
-        },
-        "pool_state": {
-          "initial": {
-            "amp": "0",
-            "gamma": "0"
-          },
-          "future": {
-            "amp": "10",
-            "gamma": "0.000145"
-          },
-          "future_time": 1702221320,
-          "initial_time": 0,
-          "price_state": {
-            "oracle_price": "0.977950947942480187",
-            "last_price": "1.064769944298584252",
-            "price_scale": "0.947458204116148517",
-            "last_price_update": 1703514393,
-            "xcp_profit": "1.197484769746467397",
-            "xcp_profit_real": "1.171908162621392982"
-          }
-        }
-      },
-      "isBlocked": false,
-      "name": "AXL - NTRN",
-      "isNew": false,
-      "isIlliquid": true,
-      "isDeregistered": false,
-      "sortingAssets": [
-        "AXL",
-        "NTRN",
-        "ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD",
-        "untrn",
-        "neutron174wu6vgx4p6vqtzfuyfqrxfmx9xkzm7cv7pydd4k27zlleefrmrsy36jep"
-      ]
-    },
-    {
-      "assets": [
-        {
           "id": "657ba85d8e5876dedd099611",
           "address": "ibc/376222D6D9DAE23092E29740E56B758580935A6D77C24C2ABD57A6A78A1F3955",
-          "amount": "118894039",
+          "amount": "105631185",
           "symbol": "OSMO"
         },
         {
           "id": "657ba85d8e5876dedd099612",
           "address": "untrn",
-          "amount": "140275506",
+          "amount": "158040301",
           "symbol": "NTRN"
         }
       ],
@@ -3273,19 +3155,19 @@
         "migrateToAddress": null
       },
       "marketStats": {
-        "lastSwapPrice": 1.227829,
-        "token0DayVolume": 111.593125,
+        "lastSwapPrice": 1.64142968,
+        "token0DayVolume": 9.206133,
         "token0Name": "Osmosis",
         "token0Symbol": "OSMO",
-        "token1DayVolume": 159.808902,
+        "token1DayVolume": 13.974178,
         "token1Name": "untrn",
         "token1Symbol": "NTRN"
       },
       "prices": {
         "token1Address": "ibc/376222D6D9DAE23092E29740E56B758580935A6D77C24C2ABD57A6A78A1F3955",
-        "token1PriceUsd": 1.55,
+        "token1PriceUsd": 1.67,
         "token2Address": "untrn",
-        "token2PriceUsd": 1.18
+        "token2PriceUsd": 1.13
       },
       "protocolRewards": {
         "apr": 0,
@@ -3293,17 +3175,17 @@
         "day": 0
       },
       "totalRewards": {
-        "apr": 0.37801,
+        "apr": 0.03166,
         "apy": 0,
-        "day": 0.00099
+        "day": 0.00008
       },
       "tradingFees": {
         "apr": 0,
-        "apy": 0.37801,
-        "day": 0.36228
+        "apy": 0.03166,
+        "day": 0.03079
       },
       "chainId": "neutron-1",
-      "dayVolumeUsd": 181.1394,
+      "dayVolumeUsd": 15.3968,
       "deregistered": null,
       "feeRate": [
         "0.30"
@@ -3313,7 +3195,7 @@
       "poolAddress": "neutron1u4v7xcvkhz8sxs3u9mjhprwc8vwc2p08x0tje4ugtrrkjhkagdysztt5dq",
       "poolDescription": "Osmosis - untrn ,  OSMO - untrn , osmosis - untrn ,  osmo - untrn",
       "poolLiquidity": 111134645,
-      "poolLiquidityUsd": 349.81085753,
+      "poolLiquidityUsd": 354.98961908,
       "poolType": "xyk",
       "rewardTokenSymbol": null,
       "stakeable": false,
@@ -3343,15 +3225,133 @@
     {
       "assets": [
         {
+          "id": "657ba53d83cb746a55cea517",
+          "address": "ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD",
+          "amount": "147603106",
+          "symbol": "AXL"
+        },
+        {
+          "id": "657ba53d83cb746a55cea518",
+          "address": "untrn",
+          "amount": "151894064",
+          "symbol": "NTRN"
+        }
+      ],
+      "astroRewards": {
+        "apr": 0,
+        "apy": 0,
+        "day": 0
+      },
+      "config": {
+        "migrateToAddress": null
+      },
+      "marketStats": {
+        "lastSwapPrice": 1.00311215,
+        "token0DayVolume": 10.732004,
+        "token0Name": "Axelar",
+        "token0Symbol": "AXL",
+        "token1DayVolume": 10.418833,
+        "token1Name": "untrn",
+        "token1Symbol": "NTRN"
+      },
+      "prices": {
+        "token1Address": "ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD",
+        "token1PriceUsd": 1.16,
+        "token2Address": "untrn",
+        "token2PriceUsd": 1.13
+      },
+      "protocolRewards": {
+        "apr": 0,
+        "apy": 0,
+        "day": 0
+      },
+      "totalRewards": {
+        "apr": 0.02669,
+        "apy": 0,
+        "day": 0.00007
+      },
+      "tradingFees": {
+        "apr": 0,
+        "apy": 0.02669,
+        "day": 0.02508
+      },
+      "chainId": "neutron-1",
+      "dayVolumeUsd": 12.5378,
+      "deregistered": null,
+      "feeRate": [
+        "0.26",
+        "0.45"
+      ],
+      "lpAddress": "neutron1kuty0egqv9dpj58kwkch0ylvyj9wvfqlwcnmde7rmrzczlt92jzsqcrc72",
+      "pairName": "AXL/NTRN",
+      "poolAddress": "neutron174wu6vgx4p6vqtzfuyfqrxfmx9xkzm7cv7pydd4k27zlleefrmrsy36jep",
+      "poolDescription": "Axelar - untrn ,  AXL - untrn , axelar - untrn ,  axl - untrn",
+      "poolLiquidity": 127794541,
+      "poolLiquidityUsd": 342.85989528,
+      "poolType": "concentrated",
+      "rewardTokenSymbol": null,
+      "stakeable": false,
+      "tags": [
+        "ILLIQUID"
+      ],
+      "token0Address": "ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD",
+      "token1Address": "untrn",
+      "poolConfig": {
+        "block_time_last": 1703751769,
+        "pool_params": {
+          "mid_fee": "0.0026",
+          "out_fee": "0.0045",
+          "fee_gamma": "0.00023",
+          "repeg_profit_threshold": "0.000002",
+          "min_price_scale_delta": "0.000146",
+          "ma_half_time": 600
+        },
+        "pool_state": {
+          "initial": {
+            "amp": "0",
+            "gamma": "0"
+          },
+          "future": {
+            "amp": "10",
+            "gamma": "0.000145"
+          },
+          "future_time": 1702221320,
+          "initial_time": 0,
+          "price_state": {
+            "oracle_price": "1.00969558613521219",
+            "last_price": "0.998739272937149142",
+            "price_scale": "1.006524276676015434",
+            "last_price_update": 1703751769,
+            "xcp_profit": "1.197625439418914683",
+            "xcp_profit_real": "1.171806901373040012"
+          }
+        }
+      },
+      "isBlocked": false,
+      "name": "AXL - NTRN",
+      "isNew": false,
+      "isIlliquid": true,
+      "isDeregistered": false,
+      "sortingAssets": [
+        "AXL",
+        "NTRN",
+        "ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD",
+        "untrn",
+        "neutron174wu6vgx4p6vqtzfuyfqrxfmx9xkzm7cv7pydd4k27zlleefrmrsy36jep"
+      ]
+    },
+    {
+      "assets": [
+        {
           "id": "657ba1666fce3c3f5561d29b",
           "address": "ibc/773B4D0A3CD667B2275D5A4A7A2F0909C0BA0F4059C0B9181E680DDF4965DCC7",
-          "amount": "11192581",
+          "amount": "13088333",
           "symbol": "TIA"
         },
         {
           "id": "657ba1666fce3c3f5561d29c",
           "address": "ibc/F082B65C88E4B6D5EF1DB243CDA1D331D002759E938A0F5CD3FFDC5D53B3E349",
-          "amount": "178707182",
+          "amount": "173687206",
           "symbol": "USDC.axl"
         }
       ],
@@ -3364,19 +3364,19 @@
         "migrateToAddress": null
       },
       "marketStats": {
-        "lastSwapPrice": 15.28957799,
-        "token0DayVolume": 4.28751,
+        "lastSwapPrice": 13.77561359,
+        "token0DayVolume": 6.771932,
         "token0Name": "utia",
         "token0Symbol": "ibc/773B4D0A3CD667B2275D5A4A7A2F0909C0BA0F4059C0B9181E680DDF4965DCC7",
-        "token1DayVolume": 57.519754,
+        "token1DayVolume": 89.783038,
         "token1Name": "Axelar USDC",
         "token1Symbol": "USDC.axl"
       },
       "prices": {
         "token1Address": "ibc/773B4D0A3CD667B2275D5A4A7A2F0909C0BA0F4059C0B9181E680DDF4965DCC7",
-        "token1PriceUsd": 14.28,
+        "token1PriceUsd": 12.34,
         "token2Address": "ibc/F082B65C88E4B6D5EF1DB243CDA1D331D002759E938A0F5CD3FFDC5D53B3E349",
-        "token2PriceUsd": 0.999679
+        "token2PriceUsd": 1.002
       },
       "protocolRewards": {
         "apr": 0,
@@ -3384,17 +3384,17 @@
         "day": 0
       },
       "totalRewards": {
-        "apr": 0.12788,
+        "apr": 0.19117,
         "apy": 0,
-        "day": 0.00032
+        "day": 0.00048
       },
       "tradingFees": {
         "apr": 0,
-        "apy": 0.12788,
-        "day": 0.11859
+        "apy": 0.19117,
+        "day": 0.17574
       },
       "chainId": "neutron-1",
-      "dayVolumeUsd": 59.2956,
+      "dayVolumeUsd": 87.8706,
       "deregistered": null,
       "feeRate": [
         "0.26",
@@ -3404,8 +3404,8 @@
       "pairName": "ibc/773B4D0A3CD667B2275D5A4A7A2F0909C0BA0F4059C0B9181E680DDF4965DCC7/USDC.axl",
       "poolAddress": "neutron1h3yv07ftzkfml82x5ev84ujhe3darvda0xu8ldtyxgpvps28vvms44mels",
       "poolDescription": "- USDC ,   - USDC ,  - usdc ,   - usdc",
-      "poolLiquidity": 43424025,
-      "poolLiquidityUsd": 338.47987367,
+      "poolLiquidity": 46241081,
+      "poolLiquidityUsd": 335.54460963,
       "poolType": "concentrated",
       "rewardTokenSymbol": null,
       "stakeable": false,
@@ -3415,7 +3415,7 @@
       "token0Address": "ibc/773B4D0A3CD667B2275D5A4A7A2F0909C0BA0F4059C0B9181E680DDF4965DCC7",
       "token1Address": "ibc/F082B65C88E4B6D5EF1DB243CDA1D331D002759E938A0F5CD3FFDC5D53B3E349",
       "poolConfig": {
-        "block_time_last": 1703516647,
+        "block_time_last": 1703758401,
         "pool_params": {
           "mid_fee": "0.0026",
           "out_fee": "0.0045",
@@ -3436,12 +3436,12 @@
           "future_time": 1699447716,
           "initial_time": 0,
           "price_state": {
-            "oracle_price": "0.069622286429722164",
-            "last_price": "0.065550723307527026",
-            "price_scale": "0.076544496259929912",
-            "last_price_update": 1703516647,
-            "xcp_profit": "1.041026863581513647",
-            "xcp_profit_real": "1.03066853634931883"
+            "oracle_price": "0.074579956506900273",
+            "last_price": "0.072447718040593063",
+            "price_scale": "0.078669173916889087",
+            "last_price_update": 1703758401,
+            "xcp_profit": "1.042149583831984549",
+            "xcp_profit_real": "1.031253524889936156"
           }
         }
       },
@@ -3461,16 +3461,16 @@
     {
       "assets": [
         {
-          "id": "6588a19afbb4c9d91fa989d1",
-          "address": "untrn",
-          "amount": "259763519",
-          "symbol": "NTRN"
+          "id": "657ba28f568c6c3042b85e43",
+          "address": "ibc/5751B8BCDA688FD0A8EC0B292EEF1CDEAB4B766B63EC632778B196D317C40C3A",
+          "amount": "675217417",
+          "symbol": "ASTRO"
         },
         {
-          "id": "6588a19afbb4c9d91fa989d2",
-          "address": "factory/neutron143wp6g8paqasnuuey6zyapucknwy9rhnld8hkr/bad",
-          "amount": "8188664522040",
-          "symbol": "factory/neutron143wp6g8paqasnuuey6zyapucknwy9rhnld8hkr/bad"
+          "id": "657ba28f568c6c3042b85e44",
+          "address": "ibc/B7864B03E1B9FD4F049243E92ABD691586F682137037A9F3FCA5222815620B3C",
+          "amount": "10537287",
+          "symbol": "stATOM"
         }
       ],
       "astroRewards": {
@@ -3482,19 +3482,19 @@
         "migrateToAddress": null
       },
       "marketStats": {
-        "lastSwapPrice": 27379.5232528,
-        "token0DayVolume": 6138.377889,
-        "token0Name": "untrn",
-        "token0Symbol": "NTRN",
-        "token1DayVolume": 48649173.724894,
-        "token1Name": "factory/neutron143wp6g8paqasnuuey6zyapucknwy9rhnld8hkr/bad",
-        "token1Symbol": "factory/neutron143wp6g8paqasnuuey6zyapucknwy9rhnld8hkr/bad"
+        "lastSwapPrice": 0.01578601,
+        "token0DayVolume": 24.835124,
+        "token0Name": "Astroport",
+        "token0Symbol": "ASTRO",
+        "token1DayVolume": 0.40114,
+        "token1Name": "stuatom",
+        "token1Symbol": "stATOM"
       },
       "prices": {
-        "token1Address": "untrn",
-        "token1PriceUsd": 1.29,
-        "token2Address": "factory/neutron143wp6g8paqasnuuey6zyapucknwy9rhnld8hkr/bad",
-        "token2PriceUsd": 0
+        "token1Address": "ibc/5751B8BCDA688FD0A8EC0B292EEF1CDEAB4B766B63EC632778B196D317C40C3A",
+        "token1PriceUsd": 0.2281610419808169,
+        "token2Address": "ibc/B7864B03E1B9FD4F049243E92ABD691586F682137037A9F3FCA5222815620B3C",
+        "token2PriceUsd": 14.62420057382189
       },
       "protocolRewards": {
         "apr": 0,
@@ -3502,52 +3502,51 @@
         "day": 0
       },
       "totalRewards": {
-        "apr": 16.1407,
+        "apr": 0.01407,
         "apy": 0,
-        "day": 0.0406
+        "day": 0.00003
       },
       "tradingFees": {
         "apr": 0,
-        "apy": 16.1407,
-        "day": 14.81826
+        "apy": 0.01407,
+        "day": 0.01188
       },
       "chainId": "neutron-1",
-      "dayVolumeUsd": 7409.1321,
+      "dayVolumeUsd": 5.9405,
       "deregistered": null,
       "feeRate": [
         "0.30"
       ],
-      "lpAddress": "neutron1knz3a9pau2nwxcwwspc8e23s5drzstaewtar9szv40hwwqnze5xszg645a",
-      "pairName": "NTRN/factory/neutron143wp6g8paqasnuuey6zyapucknwy9rhnld8hkr/bad",
-      "poolAddress": "neutron1c9m39c3c2xr0axplqh4zaznx8chx3e5f368ddhwqcputuxmyckfsxra8xk",
-      "poolDescription": "untrn - factory/neutron143wp6g8paqasnuuey6zyapucknwy9rhnld8hkr/bad ,  untrn - factory/neutron143wp6g8paqasnuuey6zyapucknwy9rhnld8hkr/bad , untrn - factory/neutron143wp6g8paqasnuuey6zyapucknwy9rhnld8hkr/bad ,  untrn - factory/neutron143wp6g8paqasnuuey6zyapucknwy9rhnld8hkr/bad",
-      "poolLiquidity": 42714843150,
-      "poolLiquidityUsd": 335.09493951,
+      "lpAddress": "neutron18ut0pkc574g2tmg67zs64lsndm3fxffz2qql850tac20l5g95ces9tdgph",
+      "pairName": "ASTRO/stATOM",
+      "poolAddress": "neutron18dll2ugfwfhjsytrm46r5dyv7gfka8q334wvxu824s0glev0hdlsg8757n",
+      "poolDescription": "-  ,   -  ,  -  ,   -",
+      "poolLiquidity": 80394984,
+      "poolLiquidityUsd": 308.15770801,
       "poolType": "xyk",
       "rewardTokenSymbol": null,
       "stakeable": false,
       "tags": [
-        "ILLIQUID",
-        "NEW"
+        "ILLIQUID"
       ],
-      "token0Address": "untrn",
-      "token1Address": "factory/neutron143wp6g8paqasnuuey6zyapucknwy9rhnld8hkr/bad",
+      "token0Address": "ibc/5751B8BCDA688FD0A8EC0B292EEF1CDEAB4B766B63EC632778B196D317C40C3A",
+      "token1Address": "ibc/B7864B03E1B9FD4F049243E92ABD691586F682137037A9F3FCA5222815620B3C",
       "poolConfig": {
-        "block_time_last": 0,
-        "price0_cumulative_last": "0",
-        "price1_cumulative_last": "0"
+        "block_time_last": 1701452565,
+        "price0_cumulative_last": "40318543285",
+        "price1_cumulative_last": "5668653245692522"
       },
       "isBlocked": false,
-      "name": "NTRN - factory/neutron143wp6g8paqasnuuey6zyapucknwy9rhnld8hkr/bad",
-      "isNew": true,
+      "name": "ASTRO - stATOM",
+      "isNew": false,
       "isIlliquid": true,
       "isDeregistered": false,
       "sortingAssets": [
-        "untrn",
-        "factory/neutron143wp6g8paqasnuuey6zyapucknwy9rhnld8hkr/bad",
-        "untrn",
-        "factory/neutron143wp6g8paqasnuuey6zyapucknwy9rhnld8hkr/bad",
-        "neutron1c9m39c3c2xr0axplqh4zaznx8chx3e5f368ddhwqcputuxmyckfsxra8xk"
+        "ASTRO",
+        "stATOM",
+        "ibc/5751B8BCDA688FD0A8EC0B292EEF1CDEAB4B766B63EC632778B196D317C40C3A",
+        "ibc/B7864B03E1B9FD4F049243E92ABD691586F682137037A9F3FCA5222815620B3C",
+        "neutron18dll2ugfwfhjsytrm46r5dyv7gfka8q334wvxu824s0glev0hdlsg8757n"
       ]
     },
     {
@@ -3647,98 +3646,6 @@
     {
       "assets": [
         {
-          "id": "657b636fbcee8a703cbaa0c8",
-          "address": "factory/neutron1ug740qrkquxzrk2hh29qrlx3sktkfml3je7juusc2te7xmvsscns0n2wry/wstETH",
-          "amount": "19897271026994356",
-          "symbol": "wstETH"
-        },
-        {
-          "id": "657b636fbcee8a703cbaa0c9",
-          "address": "untrn",
-          "amount": "43927109",
-          "symbol": "NTRN"
-        }
-      ],
-      "astroRewards": {
-        "apr": 0,
-        "apy": 0,
-        "day": 0
-      },
-      "config": {
-        "migrateToAddress": "neutron1fr3h0w6sg62agzpvu42ewj8m6rn9x45py77egd8xefp2682st39suqnx6n"
-      },
-      "marketStats": {
-        "lastSwapPrice": 0,
-        "token0DayVolume": 0.001,
-        "token0Name": "factory/neutron1ug740qrkquxzrk2hh29qrlx3sktkfml3je7juusc2te7xmvsscns0n2wry/wstETH",
-        "token0Symbol": "wstETH",
-        "token1DayVolume": 2.317303,
-        "token1Name": "untrn",
-        "token1Symbol": "NTRN"
-      },
-      "prices": {
-        "token1Address": "factory/neutron1ug740qrkquxzrk2hh29qrlx3sktkfml3je7juusc2te7xmvsscns0n2wry/wstETH",
-        "token1PriceUsd": 2637,
-        "token2Address": "untrn",
-        "token2PriceUsd": 1.18
-      },
-      "protocolRewards": {
-        "apr": 0,
-        "apy": 0,
-        "day": 0
-      },
-      "totalRewards": {
-        "apr": 0.01914,
-        "apy": 0,
-        "day": 1e-05
-      },
-      "tradingFees": {
-        "apr": 0,
-        "apy": 0.01914,
-        "day": 0.00547
-      },
-      "chainId": "neutron-1",
-      "dayVolumeUsd": 2.7344,
-      "deregistered": null,
-      "feeRate": [
-        "0.30"
-      ],
-      "lpAddress": "neutron1km0xpyt8z8s9lzga3hyruvswulwwc7qscjvz6xll6pvmv7u8d5qqvcgv8h",
-      "pairName": "wstETH/NTRN",
-      "poolAddress": "neutron1tx80z5v3nurwfm2mulyv6396pc7mjdh3pmydrv80ulu889a9wfxsn8jh2m",
-      "poolDescription": "factory/neutron1ug740qrkquxzrk2hh29qrlx3sktkfml3je7juusc2te7xmvsscns0n2wry/wstETH - untrn ,  factory/neutron1ug740qrkquxzrk2hh29qrlx3sktkfml3je7juusc2te7xmvsscns0n2wry/wstETH - untrn , factory/neutron1ug740qrkquxzrk2hh29qrlx3sktkfml3je7juusc2te7xmvsscns0n2wry/wsteth - untrn ,  factory/neutron1ug740qrkquxzrk2hh29qrlx3sktkfml3je7juusc2te7xmvsscns0n2wry/wsteth - untrn",
-      "poolLiquidity": 433326000476,
-      "poolLiquidityUsd": 104.30309231,
-      "poolType": "xyk",
-      "rewardTokenSymbol": null,
-      "stakeable": false,
-      "tags": [
-        "ILLIQUID",
-        "DEREGISTERED"
-      ],
-      "token0Address": "factory/neutron1ug740qrkquxzrk2hh29qrlx3sktkfml3je7juusc2te7xmvsscns0n2wry/wstETH",
-      "token1Address": "untrn",
-      "poolConfig": {
-        "block_time_last": 1701442237,
-        "price0_cumulative_last": "59470",
-        "price1_cumulative_last": "16772324791490030495503"
-      },
-      "isBlocked": false,
-      "name": "wstETH - NTRN",
-      "isNew": false,
-      "isIlliquid": true,
-      "isDeregistered": true,
-      "sortingAssets": [
-        "wstETH",
-        "NTRN",
-        "factory/neutron1ug740qrkquxzrk2hh29qrlx3sktkfml3je7juusc2te7xmvsscns0n2wry/wstETH",
-        "untrn",
-        "neutron1tx80z5v3nurwfm2mulyv6396pc7mjdh3pmydrv80ulu889a9wfxsn8jh2m"
-      ]
-    },
-    {
-      "assets": [
-        {
           "id": "658602abe74086cc3b8ef365",
           "address": "ibc/B559A80D62249C8AA07A380E2A2BEA6E5CA9A6F079C912C3A9E9B494105E4F81",
           "amount": "101000000",
@@ -3782,7 +3689,7 @@
       "totalRewards": {
         "apr": 0.00723,
         "apy": 0,
-        "day": 1e-05
+        "day": 0.00001
       },
       "tradingFees": {
         "apr": 0,
@@ -3874,7 +3781,7 @@
       "totalRewards": {
         "apr": 0.04331,
         "apy": 0,
-        "day": 2e-05
+        "day": 0.00002
       },
       "tradingFees": {
         "apr": 0,
@@ -3925,13 +3832,13 @@
         {
           "id": "657b64dd9996ae8c433cab3b",
           "address": "ibc/27F48DA7E6C8C1203C9EB2BB225C876F3A600C6C3C1DD94CE283D5D027BD91E4",
-          "amount": "23141620549",
+          "amount": "23683437245",
           "symbol": "DOT"
         },
         {
           "id": "657b64dd9996ae8c433cab3c",
           "address": "untrn",
-          "amount": "17755183",
+          "amount": "17351513",
           "symbol": "NTRN"
         }
       ],
@@ -3944,19 +3851,19 @@
         "migrateToAddress": null
       },
       "marketStats": {
-        "lastSwapPrice": 0.0007689,
-        "token0DayVolume": 0.2141608,
+        "lastSwapPrice": 0.00071739,
+        "token0DayVolume": 0.1693761,
         "token0Name": "79228162514264337593543950342",
         "token0Symbol": "ibc/27F48DA7E6C8C1203C9EB2BB225C876F3A600C6C3C1DD94CE283D5D027BD91E4",
-        "token1DayVolume": 1.53718,
+        "token1DayVolume": 1.228835,
         "token1Name": "untrn",
         "token1Symbol": "NTRN"
       },
       "prices": {
         "token1Address": "ibc/27F48DA7E6C8C1203C9EB2BB225C876F3A600C6C3C1DD94CE283D5D027BD91E4",
-        "token1PriceUsd": 8.9,
+        "token1PriceUsd": 8.66,
         "token2Address": "untrn",
-        "token2PriceUsd": 1.14
+        "token2PriceUsd": 1.21
       },
       "protocolRewards": {
         "apr": 0,
@@ -3964,17 +3871,17 @@
         "day": 0
       },
       "totalRewards": {
-        "apr": 0.03375,
+        "apr": 0.02828,
         "apy": 0,
-        "day": 1e-05
+        "day": 0.00001
       },
       "tradingFees": {
         "apr": 0,
-        "apy": 0.03375,
-        "day": 0.00378
+        "apy": 0.02828,
+        "day": 0.00322
       },
       "chainId": "neutron-1",
-      "dayVolumeUsd": 1.8882,
+      "dayVolumeUsd": 1.6081,
       "deregistered": null,
       "feeRate": [
         "0.30"
@@ -3984,7 +3891,7 @@
       "poolAddress": "neutron1t6tnqqmp65uzmz9yr0udujhygegw85r2gfc5vvw2xlsmxgerm48s9euhss",
       "poolDescription": "- untrn ,   - untrn ,  - untrn ,   - untrn",
       "poolLiquidity": 627508920,
-      "poolLiquidityUsd": 40.8369509,
+      "poolLiquidityUsd": 41.50518738,
       "poolType": "xyk",
       "rewardTokenSymbol": null,
       "stakeable": false,
@@ -4016,13 +3923,13 @@
         {
           "id": "657b9cb3447807eaef0ca19c",
           "address": "ibc/5751B8BCDA688FD0A8EC0B292EEF1CDEAB4B766B63EC632778B196D317C40C3A",
-          "amount": "84517276",
+          "amount": "88038426",
           "symbol": "ASTRO"
         },
         {
           "id": "657b9cb3447807eaef0ca19d",
           "address": "ibc/C4CFF46FD6DE35CA4CF4CE031E643C8FDC9BA4B99AE598E9B0ED98FE3A2319F9",
-          "amount": "1802355",
+          "amount": "1730810",
           "symbol": "ATOM"
         }
       ],
@@ -4035,19 +3942,19 @@
         "migrateToAddress": null
       },
       "marketStats": {
-        "lastSwapPrice": 0.02158701,
-        "token0DayVolume": 21.883544,
+        "lastSwapPrice": 0.02082015,
+        "token0DayVolume": 10.542194,
         "token0Name": "Astroport",
         "token0Symbol": "ASTRO",
-        "token1DayVolume": 0.478386,
+        "token1DayVolume": 0.223327,
         "token1Name": "Atom",
         "token1Symbol": "ATOM"
       },
       "prices": {
         "token1Address": "ibc/5751B8BCDA688FD0A8EC0B292EEF1CDEAB4B766B63EC632778B196D317C40C3A",
-        "token1PriceUsd": 0.2290770593433686,
+        "token1PriceUsd": 0.2324971460314306,
         "token2Address": "ibc/C4CFF46FD6DE35CA4CF4CE031E643C8FDC9BA4B99AE598E9B0ED98FE3A2319F9",
-        "token2PriceUsd": 11.39
+        "token2PriceUsd": 11.71
       },
       "protocolRewards": {
         "apr": 0,
@@ -4055,17 +3962,17 @@
         "day": 0
       },
       "totalRewards": {
-        "apr": 0.10025,
+        "apr": 0.0454,
         "apy": 0,
-        "day": 3e-05
+        "day": 0.00001
       },
       "tradingFees": {
         "apr": 0,
-        "apy": 0.10025,
-        "day": 0.01096
+        "apy": 0.0454,
+        "day": 0.00507
       },
       "chainId": "neutron-1",
-      "dayVolumeUsd": 5.4782,
+      "dayVolumeUsd": 2.5332,
       "deregistered": null,
       "feeRate": [
         "0.30"
@@ -4075,7 +3982,7 @@
       "poolAddress": "neutron16yll06qup0j0mnjc7v68stmw939e73ykr3twtd78l3hqlkstm2ysr0k4q8",
       "poolDescription": "- Atom ,   - ATOM ,  - atom ,   - atom",
       "poolLiquidity": 11271069,
-      "poolLiquidityUsd": 39.88979249,
+      "poolLiquidityUsd": 40.73646788,
       "poolType": "xyk",
       "rewardTokenSymbol": null,
       "stakeable": false,
@@ -4107,13 +4014,13 @@
         {
           "id": "657b7cc7e7c5cb511c7da599",
           "address": "ibc/773B4D0A3CD667B2275D5A4A7A2F0909C0BA0F4059C0B9181E680DDF4965DCC7",
-          "amount": "1366251",
+          "amount": "1403788",
           "symbol": "TIA"
         },
         {
           "id": "657b7cc7e7c5cb511c7da59a",
           "address": "ibc/C4CFF46FD6DE35CA4CF4CE031E643C8FDC9BA4B99AE598E9B0ED98FE3A2319F9",
-          "amount": "1635797",
+          "amount": "1593860",
           "symbol": "ATOM"
         }
       ],
@@ -4126,19 +4033,19 @@
         "migrateToAddress": null
       },
       "marketStats": {
-        "lastSwapPrice": 1.1852445,
-        "token0DayVolume": 0.171065,
+        "lastSwapPrice": 1.0746225,
+        "token0DayVolume": 0.405072,
         "token0Name": "utia",
         "token0Symbol": "ibc/773B4D0A3CD667B2275D5A4A7A2F0909C0BA0F4059C0B9181E680DDF4965DCC7",
-        "token1DayVolume": 0.208233,
+        "token1DayVolume": 0.403931,
         "token1Name": "Atom",
         "token1Symbol": "ATOM"
       },
       "prices": {
         "token1Address": "ibc/773B4D0A3CD667B2275D5A4A7A2F0909C0BA0F4059C0B9181E680DDF4965DCC7",
-        "token1PriceUsd": 13.79,
+        "token1PriceUsd": 12.81,
         "token2Address": "ibc/C4CFF46FD6DE35CA4CF4CE031E643C8FDC9BA4B99AE598E9B0ED98FE3A2319F9",
-        "token2PriceUsd": 11.24
+        "token2PriceUsd": 12.06
       },
       "protocolRewards": {
         "apr": 0,
@@ -4146,17 +4053,17 @@
         "day": 0
       },
       "totalRewards": {
-        "apr": 0.04852,
+        "apr": 0.09569,
         "apy": 0,
-        "day": 1e-05
+        "day": 0.00003
       },
       "tradingFees": {
         "apr": 0,
-        "apy": 0.04852,
-        "day": 0.00495
+        "apy": 0.09569,
+        "day": 0.00975
       },
       "chainId": "neutron-1",
-      "dayVolumeUsd": 2.4742,
+      "dayVolumeUsd": 4.877,
       "deregistered": null,
       "feeRate": [
         "0.26",
@@ -4167,7 +4074,7 @@
       "poolAddress": "neutron1ny6cysje5f6u5jlmvzfxnf06t4zgdr3v7eyvfc0cgwuxy74lqfusuewch3",
       "poolDescription": "- Atom ,   - ATOM ,  - atom ,   - atom",
       "poolLiquidity": 1483106,
-      "poolLiquidityUsd": 37.22695957,
+      "poolLiquidityUsd": 37.20447588,
       "poolType": "concentrated",
       "rewardTokenSymbol": null,
       "stakeable": false,
@@ -4177,7 +4084,7 @@
       "token0Address": "ibc/773B4D0A3CD667B2275D5A4A7A2F0909C0BA0F4059C0B9181E680DDF4965DCC7",
       "token1Address": "ibc/C4CFF46FD6DE35CA4CF4CE031E643C8FDC9BA4B99AE598E9B0ED98FE3A2319F9",
       "poolConfig": {
-        "block_time_last": 1703475628,
+        "block_time_last": 1703712673,
         "pool_params": {
           "mid_fee": "0.0026",
           "out_fee": "0.0045",
@@ -4198,12 +4105,12 @@
           "future_time": 1699447716,
           "initial_time": 0,
           "price_state": {
-            "oracle_price": "0.80187804237244049",
-            "last_price": "0.841808149594858968",
-            "price_scale": "0.951417995596078267",
-            "last_price_update": 1703475628,
-            "xcp_profit": "1.014171066328191146",
-            "xcp_profit_real": "1.008503867021378119"
+            "oracle_price": "1.06174228455188731",
+            "last_price": "0.932396394180287938",
+            "price_scale": "0.935870464892413393",
+            "last_price_update": 1703712673,
+            "xcp_profit": "1.014560159849914232",
+            "xcp_profit_real": "1.008805301006637373"
           }
         }
       },
@@ -4218,6 +4125,190 @@
         "ibc/773B4D0A3CD667B2275D5A4A7A2F0909C0BA0F4059C0B9181E680DDF4965DCC7",
         "ibc/C4CFF46FD6DE35CA4CF4CE031E643C8FDC9BA4B99AE598E9B0ED98FE3A2319F9",
         "neutron1ny6cysje5f6u5jlmvzfxnf06t4zgdr3v7eyvfc0cgwuxy74lqfusuewch3"
+      ]
+    },
+    {
+      "assets": [
+        {
+          "id": "658a54bffbb4c9d91face70e",
+          "address": "factory/neutron143wp6g8paqasnuuey6zyapucknwy9rhnld8hkr/bad",
+          "amount": "430420142748",
+          "symbol": "BAD"
+        },
+        {
+          "id": "658a54bffbb4c9d91face70f",
+          "address": "ibc/F082B65C88E4B6D5EF1DB243CDA1D331D002759E938A0F5CD3FFDC5D53B3E349",
+          "amount": "24660685",
+          "symbol": "USDC.axl"
+        }
+      ],
+      "astroRewards": {
+        "apr": 0,
+        "apy": 0,
+        "day": 0
+      },
+      "config": {
+        "migrateToAddress": null
+      },
+      "marketStats": {
+        "lastSwapPrice": 0.00005059,
+        "token0DayVolume": 563380.057816,
+        "token0Name": "factory/neutron143wp6g8paqasnuuey6zyapucknwy9rhnld8hkr/bad",
+        "token0Symbol": "factory/neutron143wp6g8paqasnuuey6zyapucknwy9rhnld8hkr/bad",
+        "token1DayVolume": 33.752882,
+        "token1Name": "Axelar USDC",
+        "token1Symbol": "USDC.axl"
+      },
+      "prices": {
+        "token1Address": "factory/neutron143wp6g8paqasnuuey6zyapucknwy9rhnld8hkr/bad",
+        "token1PriceUsd": 0,
+        "token2Address": "ibc/F082B65C88E4B6D5EF1DB243CDA1D331D002759E938A0F5CD3FFDC5D53B3E349",
+        "token2PriceUsd": 1.002
+      },
+      "protocolRewards": {
+        "apr": 0,
+        "apy": 0,
+        "day": 0
+      },
+      "totalRewards": {
+        "apr": 0.99681,
+        "apy": 0,
+        "day": 0.00018
+      },
+      "tradingFees": {
+        "apr": 0,
+        "apy": 0.99681,
+        "day": 0.06748
+      },
+      "chainId": "neutron-1",
+      "dayVolumeUsd": 33.7415,
+      "deregistered": null,
+      "feeRate": [
+        "0.30"
+      ],
+      "lpAddress": "neutron1xl083q2uxe4e6dqsdsl6502hms6plzemvlyz49mjv7g9t7f4kaxqpwf7x4",
+      "pairName": "factory/neutron143wp6g8paqasnuuey6zyapucknwy9rhnld8hkr/bad/USDC.axl",
+      "poolAddress": "neutron1ekcp74wqtchth9wcr0rzkskl9n2s9mcuykt4trl2w8w7kw8j58lqtf6ssx",
+      "poolDescription": "factory/neutron143wp6g8paqasnuuey6zyapucknwy9rhnld8hkr/bad - USDC ,  factory/neutron143wp6g8paqasnuuey6zyapucknwy9rhnld8hkr/bad - USDC , factory/neutron143wp6g8paqasnuuey6zyapucknwy9rhnld8hkr/bad - usdc ,  factory/neutron143wp6g8paqasnuuey6zyapucknwy9rhnld8hkr/bad - usdc",
+      "poolLiquidity": 3249424396,
+      "poolLiquidityUsd": 24.71000637,
+      "poolType": "xyk",
+      "rewardTokenSymbol": null,
+      "stakeable": false,
+      "tags": [
+        "ILLIQUID",
+        "NEW"
+      ],
+      "token0Address": "factory/neutron143wp6g8paqasnuuey6zyapucknwy9rhnld8hkr/bad",
+      "token1Address": "ibc/F082B65C88E4B6D5EF1DB243CDA1D331D002759E938A0F5CD3FFDC5D53B3E349",
+      "poolConfig": {
+        "block_time_last": 0,
+        "price0_cumulative_last": "0",
+        "price1_cumulative_last": "0"
+      },
+      "isBlocked": false,
+      "name": "BAD - USDC.axl",
+      "isNew": true,
+      "isIlliquid": true,
+      "isDeregistered": false,
+      "sortingAssets": [
+        "factory/neutron143wp6g8paqasnuuey6zyapucknwy9rhnld8hkr/bad",
+        "USDC",
+        "factory/neutron143wp6g8paqasnuuey6zyapucknwy9rhnld8hkr/bad",
+        "ibc/F082B65C88E4B6D5EF1DB243CDA1D331D002759E938A0F5CD3FFDC5D53B3E349",
+        "neutron1ekcp74wqtchth9wcr0rzkskl9n2s9mcuykt4trl2w8w7kw8j58lqtf6ssx"
+      ]
+    },
+    {
+      "assets": [
+        {
+          "id": "6585a8d5e74086cc3b8e6828",
+          "address": "factory/neutron10sr06r3qkhn7xzpw3339wuj77hu06mzna6uht0/eclip",
+          "amount": "27475093",
+          "symbol": "ECLIP"
+        },
+        {
+          "id": "6585a8d5e74086cc3b8e6829",
+          "address": "untrn",
+          "amount": "9146737",
+          "symbol": "NTRN"
+        }
+      ],
+      "astroRewards": {
+        "apr": 0,
+        "apy": 0,
+        "day": 0
+      },
+      "config": {
+        "migrateToAddress": null
+      },
+      "marketStats": {
+        "lastSwapPrice": 0.28290555,
+        "token0DayVolume": 4.948648,
+        "token0Name": "factory/neutron10sr06r3qkhn7xzpw3339wuj77hu06mzna6uht0/eclip",
+        "token0Symbol": "factory/neutron10sr06r3qkhn7xzpw3339wuj77hu06mzna6uht0/eclip",
+        "token1DayVolume": 1.4,
+        "token1Name": "untrn",
+        "token1Symbol": "NTRN"
+      },
+      "prices": {
+        "token1Address": "factory/neutron10sr06r3qkhn7xzpw3339wuj77hu06mzna6uht0/eclip",
+        "token1PriceUsd": 0.3863805612651006,
+        "token2Address": "untrn",
+        "token2PriceUsd": 1.22
+      },
+      "protocolRewards": {
+        "apr": 0,
+        "apy": 0,
+        "day": 0
+      },
+      "totalRewards": {
+        "apr": 0.0641,
+        "apy": 0,
+        "day": 0.00001
+      },
+      "tradingFees": {
+        "apr": 0,
+        "apy": 0.0641,
+        "day": 0.00382
+      },
+      "chainId": "neutron-1",
+      "dayVolumeUsd": 1.9121,
+      "deregistered": null,
+      "feeRate": [
+        "0.30"
+      ],
+      "lpAddress": "neutron1sfmzjsw5s4m06u7ucw78nc2m2pvaxgslxpp5wyes55vz2e9fjz4skg23cx",
+      "pairName": "factory/neutron10sr06r3qkhn7xzpw3339wuj77hu06mzna6uht0/eclip/NTRN",
+      "poolAddress": "neutron1q2dlznjrxshx6ej9rqxz39h2xdjlqxvajpdl9yz0x5wz72gkd2wq36ch25",
+      "poolDescription": "factory/neutron10sr06r3qkhn7xzpw3339wuj77hu06mzna6uht0/eclip - untrn ,  factory/neutron10sr06r3qkhn7xzpw3339wuj77hu06mzna6uht0/eclip - untrn , factory/neutron10sr06r3qkhn7xzpw3339wuj77hu06mzna6uht0/eclip - untrn ,  factory/neutron10sr06r3qkhn7xzpw3339wuj77hu06mzna6uht0/eclip - untrn",
+      "poolLiquidity": 15841985,
+      "poolLiquidityUsd": 21.77486099,
+      "poolType": "xyk",
+      "rewardTokenSymbol": null,
+      "stakeable": false,
+      "tags": [
+        "ILLIQUID",
+        "NEW"
+      ],
+      "token0Address": "factory/neutron10sr06r3qkhn7xzpw3339wuj77hu06mzna6uht0/eclip",
+      "token1Address": "untrn",
+      "poolConfig": {
+        "block_time_last": 0,
+        "price0_cumulative_last": "0",
+        "price1_cumulative_last": "0"
+      },
+      "isBlocked": false,
+      "name": "ECLIP - NTRN",
+      "isNew": true,
+      "isIlliquid": true,
+      "isDeregistered": false,
+      "sortingAssets": [
+        "factory/neutron10sr06r3qkhn7xzpw3339wuj77hu06mzna6uht0/eclip",
+        "untrn",
+        "factory/neutron10sr06r3qkhn7xzpw3339wuj77hu06mzna6uht0/eclip",
+        "untrn",
+        "neutron1q2dlznjrxshx6ej9rqxz39h2xdjlqxvajpdl9yz0x5wz72gkd2wq36ch25"
       ]
     },
     {
@@ -4408,13 +4499,13 @@
         {
           "id": "657b877fc361c1dafb02c0e6",
           "address": "ibc/773B4D0A3CD667B2275D5A4A7A2F0909C0BA0F4059C0B9181E680DDF4965DCC7",
-          "amount": "370405",
+          "amount": "390499",
           "symbol": "TIA"
         },
         {
           "id": "657b877fc361c1dafb02c0e7",
           "address": "untrn",
-          "amount": "4795849",
+          "amount": "4549562",
           "symbol": "NTRN"
         }
       ],
@@ -4427,19 +4518,19 @@
         "migrateToAddress": "neutron1c4p33xy3ps35gs7w3mcc5vzsdfkwqd3klhnxry0yn2nhl4wnwhxslcp8g8"
       },
       "marketStats": {
-        "lastSwapPrice": 11.63548357,
-        "token0DayVolume": 0.042972,
+        "lastSwapPrice": 12.24450084,
+        "token0DayVolume": 0.063066,
         "token0Name": "utia",
         "token0Symbol": "ibc/773B4D0A3CD667B2275D5A4A7A2F0909C0BA0F4059C0B9181E680DDF4965DCC7",
-        "token1DayVolume": 0.5,
+        "token1DayVolume": 0.746041,
         "token1Name": "untrn",
         "token1Symbol": "NTRN"
       },
       "prices": {
         "token1Address": "ibc/773B4D0A3CD667B2275D5A4A7A2F0909C0BA0F4059C0B9181E680DDF4965DCC7",
-        "token1PriceUsd": 14.48,
+        "token1PriceUsd": 13.55,
         "token2Address": "untrn",
-        "token2PriceUsd": 1.17
+        "token2PriceUsd": 1.31
       },
       "protocolRewards": {
         "apr": 0,
@@ -4447,17 +4538,17 @@
         "day": 0
       },
       "totalRewards": {
-        "apr": 0.04139,
+        "apr": 0.06128,
         "apy": 0,
-        "day": 0
+        "day": 0.00001
       },
       "tradingFees": {
         "apr": 0,
-        "apy": 0.04139,
-        "day": 0.00124
+        "apy": 0.06128,
+        "day": 0.00189
       },
       "chainId": "neutron-1",
-      "dayVolumeUsd": 0.6222,
+      "dayVolumeUsd": 0.9445,
       "deregistered": null,
       "feeRate": [
         "0.30"
@@ -4467,7 +4558,7 @@
       "poolAddress": "neutron173xvrtyu4zquzd7wk8l9jhzk2grkx6nvhk65t6y9hcq40erjyc8sf63jlg",
       "poolDescription": "celestia - untrn ,  tia - untrn , 773B4D0A3CD667B2275D5A4A7A2F0909C0BA0F4059C0B9181E680DDF4965DCC7 - untrn ,  TIA - untrn",
       "poolLiquidity": 1310853,
-      "poolLiquidityUsd": 10.97460773,
+      "poolLiquidityUsd": 11.25118767,
       "poolType": "xyk",
       "rewardTokenSymbol": null,
       "stakeable": false,
@@ -4498,16 +4589,16 @@
     {
       "assets": [
         {
-          "id": "657b89865ea0166d2ff8fbef",
-          "address": "ibc/57503D7852EF4E1899FE6D71C5E81D7C839F76580F86F21E39348FC2BC9D7CE2",
-          "amount": "1681464",
-          "symbol": "USDT.axl"
+          "id": "657b636fbcee8a703cbaa0c8",
+          "address": "factory/neutron1ug740qrkquxzrk2hh29qrlx3sktkfml3je7juusc2te7xmvsscns0n2wry/wstETH",
+          "amount": "1480360664563792",
+          "symbol": "wstETH"
         },
         {
-          "id": "657b89865ea0166d2ff8fbf0",
-          "address": "ibc/773B4D0A3CD667B2275D5A4A7A2F0909C0BA0F4059C0B9181E680DDF4965DCC7",
-          "amount": "131506",
-          "symbol": "TIA"
+          "id": "657b636fbcee8a703cbaa0c9",
+          "address": "untrn",
+          "amount": "3268186",
+          "symbol": "NTRN"
         }
       ],
       "astroRewards": {
@@ -4516,22 +4607,22 @@
         "day": 0
       },
       "config": {
-        "migrateToAddress": null
+        "migrateToAddress": "neutron1fr3h0w6sg62agzpvu42ewj8m6rn9x45py77egd8xefp2682st39suqnx6n"
       },
       "marketStats": {
-        "lastSwapPrice": 0.07593345,
+        "lastSwapPrice": 0,
         "token0DayVolume": 0,
-        "token0Name": "USDT",
-        "token0Symbol": "USDT",
+        "token0Name": "factory/neutron1ug740qrkquxzrk2hh29qrlx3sktkfml3je7juusc2te7xmvsscns0n2wry/wstETH",
+        "token0Symbol": "wstETH",
         "token1DayVolume": 0,
-        "token1Name": "utia",
-        "token1Symbol": "ibc/773B4D0A3CD667B2275D5A4A7A2F0909C0BA0F4059C0B9181E680DDF4965DCC7"
+        "token1Name": "untrn",
+        "token1Symbol": "NTRN"
       },
       "prices": {
-        "token1Address": "ibc/57503D7852EF4E1899FE6D71C5E81D7C839F76580F86F21E39348FC2BC9D7CE2",
-        "token1PriceUsd": 1,
-        "token2Address": "ibc/773B4D0A3CD667B2275D5A4A7A2F0909C0BA0F4059C0B9181E680DDF4965DCC7",
-        "token2PriceUsd": 12.69
+        "token1Address": "factory/neutron1ug740qrkquxzrk2hh29qrlx3sktkfml3je7juusc2te7xmvsscns0n2wry/wstETH",
+        "token1PriceUsd": 2558.71,
+        "token2Address": "untrn",
+        "token2PriceUsd": 1.2
       },
       "protocolRewards": {
         "apr": 0,
@@ -4552,65 +4643,130 @@
       "dayVolumeUsd": 0,
       "deregistered": null,
       "feeRate": [
-        "0.26",
-        "0.45"
+        "0.30"
       ],
-      "lpAddress": "neutron1mwwgjw6ul09zkam9c99ejysf9h5s2q7vaxfl9g93ndnjnvfemuks80zgh7",
-      "pairName": "USDT/ibc/773B4D0A3CD667B2275D5A4A7A2F0909C0BA0F4059C0B9181E680DDF4965DCC7",
-      "poolAddress": "neutron1zwnj9zclxkxlyksnns3wuw7fq24kkn70ke6wezquw9nwqed24vkq8wlgh4",
-      "poolDescription": "USDT -  ,  USDT -  , usdt -  ,  usdt -",
-      "poolLiquidity": 466173,
-      "poolLiquidityUsd": 3.35027514,
-      "poolType": "concentrated",
+      "lpAddress": "neutron1km0xpyt8z8s9lzga3hyruvswulwwc7qscjvz6xll6pvmv7u8d5qqvcgv8h",
+      "pairName": "wstETH/NTRN",
+      "poolAddress": "neutron1tx80z5v3nurwfm2mulyv6396pc7mjdh3pmydrv80ulu889a9wfxsn8jh2m",
+      "poolDescription": "factory/neutron1ug740qrkquxzrk2hh29qrlx3sktkfml3je7juusc2te7xmvsscns0n2wry/wstETH - untrn ,  factory/neutron1ug740qrkquxzrk2hh29qrlx3sktkfml3je7juusc2te7xmvsscns0n2wry/wstETH - untrn , factory/neutron1ug740qrkquxzrk2hh29qrlx3sktkfml3je7juusc2te7xmvsscns0n2wry/wsteth - untrn ,  factory/neutron1ug740qrkquxzrk2hh29qrlx3sktkfml3je7juusc2te7xmvsscns0n2wry/wsteth - untrn",
+      "poolLiquidity": 32239535018,
+      "poolLiquidityUsd": 7.70963683,
+      "poolType": "xyk",
+      "rewardTokenSymbol": null,
+      "stakeable": false,
+      "tags": [
+        "ILLIQUID",
+        "DEREGISTERED"
+      ],
+      "token0Address": "factory/neutron1ug740qrkquxzrk2hh29qrlx3sktkfml3je7juusc2te7xmvsscns0n2wry/wstETH",
+      "token1Address": "untrn",
+      "poolConfig": {
+        "block_time_last": 1701442237,
+        "price0_cumulative_last": "59470",
+        "price1_cumulative_last": "16772324791490030495503"
+      },
+      "isBlocked": false,
+      "name": "wstETH - NTRN",
+      "isNew": false,
+      "isIlliquid": true,
+      "isDeregistered": true,
+      "sortingAssets": [
+        "wstETH",
+        "NTRN",
+        "factory/neutron1ug740qrkquxzrk2hh29qrlx3sktkfml3je7juusc2te7xmvsscns0n2wry/wstETH",
+        "untrn",
+        "neutron1tx80z5v3nurwfm2mulyv6396pc7mjdh3pmydrv80ulu889a9wfxsn8jh2m"
+      ]
+    },
+    {
+      "assets": [
+        {
+          "id": "657a8b004efa0ab8cad5013d",
+          "address": "ibc/BEF5C9D724E1EBB04FEE237CB5F602B22B0FFE8065F540FD8BC6F9E1A4B8573D",
+          "amount": "3306774856",
+          "symbol": "HUAHUA"
+        },
+        {
+          "id": "657a8b004efa0ab8cad5013e",
+          "address": "ibc/F082B65C88E4B6D5EF1DB243CDA1D331D002759E938A0F5CD3FFDC5D53B3E349",
+          "amount": "6349621",
+          "symbol": "USDC.axl"
+        }
+      ],
+      "astroRewards": {
+        "apr": 0,
+        "apy": 0,
+        "day": 0
+      },
+      "config": {
+        "migrateToAddress": null
+      },
+      "marketStats": {
+        "lastSwapPrice": 0.00192566,
+        "token0DayVolume": 12680.386844,
+        "token0Name": "uhuahua",
+        "token0Symbol": "ibc/BEF5C9D724E1EBB04FEE237CB5F602B22B0FFE8065F540FD8BC6F9E1A4B8573D",
+        "token1DayVolume": 932.097971,
+        "token1Name": "Axelar USDC",
+        "token1Symbol": "USDC.axl"
+      },
+      "prices": {
+        "token1Address": "ibc/BEF5C9D724E1EBB04FEE237CB5F602B22B0FFE8065F540FD8BC6F9E1A4B8573D",
+        "token1PriceUsd": 0,
+        "token2Address": "ibc/F082B65C88E4B6D5EF1DB243CDA1D331D002759E938A0F5CD3FFDC5D53B3E349",
+        "token2PriceUsd": 0.998018
+      },
+      "protocolRewards": {
+        "apr": 0,
+        "apy": 0,
+        "day": 0
+      },
+      "totalRewards": {
+        "apr": 107.53343,
+        "apy": 0,
+        "day": 0.00511
+      },
+      "tradingFees": {
+        "apr": 0,
+        "apy": 107.53343,
+        "day": 1.86697
+      },
+      "chainId": "neutron-1",
+      "dayVolumeUsd": 933.4839,
+      "deregistered": null,
+      "feeRate": [
+        "0.30"
+      ],
+      "lpAddress": "neutron17w40jvkdk8xaaqvgymdwug62qtngch2drawmx9rrnmen99pk05esrgmxaf",
+      "pairName": "ibc/BEF5C9D724E1EBB04FEE237CB5F602B22B0FFE8065F540FD8BC6F9E1A4B8573D/USDC.axl",
+      "poolAddress": "neutron1kqdw7nfcztre9k8xfkxmqe52hqc0wa7j3zr24g6nerh09aknmlmqnqnm5m",
+      "poolDescription": "- USDC ,   - USDC ,  - usdc ,   - usdc",
+      "poolLiquidity": 91903547,
+      "poolLiquidityUsd": 6.33703605,
+      "poolType": "xyk",
       "rewardTokenSymbol": null,
       "stakeable": false,
       "tags": [
         "ILLIQUID"
       ],
-      "token0Address": "ibc/57503D7852EF4E1899FE6D71C5E81D7C839F76580F86F21E39348FC2BC9D7CE2",
-      "token1Address": "ibc/773B4D0A3CD667B2275D5A4A7A2F0909C0BA0F4059C0B9181E680DDF4965DCC7",
+      "token0Address": "ibc/BEF5C9D724E1EBB04FEE237CB5F602B22B0FFE8065F540FD8BC6F9E1A4B8573D",
+      "token1Address": "ibc/F082B65C88E4B6D5EF1DB243CDA1D331D002759E938A0F5CD3FFDC5D53B3E349",
       "poolConfig": {
-        "block_time_last": 1703387158,
-        "pool_params": {
-          "mid_fee": "0.0026",
-          "out_fee": "0.0045",
-          "fee_gamma": "0.00023",
-          "repeg_profit_threshold": "0.000002",
-          "min_price_scale_delta": "0.000146",
-          "ma_half_time": 600
-        },
-        "pool_state": {
-          "initial": {
-            "amp": "0",
-            "gamma": "0"
-          },
-          "future": {
-            "amp": "10",
-            "gamma": "0.000145"
-          },
-          "future_time": 1699447716,
-          "initial_time": 0,
-          "price_state": {
-            "oracle_price": "13.198313849289023956",
-            "last_price": "11.955614951539841078",
-            "price_scale": "12.830799120382499053",
-            "last_price_update": 1703387158,
-            "xcp_profit": "1.012458593543654567",
-            "xcp_profit_real": "1.00871865694549175"
-          }
-        }
+        "block_time_last": 0,
+        "price0_cumulative_last": "0",
+        "price1_cumulative_last": "0"
       },
       "isBlocked": false,
-      "name": "USDT.axl - TIA",
+      "name": "HUAHUA - USDC.axl",
       "isNew": false,
       "isIlliquid": true,
       "isDeregistered": false,
       "sortingAssets": [
-        "USDT",
-        "ibc/773B4D0A3CD667B2275D5A4A7A2F0909C0BA0F4059C0B9181E680DDF4965DCC7",
-        "ibc/57503D7852EF4E1899FE6D71C5E81D7C839F76580F86F21E39348FC2BC9D7CE2",
-        "ibc/773B4D0A3CD667B2275D5A4A7A2F0909C0BA0F4059C0B9181E680DDF4965DCC7",
-        "neutron1zwnj9zclxkxlyksnns3wuw7fq24kkn70ke6wezquw9nwqed24vkq8wlgh4"
+        "ibc/BEF5C9D724E1EBB04FEE237CB5F602B22B0FFE8065F540FD8BC6F9E1A4B8573D",
+        "USDC.axl",
+        "ibc/BEF5C9D724E1EBB04FEE237CB5F602B22B0FFE8065F540FD8BC6F9E1A4B8573D",
+        "ibc/F082B65C88E4B6D5EF1DB243CDA1D331D002759E938A0F5CD3FFDC5D53B3E349",
+        "neutron1kqdw7nfcztre9k8xfkxmqe52hqc0wa7j3zr24g6nerh09aknmlmqnqnm5m"
       ]
     },
     {
@@ -4664,7 +4820,7 @@
       "tradingFees": {
         "apr": 0,
         "apy": 0.01226,
-        "day": 8e-05
+        "day": 0.00008
       },
       "chainId": "neutron-1",
       "dayVolumeUsd": 0.0384,
@@ -4755,7 +4911,7 @@
       "tradingFees": {
         "apr": 0,
         "apy": 0.00695,
-        "day": 3e-05
+        "day": 0.00003
       },
       "chainId": "neutron-1",
       "dayVolumeUsd": 0.0153,
@@ -4798,16 +4954,16 @@
     {
       "assets": [
         {
-          "id": "657a8b004efa0ab8cad5013d",
-          "address": "ibc/BEF5C9D724E1EBB04FEE237CB5F602B22B0FFE8065F540FD8BC6F9E1A4B8573D",
-          "amount": "10424788444",
-          "symbol": "HUAHUA"
+          "id": "658375db8c4c7910aa881124",
+          "address": "ibc/5751B8BCDA688FD0A8EC0B292EEF1CDEAB4B766B63EC632778B196D317C40C3A",
+          "amount": "2930437",
+          "symbol": "ASTRO"
         },
         {
-          "id": "657a8b004efa0ab8cad5013e",
-          "address": "ibc/F082B65C88E4B6D5EF1DB243CDA1D331D002759E938A0F5CD3FFDC5D53B3E349",
-          "amount": "1053300",
-          "symbol": "USDC.axl"
+          "id": "658375db8c4c7910aa881125",
+          "address": "factory/neutron108x7vp9zv22d6wxrs9as8dshd3pd5vsga463yd/JIMMY",
+          "amount": "98262010385",
+          "symbol": "JIMMY"
         }
       ],
       "astroRewards": {
@@ -4819,19 +4975,19 @@
         "migrateToAddress": null
       },
       "marketStats": {
-        "lastSwapPrice": 0.00020093,
-        "token0DayVolume": 10035.452513,
-        "token0Name": "uhuahua",
-        "token0Symbol": "ibc/BEF5C9D724E1EBB04FEE237CB5F602B22B0FFE8065F540FD8BC6F9E1A4B8573D",
-        "token1DayVolume": 26.385926,
-        "token1Name": "Axelar USDC",
-        "token1Symbol": "USDC.axl"
+        "lastSwapPrice": 37203.2256201,
+        "token0DayVolume": 427.239803,
+        "token0Name": "Astroport",
+        "token0Symbol": "ASTRO",
+        "token1DayVolume": 10162462.740249,
+        "token1Name": "factory/neutron108x7vp9zv22d6wxrs9as8dshd3pd5vsga463yd/JIMMY",
+        "token1Symbol": "factory/neutron108x7vp9zv22d6wxrs9as8dshd3pd5vsga463yd/JIMMY"
       },
       "prices": {
-        "token1Address": "ibc/BEF5C9D724E1EBB04FEE237CB5F602B22B0FFE8065F540FD8BC6F9E1A4B8573D",
-        "token1PriceUsd": 0,
-        "token2Address": "ibc/F082B65C88E4B6D5EF1DB243CDA1D331D002759E938A0F5CD3FFDC5D53B3E349",
-        "token2PriceUsd": 1.003
+        "token1Address": "ibc/5751B8BCDA688FD0A8EC0B292EEF1CDEAB4B766B63EC632778B196D317C40C3A",
+        "token1PriceUsd": 0.233298955143487,
+        "token2Address": "factory/neutron108x7vp9zv22d6wxrs9as8dshd3pd5vsga463yd/JIMMY",
+        "token2PriceUsd": 0.000007916162290989082
       },
       "protocolRewards": {
         "apr": 0,
@@ -4839,51 +4995,51 @@
         "day": 0
       },
       "totalRewards": {
-        "apr": 18.22388,
+        "apr": 49.47194,
         "apy": 0,
-        "day": 0.00014
+        "day": 0.00054
       },
       "tradingFees": {
         "apr": 0,
-        "apy": 18.22388,
-        "day": 0.05275
+        "apy": 49.47194,
+        "day": 0.19809
       },
       "chainId": "neutron-1",
-      "dayVolumeUsd": 26.3737,
+      "dayVolumeUsd": 99.0473,
       "deregistered": null,
       "feeRate": [
         "0.30"
       ],
-      "lpAddress": "neutron17w40jvkdk8xaaqvgymdwug62qtngch2drawmx9rrnmen99pk05esrgmxaf",
-      "pairName": "ibc/BEF5C9D724E1EBB04FEE237CB5F602B22B0FFE8065F540FD8BC6F9E1A4B8573D/USDC.axl",
-      "poolAddress": "neutron1kqdw7nfcztre9k8xfkxmqe52hqc0wa7j3zr24g6nerh09aknmlmqnqnm5m",
-      "poolDescription": "- USDC ,   - USDC ,  - usdc ,   - usdc",
-      "poolLiquidity": 91903547,
-      "poolLiquidityUsd": 1.0564599,
+      "lpAddress": "neutron1jg3z6x63pdxc7yxscn23de8vp7cw79wuw37aufy5zqfcg6je934sslfdlg",
+      "pairName": "ASTRO/factory/neutron108x7vp9zv22d6wxrs9as8dshd3pd5vsga463yd/JIMMY",
+      "poolAddress": "neutron1nxzdx9uyhcwfn7rpjska0qwmyj6vq2cqt493d0jw79ytcj35zt2qqt4cvt",
+      "poolDescription": "- factory/neutron108x7vp9zv22d6wxrs9as8dshd3pd5vsga463yd/JIMMY ,   - factory/neutron108x7vp9zv22d6wxrs9as8dshd3pd5vsga463yd/JIMMY ,  - factory/neutron108x7vp9zv22d6wxrs9as8dshd3pd5vsga463yd/jimmy ,   - factory/neutron108x7vp9zv22d6wxrs9as8dshd3pd5vsga463yd/jimmy",
+      "poolLiquidity": 488406166,
+      "poolLiquidityUsd": 1.46152591,
       "poolType": "xyk",
       "rewardTokenSymbol": null,
       "stakeable": false,
       "tags": [
         "ILLIQUID"
       ],
-      "token0Address": "ibc/BEF5C9D724E1EBB04FEE237CB5F602B22B0FFE8065F540FD8BC6F9E1A4B8573D",
-      "token1Address": "ibc/F082B65C88E4B6D5EF1DB243CDA1D331D002759E938A0F5CD3FFDC5D53B3E349",
+      "token0Address": "ibc/5751B8BCDA688FD0A8EC0B292EEF1CDEAB4B766B63EC632778B196D317C40C3A",
+      "token1Address": "factory/neutron108x7vp9zv22d6wxrs9as8dshd3pd5vsga463yd/JIMMY",
       "poolConfig": {
         "block_time_last": 0,
         "price0_cumulative_last": "0",
         "price1_cumulative_last": "0"
       },
       "isBlocked": false,
-      "name": "HUAHUA - USDC.axl",
+      "name": "ASTRO - JIMMY",
       "isNew": false,
       "isIlliquid": true,
       "isDeregistered": false,
       "sortingAssets": [
-        "ibc/BEF5C9D724E1EBB04FEE237CB5F602B22B0FFE8065F540FD8BC6F9E1A4B8573D",
-        "USDC.axl",
-        "ibc/BEF5C9D724E1EBB04FEE237CB5F602B22B0FFE8065F540FD8BC6F9E1A4B8573D",
-        "ibc/F082B65C88E4B6D5EF1DB243CDA1D331D002759E938A0F5CD3FFDC5D53B3E349",
-        "neutron1kqdw7nfcztre9k8xfkxmqe52hqc0wa7j3zr24g6nerh09aknmlmqnqnm5m"
+        "ibc/5751B8BCDA688FD0A8EC0B292EEF1CDEAB4B766B63EC632778B196D317C40C3A",
+        "factory/neutron108x7vp9zv22d6wxrs9as8dshd3pd5vsga463yd/JIMMY",
+        "ibc/5751B8BCDA688FD0A8EC0B292EEF1CDEAB4B766B63EC632778B196D317C40C3A",
+        "factory/neutron108x7vp9zv22d6wxrs9as8dshd3pd5vsga463yd/JIMMY",
+        "neutron1nxzdx9uyhcwfn7rpjska0qwmyj6vq2cqt493d0jw79ytcj35zt2qqt4cvt"
       ]
     },
     {
@@ -4937,7 +5093,7 @@
       "tradingFees": {
         "apr": 0,
         "apy": 0.04133,
-        "day": 2e-05
+        "day": 0.00002
       },
       "chainId": "neutron-1",
       "dayVolumeUsd": 0.0118,
@@ -5192,6 +5348,124 @@
     {
       "assets": [
         {
+          "id": "657b89865ea0166d2ff8fbef",
+          "address": "ibc/57503D7852EF4E1899FE6D71C5E81D7C839F76580F86F21E39348FC2BC9D7CE2",
+          "amount": "3611",
+          "symbol": "USDT.axl"
+        },
+        {
+          "id": "657b89865ea0166d2ff8fbf0",
+          "address": "ibc/773B4D0A3CD667B2275D5A4A7A2F0909C0BA0F4059C0B9181E680DDF4965DCC7",
+          "amount": "283",
+          "symbol": "TIA"
+        }
+      ],
+      "astroRewards": {
+        "apr": 0,
+        "apy": 0,
+        "day": 0
+      },
+      "config": {
+        "migrateToAddress": null
+      },
+      "marketStats": {
+        "lastSwapPrice": 0.07593345,
+        "token0DayVolume": 0,
+        "token0Name": "USDT",
+        "token0Symbol": "USDT",
+        "token1DayVolume": 0,
+        "token1Name": "utia",
+        "token1Symbol": "ibc/773B4D0A3CD667B2275D5A4A7A2F0909C0BA0F4059C0B9181E680DDF4965DCC7"
+      },
+      "prices": {
+        "token1Address": "ibc/57503D7852EF4E1899FE6D71C5E81D7C839F76580F86F21E39348FC2BC9D7CE2",
+        "token1PriceUsd": 1,
+        "token2Address": "ibc/773B4D0A3CD667B2275D5A4A7A2F0909C0BA0F4059C0B9181E680DDF4965DCC7",
+        "token2PriceUsd": 13.98
+      },
+      "protocolRewards": {
+        "apr": 0,
+        "apy": 0,
+        "day": 0
+      },
+      "totalRewards": {
+        "apr": 0,
+        "apy": 0,
+        "day": 0
+      },
+      "tradingFees": {
+        "apr": 0,
+        "apy": 0,
+        "day": 0
+      },
+      "chainId": "neutron-1",
+      "dayVolumeUsd": 0,
+      "deregistered": null,
+      "feeRate": [
+        "0.26",
+        "0.45"
+      ],
+      "lpAddress": "neutron1mwwgjw6ul09zkam9c99ejysf9h5s2q7vaxfl9g93ndnjnvfemuks80zgh7",
+      "pairName": "USDT/ibc/773B4D0A3CD667B2275D5A4A7A2F0909C0BA0F4059C0B9181E680DDF4965DCC7",
+      "poolAddress": "neutron1zwnj9zclxkxlyksnns3wuw7fq24kkn70ke6wezquw9nwqed24vkq8wlgh4",
+      "poolDescription": "USDT -  ,  USDT -  , usdt -  ,  usdt -",
+      "poolLiquidity": 1000,
+      "poolLiquidityUsd": 0.00756734,
+      "poolType": "concentrated",
+      "rewardTokenSymbol": null,
+      "stakeable": false,
+      "tags": [
+        "ILLIQUID"
+      ],
+      "token0Address": "ibc/57503D7852EF4E1899FE6D71C5E81D7C839F76580F86F21E39348FC2BC9D7CE2",
+      "token1Address": "ibc/773B4D0A3CD667B2275D5A4A7A2F0909C0BA0F4059C0B9181E680DDF4965DCC7",
+      "poolConfig": {
+        "block_time_last": 1703387158,
+        "pool_params": {
+          "mid_fee": "0.0026",
+          "out_fee": "0.0045",
+          "fee_gamma": "0.00023",
+          "repeg_profit_threshold": "0.000002",
+          "min_price_scale_delta": "0.000146",
+          "ma_half_time": 600
+        },
+        "pool_state": {
+          "initial": {
+            "amp": "0",
+            "gamma": "0"
+          },
+          "future": {
+            "amp": "10",
+            "gamma": "0.000145"
+          },
+          "future_time": 1699447716,
+          "initial_time": 0,
+          "price_state": {
+            "oracle_price": "13.198313849289023956",
+            "last_price": "11.955614951539841078",
+            "price_scale": "12.830799120382499053",
+            "last_price_update": 1703387158,
+            "xcp_profit": "1.012458593543654567",
+            "xcp_profit_real": "1.009727383750683"
+          }
+        }
+      },
+      "isBlocked": false,
+      "name": "USDT.axl - TIA",
+      "isNew": false,
+      "isIlliquid": true,
+      "isDeregistered": false,
+      "sortingAssets": [
+        "USDT",
+        "ibc/773B4D0A3CD667B2275D5A4A7A2F0909C0BA0F4059C0B9181E680DDF4965DCC7",
+        "ibc/57503D7852EF4E1899FE6D71C5E81D7C839F76580F86F21E39348FC2BC9D7CE2",
+        "ibc/773B4D0A3CD667B2275D5A4A7A2F0909C0BA0F4059C0B9181E680DDF4965DCC7",
+        "neutron1zwnj9zclxkxlyksnns3wuw7fq24kkn70ke6wezquw9nwqed24vkq8wlgh4"
+      ]
+    },
+    {
+      "assets": [
+        {
           "id": "6557909e00acb1b382e6b638",
           "address": "ibc/57503D7852EF4E1899FE6D71C5E81D7C839F76580F86F21E39348FC2BC9D7CE2",
           "amount": "1627",
@@ -5279,98 +5553,6 @@
         "ibc/57503D7852EF4E1899FE6D71C5E81D7C839F76580F86F21E39348FC2BC9D7CE2",
         "ibc/773B4D0A3CD667B2275D5A4A7A2F0909C0BA0F4059C0B9181E680DDF4965DCC7",
         "neutron1trhuhvav04ezhklqwu0aecnmqpc48w7zqqzf3mh3y9teer0y9ulqant0w6"
-      ]
-    },
-    {
-      "assets": [
-        {
-          "id": "6585a8d5e74086cc3b8e6828",
-          "address": "factory/neutron10sr06r3qkhn7xzpw3339wuj77hu06mzna6uht0/eclip",
-          "amount": "2047",
-          "symbol": "ECLIP"
-        },
-        {
-          "id": "6585a8d5e74086cc3b8e6829",
-          "address": "untrn",
-          "amount": "489",
-          "symbol": "NTRN"
-        }
-      ],
-      "astroRewards": {
-        "apr": 0,
-        "apy": 0,
-        "day": 0
-      },
-      "config": {
-        "migrateToAddress": null
-      },
-      "marketStats": {
-        "lastSwapPrice": 0,
-        "token0DayVolume": 0,
-        "token0Name": "factory/neutron10sr06r3qkhn7xzpw3339wuj77hu06mzna6uht0/eclip",
-        "token0Symbol": "factory/neutron10sr06r3qkhn7xzpw3339wuj77hu06mzna6uht0/eclip",
-        "token1DayVolume": 0,
-        "token1Name": "untrn",
-        "token1Symbol": "NTRN"
-      },
-      "prices": {
-        "token1Address": "factory/neutron10sr06r3qkhn7xzpw3339wuj77hu06mzna6uht0/eclip",
-        "token1PriceUsd": 0.2647184519433936,
-        "token2Address": "untrn",
-        "token2PriceUsd": 1.082
-      },
-      "protocolRewards": {
-        "apr": 0,
-        "apy": 0,
-        "day": 0
-      },
-      "totalRewards": {
-        "apr": 0,
-        "apy": 0,
-        "day": 0
-      },
-      "tradingFees": {
-        "apr": 0,
-        "apy": 0,
-        "day": 0
-      },
-      "chainId": "neutron-1",
-      "dayVolumeUsd": 0,
-      "deregistered": null,
-      "feeRate": [
-        "0.30"
-      ],
-      "lpAddress": "neutron1sfmzjsw5s4m06u7ucw78nc2m2pvaxgslxpp5wyes55vz2e9fjz4skg23cx",
-      "pairName": "factory/neutron10sr06r3qkhn7xzpw3339wuj77hu06mzna6uht0/eclip/NTRN",
-      "poolAddress": "neutron1q2dlznjrxshx6ej9rqxz39h2xdjlqxvajpdl9yz0x5wz72gkd2wq36ch25",
-      "poolDescription": "factory/neutron10sr06r3qkhn7xzpw3339wuj77hu06mzna6uht0/eclip - untrn ,  factory/neutron10sr06r3qkhn7xzpw3339wuj77hu06mzna6uht0/eclip - untrn , factory/neutron10sr06r3qkhn7xzpw3339wuj77hu06mzna6uht0/eclip - untrn ,  factory/neutron10sr06r3qkhn7xzpw3339wuj77hu06mzna6uht0/eclip - untrn",
-      "poolLiquidity": 1000,
-      "poolLiquidityUsd": 0.00107097,
-      "poolType": "xyk",
-      "rewardTokenSymbol": null,
-      "stakeable": false,
-      "tags": [
-        "ILLIQUID",
-        "NEW"
-      ],
-      "token0Address": "factory/neutron10sr06r3qkhn7xzpw3339wuj77hu06mzna6uht0/eclip",
-      "token1Address": "untrn",
-      "poolConfig": {
-        "block_time_last": 0,
-        "price0_cumulative_last": "0",
-        "price1_cumulative_last": "0"
-      },
-      "isBlocked": false,
-      "name": "ECLIP - NTRN",
-      "isNew": true,
-      "isIlliquid": true,
-      "isDeregistered": false,
-      "sortingAssets": [
-        "factory/neutron10sr06r3qkhn7xzpw3339wuj77hu06mzna6uht0/eclip",
-        "untrn",
-        "factory/neutron10sr06r3qkhn7xzpw3339wuj77hu06mzna6uht0/eclip",
-        "untrn",
-        "neutron1q2dlznjrxshx6ej9rqxz39h2xdjlqxvajpdl9yz0x5wz72gkd2wq36ch25"
       ]
     },
     {
@@ -5529,7 +5711,7 @@
       "poolAddress": "neutron1s9fvdffwf3uvara287rfpzpq09mahk9qg4mjfrhu9jvc2unnps9qj5cfzu",
       "poolDescription": "Wrapped Ether (wei) - USDC ,  wETH - USDC , wrapped ether (wei) - usdc ,  weth - usdc",
       "poolLiquidity": 1000,
-      "poolLiquidityUsd": 1.04e-06,
+      "poolLiquidityUsd": 0.00000104,
       "poolType": "xyk",
       "rewardTokenSymbol": null,
       "stakeable": false,
@@ -8064,6 +8246,174 @@
         "ibc/BEF5C9D724E1EBB04FEE237CB5F602B22B0FFE8065F540FD8BC6F9E1A4B8573D",
         "ibc/7ACF670DA8DA24B5999A0D17247C7F4349AB1038FC4FA76A3AF50AFDE407B258",
         "neutron1zwjpn9rvwwr89dzasrwd4fnntddxtmws4ywmu7c3mcg9d0fske9qefzsmg"
+      ]
+    },
+    {
+      "assets": [
+        {
+          "id": "658d0064acdb67e39351a517",
+          "address": "factory/neutron1krz2jjuqcry28rz6u43hkenr43euqj8npj79eq/ELONTRON",
+          "amount": "0",
+          "symbol": "factory/neutron1krz2jjuqcry28rz6u43hkenr43euqj8npj79eq/ELONTRON"
+        },
+        {
+          "id": "658d0064acdb67e39351a518",
+          "address": "untrn",
+          "amount": "0",
+          "symbol": "NTRN"
+        }
+      ],
+      "astroRewards": {
+        "apy": 0,
+        "apr": 0,
+        "day": 0
+      },
+      "config": {
+        "migrateToAddress": null
+      },
+      "marketStats": null,
+      "prices": {
+        "token1Address": "factory/neutron1krz2jjuqcry28rz6u43hkenr43euqj8npj79eq/ELONTRON",
+        "token1PriceUsd": 0,
+        "token2Address": "untrn",
+        "token2PriceUsd": 0
+      },
+      "protocolRewards": {
+        "apy": 0,
+        "apr": 0,
+        "day": 0
+      },
+      "totalRewards": {
+        "apy": 0,
+        "apr": 0,
+        "day": 0
+      },
+      "tradingFees": {
+        "apy": 0,
+        "apr": 0,
+        "day": 0
+      },
+      "chainId": "neutron-1",
+      "dayVolumeUsd": 0,
+      "deregistered": null,
+      "feeRate": [
+        "0.30"
+      ],
+      "lpAddress": "neutron1mn9rhkkf9wuvdrw6dkpt2c7vjrgmqvvz7e9tfc4fkgshuvu28tqqf6c9wx",
+      "pairName": null,
+      "poolAddress": "neutron1u558zt8rhw6frwaarsxk3zguhwuzsmqfecncjh3y5re7ngx4mskqk4asfq",
+      "poolDescription": "factory/neutron1krz2jjuqcry28rz6u43hkenr43euqj8npj79eq/ELONTRON - untrn ,  factory/neutron1krz2jjuqcry28rz6u43hkenr43euqj8npj79eq/ELONTRON - untrn , factory/neutron1krz2jjuqcry28rz6u43hkenr43euqj8npj79eq/elontron - untrn ,  factory/neutron1krz2jjuqcry28rz6u43hkenr43euqj8npj79eq/elontron - untrn",
+      "poolLiquidity": 0,
+      "poolLiquidityUsd": 0,
+      "poolType": "xyk",
+      "rewardTokenSymbol": null,
+      "stakeable": false,
+      "tags": [
+        "ILLIQUID",
+        "NEW"
+      ],
+      "token0Address": "factory/neutron1krz2jjuqcry28rz6u43hkenr43euqj8npj79eq/ELONTRON",
+      "token1Address": "untrn",
+      "poolConfig": {
+        "block_time_last": 0,
+        "price0_cumulative_last": "0",
+        "price1_cumulative_last": "0"
+      },
+      "isBlocked": false,
+      "name": "factory/neutron1krz2jjuqcry28rz6u43hkenr43euqj8npj79eq/ELONTRON - NTRN",
+      "isNew": true,
+      "isIlliquid": true,
+      "isDeregistered": false,
+      "sortingAssets": [
+        "factory/neutron1krz2jjuqcry28rz6u43hkenr43euqj8npj79eq/ELONTRON",
+        "untrn",
+        "factory/neutron1krz2jjuqcry28rz6u43hkenr43euqj8npj79eq/ELONTRON",
+        "untrn",
+        "neutron1u558zt8rhw6frwaarsxk3zguhwuzsmqfecncjh3y5re7ngx4mskqk4asfq"
+      ]
+    },
+    {
+      "assets": [
+        {
+          "id": "658d31d6dc581afdfcecd2ba",
+          "address": "factory/neutron16q4r0zp85zz39nexv2edlg9rlr69vvuqw463yd/GODDARD",
+          "amount": "0",
+          "symbol": "factory/neutron16q4r0zp85zz39nexv2edlg9rlr69vvuqw463yd/GODDARD"
+        },
+        {
+          "id": "658d31d6dc581afdfcecd2bb",
+          "address": "untrn",
+          "amount": "0",
+          "symbol": "NTRN"
+        }
+      ],
+      "astroRewards": {
+        "apy": 0,
+        "apr": 0,
+        "day": 0
+      },
+      "config": {
+        "migrateToAddress": null
+      },
+      "marketStats": null,
+      "prices": {
+        "token1Address": "factory/neutron16q4r0zp85zz39nexv2edlg9rlr69vvuqw463yd/GODDARD",
+        "token1PriceUsd": 0,
+        "token2Address": "untrn",
+        "token2PriceUsd": 0
+      },
+      "protocolRewards": {
+        "apy": 0,
+        "apr": 0,
+        "day": 0
+      },
+      "totalRewards": {
+        "apy": 0,
+        "apr": 0,
+        "day": 0
+      },
+      "tradingFees": {
+        "apy": 0,
+        "apr": 0,
+        "day": 0
+      },
+      "chainId": "neutron-1",
+      "dayVolumeUsd": 0,
+      "deregistered": null,
+      "feeRate": [
+        "0.30"
+      ],
+      "lpAddress": "neutron10k2qkp39uk2y83gfxzkz4f3hrgppe9va87djxdhxrhdff5enldjqvnytft",
+      "pairName": null,
+      "poolAddress": "neutron1kklg7yvg9e9mvy97z9mp4fn4zrlru336hx3jvkxv5kqu0c9nce0qlqjsx7",
+      "poolDescription": "factory/neutron16q4r0zp85zz39nexv2edlg9rlr69vvuqw463yd/GODDARD - untrn ,  factory/neutron16q4r0zp85zz39nexv2edlg9rlr69vvuqw463yd/GODDARD - untrn , factory/neutron16q4r0zp85zz39nexv2edlg9rlr69vvuqw463yd/goddard - untrn ,  factory/neutron16q4r0zp85zz39nexv2edlg9rlr69vvuqw463yd/goddard - untrn",
+      "poolLiquidity": 0,
+      "poolLiquidityUsd": 0,
+      "poolType": "xyk",
+      "rewardTokenSymbol": null,
+      "stakeable": false,
+      "tags": [
+        "ILLIQUID",
+        "NEW"
+      ],
+      "token0Address": "factory/neutron16q4r0zp85zz39nexv2edlg9rlr69vvuqw463yd/GODDARD",
+      "token1Address": "untrn",
+      "poolConfig": {
+        "block_time_last": 0,
+        "price0_cumulative_last": "0",
+        "price1_cumulative_last": "0"
+      },
+      "isBlocked": false,
+      "name": "factory/neutron16q4r0zp85zz39nexv2edlg9rlr69vvuqw463yd/GODDARD - NTRN",
+      "isNew": true,
+      "isIlliquid": true,
+      "isDeregistered": false,
+      "sortingAssets": [
+        "factory/neutron16q4r0zp85zz39nexv2edlg9rlr69vvuqw463yd/GODDARD",
+        "untrn",
+        "factory/neutron16q4r0zp85zz39nexv2edlg9rlr69vvuqw463yd/GODDARD",
+        "untrn",
+        "neutron1kklg7yvg9e9mvy97z9mp4fn4zrlru336hx3jvkxv5kqu0c9nce0qlqjsx7"
       ]
     }
   ]
