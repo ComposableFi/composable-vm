@@ -1,6 +1,6 @@
 from typing import Dict
 #from fastapi_cache import FastAPICache
-from blackbox.cvm_runtime.response_to_get_config import GetConfigResponse
+from cvm_runtime.response_to_get_config import GetConfigResponse
 from blackbox.models import AllData, CosmosChains, NeutronPoolsResponse, OsmosisPoolsResponse
 from blackbox.neutron_pools import Model as NeutronPoolsModel
 from blackbox.settings import setting
@@ -61,8 +61,14 @@ async def startup():
     FastAPICache.init(InMemoryBackend())
     
 import simulation.data as data
-
+import sys
+import os
+import uvicorn
 def start():
-    print("asdsadaasd")
+    print(sys.path)
+    print(os.environ)
     data.Input(in_token_id=42, out_token_id=42, in_amount=42, out_amount=42, max=True)
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True, log_level="trace", workers= 4)
+    
+if __name__ == "__main__":
+    start()
