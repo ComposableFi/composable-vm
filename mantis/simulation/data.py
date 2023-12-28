@@ -10,15 +10,15 @@ TNetworkId = TypeVar("TNetworkId")
 
 class AssetTransfers(BaseModel):
     # positive whole numbers, set key
-    in_asset_id: int
-    out_asset_id: int
+    in_asset_id: str
+    out_asset_id: str
     
     # this is positive whole number too
     # if it is hard if None, please fail if it is None - for now will be always some
-    usd_fee_transfer: int | None
+    usd_fee_transfer: str
     
     # do not care
-    metadata: str | None
+    metadata: str 
     
 # pool are bidirectional, so so in can be out and other way
 class AssetPairsXyk(BaseModel):
@@ -49,7 +49,7 @@ class Input(BaseModel):
     # please fail if bool is False for now
     max: bool
     
-class CvmRoute:
+class SingleInputAssetCvmRoute(BaseModel):
     pass    
 
 
@@ -59,20 +59,21 @@ class Spawn(BaseModel):
     # None means all
     in_asset_amount: int | None
     out_asset_id: int
-    next: CvmRoute
+    next: SingleInputAssetCvmRoute
 
 class Exchange(BaseModel):
     # none means all
     in_asset_amount: int | None
     pool_id : int
-    next: CvmRoute
+    next: SingleInputAssetCvmRoute
 
 # always starts with Input amount and asset
 class SingleInputAssetCvmRoute(BaseModel):
     next: list[Exchange | Spawn]
 
+SingleInputAssetCvmRoute.update_forward_refs()
 
-class SolutionType(Enum, BaseModel):
+class SolutionType(Enum):
     # really to find any solution
     FAILED = 0
     # all assets will be solved with limit
@@ -88,13 +89,19 @@ class Output(BaseModel):
     route: SingleInputAssetCvmRoute | str
     solution_type: SolutionType     
 
+T = TypeVar("T")
+
+
+class PydanticDataSet(DataSet[T], BaseModel):
+    pass
 class AllData(BaseModel):
     # DataSet inherits from DataFrame
     # If key is in first set, it cannot be in second set, and other way around
-    asset_transfers : DataSet[AssetTransfers]
-    asset_pairs_xyk : DataSet[AssetPairsXyk]
+    asset_transfers : PydanticDataSet[AssetTransfers]
+    asset_pairs_xyk : PydanticDataSet[AssetPairsXyk]
+    
 
 def test_all_data() -> AllData:
-    asset_transfers =  DataSet[AssetTransfers](pd.read_csv("asset_transfers.csv"))
-    assets_pairs_xyk=  DataSet[AssetPairsXyk](pd.read_csv("assets_pairs_xyk.csv"))
+    asset_transfers =  PydanticDataSet[AssetTransfers](pd.read_csv("asset_transfers.csv"))
+    assets_pairs_xyk=  PydanticDataSet[AssetPairsXyk](pd.read_csv("assets_pairs_xyk.csv"))
     return AllData(assets_pairs_xyk, asset_transfers)
