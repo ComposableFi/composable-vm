@@ -281,6 +281,23 @@
         "type": "github"
       }
     },
+    "cvxpy-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1687849951,
+        "narHash": "sha256-3OW54j8uQs+EmSwQm608v4VflNlEnTO48GNqYeGuPrM=",
+        "owner": "cvxpy",
+        "repo": "cvxpy",
+        "rev": "ad4624493aec144a7a42a53a3dcd6e4ade65e86b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "cvxpy",
+        "ref": "v1.3.2",
+        "repo": "cvxpy",
+        "type": "github"
+      }
+    },
     "cw-plus-src": {
       "flake": false,
       "locked": {
@@ -1361,6 +1378,7 @@
         "cosmos": "cosmos",
         "cosmpy-src": "cosmpy-src",
         "crane": "crane",
+        "cvxpy-src": "cvxpy-src",
         "datamodel-code-generator-src": "datamodel-code-generator-src",
         "devour-flake": "devour-flake",
         "fastapi-cache-src": "fastapi-cache-src",

@@ -63,6 +63,11 @@
       flake = false;
     };
 
+    cvxpy-src = {
+      url = "github:cvxpy/cvxpy/v1.3.2";
+      flake = false;
+    };
+
     fastapi-src = {
       url = "github:tiangolo/fastapi";
       flake = false;
@@ -284,6 +289,27 @@
             pkgs.pkg-config
           ];
         };
+        dep = name:
+          builtins.head (pkgs.lib.lists.filter
+            (x: pkgs.lib.strings.hasInfix name x.name)
+            deps.poetryPackages);
+
+        cvxpy-latest = pkgs.python3Packages.buildPythonPackage {
+          name = "cvxpy";
+          version = "1.3.2";
+          format = "pyproject";
+
+          src = inputs.cvxpy-src;
+
+          nativeBuildInputs = with pkgs.python3Packages; [
+            (builtins.trace (dep "numpy").name (dep "numpy"))
+            (builtins.trace (dep "scipy").name (dep "scipy"))
+            poetry-core
+            setuptools
+            setuptools-git-versioning
+            pkgs.pkg-config
+          ];
+        };
 
         maturin-latest = pkgs.python3Packages.buildPythonPackage {
           name = "maturin";
@@ -309,6 +335,10 @@
           ];
         };
 
+        deps = mkPoetryPackages {
+          projectDir = ./mantis;
+        };
+
         envShell = mkPoetryEnv {
           projectDir = ./mantis;
 
@@ -319,7 +349,7 @@
             pydantic-extra-types = super.pydantic-extra-types.overridePythonAttrs (old: {
               buildInputs = old.buildInputs or [] ++ [self.python.pkgs.hatchling];
             });
-
+            cvxpy = cvxpy-latest;
             # scipy = super.scipy.overridePythonAttrs (old: {
             #   preferWheel = true;
             #   buildInputs = old.buildInputs or [] ++ [self.python.pkgs.meson-python];
