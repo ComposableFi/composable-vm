@@ -363,6 +363,22 @@
         "type": "github"
       }
     },
+    "fastapi-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1703623638,
+        "narHash": "sha256-VXtSKPgL+JWWMu0xjQx/ZlakiNa4CabgqV4lGldN7Os=",
+        "owner": "tiangolo",
+        "repo": "fastapi",
+        "rev": "040ad986d48bb9a400de804f7f25abb856d85e1a",
+        "type": "github"
+      },
+      "original": {
+        "owner": "tiangolo",
+        "repo": "fastapi",
+        "type": "github"
+      }
+    },
     "flake-parts": {
       "inputs": {
         "nixpkgs-lib": "nixpkgs-lib"
@@ -704,6 +720,23 @@
         "owner": "JonathanLorimer",
         "ref": "jonathan/update-go",
         "repo": "gomod2nix",
+        "type": "github"
+      }
+    },
+    "hatch-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1683865296,
+        "narHash": "sha256-iim2SxXbVzdhurt3AsJpuucxrUuEBiqHCKScrB1RSKs=",
+        "owner": "pypa",
+        "repo": "hatch",
+        "rev": "4886f856eceef04d8f8af05201d157b4c92a0671",
+        "type": "github"
+      },
+      "original": {
+        "owner": "pypa",
+        "ref": "hatchling-v1.17.0",
+        "repo": "hatch",
         "type": "github"
       }
     },
@@ -1239,6 +1272,40 @@
         "type": "github"
       }
     },
+    "pydantic-core-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1700655764,
+        "narHash": "sha256-UguZpA3KEutOgIavjx8Ie//0qJq+4FTZNQTwb/ZIgb8=",
+        "owner": "pydantic",
+        "repo": "pydantic-core",
+        "rev": "82158ce5a69c9c9d7e749c13483a8984abaa496b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "pydantic",
+        "ref": "v2.14.5",
+        "repo": "pydantic-core",
+        "type": "github"
+      }
+    },
+    "pydantic-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1703239391,
+        "narHash": "sha256-YTNV67uKGRag6ICkNjjY9YrOiKFB1hSZkKcUXjSrhwM=",
+        "owner": "pydantic",
+        "repo": "pydantic",
+        "rev": "9f58e785a5f1f2c34437f6e9b6adcd5b969e0df4",
+        "type": "github"
+      },
+      "original": {
+        "owner": "pydantic",
+        "ref": "v2.5.3",
+        "repo": "pydantic",
+        "type": "github"
+      }
+    },
     "regen-src": {
       "flake": false,
       "locked": {
@@ -1281,10 +1348,14 @@
         "datamodel-code-generator-src": "datamodel-code-generator-src",
         "devour-flake": "devour-flake",
         "fastapi-cache-src": "fastapi-cache-src",
+        "fastapi-src": "fastapi-src",
         "flake-parts": "flake-parts_2",
+        "hatch-src": "hatch-src",
         "networks": "networks",
         "nixpkgs": "nixpkgs_4",
         "poetry2nix": "poetry2nix",
+        "pydantic-core-src": "pydantic-core-src",
+        "pydantic-src": "pydantic-src",
         "rust-overlay": "rust-overlay",
         "strictly-typed-pandas-src": "strictly-typed-pandas-src"
       }
