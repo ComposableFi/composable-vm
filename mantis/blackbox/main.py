@@ -59,8 +59,9 @@
 # @app.on_event("startup")
 # async def startup():
 #     FastAPICache.init(InMemoryBackend())
-    
-from ..simulation import data
+ 
+import numpy as nd   
+#from simulation import data
 import sys
 import os
 import uvicorn
