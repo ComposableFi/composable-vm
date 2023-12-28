@@ -1011,6 +1011,22 @@
         "type": "github"
       }
     },
+    "maturin-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1703663878,
+        "narHash": "sha256-NhLQ9JPBvaoo9tuq7Yg3Y1AB6V+PP7Goq1v7vSwFbyY=",
+        "owner": "PyO3",
+        "repo": "maturin",
+        "rev": "a10c623ea838bddb9974b3a0515876ac5909601b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "PyO3",
+        "repo": "maturin",
+        "type": "github"
+      }
+    },
     "migaloo-src": {
       "flake": false,
       "locked": {
@@ -1351,6 +1367,7 @@
         "fastapi-src": "fastapi-src",
         "flake-parts": "flake-parts_2",
         "hatch-src": "hatch-src",
+        "maturin-src": "maturin-src",
         "networks": "networks",
         "nixpkgs": "nixpkgs_4",
         "poetry2nix": "poetry2nix",
