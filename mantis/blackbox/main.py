@@ -6,7 +6,7 @@
 # from blackbox.settings import setting
 # from cosmpy.aerial.config import NetworkConfig 
 # from cosmpy.aerial.contract import LedgerClient, LedgerContract
-# from fastapi import FastAPI
+from fastapi import FastAPI
 # import blackbox.cvm_runtime.query as cvm_query
 # import requests
 # from fastapi_cache.backends.inmemory import InMemoryBackend
@@ -14,11 +14,11 @@
 
 # from fastapi_cache.decorator import cache
 
-# app = FastAPI()
+app = FastAPI()
 
-# @app.get("/status")
-# async def status():
-#     return {"status": "ok"}
+@app.get("/status")
+async def status():
+    return {"status": "ok"}
 
 # # gets all data from all sources
 # @app.get("/data/all") 
@@ -61,7 +61,7 @@
 #     FastAPICache.init(InMemoryBackend())
  
 import numpy as nd   
-#from simulation import data
+from simulation import data
 import sys
 import os
 import uvicorn

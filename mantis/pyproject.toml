@@ -13,29 +13,28 @@ packages = [
 [tool.poetry.dependencies]
 python = "3.11.6"
 
- bech32 = "*"
- ecdsa = "*"
- fastapi = { extras = ["all"], version = "^0.108.0" }
+bech32 = "*"
+ecdsa = "*"
+fastapi = { extras = ["all"], version = "^0.108.0" }
 #fastapi-cache2 = "^0.2.1"  # no needed now, too many things
- googleapis-common-protos = "*"
- grpcio = "==1.53.2"
- jsonschema = ">=3.2.0,<5"
+googleapis-common-protos = "*"
+grpcio = "==1.53.2"
+jsonschema = ">=3.2.0,<5"
 numpy = "^1.1"
- protobuf = ">=4.21.6,<5.0dev"
- pycryptodome = "^3.18.0"
- pydantic = "^2.5.3"
- pydantic_settings = "*"
- python-dateutil = "*"
- requests = "*"
+protobuf = ">=4.21.6,<5.0dev"
+pycryptodome = "^3.18.0"
+pydantic = "^2.5.3"
+pydantic_settings = "*"
+python-dateutil = "*"
+requests = "*"
 rpds-py = "0.13.2"
 strictly-typed-pandas = "^0.1.24"
 uvicorn = "^0.25.0"
 maturin = "1.4.0"
 pendulum = "2.1.2"
-pandas = {extras =[], version = "^2.1.4"}
-
-# scipy = "1.9.0"
-# cvxpy = "^1.4.1"
+pandas = { extras = [], version = "^2.1.4" }
+scipy = "1.9.3" 
+#cvxpy = "1.3.2"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.4.3"

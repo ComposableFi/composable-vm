@@ -1374,6 +1374,7 @@
         "pydantic-core-src": "pydantic-core-src",
         "pydantic-src": "pydantic-src",
         "rust-overlay": "rust-overlay",
+        "scipy-src": "scipy-src",
         "strictly-typed-pandas-src": "strictly-typed-pandas-src"
       }
     },
@@ -1414,6 +1415,23 @@
       "original": {
         "owner": "zaninime",
         "repo": "sbt-derivation",
+        "type": "github"
+      }
+    },
+    "scipy-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1666212481,
+        "narHash": "sha256-raLcK5Z5va3e5wD8mTWNS1QV2HRBWhQJrBVuqqLCOPM=",
+        "owner": "scipy",
+        "repo": "scipy",
+        "rev": "de80faf9d3480b9dbb9b888568b64499e0e70c19",
+        "type": "github"
+      },
+      "original": {
+        "owner": "scipy",
+        "ref": "v1.9.3",
+        "repo": "scipy",
         "type": "github"
       }
     },

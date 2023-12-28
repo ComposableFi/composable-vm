@@ -58,6 +58,11 @@
       flake = false;
     };
 
+    scipy-src = {
+      url = "github:scipy/scipy/v1.9.3";
+      flake = false;
+    };
+
     fastapi-src = {
       url = "github:tiangolo/fastapi";
       flake = false;
@@ -263,6 +268,23 @@
           ];
         };
 
+        scipy-latest = pkgs.python3Packages.buildPythonPackage {
+          name = "scipy";
+          version = "0.0.1";
+          format = "pyproject";
+
+          src = inputs.scipy-src;
+
+          nativeBuildInputs = with pkgs.python3Packages; [
+            poetry-core
+            meson
+            meson-python
+            setuptools
+            setuptools-git-versioning
+            pkgs.pkg-config
+          ];
+        };
+
         maturin-latest = pkgs.python3Packages.buildPythonPackage {
           name = "maturin";
           version = "0.0.1";
@@ -287,26 +309,9 @@
           ];
         };
 
-        # strictly-typed-pandas-latest = pkgs.python3Packages.buildPythonPackage {
-        #   name = "strictly-typed-pandas";
-        #   version = "0.0.1";
-        #   format = "pyproject";
-
-        #   src = inputs.strictly-typed-pandas-src;
-
-        #   nativeBuildInputs = with pkgs.python3Packages; [
-        #     poetry-core
-        #     setuptools
-        #     setuptools-git-versioning
-        #   ];
-        # };
-
-        #                = super.maturin.overridePythonAttrs (old: {
-        #       buildInputs = old.buildInputs or [ ] ++ [ self.python.pkgs.setuptools ];
-        #     });
-
         envShell = mkPoetryEnv {
           projectDir = ./mantis;
+
           overrides = overrides.withDefaults (self: super: {
             editables = super.editables.overridePythonAttrs (old: {
               buildInputs = old.buildInputs or [] ++ [self.python.pkgs.flit-core];
@@ -314,6 +319,18 @@
             pydantic-extra-types = super.pydantic-extra-types.overridePythonAttrs (old: {
               buildInputs = old.buildInputs or [] ++ [self.python.pkgs.hatchling];
             });
+
+            # scipy = super.scipy.overridePythonAttrs (old: {
+            #   preferWheel = true;
+            #   buildInputs = old.buildInputs or [] ++ [self.python.pkgs.meson-python];
+
+            #   nativeBuildInputs = old.nativeBuildInputs or [] ++ (with pkgs.python3Packages; [
+            #           setuptools
+            #           setuptools-git-versioning
+            #       ]);
+            # });
+
+            #scipy = scipy-latest;
             # fastapi-cache2 = super.fastapi-cache2.overridePythonAttrs (old: {
             #   buildInputs = old.buildInputs or [ ] ++ [ self.python.pkgs.poetry self.python.pkgs.poetry_masonry ];
             # });
@@ -323,11 +340,7 @@
             maturin = maturin-latest;
 
             strictly-typed-pandas = strictly-typed-pandas-latest;
-            # strictly-typed-pandas = super.strictly-typed-pandas.overridePythonAttrs (old: {
-            #   buildInputs = old.buildInputs or [ ] ++ [ self.python.pkgs.setuptools ];
-            # });
 
-            #scipy  = pkgs.python3Packages.scipy;  # poetry cannot build it
             # pandas  = pkgs.python3Packages.pandas;
           });
         };
@@ -377,22 +390,37 @@
           SKIP_MONEY = env.SKIP_MONEY;
           COMPOSABLE_COSMOS_GRPC = inputs.networks.lib.pica.mainnet.GRPC;
           CVM_ADDRESS = inputs.networks.lib.pica.mainnet.CVM_OUTPOST_CONTRACT_ADDRESS;
-          nativeBuildInputs = [pkgs.cbc];
+          nativeBuildInputs = [
+            pkgs.cbc
+            pkgs.zlib
+            pkgs.zlib.dev
+            pkgs.zlib.out
+          ];
+          LD_LIBRARY_PATH = pkgs.lib.strings.makeLibraryPath [
+            pkgs.stdenv.cc.cc.lib
+            # pkgs.llvmPackages.libclang.lib
+            pkgs.zlib
+            pkgs.zlib.dev
+            pkgs.zlib.out
+          ];
+
           buildInputs = [
             devour-flake
-            pkgs.virtualenv
+            envShell
             pkgs.conda
-            pkgs.pyo3-pack
-            rust.cargo
-            rust.rustc
-            devour-flake
             pkgs.nodejs
-            pkgs.python3Packages.uvicorn
-            pkgs.python3Packages.flit
-            pkgs.python3Packages.flit-core
             pkgs.nodePackages.npm
             pkgs.poetry
-            envShell
+            pkgs.pyo3-pack
+            pkgs.python3Packages.flit
+            pkgs.python3Packages.flit-core
+            pkgs.python3Packages.uvicorn
+            pkgs.virtualenv
+            pkgs.zlib
+            pkgs.zlib.dev
+            pkgs.zlib.out
+            rust.cargo
+            rust.rustc
           ];
 
           shellHook = ''
