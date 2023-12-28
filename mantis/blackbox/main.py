@@ -61,7 +61,7 @@ async def status():
 #     FastAPICache.init(InMemoryBackend())
  
 import numpy as nd   
-from simulation import data
+from simulation import data, optimal_routing
 import sys
 import os
 import uvicorn
@@ -69,7 +69,9 @@ def start():
     print(sys.path)
     print(os.environ)
     #data.Input(in_token_id=42, out_token_id=42, in_amount=42, out_amount=42, max=True)
+    optimal_routing.simulate()
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True, log_level="trace", workers= 4)
+    
     
 if __name__ == "__main__":
     start()
