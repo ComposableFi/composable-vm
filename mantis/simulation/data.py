@@ -48,6 +48,9 @@ class Input(BaseModel):
     # if max is False, user wants to get exact out, but spent as small as possible in
     # please fail if bool is False for now
     max: bool
+    
+class CvmRoute:
+    pass    
 
 
 # transfer assets
