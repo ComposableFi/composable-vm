@@ -302,10 +302,8 @@
           projectDir = ./mantis;
         };
 
-        envShell = mkPoetryEnv {
-          projectDir = ./mantis;
-
-          overrides = overrides.withDefaults (self: super: {
+        override = overrides:
+          overrides.withDefaults (self: super: {
             editables = super.editables.overridePythonAttrs (old: {
               buildInputs = old.buildInputs or [] ++ [self.python.pkgs.flit-core];
             });
@@ -325,7 +323,25 @@
             maturin = maturin-latest;
             strictly-typed-pandas = strictly-typed-pandas-latest;
           });
+
+        envShell = mkPoetryEnv {
+          projectDir = ./mantis;
+          overrides = override overrides;
         };
+        mantis-blackbox-package = mkPoetryApplication {
+          projectDir = ./mantis;
+          overrides = override overrides;
+        };
+
+        mantis-blackbox = pkgs.writeShellApplication {
+          name = "mantis-blackbox";
+          runtimeInputs = [mantis-blackbox-package];
+          text = ''
+            # shellcheck disable=SC2068
+            mantis-blackbox $@
+          '';
+        };
+
         inherit (poetry2nix.lib.mkPoetry2Nix {inherit pkgs;}) mkPoetryApplication mkPoetryPackages mkPoetryEnv overrides;
         env = {
           OSMOSIS_POOLS = "https://app.osmosis.zone/api/pools?page=1&limit=1000&min_liquidity=500000";
@@ -372,6 +388,7 @@
           SKIP_MONEY = env.SKIP_MONEY;
           COMPOSABLE_COSMOS_GRPC = inputs.networks.lib.pica.mainnet.GRPC;
           CVM_ADDRESS = inputs.networks.lib.pica.mainnet.CVM_OUTPOST_CONTRACT_ADDRESS;
+
           nativeBuildInputs = [
             pkgs.cbc
             pkgs.zlib
@@ -380,7 +397,6 @@
           ];
           LD_LIBRARY_PATH = pkgs.lib.strings.makeLibraryPath [
             pkgs.stdenv.cc.cc.lib
-            # pkgs.llvmPackages.libclang.lib
             pkgs.zlib
             pkgs.zlib.dev
             pkgs.zlib.out
@@ -388,7 +404,6 @@
 
           buildInputs = [
             devour-flake
-            envShell
             pkgs.conda
             pkgs.nodejs
             pkgs.nodePackages.npm
@@ -403,6 +418,7 @@
             pkgs.zlib.out
             rust.cargo
             rust.rustc
+            envShell
           ];
 
           shellHook = ''
@@ -414,7 +430,7 @@
         };
         formatter = pkgs.alejandra;
         packages = rec {
-          inherit cw-mantis-order cw-cvm-executor cw-cvm-outpost cosmwasm-contracts cosmwasm-json-schema-py datamodel-code-generator cosmwasm-json-schema-ts;
+          inherit cw-mantis-order cw-cvm-executor cw-cvm-outpost cosmwasm-contracts cosmwasm-json-schema-py datamodel-code-generator cosmwasm-json-schema-ts mantis-blackbox;
 
           mantis = rust.buildPackage (rust-attrs
             // {
@@ -425,27 +441,6 @@
               nativeBuildInputs = [pkgs.cbc];
             });
           default = mantis-blackbox;
-          mantis-blackbox = pkgs.writeShellApplication {
-            name = "run";
-            runtimeInputs = [
-              pkgs.cbc
-            ];
-            text = ''
-              cd $ {./mantis}
-              OSMOSIS_POOLS="${env.OSMOSIS_POOLS}"
-              ASTROPORT_POOLS="${env.ASTROPORT_POOLS}"
-              SKIP_MONEY="${env.SKIP_MONEY}"
-              COMPOSABLE_COSMOS_GRPC="${inputs.networks.lib.pica.mainnet.GRPC}"
-              CVM_ADDRESS="${inputs.networks.lib.pica.mainnet.CVM_OUTPOST_CONTRACT_ADDRESS}"
-
-              export SKIP_MONEY
-              export OSMOSIS_POOLS
-              export ASTROPORT_POOLS
-              export COMPOSABLE_COSMOS_GRPC
-              export CVM_ADDRESS
-              uvicorn blackbox.main:app --reload --log-level trace --host "0.0.0.0"
-            '';
-          };
           ci = pkgs.writeShellApplication {
             name = "nix-build-all";
             runtimeInputs = [
