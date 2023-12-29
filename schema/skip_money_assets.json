@@ -1168,6 +1168,21 @@
     "axelar-dojo-1": {
       "assets": [
         {
+          "denom": "reth-wei",
+          "chain_id": "axelar-dojo-1",
+          "origin_denom": "reth-wei",
+          "origin_chain_id": "axelar-dojo-1",
+          "trace": "",
+          "is_cw20": false,
+          "is_evm": false,
+          "symbol": "rETH",
+          "name": "rETH",
+          "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/_non-cosmos/ethereum/images/reth.png",
+          "decimals": 18,
+          "coingecko_id": "rocket-pool-eth",
+          "recommended_symbol": "rETH"
+        },
+        {
           "denom": "rai-wei",
           "chain_id": "axelar-dojo-1",
           "origin_denom": "rai-wei",
@@ -1182,21 +1197,6 @@
           "description": "Rai Reflex Index on Axelar",
           "coingecko_id": "rai",
           "recommended_symbol": "RAI"
-        },
-        {
-          "denom": "reth-wei",
-          "chain_id": "axelar-dojo-1",
-          "origin_denom": "reth-wei",
-          "origin_chain_id": "axelar-dojo-1",
-          "trace": "",
-          "is_cw20": false,
-          "is_evm": false,
-          "symbol": "rETH",
-          "name": "rETH",
-          "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/_non-cosmos/ethereum/images/reth.png",
-          "decimals": 18,
-          "coingecko_id": "rocket-pool-eth",
-          "recommended_symbol": "rETH"
         },
         {
           "denom": "ibc/4D6975AACA0DA11B982F539300687B86B3E3AEF509C0D4F6D5AC2A27BFB236D8",
@@ -3568,6 +3568,21 @@
     "chihuahua-1": {
       "assets": [
         {
+          "denom": "factory/chihuahua1x4q2vkrz4dfgd9hcw0p5m2f2nuv2uqmt9xr8k2/achihuahuawifhat",
+          "chain_id": "chihuahua-1",
+          "origin_denom": "factory/chihuahua1x4q2vkrz4dfgd9hcw0p5m2f2nuv2uqmt9xr8k2/achihuahuawifhat",
+          "origin_chain_id": "chihuahua-1",
+          "trace": "",
+          "is_cw20": false,
+          "is_evm": false,
+          "symbol": "BADDOG",
+          "name": "BADDOG",
+          "logo_uri": "https://raw.githubusercontent.com/cosmostation/chainlist/main/chain/chihuahua/asset/baddog.png",
+          "decimals": 6,
+          "description": "has a hat",
+          "recommended_symbol": "BADDOG"
+        },
+        {
           "denom": "factory/chihuahua13jawsn574rf3f0u5rhu7e8n6sayx5gkw3eddhp/uwoof",
           "chain_id": "chihuahua-1",
           "origin_denom": "factory/chihuahua13jawsn574rf3f0u5rhu7e8n6sayx5gkw3eddhp/uwoof",
@@ -5349,52 +5364,6 @@
           "recommended_symbol": "BUSD"
         },
         {
-          "denom": "ibc/835EE9D00C35D72128F195B50F8A89EB83E5011C43EA0AA00D16348E2208FEBB",
-          "chain_id": "cosmoshub-4",
-          "origin_denom": "ubcre",
-          "origin_chain_id": "crescent-1",
-          "trace": "transfer/channel-326",
-          "is_cw20": false,
-          "is_evm": false,
-          "symbol": "bCRE",
-          "name": "bCRE",
-          "logo_uri": "https://raw.githubusercontent.com/cosmostation/chainlist/main/chain/crescent/asset/bcre.png",
-          "decimals": 6,
-          "description": "Crescent Liquidated CRE",
-          "coingecko_id": "liquid-staking-crescent",
-          "recommended_symbol": "bCRE"
-        },
-        {
-          "denom": "ibc/83AC6D47CA1313421724B51572BBB92F6A74998F1971B4E5B4E4E48F8462DF32",
-          "chain_id": "cosmoshub-4",
-          "origin_denom": "clink",
-          "origin_chain_id": "sifchain-1",
-          "trace": "transfer/channel-192",
-          "is_cw20": false,
-          "is_evm": false,
-          "symbol": "LINK",
-          "name": "LINK",
-          "logo_uri": "https://raw.githubusercontent.com/cosmostation/chainlist/main/chain/ethereum/asset/link.png",
-          "decimals": 18,
-          "coingecko_id": "chainlink",
-          "recommended_symbol": "LINK"
-        },
-        {
-          "denom": "ibc/C0BDD2D3A69D64FB569741570890BBC1D2E3EF077A4E77FD23DEBE227B8419A8",
-          "chain_id": "cosmoshub-4",
-          "origin_denom": "uaura",
-          "origin_chain_id": "xstaxy-1",
-          "trace": "transfer/channel-646",
-          "is_cw20": false,
-          "is_evm": false,
-          "symbol": "AURA",
-          "name": "AURA",
-          "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/aura/images/Aura-logo-2.2.png",
-          "decimals": 6,
-          "coingecko_id": "aura-network",
-          "recommended_symbol": "AURA"
-        },
-        {
           "denom": "ibc/5567102708097100D5B3FC160F01F5031CBF82EC362EA46CFEE97A8316B39264",
           "chain_id": "cosmoshub-4",
           "origin_denom": "acanto",
@@ -5440,6 +5409,37 @@
           "recommended_symbol": "GRAV"
         },
         {
+          "denom": "ibc/835EE9D00C35D72128F195B50F8A89EB83E5011C43EA0AA00D16348E2208FEBB",
+          "chain_id": "cosmoshub-4",
+          "origin_denom": "ubcre",
+          "origin_chain_id": "crescent-1",
+          "trace": "transfer/channel-326",
+          "is_cw20": false,
+          "is_evm": false,
+          "symbol": "bCRE",
+          "name": "bCRE",
+          "logo_uri": "https://raw.githubusercontent.com/cosmostation/chainlist/main/chain/crescent/asset/bcre.png",
+          "decimals": 6,
+          "description": "Crescent Liquidated CRE",
+          "coingecko_id": "liquid-staking-crescent",
+          "recommended_symbol": "bCRE"
+        },
+        {
+          "denom": "ibc/83AC6D47CA1313421724B51572BBB92F6A74998F1971B4E5B4E4E48F8462DF32",
+          "chain_id": "cosmoshub-4",
+          "origin_denom": "clink",
+          "origin_chain_id": "sifchain-1",
+          "trace": "transfer/channel-192",
+          "is_cw20": false,
+          "is_evm": false,
+          "symbol": "LINK",
+          "name": "LINK",
+          "logo_uri": "https://raw.githubusercontent.com/cosmostation/chainlist/main/chain/ethereum/asset/link.png",
+          "decimals": 18,
+          "coingecko_id": "chainlink",
+          "recommended_symbol": "LINK"
+        },
+        {
           "denom": "ibc/A47E814B0E8AE12D044637BCB4576FCA675EF66300864873FA712E1B28492B78",
           "chain_id": "cosmoshub-4",
           "origin_denom": "factory/kujira1qk00h5atutpsv900x202pxx42npjr9thg58dnqpa72f2p7m2luase444a7/uusk",
@@ -5453,6 +5453,21 @@
           "decimals": 6,
           "coingecko_id": "usk",
           "recommended_symbol": "USK"
+        },
+        {
+          "denom": "ibc/C0BDD2D3A69D64FB569741570890BBC1D2E3EF077A4E77FD23DEBE227B8419A8",
+          "chain_id": "cosmoshub-4",
+          "origin_denom": "uaura",
+          "origin_chain_id": "xstaxy-1",
+          "trace": "transfer/channel-646",
+          "is_cw20": false,
+          "is_evm": false,
+          "symbol": "AURA",
+          "name": "AURA",
+          "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/aura/images/Aura-logo-2.2.png",
+          "decimals": 6,
+          "coingecko_id": "aura-network",
+          "recommended_symbol": "AURA"
         },
         {
           "denom": "ibc/3D1E70D2B3F6029E3CA939D18F81179515D88E6404C736F780366B3A2C11CE56",
@@ -6719,20 +6734,6 @@
           "recommended_symbol": "STRD"
         },
         {
-          "denom": "poolB457CE9240C221C0F76952FED6506F74375EDD38B32A6020B7DDDFD5A4867D5C",
-          "chain_id": "cosmoshub-4",
-          "origin_denom": "poolB457CE9240C221C0F76952FED6506F74375EDD38B32A6020B7DDDFD5A4867D5C",
-          "origin_chain_id": "cosmoshub-4",
-          "trace": "",
-          "is_cw20": false,
-          "is_evm": false,
-          "symbol": "GDEX-10",
-          "name": "GDEX-10",
-          "logo_uri": "https://raw.githubusercontent.com/cosmostation/chainlist/main/chain/cosmos/asset/pool.png",
-          "decimals": 6,
-          "recommended_symbol": "GDEX-10"
-        },
-        {
           "denom": "ibc/4363FD2EF60A7090E405B79A6C4337C5E9447062972028F5A99FB041B9571942",
           "chain_id": "cosmoshub-4",
           "origin_denom": "factory/kujira12cjjeytrqcj25uv349thltcygnp9k0kukpct0e/uwink",
@@ -6745,6 +6746,20 @@
           "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/kujira/images/wink.png",
           "decimals": 6,
           "recommended_symbol": "WINK"
+        },
+        {
+          "denom": "poolB457CE9240C221C0F76952FED6506F74375EDD38B32A6020B7DDDFD5A4867D5C",
+          "chain_id": "cosmoshub-4",
+          "origin_denom": "poolB457CE9240C221C0F76952FED6506F74375EDD38B32A6020B7DDDFD5A4867D5C",
+          "origin_chain_id": "cosmoshub-4",
+          "trace": "",
+          "is_cw20": false,
+          "is_evm": false,
+          "symbol": "GDEX-10",
+          "name": "GDEX-10",
+          "logo_uri": "https://raw.githubusercontent.com/cosmostation/chainlist/main/chain/cosmos/asset/pool.png",
+          "decimals": 6,
+          "recommended_symbol": "GDEX-10"
         },
         {
           "denom": "ibc/0D33E2077E140784912451ED189B11D78A4CD10C480C39E0CD91C67B1406B69F",
@@ -7936,19 +7951,19 @@
           "recommended_symbol": "USDT"
         },
         {
-          "denom": "ibc/6411AE2ADA1E73DB59DB151A8988F9B7D5E7E233D8414DB6817F8F1A01611F86",
+          "denom": "ibc/BF0F0916EADB14F62A27BB6669132766BBCFDCCB8914C60972CBF815781F10F7",
           "chain_id": "cronosmainnet_25-1",
-          "origin_denom": "basecro",
-          "origin_chain_id": "crypto-org-chain-mainnet-1",
-          "trace": "transfer/channel-0",
+          "origin_denom": "ukava",
+          "origin_chain_id": "kava_2222-10",
+          "trace": "transfer/channel-11",
           "is_cw20": false,
           "is_evm": false,
-          "symbol": "CRO",
-          "name": "CRO",
-          "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/cronos/images/cro.svg",
-          "decimals": 8,
-          "coingecko_id": "crypto-com-chain",
-          "recommended_symbol": "CRO"
+          "symbol": "KAVA",
+          "name": "KAVA",
+          "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/kava/images/kava.png",
+          "decimals": 6,
+          "coingecko_id": "kava",
+          "recommended_symbol": "KAVA"
         },
         {
           "denom": "ibc/C4CFF46FD6DE35CA4CF4CE031E643C8FDC9BA4B99AE598E9B0ED98FE3A2319F9",
@@ -7966,19 +7981,19 @@
           "recommended_symbol": "ATOM"
         },
         {
-          "denom": "ibc/BF0F0916EADB14F62A27BB6669132766BBCFDCCB8914C60972CBF815781F10F7",
+          "denom": "ibc/6411AE2ADA1E73DB59DB151A8988F9B7D5E7E233D8414DB6817F8F1A01611F86",
           "chain_id": "cronosmainnet_25-1",
-          "origin_denom": "ukava",
-          "origin_chain_id": "kava_2222-10",
-          "trace": "transfer/channel-11",
+          "origin_denom": "basecro",
+          "origin_chain_id": "crypto-org-chain-mainnet-1",
+          "trace": "transfer/channel-0",
           "is_cw20": false,
           "is_evm": false,
-          "symbol": "KAVA",
-          "name": "KAVA",
-          "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/kava/images/kava.png",
-          "decimals": 6,
-          "coingecko_id": "kava",
-          "recommended_symbol": "KAVA"
+          "symbol": "CRO",
+          "name": "CRO",
+          "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/cronos/images/cro.svg",
+          "decimals": 8,
+          "coingecko_id": "crypto-com-chain",
+          "recommended_symbol": "CRO"
         },
         {
           "denom": "ibc/39092DF2B2C13C51E826E23E7D375A451DC2EF6A2E3546FDC70440BAFF6F4FE1",
@@ -10153,19 +10168,19 @@
     "injective-1": {
       "assets": [
         {
-          "denom": "ibc/75F64E20A70C5059F8EA792F1C47260DC7C6CBAC69DBA60E151AD5416E93C34C",
+          "denom": "peggy0x4E15361FD6b4BB609Fa63C81A2be19d873717870",
           "chain_id": "injective-1",
-          "origin_denom": "staevmos",
-          "origin_chain_id": "stride-1",
-          "trace": "transfer/channel-89",
+          "origin_denom": "peggy0x4E15361FD6b4BB609Fa63C81A2be19d873717870",
+          "origin_chain_id": "injective-1",
+          "trace": "",
           "is_cw20": false,
           "is_evm": false,
-          "symbol": "stEVMOS",
-          "name": "stEVMOS",
-          "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/stride/images/stevmos.png",
+          "symbol": "FTM",
+          "name": "FTM",
+          "logo_uri": "https://raw.githubusercontent.com/cosmostation/chainlist/main/chain/ethereum/asset/ftm.png",
           "decimals": 18,
-          "coingecko_id": "stride-staked-evmos",
-          "recommended_symbol": "stEVMOS"
+          "coingecko_id": "fantom",
+          "recommended_symbol": "FTM"
         },
         {
           "denom": "peggy0xAaEf88cEa01475125522e117BFe45cF32044E238",
@@ -10183,34 +10198,19 @@
           "recommended_symbol": "GF"
         },
         {
-          "denom": "ibc/6488808F32B07F6E8DCE7B700B92D9F7287D0FA1D0F76A25B11276E09DB0E626",
+          "denom": "ibc/A4495880A4A2E3C242F63C710F447BAE072E1A4C2A22F1851E0BB7ABDD26B43D",
           "chain_id": "injective-1",
-          "origin_denom": "untrn",
-          "origin_chain_id": "neutron-1",
-          "trace": "transfer/channel-177",
+          "origin_denom": "factory/kujira1643jxg8wasy5cfcn7xm8rd742yeazcksqlg4d7/umnta",
+          "origin_chain_id": "kaiyo-1",
+          "trace": "transfer/channel-98",
           "is_cw20": false,
           "is_evm": false,
-          "symbol": "NTRN",
-          "name": "NTRN",
-          "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/neutron/images/ntrn.png",
+          "symbol": "MNTA",
+          "name": "MNTA",
+          "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/kujira/images/mnta.png",
           "decimals": 6,
-          "coingecko_id": "neutron-3",
-          "recommended_symbol": "NTRN"
-        },
-        {
-          "denom": "peggy0x4E15361FD6b4BB609Fa63C81A2be19d873717870",
-          "chain_id": "injective-1",
-          "origin_denom": "peggy0x4E15361FD6b4BB609Fa63C81A2be19d873717870",
-          "origin_chain_id": "injective-1",
-          "trace": "",
-          "is_cw20": false,
-          "is_evm": false,
-          "symbol": "FTM",
-          "name": "FTM",
-          "logo_uri": "https://raw.githubusercontent.com/cosmostation/chainlist/main/chain/ethereum/asset/ftm.png",
-          "decimals": 18,
-          "coingecko_id": "fantom",
-          "recommended_symbol": "FTM"
+          "coingecko_id": "mantadao",
+          "recommended_symbol": "MNTA"
         },
         {
           "denom": "ibc/C2A70D6717D595F388B115200E789DC6E7EE409167B918B5F4E73838B8451A71",
@@ -10225,6 +10225,36 @@
           "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/osmosis/images/milktia.png",
           "decimals": 6,
           "recommended_symbol": "milkTIA"
+        },
+        {
+          "denom": "ibc/75F64E20A70C5059F8EA792F1C47260DC7C6CBAC69DBA60E151AD5416E93C34C",
+          "chain_id": "injective-1",
+          "origin_denom": "staevmos",
+          "origin_chain_id": "stride-1",
+          "trace": "transfer/channel-89",
+          "is_cw20": false,
+          "is_evm": false,
+          "symbol": "stEVMOS",
+          "name": "stEVMOS",
+          "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/stride/images/stevmos.png",
+          "decimals": 18,
+          "coingecko_id": "stride-staked-evmos",
+          "recommended_symbol": "stEVMOS"
+        },
+        {
+          "denom": "ibc/6488808F32B07F6E8DCE7B700B92D9F7287D0FA1D0F76A25B11276E09DB0E626",
+          "chain_id": "injective-1",
+          "origin_denom": "untrn",
+          "origin_chain_id": "neutron-1",
+          "trace": "transfer/channel-177",
+          "is_cw20": false,
+          "is_evm": false,
+          "symbol": "NTRN",
+          "name": "NTRN",
+          "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/neutron/images/ntrn.png",
+          "decimals": 6,
+          "coingecko_id": "neutron-3",
+          "recommended_symbol": "NTRN"
         },
         {
           "denom": "peggy0x3F07A84eCdf494310D397d24c1C78B041D2fa622",
@@ -11459,21 +11489,6 @@
           "recommended_symbol": "USDCso"
         },
         {
-          "denom": "ibc/A8F39212ED30B6A8C2AC736665835720D3D7BE4A1D18D68566525EC25ECF1C9B",
-          "chain_id": "injective-1",
-          "origin_denom": "stuatom",
-          "origin_chain_id": "stride-1",
-          "trace": "transfer/channel-89",
-          "is_cw20": false,
-          "is_evm": false,
-          "symbol": "stATOM",
-          "name": "stATOM",
-          "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/stride/images/statom.png",
-          "decimals": 6,
-          "coingecko_id": "stride-staked-atom",
-          "recommended_symbol": "stATOM"
-        },
-        {
           "denom": "ibc/65A6973F7A4013335AE5FFE623FE019A78A1FEEE9B8982985099978837D764A7",
           "chain_id": "injective-1",
           "origin_denom": "weth-wei",
@@ -11487,6 +11502,21 @@
           "decimals": 18,
           "coingecko_id": "axlweth",
           "recommended_symbol": "WETH"
+        },
+        {
+          "denom": "ibc/A8F39212ED30B6A8C2AC736665835720D3D7BE4A1D18D68566525EC25ECF1C9B",
+          "chain_id": "injective-1",
+          "origin_denom": "stuatom",
+          "origin_chain_id": "stride-1",
+          "trace": "transfer/channel-89",
+          "is_cw20": false,
+          "is_evm": false,
+          "symbol": "stATOM",
+          "name": "stATOM",
+          "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/stride/images/statom.png",
+          "decimals": 6,
+          "coingecko_id": "stride-staked-atom",
+          "recommended_symbol": "stATOM"
         },
         {
           "denom": "ibc/F51BB221BAA275F2EBF654F70B005627D7E713AFFD6D86AFD1E43CAA886149F4",
@@ -13107,6 +13137,21 @@
     "kaiyo-1": {
       "assets": [
         {
+          "denom": "ibc/91DAE8E9D19A6A770D2A787E54E1D388F8E603D89093FC4939CE36125CB8284D",
+          "chain_id": "kaiyo-1",
+          "origin_denom": "utori",
+          "origin_chain_id": "teritori-1",
+          "trace": "transfer/channel-89",
+          "is_cw20": false,
+          "is_evm": false,
+          "symbol": "TORI",
+          "name": "TORI",
+          "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/teritori/images/utori.png",
+          "decimals": 6,
+          "coingecko_id": "teritori",
+          "recommended_symbol": "TORI"
+        },
+        {
           "denom": "ibc/8374139B2BFECF639A2C0A84E53B7492329C95123B21F84324E8825B50EF0E8F",
           "chain_id": "kaiyo-1",
           "origin_denom": "cgt/1",
@@ -13909,21 +13954,6 @@
           "decimals": 18,
           "coingecko_id": "binance-usd",
           "recommended_symbol": "BUSD"
-        },
-        {
-          "denom": "ibc/91DAE8E9D19A6A770D2A787E54E1D388F8E603D89093FC4939CE36125CB8284D",
-          "chain_id": "kaiyo-1",
-          "origin_denom": "utori",
-          "origin_chain_id": "teritori-1",
-          "trace": "transfer/channel-89",
-          "is_cw20": false,
-          "is_evm": false,
-          "symbol": "TORI",
-          "name": "TORI",
-          "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/teritori/images/utori.png",
-          "decimals": 6,
-          "coingecko_id": "teritori",
-          "recommended_symbol": "TORI"
         },
         {
           "denom": "ibc/0A88A08F3E9573DB9D8CB74AA3746F6D23C41C3EE7B6CC5AA4695A1DD74FF86B",
@@ -15080,6 +15110,21 @@
           "recommended_symbol": "LUNA"
         },
         {
+          "denom": "ibc/64BA6E31FE887D66C6F8F31C7B1A80C7CA179239677B4088BB55F5EA07DBE273",
+          "chain_id": "kava_2222-10",
+          "origin_denom": "inj",
+          "origin_chain_id": "injective-1",
+          "trace": "transfer/channel-122",
+          "is_cw20": false,
+          "is_evm": false,
+          "symbol": "INJ",
+          "name": "INJ",
+          "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/injective/images/inj.png",
+          "decimals": 18,
+          "coingecko_id": "injective-protocol",
+          "recommended_symbol": "INJ"
+        },
+        {
           "denom": "hbtc",
           "chain_id": "kava_2222-10",
           "origin_denom": "hbtc",
@@ -15109,21 +15154,6 @@
           "decimals": 6,
           "coingecko_id": "usk",
           "recommended_symbol": "USK"
-        },
-        {
-          "denom": "ibc/64BA6E31FE887D66C6F8F31C7B1A80C7CA179239677B4088BB55F5EA07DBE273",
-          "chain_id": "kava_2222-10",
-          "origin_denom": "inj",
-          "origin_chain_id": "injective-1",
-          "trace": "transfer/channel-122",
-          "is_cw20": false,
-          "is_evm": false,
-          "symbol": "INJ",
-          "name": "INJ",
-          "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/injective/images/inj.png",
-          "decimals": 18,
-          "coingecko_id": "injective-protocol",
-          "recommended_symbol": "INJ"
         },
         {
           "denom": "ibc/A3D9BA615C3BC5C8892E86B1D8B792DD139A68ADE97AA7A9C7F26AD25D9E5FD7",
@@ -16142,21 +16172,6 @@
           "recommended_symbol": "GUPPY"
         },
         {
-          "denom": "ibc/EF4222BF77971A75F4E655E2AD2AFDDC520CE428EF938A1C91157E9DFBFF32A3",
-          "chain_id": "migaloo-1",
-          "origin_denom": "ukuji",
-          "origin_chain_id": "kaiyo-1",
-          "trace": "transfer/channel-8",
-          "is_cw20": false,
-          "is_evm": false,
-          "symbol": "KUJI",
-          "name": "KUJI",
-          "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/kujira/images/kuji.png",
-          "decimals": 6,
-          "coingecko_id": "kujira",
-          "recommended_symbol": "KUJI"
-        },
-        {
           "denom": "ibc/8935E9B60645CD61DC925E7C71956DC909D4548262103D1AB75E2A5306AC84C1",
           "chain_id": "migaloo-1",
           "origin_denom": "cw20:terra1nsuqsk6kh58ulczatwev87ttq2z6r3pusulg9r24mfj2fvtzd4uq3exn26",
@@ -16213,6 +16228,21 @@
           "decimals": 18,
           "coingecko_id": "shiba-inu",
           "recommended_symbol": "SHIB"
+        },
+        {
+          "denom": "ibc/EF4222BF77971A75F4E655E2AD2AFDDC520CE428EF938A1C91157E9DFBFF32A3",
+          "chain_id": "migaloo-1",
+          "origin_denom": "ukuji",
+          "origin_chain_id": "kaiyo-1",
+          "trace": "transfer/channel-8",
+          "is_cw20": false,
+          "is_evm": false,
+          "symbol": "KUJI",
+          "name": "KUJI",
+          "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/kujira/images/kuji.png",
+          "decimals": 6,
+          "coingecko_id": "kujira",
+          "recommended_symbol": "KUJI"
         },
         {
           "denom": "ibc/50D7251763B4D5E9DD7A8A6C6B012353E998CDE95C546C1F96D68F7CCB060918",
@@ -16570,22 +16600,6 @@
           "recommended_symbol": "CORGI"
         },
         {
-          "denom": "ibc/F082B65C88E4B6D5EF1DB243CDA1D331D002759E938A0F5CD3FFDC5D53B3E349",
-          "chain_id": "neutron-1",
-          "origin_denom": "uusdc",
-          "origin_chain_id": "axelar-dojo-1",
-          "trace": "transfer/channel-2",
-          "is_cw20": false,
-          "is_evm": false,
-          "symbol": "USDC",
-          "name": "USDC",
-          "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/axelar/images/usdc.png",
-          "decimals": 6,
-          "description": "Circle's stablecoin on Axelar",
-          "coingecko_id": "axlusdc",
-          "recommended_symbol": "USDC"
-        },
-        {
           "denom": "ibc/A139C0E0B5E87CBA8EAEEB12B9BEE13AC7C814CFBBFA87BBCADD67E31003466C",
           "chain_id": "neutron-1",
           "origin_denom": "ustars",
@@ -16614,6 +16628,22 @@
           "decimals": 18,
           "coingecko_id": "wrapped-fantom",
           "recommended_symbol": "WFTM"
+        },
+        {
+          "denom": "ibc/F082B65C88E4B6D5EF1DB243CDA1D331D002759E938A0F5CD3FFDC5D53B3E349",
+          "chain_id": "neutron-1",
+          "origin_denom": "uusdc",
+          "origin_chain_id": "axelar-dojo-1",
+          "trace": "transfer/channel-2",
+          "is_cw20": false,
+          "is_evm": false,
+          "symbol": "USDC",
+          "name": "USDC",
+          "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/axelar/images/usdc.png",
+          "decimals": 6,
+          "description": "Circle's stablecoin on Axelar",
+          "coingecko_id": "axlusdc",
+          "recommended_symbol": "USDC"
         },
         {
           "denom": "untrn",
@@ -17882,6 +17912,96 @@
     "osmosis-1": {
       "assets": [
         {
+          "denom": "ibc/02F196DA6FD0917DD5FEA249EE61880F4D941EE9059E7964C5C9B50AF103800F",
+          "chain_id": "osmosis-1",
+          "origin_denom": "stuumee",
+          "origin_chain_id": "stride-1",
+          "trace": "transfer/channel-326",
+          "is_cw20": false,
+          "is_evm": false,
+          "symbol": "stUMEE",
+          "name": "stUMEE",
+          "logo_uri": "https://raw.githubusercontent.com/cosmostation/chainlist/main/chain/stride/asset/stumee.png",
+          "decimals": 6,
+          "description": "Stride Staked Umee",
+          "recommended_symbol": "stUMEE"
+        },
+        {
+          "denom": "ibc/1EB03F13F29FEA73444586FC4E88A8C14ACE9291501E9658E3BEF951EA4AC85D",
+          "chain_id": "osmosis-1",
+          "origin_denom": "cw20:juno1jrr0tuuzxrrwcg6hgeqhw5wqpck2y55734e7zcrp745aardlp0qqg8jz06",
+          "origin_chain_id": "juno-1",
+          "trace": "transfer/channel-169",
+          "is_cw20": false,
+          "is_evm": false,
+          "symbol": "APEMOS",
+          "name": "APEMOS",
+          "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/juno/images/apemos.png",
+          "decimals": 6
+        },
+        {
+          "denom": "ibc/44492EAB24B72E3FB59B9FA619A22337FB74F95D8808FE6BC78CC0E6C18DC2EC",
+          "chain_id": "osmosis-1",
+          "origin_denom": "factory/kujira1qk00h5atutpsv900x202pxx42npjr9thg58dnqpa72f2p7m2luase444a7/uusk",
+          "origin_chain_id": "kaiyo-1",
+          "trace": "transfer/channel-259",
+          "is_cw20": false,
+          "is_evm": false,
+          "symbol": "USK",
+          "name": "USK",
+          "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/kujira/images/usk.png",
+          "decimals": 6,
+          "coingecko_id": "usk",
+          "recommended_symbol": "USK"
+        },
+        {
+          "denom": "ibc/4ABBEF4C8926DDDB320AE5188CFD63267ABBCEFC0583E4AE05D6E5AA2401DDAB",
+          "chain_id": "osmosis-1",
+          "origin_denom": "erc20/tether/usdt",
+          "origin_chain_id": "kava_2222-10",
+          "trace": "transfer/channel-143",
+          "is_cw20": false,
+          "is_evm": false,
+          "symbol": "USDT",
+          "name": "USDT",
+          "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/_non-cosmos/ethereum/images/usdt.svg",
+          "decimals": 6,
+          "coingecko_id": "tether",
+          "recommended_symbol": "USDT"
+        },
+        {
+          "denom": "ibc/8FEFAE6AECF6E2A255585617F781F35A8D5709A545A804482A261C0C9548A9D3",
+          "chain_id": "osmosis-1",
+          "origin_denom": "swth",
+          "origin_chain_id": "carbon-1",
+          "trace": "transfer/channel-188",
+          "is_cw20": false,
+          "is_evm": false,
+          "symbol": "SWTH",
+          "name": "SWTH",
+          "logo_uri": "https://raw.githubusercontent.com/cosmostation/chainlist/main/chain/carbon/asset/swth.png",
+          "decimals": 8,
+          "description": "Carbon Token",
+          "coingecko_id": "switcheo",
+          "recommended_symbol": "SWTH"
+        },
+        {
+          "denom": "ibc/9712DBB13B9631EDFA9BF61B55F1B2D290B2ADB67E3A4EB3A875F3B6081B3B84",
+          "chain_id": "osmosis-1",
+          "origin_denom": "udvpn",
+          "origin_chain_id": "sentinelhub-2",
+          "trace": "transfer/channel-2",
+          "is_cw20": false,
+          "is_evm": false,
+          "symbol": "DVPN",
+          "name": "DVPN",
+          "logo_uri": "https://raw.githubusercontent.com/cosmostation/chainlist/main/chain/sentinel/asset/dvpn.png",
+          "decimals": 6,
+          "description": "Sentinel Staking Coin",
+          "coingecko_id": "sentinel",
+          "recommended_symbol": "DVPN"
+        },
+        {
           "denom": "ibc/C2DF5C3949CA835B221C575625991F09BAB4E48FB9C11A4EE357194F736111E3",
           "chain_id": "osmosis-1",
           "origin_denom": "cw20:juno1wwnhkagvcd3tjz6f8vsdsw5plqnw8qy2aj3rrhqr2axvktzv9q2qz8jxn3",
@@ -17958,34 +18078,6 @@
           "recommended_symbol": "WHALE"
         },
         {
-          "denom": "ibc/02F196DA6FD0917DD5FEA249EE61880F4D941EE9059E7964C5C9B50AF103800F",
-          "chain_id": "osmosis-1",
-          "origin_denom": "stuumee",
-          "origin_chain_id": "stride-1",
-          "trace": "transfer/channel-326",
-          "is_cw20": false,
-          "is_evm": false,
-          "symbol": "stUMEE",
-          "name": "stUMEE",
-          "logo_uri": "https://raw.githubusercontent.com/cosmostation/chainlist/main/chain/stride/asset/stumee.png",
-          "decimals": 6,
-          "description": "Stride Staked Umee",
-          "recommended_symbol": "stUMEE"
-        },
-        {
-          "denom": "ibc/1EB03F13F29FEA73444586FC4E88A8C14ACE9291501E9658E3BEF951EA4AC85D",
-          "chain_id": "osmosis-1",
-          "origin_denom": "cw20:juno1jrr0tuuzxrrwcg6hgeqhw5wqpck2y55734e7zcrp745aardlp0qqg8jz06",
-          "origin_chain_id": "juno-1",
-          "trace": "transfer/channel-169",
-          "is_cw20": false,
-          "is_evm": false,
-          "symbol": "APEMOS",
-          "name": "APEMOS",
-          "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/juno/images/apemos.png",
-          "decimals": 6
-        },
-        {
           "denom": "ibc/23A62409E4AD8133116C249B1FA38EED30E500A115D7B153109462CD82C1CD99",
           "chain_id": "osmosis-1",
           "origin_denom": "gravity0x60e683C6514Edd5F758A55b6f393BeBBAfaA8d5e",
@@ -18017,63 +18109,18 @@
           "recommended_symbol": "KRTC"
         },
         {
-          "denom": "ibc/44492EAB24B72E3FB59B9FA619A22337FB74F95D8808FE6BC78CC0E6C18DC2EC",
+          "denom": "ibc/2E4ECFFBCDD77D42E6A1DD2D866C11FECCD4EB65B695253A610F2882B654731F",
           "chain_id": "osmosis-1",
-          "origin_denom": "factory/kujira1qk00h5atutpsv900x202pxx42npjr9thg58dnqpa72f2p7m2luase444a7/uusk",
-          "origin_chain_id": "kaiyo-1",
-          "trace": "transfer/channel-259",
+          "origin_denom": "unok",
+          "origin_chain_id": "columbus-5",
+          "trace": "transfer/channel-72",
           "is_cw20": false,
           "is_evm": false,
-          "symbol": "USK",
-          "name": "USK",
-          "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/kujira/images/usk.png",
+          "symbol": "NOTC",
+          "name": "NOTC",
+          "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/terra/images/not.png",
           "decimals": 6,
-          "coingecko_id": "usk",
-          "recommended_symbol": "USK"
-        },
-        {
-          "denom": "ibc/52C57FCA7D6854AA178E7A183DDBE4EF322B904B1D719FC485F6FFBC1F72A19E",
-          "chain_id": "osmosis-1",
-          "origin_denom": "cw20:juno1j0a9ymgngasfn3l5me8qpd53l5zlm9wurfdk7r65s5mg6tkxal3qpgf5se",
-          "origin_chain_id": "juno-1",
-          "trace": "transfer/channel-169",
-          "is_cw20": false,
-          "is_evm": false,
-          "symbol": "GLTO",
-          "name": "GLTO",
-          "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/juno/images/glto.png",
-          "decimals": 6
-        },
-        {
-          "denom": "ibc/4ABBEF4C8926DDDB320AE5188CFD63267ABBCEFC0583E4AE05D6E5AA2401DDAB",
-          "chain_id": "osmosis-1",
-          "origin_denom": "erc20/tether/usdt",
-          "origin_chain_id": "kava_2222-10",
-          "trace": "transfer/channel-143",
-          "is_cw20": false,
-          "is_evm": false,
-          "symbol": "USDT",
-          "name": "USDT",
-          "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/_non-cosmos/ethereum/images/usdt.svg",
-          "decimals": 6,
-          "coingecko_id": "tether",
-          "recommended_symbol": "USDT"
-        },
-        {
-          "denom": "ibc/9712DBB13B9631EDFA9BF61B55F1B2D290B2ADB67E3A4EB3A875F3B6081B3B84",
-          "chain_id": "osmosis-1",
-          "origin_denom": "udvpn",
-          "origin_chain_id": "sentinelhub-2",
-          "trace": "transfer/channel-2",
-          "is_cw20": false,
-          "is_evm": false,
-          "symbol": "DVPN",
-          "name": "DVPN",
-          "logo_uri": "https://raw.githubusercontent.com/cosmostation/chainlist/main/chain/sentinel/asset/dvpn.png",
-          "decimals": 6,
-          "description": "Sentinel Staking Coin",
-          "coingecko_id": "sentinel",
-          "recommended_symbol": "DVPN"
+          "recommended_symbol": "NOTC"
         },
         {
           "denom": "ibc/0CD3A0285E1341859B5E86B6AB7682F023D03E97607CCC1DC95706411D866DF7",
@@ -18089,20 +18136,6 @@
           "decimals": 18,
           "coingecko_id": "dai",
           "recommended_symbol": "axlDAI"
-        },
-        {
-          "denom": "ibc/2E4ECFFBCDD77D42E6A1DD2D866C11FECCD4EB65B695253A610F2882B654731F",
-          "chain_id": "osmosis-1",
-          "origin_denom": "unok",
-          "origin_chain_id": "columbus-5",
-          "trace": "transfer/channel-72",
-          "is_cw20": false,
-          "is_evm": false,
-          "symbol": "NOTC",
-          "name": "NOTC",
-          "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/terra/images/not.png",
-          "decimals": 6,
-          "recommended_symbol": "NOTC"
         },
         {
           "denom": "ibc/3BD8B9C0E5B1C6910F5E78B0B4F66942EFA255F180BB8F387EDE2DED85CF6528",
@@ -18135,20 +18168,6 @@
           "recommended_symbol": "qOSMO"
         },
         {
-          "denom": "ibc/4A28F9A65630F04C9B744D4ABCEB7FDAF8898E432272FC7F2BA0C324EB2BF13B",
-          "chain_id": "osmosis-1",
-          "origin_denom": "factory/kujira1swkuyt08z74n5jl7zr6hx0ru5sa2yev5v896p6/local",
-          "origin_chain_id": "kaiyo-1",
-          "trace": "transfer/channel-259",
-          "is_cw20": false,
-          "is_evm": false,
-          "symbol": "LOCAL",
-          "name": "LOCAL",
-          "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/kujira/images/local.png",
-          "decimals": 6,
-          "recommended_symbol": "LOCAL"
-        },
-        {
           "denom": "ibc/46B44899322F3CD854D2D46DEEF881958467CDD4B3B10086DA49296BBED94BED",
           "chain_id": "osmosis-1",
           "origin_denom": "ujuno",
@@ -18163,6 +18182,33 @@
           "description": "JUNO Staking Coin",
           "coingecko_id": "juno-network",
           "recommended_symbol": "JUNO"
+        },
+        {
+          "denom": "ibc/4A28F9A65630F04C9B744D4ABCEB7FDAF8898E432272FC7F2BA0C324EB2BF13B",
+          "chain_id": "osmosis-1",
+          "origin_denom": "factory/kujira1swkuyt08z74n5jl7zr6hx0ru5sa2yev5v896p6/local",
+          "origin_chain_id": "kaiyo-1",
+          "trace": "transfer/channel-259",
+          "is_cw20": false,
+          "is_evm": false,
+          "symbol": "LOCAL",
+          "name": "LOCAL",
+          "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/kujira/images/local.png",
+          "decimals": 6,
+          "recommended_symbol": "LOCAL"
+        },
+        {
+          "denom": "ibc/52C57FCA7D6854AA178E7A183DDBE4EF322B904B1D719FC485F6FFBC1F72A19E",
+          "chain_id": "osmosis-1",
+          "origin_denom": "cw20:juno1j0a9ymgngasfn3l5me8qpd53l5zlm9wurfdk7r65s5mg6tkxal3qpgf5se",
+          "origin_chain_id": "juno-1",
+          "trace": "transfer/channel-169",
+          "is_cw20": false,
+          "is_evm": false,
+          "symbol": "GLTO",
+          "name": "GLTO",
+          "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/juno/images/glto.png",
+          "decimals": 6
         },
         {
           "denom": "ibc/593F820ECE676A3E0890C734EC4F3A8DE16EC10A54EEDFA8BDFEB40EEA903960",
@@ -18221,22 +18267,6 @@
           "decimals": 6
         },
         {
-          "denom": "ibc/8FEFAE6AECF6E2A255585617F781F35A8D5709A545A804482A261C0C9548A9D3",
-          "chain_id": "osmosis-1",
-          "origin_denom": "swth",
-          "origin_chain_id": "carbon-1",
-          "trace": "transfer/channel-188",
-          "is_cw20": false,
-          "is_evm": false,
-          "symbol": "SWTH",
-          "name": "SWTH",
-          "logo_uri": "https://raw.githubusercontent.com/cosmostation/chainlist/main/chain/carbon/asset/swth.png",
-          "decimals": 8,
-          "description": "Carbon Token",
-          "coingecko_id": "switcheo",
-          "recommended_symbol": "SWTH"
-        },
-        {
           "denom": "ibc/8AEEA9B9304392070F72611076C0E328CE3F2DECA1E18557E36F9DB4F09C0156",
           "chain_id": "osmosis-1",
           "origin_denom": "cw20:juno1ytymtllllsp3hfmndvcp802p2xmy5s8m59ufel8xv9ahyxyfs4hs4kd4je",
@@ -18248,20 +18278,6 @@
           "name": "OSDOGE",
           "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/juno/images/osdoge.png",
           "decimals": 6
-        },
-        {
-          "denom": "ibc/92BF104008D75F9E9A602F948C824E75271A62EAB940D381AF7B1A6D95BF6021",
-          "chain_id": "osmosis-1",
-          "origin_denom": "usdr",
-          "origin_chain_id": "columbus-5",
-          "trace": "transfer/channel-72",
-          "is_cw20": false,
-          "is_evm": false,
-          "symbol": "SDTC",
-          "name": "SDTC",
-          "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/terra/images/sdt.png",
-          "decimals": 6,
-          "recommended_symbol": "SDTC"
         },
         {
           "denom": "ibc/903A61A498756EA560B85A85132D3AEE21B5DEDD41213725D22ABF276EA6945E",
@@ -18278,6 +18294,20 @@
           "description": "Axelar Staking Coin",
           "coingecko_id": "axelar",
           "recommended_symbol": "AXL"
+        },
+        {
+          "denom": "ibc/92BF104008D75F9E9A602F948C824E75271A62EAB940D381AF7B1A6D95BF6021",
+          "chain_id": "osmosis-1",
+          "origin_denom": "usdr",
+          "origin_chain_id": "columbus-5",
+          "trace": "transfer/channel-72",
+          "is_cw20": false,
+          "is_evm": false,
+          "symbol": "SDTC",
+          "name": "SDTC",
+          "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/terra/images/sdt.png",
+          "decimals": 6,
+          "recommended_symbol": "SDTC"
         },
         {
           "denom": "ibc/A9A73A9FEAF97112CC70F5D5E96D598398F2D015D4BD7DFE8804CE7AE8794D9D",
@@ -21996,21 +22026,6 @@
     "pacific-1": {
       "assets": [
         {
-          "denom": "ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD",
-          "chain_id": "pacific-1",
-          "origin_denom": "uaxl",
-          "origin_chain_id": "axelar-dojo-1",
-          "trace": "transfer/channel-2",
-          "is_cw20": false,
-          "is_evm": false,
-          "symbol": "AXL",
-          "name": "AXL",
-          "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/axelar/images/axl.png",
-          "decimals": 6,
-          "coingecko_id": "axelar",
-          "recommended_symbol": "AXL"
-        },
-        {
           "denom": "ibc/C4CFF46FD6DE35CA4CF4CE031E643C8FDC9BA4B99AE598E9B0ED98FE3A2319F9",
           "chain_id": "pacific-1",
           "origin_denom": "uatom",
@@ -22027,35 +22042,19 @@
           "recommended_symbol": "ATOM"
         },
         {
-          "denom": "usei",
+          "denom": "ibc/C0E66D1C81D8AAF0E6896E05190FDFBC222367148F86AC3EA679C28327A763CD",
           "chain_id": "pacific-1",
-          "origin_denom": "usei",
-          "origin_chain_id": "pacific-1",
-          "trace": "",
+          "origin_denom": "uaxl",
+          "origin_chain_id": "axelar-dojo-1",
+          "trace": "transfer/channel-2",
           "is_cw20": false,
           "is_evm": false,
-          "symbol": "SEI",
-          "name": "SEI",
-          "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/sei/images/sei.png",
+          "symbol": "AXL",
+          "name": "AXL",
+          "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/axelar/images/axl.png",
           "decimals": 6,
-          "description": "The native staking token of Sei.",
-          "coingecko_id": "sei-network",
-          "recommended_symbol": "SEI"
-        },
-        {
-          "denom": "ibc/52BDB3EFE4EC2AA5086F16A93772F5F9B503FF818F3B9494AE5AA2C304C6FF49",
-          "chain_id": "pacific-1",
-          "origin_denom": "stuatom",
-          "origin_chain_id": "stride-1",
-          "trace": "transfer/channel-11",
-          "is_cw20": false,
-          "is_evm": false,
-          "symbol": "stATOM",
-          "name": "stATOM",
-          "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/stride/images/statom.png",
-          "decimals": 6,
-          "coingecko_id": "stride-staked-atom",
-          "recommended_symbol": "stATOM"
+          "coingecko_id": "axelar",
+          "recommended_symbol": "AXL"
         },
         {
           "denom": "factory/sei1thgp6wamxwqt7rthfkeehktmq0ujh5kspluw6w/OIN",
@@ -22087,6 +22086,37 @@
           "description": "Osmosis Staking Coin",
           "coingecko_id": "osmosis",
           "recommended_symbol": "OSMO"
+        },
+        {
+          "denom": "ibc/52BDB3EFE4EC2AA5086F16A93772F5F9B503FF818F3B9494AE5AA2C304C6FF49",
+          "chain_id": "pacific-1",
+          "origin_denom": "stuatom",
+          "origin_chain_id": "stride-1",
+          "trace": "transfer/channel-11",
+          "is_cw20": false,
+          "is_evm": false,
+          "symbol": "stATOM",
+          "name": "stATOM",
+          "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/stride/images/statom.png",
+          "decimals": 6,
+          "coingecko_id": "stride-staked-atom",
+          "recommended_symbol": "stATOM"
+        },
+        {
+          "denom": "usei",
+          "chain_id": "pacific-1",
+          "origin_denom": "usei",
+          "origin_chain_id": "pacific-1",
+          "trace": "",
+          "is_cw20": false,
+          "is_evm": false,
+          "symbol": "SEI",
+          "name": "SEI",
+          "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/sei/images/sei.png",
+          "decimals": 6,
+          "description": "The native staking token of Sei.",
+          "coingecko_id": "sei-network",
+          "recommended_symbol": "SEI"
         },
         {
           "denom": "ibc/4730171FEEAD8629E5C22670ECA090258649B06BE7533E16E83F32BC9028F20B",
@@ -24391,6 +24421,20 @@
     "regen-1": {
       "assets": [
         {
+          "denom": "ibc/B2DCA297A3AFF98480BCCCC962E1D00A3BBE06A37136D3FABD16DC8FB19451E1",
+          "chain_id": "regen-1",
+          "origin_denom": "uqregen",
+          "origin_chain_id": "quicksilver-2",
+          "trace": "transfer/channel-62",
+          "is_cw20": false,
+          "is_evm": false,
+          "symbol": "qREGEN",
+          "name": "qREGEN",
+          "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/quicksilver/images/qregen.png",
+          "decimals": 6,
+          "recommended_symbol": "qREGEN"
+        },
+        {
           "denom": "uregen",
           "chain_id": "regen-1",
           "origin_denom": "uregen",
@@ -24466,20 +24510,6 @@
           "decimals": 6,
           "coingecko_id": "axelar",
           "recommended_symbol": "AXL"
-        },
-        {
-          "denom": "ibc/B2DCA297A3AFF98480BCCCC962E1D00A3BBE06A37136D3FABD16DC8FB19451E1",
-          "chain_id": "regen-1",
-          "origin_denom": "uqregen",
-          "origin_chain_id": "quicksilver-2",
-          "trace": "transfer/channel-62",
-          "is_cw20": false,
-          "is_evm": false,
-          "symbol": "qREGEN",
-          "name": "qREGEN",
-          "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/quicksilver/images/qregen.png",
-          "decimals": 6,
-          "recommended_symbol": "qREGEN"
         },
         {
           "denom": "eco.uC.NCT",
@@ -26853,22 +26883,6 @@
     "sommelier-3": {
       "assets": [
         {
-          "denom": "ibc/ED07A3391A112B175915CD8FAF43A2DA8E4790EDE12566649D0C2F97716B8518",
-          "chain_id": "sommelier-3",
-          "origin_denom": "uosmo",
-          "origin_chain_id": "osmosis-1",
-          "trace": "transfer/channel-0",
-          "is_cw20": false,
-          "is_evm": false,
-          "symbol": "OSMO",
-          "name": "OSMO",
-          "logo_uri": "https://raw.githubusercontent.com/cosmostation/chainlist/main/chain/osmosis/asset/osmo.png",
-          "decimals": 6,
-          "description": "Osmosis Staking Coin",
-          "coingecko_id": "osmosis",
-          "recommended_symbol": "OSMO"
-        },
-        {
           "denom": "usomm",
           "chain_id": "sommelier-3",
           "origin_denom": "usomm",
@@ -26883,6 +26897,22 @@
           "description": "Somm Token (SOMM) is the native staking token of the Sommelier Chain",
           "coingecko_id": "sommelier",
           "recommended_symbol": "SOMM"
+        },
+        {
+          "denom": "ibc/ED07A3391A112B175915CD8FAF43A2DA8E4790EDE12566649D0C2F97716B8518",
+          "chain_id": "sommelier-3",
+          "origin_denom": "uosmo",
+          "origin_chain_id": "osmosis-1",
+          "trace": "transfer/channel-0",
+          "is_cw20": false,
+          "is_evm": false,
+          "symbol": "OSMO",
+          "name": "OSMO",
+          "logo_uri": "https://raw.githubusercontent.com/cosmostation/chainlist/main/chain/osmosis/asset/osmo.png",
+          "decimals": 6,
+          "description": "Osmosis Staking Coin",
+          "coingecko_id": "osmosis",
+          "recommended_symbol": "OSMO"
         },
         {
           "denom": "ibc/BFAAB7870A9AAABF64A7366DAAA0B8E5065EAA1FCE762F45677DC24BE796EF65",
@@ -27008,21 +27038,6 @@
           "recommended_symbol": "qSTARS"
         },
         {
-          "denom": "ibc/37101BD82084D308D036ABE69D991417F5D2EB0D2C7DC387BB5AE8DAE08ADD0D",
-          "chain_id": "stargaze-1",
-          "origin_denom": "wmatic-wei",
-          "origin_chain_id": "axelar-dojo-1",
-          "trace": "transfer/channel-50",
-          "is_cw20": false,
-          "is_evm": false,
-          "symbol": "WMATIC",
-          "name": "WMATIC",
-          "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/_non-cosmos/polygon/images/wmatic.png",
-          "decimals": 18,
-          "coingecko_id": "wmatic",
-          "recommended_symbol": "WMATIC"
-        },
-        {
           "denom": "ibc/AB4585E82FC310A4BDC0EF1406F57F1A68BD914B7C4956BE2415B5A9DAD0C927",
           "chain_id": "stargaze-1",
           "origin_denom": "gravity0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
@@ -27036,6 +27051,21 @@
           "decimals": 18,
           "coingecko_id": "weth",
           "recommended_symbol": "WETH"
+        },
+        {
+          "denom": "ibc/37101BD82084D308D036ABE69D991417F5D2EB0D2C7DC387BB5AE8DAE08ADD0D",
+          "chain_id": "stargaze-1",
+          "origin_denom": "wmatic-wei",
+          "origin_chain_id": "axelar-dojo-1",
+          "trace": "transfer/channel-50",
+          "is_cw20": false,
+          "is_evm": false,
+          "symbol": "WMATIC",
+          "name": "WMATIC",
+          "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/_non-cosmos/polygon/images/wmatic.png",
+          "decimals": 18,
+          "coingecko_id": "wmatic",
+          "recommended_symbol": "WMATIC"
         },
         {
           "denom": "ibc/448C1061CE97D86CC5E86374CD914870FB8EBA16C58661B5F1D3F46729A2422D",
@@ -27540,21 +27570,6 @@
           "recommended_symbol": "ETH"
         },
         {
-          "denom": "ibc/33B47BAFB13393321709116BB1E0B968D655ABCB68EC8D254EAC957F740C6415",
-          "chain_id": "stride-1",
-          "origin_denom": "uxprt",
-          "origin_chain_id": "core-1",
-          "trace": "transfer/channel-53",
-          "is_cw20": false,
-          "is_evm": false,
-          "symbol": "XPRT",
-          "name": "XPRT",
-          "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/persistence/images/xprt.png",
-          "decimals": 6,
-          "coingecko_id": "persistence",
-          "recommended_symbol": "XPRT"
-        },
-        {
           "denom": "ibc/4B322204B4F59D770680FE4D7A565DDC3F37BFF035474B717476C66A4F83DD72",
           "chain_id": "stride-1",
           "origin_denom": "aevmos",
@@ -27569,22 +27584,6 @@
           "description": "Evmos Staking Coin",
           "coingecko_id": "evmos",
           "recommended_symbol": "EVMOS"
-        },
-        {
-          "denom": "ibc/D24B4564BCD51D3D02D9987D92571EAC5915676A9BD6D9B0C1D0254CB8A5EA34",
-          "chain_id": "stride-1",
-          "origin_denom": "uosmo",
-          "origin_chain_id": "osmosis-1",
-          "trace": "transfer/channel-5",
-          "is_cw20": false,
-          "is_evm": false,
-          "symbol": "OSMO",
-          "name": "OSMO",
-          "logo_uri": "https://raw.githubusercontent.com/cosmostation/chainlist/main/chain/osmosis/asset/osmo.png",
-          "decimals": 6,
-          "description": "Osmosis Staking Coin",
-          "coingecko_id": "osmosis",
-          "recommended_symbol": "OSMO"
         },
         {
           "denom": "ibc/563C6CB7E0423BE8B9FD1DAB9EAC201A6C2413D96F73618240B114CE4896734C",
@@ -27617,6 +27616,36 @@
           "recommended_symbol": "USDC"
         },
         {
+          "denom": "stuluna",
+          "chain_id": "stride-1",
+          "origin_denom": "stuluna",
+          "origin_chain_id": "stride-1",
+          "trace": "",
+          "is_cw20": false,
+          "is_evm": false,
+          "symbol": "stLUNA",
+          "name": "stLUNA",
+          "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/stride/images/stluna.png",
+          "decimals": 6,
+          "coingecko_id": "stride-staked-luna",
+          "recommended_symbol": "stLUNA"
+        },
+        {
+          "denom": "ibc/33B47BAFB13393321709116BB1E0B968D655ABCB68EC8D254EAC957F740C6415",
+          "chain_id": "stride-1",
+          "origin_denom": "uxprt",
+          "origin_chain_id": "core-1",
+          "trace": "transfer/channel-53",
+          "is_cw20": false,
+          "is_evm": false,
+          "symbol": "XPRT",
+          "name": "XPRT",
+          "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/persistence/images/xprt.png",
+          "decimals": 6,
+          "coingecko_id": "persistence",
+          "recommended_symbol": "XPRT"
+        },
+        {
           "denom": "ibc/EF4222BF77971A75F4E655E2AD2AFDDC520CE428EF938A1C91157E9DFBFF32A3",
           "chain_id": "stride-1",
           "origin_denom": "ukuji",
@@ -27632,19 +27661,20 @@
           "recommended_symbol": "KUJI"
         },
         {
-          "denom": "stuluna",
+          "denom": "ibc/D24B4564BCD51D3D02D9987D92571EAC5915676A9BD6D9B0C1D0254CB8A5EA34",
           "chain_id": "stride-1",
-          "origin_denom": "stuluna",
-          "origin_chain_id": "stride-1",
-          "trace": "",
+          "origin_denom": "uosmo",
+          "origin_chain_id": "osmosis-1",
+          "trace": "transfer/channel-5",
           "is_cw20": false,
           "is_evm": false,
-          "symbol": "stLUNA",
-          "name": "stLUNA",
-          "logo_uri": "https://raw.githubusercontent.com/cosmos/chain-registry/master/stride/images/stluna.png",
+          "symbol": "OSMO",
+          "name": "OSMO",
+          "logo_uri": "https://raw.githubusercontent.com/cosmostation/chainlist/main/chain/osmosis/asset/osmo.png",
           "decimals": 6,
-          "coingecko_id": "stride-staked-luna",
-          "recommended_symbol": "stLUNA"
+          "description": "Osmosis Staking Coin",
+          "coingecko_id": "osmosis",
+          "recommended_symbol": "OSMO"
         },
         {
           "denom": "stuumee",

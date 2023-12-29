@@ -38,6 +38,7 @@
       flake = false;
     };
 
+    devenv.url = "github:cachix/devenv";
     strictly-typed-pandas-src = {
       url = "github:nanne-aben/strictly_typed_pandas";
       flake = false;
@@ -53,11 +54,6 @@
       flake = false;
     };
 
-    pydantic-core-src = {
-      url = "github:pydantic/pydantic-core/v2.14.5";
-      flake = false;
-    };
-
     scipy-src = {
       url = "github:scipy/scipy/v1.9.3";
       flake = false;
@@ -65,16 +61,6 @@
 
     cvxpy-src = {
       url = "github:cvxpy/cvxpy/v1.3.2";
-      flake = false;
-    };
-
-    fastapi-src = {
-      url = "github:tiangolo/fastapi";
-      flake = false;
-    };
-
-    hatch-src = {
-      url = "github:pypa/hatch/hatchling-v1.17.0";
       flake = false;
     };
 
@@ -92,13 +78,14 @@
     datamodel-code-generator-src,
     poetry2nix,
     cosmpy-src,
+    nixpkgs,
     ...
   }:
     flake-parts.lib.mkFlake {inherit inputs;} {
       imports = [
+        inputs.devenv.flakeModule
       ];
-
-      systems = ["x86_64-linux" "aarch64-linux" "aarch64-darwin" "x86_64-darwin"];
+      systems = nixpkgs.lib.systems.flakeExposed;
       perSystem = {
         config,
         self',
@@ -382,27 +369,27 @@
             rust-overlay.overlays.default
           ];
         };
-        devShells.default = pkgs.mkShell {
-          OSMOSIS_POOLS = env.OSMOSIS_POOLS;
-          ASTROPORT_POOLS = env.ASTROPORT_POOLS;
-          SKIP_MONEY = env.SKIP_MONEY;
-          COMPOSABLE_COSMOS_GRPC = inputs.networks.lib.pica.mainnet.GRPC;
-          CVM_ADDRESS = inputs.networks.lib.pica.mainnet.CVM_OUTPOST_CONTRACT_ADDRESS;
+        devenv.shells.default = {
+          env = {
+            OSMOSIS_POOLS = env.OSMOSIS_POOLS;
+            ASTROPORT_POOLS = env.ASTROPORT_POOLS;
+            SKIP_MONEY = env.SKIP_MONEY;
+            COMPOSABLE_COSMOS_GRPC = inputs.networks.lib.pica.mainnet.GRPC;
+            CVM_ADDRESS = inputs.networks.lib.pica.mainnet.CVM_OUTPOST_CONTRACT_ADDRESS;
+            LD_LIBRARY_PATH = pkgs.lib.strings.makeLibraryPath [
+              pkgs.stdenv.cc.cc.lib
+              pkgs.zlib
+              pkgs.zlib.dev
+              pkgs.zlib.out
+            ];
+          };
 
-          nativeBuildInputs = [
+          packages = [
+            pkgs.nix
             pkgs.cbc
             pkgs.zlib
             pkgs.zlib.dev
             pkgs.zlib.out
-          ];
-          LD_LIBRARY_PATH = pkgs.lib.strings.makeLibraryPath [
-            pkgs.stdenv.cc.cc.lib
-            pkgs.zlib
-            pkgs.zlib.dev
-            pkgs.zlib.out
-          ];
-
-          buildInputs = [
             devour-flake
             pkgs.conda
             pkgs.nodejs
@@ -420,12 +407,15 @@
             rust.rustc
             envShell
           ];
-
-          shellHook = ''
+          devcontainer.enable = true;
+          enterShell = ''
             if [[ -f ./.env ]]; then
               source ./.env
             fi
-            poetry install
+            (
+              cd mantis
+              poetry install
+            )
           '';
         };
         formatter = pkgs.alejandra;
