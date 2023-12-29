@@ -350,28 +350,10 @@
               buildInputs = old.buildInputs or [] ++ [self.python.pkgs.hatchling];
             });
             cvxpy = cvxpy-latest;
-            # scipy = super.scipy.overridePythonAttrs (old: {
-            #   preferWheel = true;
-            #   buildInputs = old.buildInputs or [] ++ [self.python.pkgs.meson-python];
+            cosmpy = cosmpy;
 
-            #   nativeBuildInputs = old.nativeBuildInputs or [] ++ (with pkgs.python3Packages; [
-            #           setuptools
-            #           setuptools-git-versioning
-            #       ]);
-            # });
-
-            #scipy = scipy-latest;
-            # fastapi-cache2 = super.fastapi-cache2.overridePythonAttrs (old: {
-            #   buildInputs = old.buildInputs or [ ] ++ [ self.python.pkgs.poetry self.python.pkgs.poetry_masonry ];
-            # });
-            # pendulum = super.pendulum.overridePythonAttrs (old: {
-            #   buildInputs = old.buildInputs or [] ++ [maturin-latest];
-            # });
             maturin = maturin-latest;
-
             strictly-typed-pandas = strictly-typed-pandas-latest;
-
-            # pandas  = pkgs.python3Packages.pandas;
           });
         };
         inherit (poetry2nix.lib.mkPoetry2Nix {inherit pkgs;}) mkPoetryApplication mkPoetryPackages mkPoetryEnv overrides;
