@@ -11,4 +11,4 @@ class Settings(BaseSettings):
     skip_money : str = Field(alias="SKIP_MONEY")
     port : int = Field(default= 8000, alias="LISTEN_PORT")
 
-setting = Settings()
+settings = Settings()
