@@ -2,6 +2,12 @@
 tags: "#mev #composable #cvm #mantis #defi #cosmos #cosmwasm #evm #ibc"
 ---
 
+
+For isolated shell (virutal env):
+```sh
+nix develop --impure
+```
+
 For `issues`:
 
 https://github.com/ComposableFi/composable/
