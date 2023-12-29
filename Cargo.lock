@@ -839,7 +839,7 @@ dependencies = [
 
 [[package]]
 name = "cw-cvm-outpost"
-version = "0.1.0"
+version = "0.3.0"
 dependencies = [
  "bech32",
  "cosmwasm-std",
@@ -863,7 +863,7 @@ dependencies = [
 
 [[package]]
 name = "cw-mantis-order"
-version = "0.2.0"
+version = "0.3.0"
 dependencies = [
  "cosmwasm-schema",
  "cosmwasm-std",
