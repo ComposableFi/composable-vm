@@ -3,8 +3,7 @@ description = "CVM Executor contract"
 edition = "2021"
 name = "cw-cvm-executor"
 repository = "https://github.com/ComposableFi/cvm"
-version = "0.3.0"
-
+version = {workspace = true}
 [lib]
 crate-type = ["cdylib", "rlib"]
 

@@ -2,7 +2,7 @@
 members = ["crates/*", "contracts/cosmwasm/*", "mantis/node"]
 exclude = ["contracts/cosmwasm/node_modules/", "contracts/cosmwasm/dist"]
 resolver = "2"
-package.version = "0.2.0"
+package.version = "0.3.0"
 
 [workspace.lints.rust]
 unsafe = "deny"

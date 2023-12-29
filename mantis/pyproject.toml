@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "mantis"
-version = "0.0.1"
+version = "0.0.2"
 description = "Python server which solves problems from provided input and additional data obtained from chains/indexers and outputs single route solution."
 authors = []
 packages = [
