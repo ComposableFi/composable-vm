@@ -25,7 +25,7 @@ maturin = "1.4.0"
 numpy = "1.23.4"
 pandas = { extras = [], version = "^2.1.4" }
 pendulum = "2.1.2"
-protobuf = ">=4.21.6,<5.0dev"
+protobuf = "4.25.1"
 pycryptodome = "^3.18.0"
 pydantic = "^2.5.3"
 pydantic_settings = "*"
@@ -36,6 +36,7 @@ scipy = "1.9.3"
 strictly-typed-pandas = "^0.1.24"
 uvicorn = "^0.25.0"
 cosmpy = { version = "0.9.1" }
+google = "*"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.4.3"

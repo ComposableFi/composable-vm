@@ -1,5 +1,7 @@
 from typing import Dict
 #from fastapi_cache import FastAPICache
+#from fastapi_cache.decorator import cache
+# from fastapi_cache.backends.inmemory import InMemoryBackend
 from blackbox.cvm_runtime.response_to_get_config import GetConfigResponse
 from blackbox.models import AllData, CosmosChains, NeutronPoolsResponse, OsmosisPoolsResponse
 from blackbox.neutron_pools import Model as NeutronPoolsModel
@@ -9,10 +11,8 @@ from cosmpy.aerial.contract import LedgerClient, LedgerContract
 from fastapi import FastAPI
 import blackbox.cvm_runtime.query as cvm_query
 import requests
-from fastapi_cache.backends.inmemory import InMemoryBackend
 import uvicorn
 
-from fastapi_cache.decorator import cache
 
 app = FastAPI()
 

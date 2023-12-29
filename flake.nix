@@ -221,43 +221,6 @@
           ];
         };
 
-        # python-packages = ps:
-        #   with ps; [
-        #     bech32
-        #     cosmpy
-        #     cvxpy
-        #     ecdsa
-        #     environs
-        #     fastapi-cache2
-        #     fastapi-latest
-        #     googleapis-common-protos
-        #     grpcio
-
-        #     hatch
-        #     jsonschema
-        #     matplotlib
-        #     numpy
-        #     pandas
-        #     pandas-datareader
-        #     pendulum
-        #     pip
-        #     poetry-core
-        #     protobuf
-        #     pycryptodome
-        #     pydantic-2
-        #     pydantic-core-2
-        #     pytest
-        #     annotated-types
-        #     python-dateutil
-        #     requests
-        #     setuptools
-        #     strictly-typed-pandas
-        #     typing-extensions
-        #     uvicorn
-        #     virtualenv
-        #     wheel
-        #   ];
-
         # https://github.com/nanne-aben/strictly_typed_pandas/issues/140
         strictly-typed-pandas-latest = pkgs.python3Packages.buildPythonPackage {
           name = "strictly-typed-pandas";
@@ -346,8 +309,13 @@
             editables = super.editables.overridePythonAttrs (old: {
               buildInputs = old.buildInputs or [] ++ [self.python.pkgs.flit-core];
             });
+            
+
             pydantic-extra-types = super.pydantic-extra-types.overridePythonAttrs (old: {
               buildInputs = old.buildInputs or [] ++ [self.python.pkgs.hatchling];
+            });
+            google = super.google.overridePythonAttrs (old: {
+              buildInputs = old.buildInputs or [] ++ [self.python.pkgs.setuptools];
             });
             cvxpy = cvxpy-latest;
             cosmpy = cosmpy;
@@ -439,6 +407,7 @@
             if [[ -f ./.env ]]; then
               source ./.env
             fi
+            poetry install
           '';
         };
         formatter = pkgs.alejandra;
