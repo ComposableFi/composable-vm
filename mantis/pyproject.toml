@@ -15,10 +15,12 @@ python = "3.11.6"
 
 #fastapi-cache2 = "^0.2.1"  # no needed now, too many things
 bech32 = "*"
+cosmpy = { version = "0.9.1" }
 cvxpy = { version = "1.3.2", extras = [] }
 ecdsa = "*"
 fastapi = { extras = ["all"], version = "^0.108.0" }
-googleapis-common-protos = "*"
+google-cloud = "*"
+googleapis-common-protos = "1.61.0"
 grpcio = "==1.51.1"
 jsonschema = ">=3.2.0,<5"
 maturin = "1.4.0"
@@ -35,8 +37,6 @@ rpds-py = "0.13.2"
 scipy = "1.9.3"
 strictly-typed-pandas = "^0.1.24"
 uvicorn = "^0.25.0"
-cosmpy = { version = "0.9.1" }
-google = "*"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.4.3"

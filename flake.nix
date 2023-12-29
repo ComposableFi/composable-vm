@@ -309,12 +309,14 @@
             editables = super.editables.overridePythonAttrs (old: {
               buildInputs = old.buildInputs or [] ++ [self.python.pkgs.flit-core];
             });
-            
 
             pydantic-extra-types = super.pydantic-extra-types.overridePythonAttrs (old: {
               buildInputs = old.buildInputs or [] ++ [self.python.pkgs.hatchling];
             });
             google = super.google.overridePythonAttrs (old: {
+              buildInputs = old.buildInputs or [] ++ [self.python.pkgs.setuptools];
+            });
+            google-cloud = super.google-cloud.overridePythonAttrs (old: {
               buildInputs = old.buildInputs or [] ++ [self.python.pkgs.setuptools];
             });
             cvxpy = cvxpy-latest;
