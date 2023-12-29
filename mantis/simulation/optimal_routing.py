@@ -152,7 +152,7 @@ def simulate():
         )
 
     print(p.value[all_tokens.index(OBJ_TOKEN)],lastp_value)
-    
+    return (p.value[all_tokens.index(OBJ_TOKEN)],lastp_value)
     
 if __name__ == "__main__":
     simulate()
