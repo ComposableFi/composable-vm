@@ -7,6 +7,10 @@
       url = "github:oxalica/rust-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nix2container = {
+      url = "github:nlewo/nix2container";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     crane = {
       url = "github:ipetkov/crane";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -116,7 +120,7 @@
           rust-toolchain;
         makeCosmwasmContract = name: rust: std-config: let
           binaryName = "${builtins.replaceStrings ["-"] ["_"] name}.wasm";
-          maxWasmSizeBytes = 819200;
+          maxWasmSizeBytes = 819200 * 2;
           profile = "deployment";
         in
           rust.buildPackage (rust-attrs
@@ -252,8 +256,8 @@
           src = inputs.cvxpy-src;
 
           nativeBuildInputs = with pkgs.python3Packages; [
-            (builtins.trace (dep "numpy").name (dep "numpy"))
-            (builtins.trace (dep "scipy").name (dep "scipy"))
+            (dep "numpy")
+            (dep "scipy")
             poetry-core
             setuptools
             setuptools-git-versioning
@@ -406,6 +410,7 @@
             rust.cargo
             rust.rustc
             envShell
+            devour-flake
           ];
           devcontainer.enable = true;
           enterShell = ''
@@ -421,7 +426,18 @@
         formatter = pkgs.alejandra;
         packages = rec {
           inherit cw-mantis-order cw-cvm-executor cw-cvm-outpost cosmwasm-contracts cosmwasm-json-schema-py datamodel-code-generator cosmwasm-json-schema-ts mantis-blackbox;
-
+          all =
+            pkgs.linkFarmFromDrvs "all"
+            (with self'.packages; [
+              cw-mantis-order
+              cw-cvm-executor
+              cw-cvm-outpost
+              cosmwasm-contracts
+              cosmwasm-json-schema-py
+              datamodel-code-generator
+              cosmwasm-json-schema-ts
+              mantis-blackbox
+            ]);
           mantis = rust.buildPackage (rust-attrs
             // {
               src = rust-src;
@@ -439,7 +455,8 @@
             ];
             text = ''
               nix flake lock --no-update-lock-file
-              devour-flake . "$@"
+              # devour-flake . "$@" --impure
+              nix build .#all
             '';
           };
         };
