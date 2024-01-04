@@ -67,7 +67,7 @@ def simulate():
         print(i, cfmm)
 
     print("=============== solving ========================")
-
+    input_amount = 2000
     d, l, p, n = solve(
         all_tokens, 
         all_cfmms, 
@@ -76,7 +76,7 @@ def simulate():
         fees, 
         ibc_pools, 
         ORIGIN_TOKEN,
-        2000,
+        input_amount,
         OBJ_TOKEN
         )
 
@@ -95,7 +95,7 @@ def simulate():
                 fees,
                 ibc_pools,
                 ORIGIN_TOKEN,
-                2000,
+                input_amount,
                 OBJ_TOKEN,
                 [1 if value <= t else 0 for value in to_look_n],
             )
@@ -124,7 +124,7 @@ def simulate():
                 fees,
                 ibc_pools,
                 ORIGIN_TOKEN,
-                2000,
+                input_amount,
                 OBJ_TOKEN,
                 eta,
             )
@@ -141,7 +141,7 @@ def simulate():
                     fees,
                     ibc_pools,
                     ORIGIN_TOKEN,
-                    2000,
+                    input_amount,
                     OBJ_TOKEN,
                     eta,
                 )
