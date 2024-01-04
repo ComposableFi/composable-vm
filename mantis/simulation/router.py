@@ -51,7 +51,6 @@ def solve(
         for i, token in enumerate(cfmm):
             A_i[all_tokens.index(token), i] = 1
         A.append(A_i)
-    print(A)
 
     # Build variables
     
@@ -64,6 +63,7 @@ def solve(
         count_cfmms, nonneg=True
     )  # Binary value, indicates tx or not for given pool
 
+    # network trade vector - net amount received over all trades(transfers/exchanges)
     psi = cp.sum([A_i @ (LAMBDA - DELTA) for A_i, DELTA, LAMBDA in zip(A, deltas, lambdas)])
     
     # Objective is to trade number_of_init_tokens of asset origin_token for a maximum amount of asset objective_token
