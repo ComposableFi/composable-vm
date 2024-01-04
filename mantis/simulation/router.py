@@ -54,7 +54,11 @@ def solve(
     print(A)
 
     # Build variables
+    
+    # tendered (given) amount
     deltas = [cp.Variable(len(l), nonneg=True) for l in all_cfmms]
+    
+    # received (wanted) amounts
     lambdas = [cp.Variable(len(l), nonneg=True) for l in all_cfmms]
     eta = cp.Variable(
         count_cfmms, nonneg=True

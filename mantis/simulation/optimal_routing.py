@@ -11,14 +11,14 @@ def simulate():
     CENTER_NODE = "CENTAURI"  # Name of center Node
 
     ORIGIN_TOKEN = "WETH"
-    OBJ_TOKEN = "ATOM"
+    OBJ_TOKEN = "CENTAURI/ATOM"
 
     chains: dict[str, list[str]] = {
-        "ETHEREUM": ["WETH", "USDC", "SHIBA"],
-        CENTER_NODE: [],
-        "OSMOSIS": ["ATOM","SCRT"],
+        "ETHEREUM": ["WETH"],
+        CENTER_NODE: ["CENTAURI/WETH", "CENTAURI/ATOM"],
+        "OSMOSIS": ["ATOM","OSMOSIS/WETH"],
     }
-    populate_chain_dict(chains,CENTER_NODE)
+    # populate_chain_dict(chains,CENTER_NODE)
 
 
     all_tokens = []

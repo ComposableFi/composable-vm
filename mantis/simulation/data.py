@@ -22,8 +22,8 @@ class AssetTransfers(BaseModel):
     
 # pool are bidirectional, so so in can be out and other way
 class AssetPairsXyk(BaseModel):
-    pool_id: int
     # set key
+    pool_id: int
     in_asset_id: int
     out_asset_id: int
     
@@ -33,16 +33,21 @@ class AssetPairsXyk(BaseModel):
     weight_of_b: int 
     # if it is hard if None, please fail if it is None - for now will be always some
     pool_value_in_usd: int | None
-    a_amount: int
-    b_amount: int
+    
+    # total amounts in reserves R
+    in_token_amount: int
+    out_token_amount: int
     
     metadata: str | None
     
 # this is what user asks for
 class Input(BaseModel):
+    # natural set key is ordered pair (in_token_id, out_token_id)
     in_token_id: int
     out_token_id: int
+    # tendered amount DELTA
     in_amount: int
+    # expected received amount LAMBDA
     out_amount: int
     # if max is True, user wants to spent all in to get at least out
     # if max is False, user wants to get exact out, but spent as small as possible in
@@ -56,13 +61,13 @@ class SingleInputAssetCvmRoute(BaseModel):
 # transfer assets
 class Spawn(BaseModel):
     # amount to take with transfer
-    # None means all
+    # None means all (DELTA)
     in_asset_amount: int | None
     out_asset_id: int
     next: SingleInputAssetCvmRoute
 
 class Exchange(BaseModel):
-    # none means all
+    # none means all (DELTA)
     in_asset_amount: int | None
     pool_id : int
     next: SingleInputAssetCvmRoute
@@ -90,7 +95,6 @@ class Output(BaseModel):
     solution_type: SolutionType     
 
 T = TypeVar("T")
-
 
 class PydanticDataSet(BaseModel, DataSet[T]):
     pass
