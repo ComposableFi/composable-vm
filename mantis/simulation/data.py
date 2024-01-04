@@ -11,11 +11,11 @@ TNetworkId = TypeVar("TNetworkId")
 class AssetTransfers(BaseModel):
     # positive whole numbers, set key
     in_asset_id: str
-    out_asset_id: str
+    out_asset_id: str 
     
     # this is positive whole number too
     # if it is hard if None, please fail if it is None - for now will be always some
-    usd_fee_transfer: str
+    usd_fee_transfer: int | None
     
     # do not care
     metadata: str 
@@ -92,7 +92,7 @@ class Output(BaseModel):
 T = TypeVar("T")
 
 
-class PydanticDataSet(DataSet[T], BaseModel):
+class PydanticDataSet(BaseModel, DataSet[T]):
     pass
 class AllData(BaseModel):
     # DataSet inherits from DataFrame
