@@ -5,9 +5,6 @@ from  simulation.router import solve,populate_chain_dict
 
 def simulate():
     print("=============== chains and tokens ========================")
-
-
-
     CENTER_NODE = "CENTAURI"  # Name of center Node
 
     ORIGIN_TOKEN = "WETH"
@@ -68,7 +65,7 @@ def simulate():
 
     print("=============== solving ========================")
     input_amount = 2000
-    d, l, p, n = solve(
+    d, l, psi, n = solve(
         all_tokens, 
         all_cfmms, 
         reserves, 
@@ -99,7 +96,7 @@ def simulate():
                 OBJ_TOKEN,
                 [1 if value <= t else 0 for value in to_look_n],
             )
-            if p.value[all_tokens.index(OBJ_TOKEN)] > _max:
+            if psi.value[all_tokens.index(OBJ_TOKEN)] > _max:
                 d_max, l_max, p_max, n_max = d2, l2, p2, n2 
             print("---")
         except:
@@ -107,7 +104,7 @@ def simulate():
     eta = n_max
     eta_change = True
     print("---------")
-    lastp_value = p.value[all_tokens.index(OBJ_TOKEN)]
+    lastp_value = psi.value[all_tokens.index(OBJ_TOKEN)]
     while eta_change:
         try:
             eta_change = False
@@ -116,7 +113,7 @@ def simulate():
                 if all(delta_i.value < 1e-04 for delta_i in delta):
                     n_max[idx] = 0
                     eta_change = True
-            d_max, l, p, eta = solve(
+            d_max, l, psi, eta = solve(
                 all_tokens,
                 all_cfmms,
                 reserves,
@@ -133,7 +130,7 @@ def simulate():
             continue
 
     print("---")
-    deltas, lambdas, p, eta = solve(
+    deltas, lambdas, psi, eta = solve(
                     all_tokens,
                     all_cfmms,
                     reserves,
@@ -151,8 +148,12 @@ def simulate():
             f"Market {all_cfmms[i][0]}<->{all_cfmms[i][1]}, delta: {deltas[i].value}, lambda: {lambdas[i].value}, eta: {eta[i].value}",
         )
 
-    print(p.value[all_tokens.index(OBJ_TOKEN)],lastp_value)
-    return (p.value[all_tokens.index(OBJ_TOKEN)],lastp_value)
+    print(psi.value[all_tokens.index(OBJ_TOKEN)],lastp_value)
+    # basically, we have matrix where rows are in tokens (DELTA)
+    # columns are outs (LAMBDA)
+    # so recursively going DELTA-LAMBDA and subtracting values from cells
+    # will allow to build route with amounts 
+    return (psi.value[all_tokens.index(OBJ_TOKEN)],lastp_value)
     
 if __name__ == "__main__":
     simulate()
