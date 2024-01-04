@@ -98,6 +98,8 @@ T = TypeVar("T")
 
 class PydanticDataSet(BaseModel, DataSet[T]):
     pass
+
+# global labelling of assets and exchanges
 class AllData(BaseModel):
     # DataSet inherits from DataFrame
     # If key is in first set, it cannot be in second set, and other way around

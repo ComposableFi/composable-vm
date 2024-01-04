@@ -108,4 +108,7 @@ def solve(
         print(
             f"Market {all_cfmms[i][0]}<->{all_cfmms[i][1]}, delta: {deltas[i].value}, lambda: {lambdas[i].value}, eta: {eta[i].value}",
         )
+    
+    # deltas[i] - how much one gives to pool i
+    # lambdas[i] - how much one wants to get from pool i
     return deltas, lambdas, psi, eta
