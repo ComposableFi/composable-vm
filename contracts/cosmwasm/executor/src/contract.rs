@@ -444,7 +444,7 @@ pub fn execute_spawn(
         .add_message(outpost_address.execute(BridgeForwardMsg {
             executor_origin: executor_origin.clone(),
             msg: execute_program,
-            to: network_id,
+            to_network: network_id,
         })?)
         .add_event(CvmExecutorInstructionSpawned::new(
             executor_origin.user_origin.network_id,

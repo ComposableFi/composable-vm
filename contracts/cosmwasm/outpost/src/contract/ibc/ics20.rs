@@ -52,12 +52,12 @@ pub(crate) fn handle_bridge_forward(
         ibc_ics_20_transfer_shortcut(deps.as_ref(), &msg)
     {
         let mut _event = make_event("bridge")
-            .add_attribute("to_network_id", msg.to.to_string())
+            .add_attribute("to_network_id", msg.to_network.to_string())
             .add_attribute("shortcut", "ics20-transfer");
 
         unimplemented!("add tracking lock for funds return usual cosmos message to transfer as defined in {:?}", transfer_shortcut);
     } else {
-        let route: IbcIcs20ProgramRoute = get_this_route(deps.storage, msg.to, *local_asset)?;
+        let route: IbcIcs20ProgramRoute = get_this_route(deps.storage, msg.to_network, *local_asset)?;
         crate::state::tracking::bridge_lock(deps.storage, (msg.clone(), route.clone()))?;
 
         let asset = msg
@@ -82,7 +82,7 @@ pub(crate) fn handle_bridge_forward(
         ));
 
         let mut event = make_event("bridge")
-            .add_attribute("to_network_id", msg.to.to_string())
+            .add_attribute("to_network_id", msg.to_network.to_string())
             .add_attribute(
                 "assets",
                 serde_json_wasm::to_string(&packet.assets)
@@ -144,7 +144,7 @@ pub fn ibc_ics_20_transfer_shortcut(
 ) -> Result<IbcIcs20TransferShortcutRoute, ContractError> {
     let storage = deps.storage;
     let this = load_this(storage)?;
-    let other = network::load_other(storage, msg.to)?;
+    let other = network::load_other(storage, msg.to_network)?;
     let this_asset_id = msg.msg.assets.0[0].0;
     let asset: AssetItem = crate::state::assets::ASSETS
         .load(storage, this_asset_id)

@@ -193,7 +193,7 @@ pub type BridgeExecuteProgramMsg = ExecuteProgramMsg<Funds<crate::shared::Displa
 pub struct BridgeForwardMsg {
     pub executor_origin: ExecutorOrigin,
     /// target network
-    pub to: NetworkId,
+    pub to_network: NetworkId,
     pub msg: BridgeExecuteProgramMsg,
 }
 

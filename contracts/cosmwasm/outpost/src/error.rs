@@ -1,6 +1,6 @@
 use cosmwasm_std::{IbcOrder, Response, StdError};
 use cvm_runtime::{AssetId, NetworkId};
-use ibc_core_host_types::error::IdentifierError;
+use ibc_core_host_types::{error::IdentifierError, identifiers::ChannelId};
 use thiserror::Error;
 
 pub type Result<T = Response, E = ContractError> = core::result::Result<T, E>;
@@ -45,8 +45,8 @@ pub enum ContractError {
     InvalidAck,
     #[error("An unknown reply ID was provided, this MUST be impossible.")]
     UnknownReply,
-    #[error("The provided channel has not been previously opened.")]
-    UnknownChannel,
+    #[error("Needed connection has not been previously opened from {0} to {1}.")]
+    ConnectionFromToNotFoundOverIcs27(NetworkId, NetworkId),
     #[error("The asset is already registered.")]
     AlreadyRegistered,
     #[error("Route not found.")]

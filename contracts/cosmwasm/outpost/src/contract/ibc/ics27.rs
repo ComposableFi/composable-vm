@@ -5,7 +5,10 @@ use crate::{
     error::{ContractError, Result},
     events::make_event,
     msg,
-    state::{self, network::load_other},
+    state::{
+        self,
+        network::{load_other, load_this},
+    },
 };
 use std::str::FromStr;
 
@@ -143,17 +146,17 @@ pub(crate) fn handle_bridge_forward_no_assets(
     msg: msg::BridgeForwardMsg,
     block: BlockInfo,
 ) -> Result<Response> {
+    deps.api.debug(&format!("cvm::outpost::ics27:: {:?}", msg));
     ensure_eq!(
         msg.msg.assets.0.len(),
         0,
         ContractError::CannotTransferAssets
     );
-    let other = load_other(deps.storage, msg.to)?;
-    let channel_id = other
-        .connection
-        .ics27_channel
-        .map(|x| x.id)
-        .ok_or(ContractError::UnknownChannel)?;
+    let this = load_this(deps.storage)?;
+    let other = load_other(deps.storage, msg.to_network)?;
+    let channel_id = other.connection.ics27_channel.map(|x| x.id).ok_or(
+        ContractError::ConnectionFromToNotFoundOverIcs27(this.network_id, msg.to_network),
+    )?;
     let executor = XcPacket {
         executor: String::from(info.sender).into_bytes(),
         user_origin: msg.executor_origin.user_origin,
@@ -162,7 +165,7 @@ pub(crate) fn handle_bridge_forward_no_assets(
         assets: msg.msg.assets,
     };
     let mut event = make_event("bridge")
-        .add_attribute("network_id", msg.to.to_string())
+        .add_attribute("network_id", msg.to_network.to_string())
         .add_attribute(
             "assets",
             serde_json_wasm::to_string(&executor.assets)
