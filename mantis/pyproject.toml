@@ -50,3 +50,5 @@ build-backend = "poetry.core.masonry.api"
 [tool.poetry.scripts]
 blackbox = 'blackbox.main:start'
 mantis-blackbox = 'blackbox.main:main'
+simulation = 'simulation.optimal_routing:simulate'
+

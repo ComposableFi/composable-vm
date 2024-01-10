@@ -108,7 +108,7 @@ class AllData(BaseModel):
     # if None, than solution must not contain any joins after forks
     # so A was split into B and C, and then B and C were moved to be D
     # D must "summed" from 2 amounts must be 2 separate routes branches
-    fork_joins : any | None
+    fork_joins : str | None
     
 
 def test_all_data() -> AllData:
