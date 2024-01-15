@@ -297,6 +297,7 @@ files = [
 ]
 
 [package.dependencies]
+cylp = {version = ">=0.91.5", optional = true, markers = "extra == \"cbc\""}
 ecos = ">=2"
 Mosek = {version = "*", optional = true, markers = "extra == \"mosek\""}
 numpy = ">=1.15"
@@ -322,6 +323,53 @@ scip = ["PySCIPOpt"]
 scipy = ["scipy"]
 scs = ["setuptools (>65.5.1)"]
 xpress = ["xpress"]
+
+[[package]]
+name = "cylp"
+version = "0.92.2"
+description = "A Python interface for CLP, CBC, and CGL"
+optional = false
+python-versions = "*"
+files = [
+    {file = "cylp-0.92.2-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:dad6e8e6adb3648fb5cfb02169574b94af4e62b2cefd0e3d1419051d92ff7393"},
+    {file = "cylp-0.92.2-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:a69ff4a80a4f98c3954b917bd56444738cb633b7b5c0d8b850c9d5008a6db7c9"},
+    {file = "cylp-0.92.2-cp310-cp310-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:cbe2899e30d5457aedc902b3cb7046702cce98d900b2189f51e49aacab2d1fc3"},
+    {file = "cylp-0.92.2-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:17c63f2639ff3e0da45fe8f47c55c5c1540a223dd209ca181b2f6e40edf85abb"},
+    {file = "cylp-0.92.2-cp310-cp310-win_amd64.whl", hash = "sha256:d7f3885922c3fb12cd9ae546b9760698094620420ea60ebcbee7fa1a6a7d0f51"},
+    {file = "cylp-0.92.2-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:e5e2b0b7df641597b31031ebf9a68689f5c372b6f3c6e01de14b2d27495bac2e"},
+    {file = "cylp-0.92.2-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:670690a4e08c2f59c09570fb881c430bd71fc438d1509a7d0efed8586742686f"},
+    {file = "cylp-0.92.2-cp311-cp311-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:c980441593b1814af90372328318c0360c438bf7a092c701870aa8007783b2f5"},
+    {file = "cylp-0.92.2-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:0588f746b64b500d90d018229efde17d7c29456c0a8219d12211813b13588cf2"},
+    {file = "cylp-0.92.2-cp311-cp311-win_amd64.whl", hash = "sha256:68764bbfaf8de54c5c5db45f3a9623f0c5dd224ec7d2cb0aafeeed71b8b03060"},
+    {file = "cylp-0.92.2-cp312-cp312-macosx_10_9_x86_64.whl", hash = "sha256:035ec307850deab043cbd164ed68bece3fb1e8091aa2a97f1b7f51590bb1f461"},
+    {file = "cylp-0.92.2-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:dffe9f47227411194088653d32ef9ee980372eb85f60808e26690e03163e28c8"},
+    {file = "cylp-0.92.2-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:95c2c57124333bf512525115a550c9e58c11f058c71dfcdcf61adf5853cf42b3"},
+    {file = "cylp-0.92.2-cp312-cp312-win_amd64.whl", hash = "sha256:8850fefaf9333730e65461fb256476426749a7c279724584c0233c801195b42a"},
+    {file = "cylp-0.92.2-cp36-cp36m-macosx_10_9_x86_64.whl", hash = "sha256:ecf3e6109c32d82613a1d5d0c16cad948ea76e92fe523ec5fb6f2376040c65c1"},
+    {file = "cylp-0.92.2-cp36-cp36m-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:8007e7edffeeb24c70127f1437445b4a68584741b724b0bfc13eb943ea338dad"},
+    {file = "cylp-0.92.2-cp36-cp36m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:a5eba1dec7182d2f939c95d3dcfa390323f428e67cc3a7902f422f3e5b9b84f9"},
+    {file = "cylp-0.92.2-cp37-cp37m-macosx_10_9_x86_64.whl", hash = "sha256:bc1bed02d0ab38bd3f07d0894c49a80c31ae705fe68cedf4cb0dfbd14631f2a7"},
+    {file = "cylp-0.92.2-cp37-cp37m-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:f91b2ac53a3c653e33fdb159492e3614f7cae53518304f167372ccbfd766824f"},
+    {file = "cylp-0.92.2-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:d10a10f8972ec03f81d2451dfd7a7de99434a97c3e85a44159f1ac00d61a452c"},
+    {file = "cylp-0.92.2-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:82e34fa91f5a67f46f6b74595f44d2c30467dee514026a8482568d76f7837e55"},
+    {file = "cylp-0.92.2-cp38-cp38-macosx_11_0_arm64.whl", hash = "sha256:fd949b9ac6b13b35ec80df4584e2d2ddabc66377d3cdf6fcf4016df8d8317783"},
+    {file = "cylp-0.92.2-cp38-cp38-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:cfb88437c0088c09fdce5e217ec5d423fb74bcd657a17a4550623194c37f64c7"},
+    {file = "cylp-0.92.2-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:4eef76448b846d60a6aa06c383931b7c42d4367512d6cbcbd57ba2c4cd546bf3"},
+    {file = "cylp-0.92.2-cp38-cp38-win_amd64.whl", hash = "sha256:00fc4bbef8c0e7c6d8ca8f66915d7a3c8f93973dc5b79bf4397d2d283604c43f"},
+    {file = "cylp-0.92.2-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:19a55dc35a0376eaa2a41cda03fede149c908c2a3cd65171c9bc2e6a54a76108"},
+    {file = "cylp-0.92.2-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:923725fbcfaa1da9b0bdd55c35dbd2d32d9bf17c61c1e75c9de5c9a560410db2"},
+    {file = "cylp-0.92.2-cp39-cp39-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:8a0d93a9731a1240c775077b2bb2e6377fe0814010649549bb594a1be06e737c"},
+    {file = "cylp-0.92.2-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:73935d72a6b54eba54d8eaa0d2da54e1e7de6ef1616f78a728736a54ece3136f"},
+    {file = "cylp-0.92.2-cp39-cp39-win_amd64.whl", hash = "sha256:cf573217c3f91e3452e9fb2c1caaef2e19b95826ea2d25c81ec05f98492c0c2d"},
+    {file = "cylp-0.92.2-pp37-pypy37_pp73-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:79160d374297f5e85f6a51326da57702cbc3e366c3950390ae8a9e9cc5eb1b5b"},
+    {file = "cylp-0.92.2-pp38-pypy38_pp73-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:23b8e357bbbedbc3c8e905475fed320972efb0e37faf47a7cd65643a3325a75f"},
+    {file = "cylp-0.92.2-pp39-pypy39_pp73-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:4d446260b29e7d198151efa29ce1631d194dac27c05cbc55695adf953f620b31"},
+    {file = "cylp-0.92.2.tar.gz", hash = "sha256:a7ee226caa274e190338da3d24314647df7e06599ab38cdd26c005d8b8258b16"},
+]
+
+[package.dependencies]
+numpy = ">=1.5.0"
+scipy = ">=0.10.0"
 
 [[package]]
 name = "dnspython"
@@ -2209,4 +2257,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "3.11.6"
-content-hash = "f3942be0a9f61ffc1d53bb0c1ba608ea68c58e518b5468b06c032d76320948ef"
+content-hash = "6761015b92e8bf5afbd7dfcb3b8324211fa54f8d6a3cf3a57d2ae7940a2a9847"

@@ -16,7 +16,7 @@ python = "3.11.6"
 #fastapi-cache2 = "^0.2.1"  # no needed now, too many things
 bech32 = "1.2.0"
 cosmpy = { version = "0.9.1" }
-cvxpy = { version = "1.3.2", extras = ["MOSEK"] } # CBC XPRESSs "PDLP"," ,"CVXOPT","GLOP","GLPK","GUROBI
+cvxpy = { version = "1.3.2", extras = ["MOSEK", "CBC"] } # CBC XPRESSs "PDLP"," ,"CVXOPT","GLOP","GLPK","GUROBI
 ecdsa = "0.18.0"
 fastapi = { extras = ["all"], version = "0.108.0" }
 google-cloud = "0.34.0"
