@@ -100,10 +100,10 @@ def solve(
     # Set up and solve problem
     prob = cp.Problem(obj, constrains)
     # success: CLARABEL,
-    # failed: ECOS, 
+    # failed: ECOS, GLPK, GLPK_MI, CVXOPT, SCIPY, CBC, SCS
     # 
-    # CVXOPT, GLOP, GLPK, GLPK_MI, SCS, SDPA, GUROBI, OSQP, CPLEX, MOSEK, CBC, COPT, XPRESS, PIQP, PROXQP, NAG, PDLP, SCIP, SCIPY, DAQP
-    prob.solve(verbose= True, solver = "CLARABEL")
+    # GLOP, SDPA, GUROBI, OSQP, CPLEX, MOSEK, , COPT, XPRESS, PIQP, PROXQP, NAG, PDLP, SCIP, DAQP
+    prob.solve(verbose= True, solver = "CLARABEL", qcp = False, )
 
     print(
         f"\033[1;91mTotal amount out: {psi.value[all_tokens.index(obj_token)]}\033[0m"
