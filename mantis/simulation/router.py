@@ -99,7 +99,10 @@ def solve(
 
     # Set up and solve problem
     prob = cp.Problem(obj, constrains)
-    # CLARABEL, ECOS, CVXOPT, GLOP, GLPK, GLPK_MI, SCS, SDPA, GUROBI, OSQP, CPLEX, MOSEK, CBC, COPT, XPRESS, PIQP, PROXQP, NAG, PDLP, SCIP, SCIPY, DAQP
+    # success: CLARABEL,
+    # failed: ECOS, 
+    # 
+    # CVXOPT, GLOP, GLPK, GLPK_MI, SCS, SDPA, GUROBI, OSQP, CPLEX, MOSEK, CBC, COPT, XPRESS, PIQP, PROXQP, NAG, PDLP, SCIP, SCIPY, DAQP
     prob.solve(verbose= True, solver = "CLARABEL")
 
     print(

@@ -351,7 +351,7 @@ files = [
 
 [package.dependencies]
 clarabel = {version = "*", optional = true, markers = "extra == \"clarabel\""}
-cvxopt = {version = "*", optional = true, markers = "extra == \"cvxopt\""}
+cvxopt = {version = "*", optional = true, markers = "extra == \"cvxopt\" or extra == \"glpk\""}
 cylp = {version = ">=0.91.5", optional = true, markers = "extra == \"cbc\""}
 ecos = ">=2"
 gurobipy = {version = "*", optional = true, markers = "extra == \"gurobi\""}
@@ -362,6 +362,7 @@ PySCIPOpt = {version = "*", optional = true, markers = "extra == \"scip\""}
 scipy = ">=1.1.0"
 scs = ">=1.1.6"
 setuptools = ">65.5.1"
+xpress = {version = "*", optional = true, markers = "extra == \"xpress\""}
 
 [package.extras]
 cbc = ["cylp (>=0.91.5)"]
@@ -2343,7 +2344,43 @@ files = [
     {file = "websockets-12.0.tar.gz", hash = "sha256:81df9cbcbb6c260de1e007e58c011bfebe2dafc8435107b0537f393dd38c8b1b"},
 ]
 
+[[package]]
+name = "xpress"
+version = "9.2.5"
+description = "FICO Xpress Optimizer Python interface"
+optional = false
+python-versions = "*"
+files = [
+    {file = "xpress-9.2.5-cp310-cp310-macosx_13_0_arm64.whl", hash = "sha256:f4a0f8836297f6bef1e67fb975d6e7ef8aa7b672a4d84a4a3e5e01780a872013"},
+    {file = "xpress-9.2.5-cp310-cp310-macosx_13_0_x86_64.whl", hash = "sha256:73f014f3196d0e7c75b06a0807719f4d8a9261a02d5722c687e5a20713ae5e75"},
+    {file = "xpress-9.2.5-cp310-cp310-manylinux1_x86_64.whl", hash = "sha256:595322540fdf5366cd89fe97b4130441ecfe0d16a12cb6e01306e90236c0af2e"},
+    {file = "xpress-9.2.5-cp310-cp310-manylinux2014_aarch64.whl", hash = "sha256:3eda00d1b56f97aed851f5dba629ed3797ad4a109d535eb701ae800364aa4aa4"},
+    {file = "xpress-9.2.5-cp310-cp310-win_amd64.whl", hash = "sha256:3b440acfbc259b2d9466eb3a7586bdb4f7fb4b3677475332cdbc27c33c3f43de"},
+    {file = "xpress-9.2.5-cp311-cp311-macosx_13_0_arm64.whl", hash = "sha256:8b3021329839ab949fe523e1ad40f90ab8c20b49560b1c7d840efc47a516c71b"},
+    {file = "xpress-9.2.5-cp311-cp311-macosx_13_0_x86_64.whl", hash = "sha256:211d430866502b8f4827aada6cb65f5917b097d9e6dc96a7ccbd2d5c83340e1e"},
+    {file = "xpress-9.2.5-cp311-cp311-manylinux1_x86_64.whl", hash = "sha256:81aa74c2cca6b512a8692401599156b8eff884f877b5ad5c756d96bad09dd0b2"},
+    {file = "xpress-9.2.5-cp311-cp311-manylinux2014_aarch64.whl", hash = "sha256:ebf2a445a419ea26e3662285e1808ba97b7226d44b8bb3cca1613a2843291ff1"},
+    {file = "xpress-9.2.5-cp311-cp311-win_amd64.whl", hash = "sha256:fd83e2a7c42d514a34b6aed4ce91f1d01138bf24a0058d3a969cd6c3ac24f686"},
+    {file = "xpress-9.2.5-cp37-cp37m-macosx_13_0_x86_64.whl", hash = "sha256:3073205553c2164f8b234db49c3fc2224beaa86a11cbb52449fb7f1a719dbb81"},
+    {file = "xpress-9.2.5-cp37-cp37m-manylinux1_x86_64.whl", hash = "sha256:d82853608efb04db5984f3d33de790a2ce74097126d8aff99be1ba8061b569c2"},
+    {file = "xpress-9.2.5-cp37-cp37m-manylinux2014_aarch64.whl", hash = "sha256:e0bd4c4c7e30099f96e55e45e97ece9a89626ca943eaeebe8cee11637bdae893"},
+    {file = "xpress-9.2.5-cp37-cp37m-win_amd64.whl", hash = "sha256:15e63d0caa9743a03231d5c4b3c2c6f1829aadad6c7760dab4b98ded72829800"},
+    {file = "xpress-9.2.5-cp38-cp38-macosx_13_0_arm64.whl", hash = "sha256:4728a865784c1c1276499401e528d085a24d6f377f1e7e2a5eb2b3c74dc32bb8"},
+    {file = "xpress-9.2.5-cp38-cp38-macosx_13_0_x86_64.whl", hash = "sha256:25d26cb8d894a46c34cff68bfb43479afcbd3db4b2e90f0092b1ecf9c5e4e4c2"},
+    {file = "xpress-9.2.5-cp38-cp38-manylinux1_x86_64.whl", hash = "sha256:25fe36caadd23cc3153290300ad39649e042ba9e6e5b96220304fb9fd3840f82"},
+    {file = "xpress-9.2.5-cp38-cp38-manylinux2014_aarch64.whl", hash = "sha256:6069ecea82b2765700e90747a9758f04a22e38ee32fd27e578d6816a8f9ea506"},
+    {file = "xpress-9.2.5-cp38-cp38-win_amd64.whl", hash = "sha256:17e1581810a4b1dc4b2c9d2a59abba72c04eb63b01ce20a2adfbf5e50c3f816b"},
+    {file = "xpress-9.2.5-cp39-cp39-macosx_13_0_arm64.whl", hash = "sha256:244ace9e0275298f1f29b3d49a3608429a9b7700a4cb2ca91bdece6b13cb9a8a"},
+    {file = "xpress-9.2.5-cp39-cp39-macosx_13_0_x86_64.whl", hash = "sha256:346716f15be46e4cc6ec17dfbd790a344d04aadafe39000b752c72352b7d4a26"},
+    {file = "xpress-9.2.5-cp39-cp39-manylinux1_x86_64.whl", hash = "sha256:6ea72345dfdd29da226db701da22a06340051c13058e835ca489b8b18e33d264"},
+    {file = "xpress-9.2.5-cp39-cp39-manylinux2014_aarch64.whl", hash = "sha256:f221de9a727315ffd94b3918857b66a7c96666e93b25ee1c09ac4e997f06f1f2"},
+    {file = "xpress-9.2.5-cp39-cp39-win_amd64.whl", hash = "sha256:4c4dd135e4254a27330387929ad918fe3b2b6c643f6e51fbfbe8a0332c85cd4e"},
+]
+
+[package.dependencies]
+numpy = ">=1.23,<2.0a0"
+
 [metadata]
 lock-version = "2.0"
 python-versions = "3.11.6"
-content-hash = "aa2aaacd3c98871331d9500d59b30d464f1dca8910e364913eb813953b72db70"
+content-hash = "22ff34a98c24fc7fbb4ec0bef1167f745768b7b096a29b4bee89ebba6b630cfa"
