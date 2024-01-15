@@ -2383,4 +2383,4 @@ numpy = ">=1.23,<2.0a0"
 [metadata]
 lock-version = "2.0"
 python-versions = "3.11.6"
-content-hash = "22ff34a98c24fc7fbb4ec0bef1167f745768b7b096a29b4bee89ebba6b630cfa"
+content-hash = "9a1e8871af3a9b59125417dc9376e335ff91c93064bed2bfdcd48340bea8482c"

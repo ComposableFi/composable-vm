@@ -62,10 +62,11 @@ def simulate():
 
     for i, cfmm in enumerate(all_cfmms):
         print(i, cfmm)
+    input_amount = 2000
+    
 
     print("=============== solving ========================")
-    input_amount = 2000
-    d, l, psi, n = solve(
+    _deltas, _lambdas, psi, n = solve(
         all_tokens, 
         all_cfmms, 
         reserves, 
