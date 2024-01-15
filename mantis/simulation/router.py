@@ -99,7 +99,7 @@ def solve(
 
     # Set up and solve problem
     prob = cp.Problem(obj, constrains)
-    prob.solve(verbose= True, solver = "CBC")
+    prob.solve(verbose= True, solver = "GUROBI")
 
     print(
         f"\033[1;91mTotal amount out: {psi.value[all_tokens.index(obj_token)]}\033[0m"
