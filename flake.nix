@@ -42,6 +42,9 @@
       flake = false;
     };
 
+    scip = {
+      url = github:dzmitry-lahoda-forks/scip/169747d9a7d5b01a44722ea7db2ed389443e7a57;
+    };
     devenv.url = "github:cachix/devenv";
     strictly-typed-pandas-src = {
       url = "github:nanne-aben/strictly_typed_pandas";
@@ -72,6 +75,11 @@
       url = "github:srid/devour-flake";
       flake = false;
     };
+
+    pyscipopt-src = {
+      url = "github:scipopt/PySCIPOpt/v4.3.0";
+      flake = false;
+    };
   };
 
   outputs = inputs @ {
@@ -83,6 +91,8 @@
     poetry2nix,
     cosmpy-src,
     nixpkgs,
+    scip,
+    pyscipopt-src,
     ...
   }:
     flake-parts.lib.mkFlake {inherit inputs;} {
@@ -243,6 +253,26 @@
             pkgs.pkg-config
           ];
         };
+
+        pyscipopt-latest = pkgs.python3Packages.buildPythonPackage {
+          name = "pyscipopt";
+          version = "v4.3.0";
+          format = "pyproject";
+
+          src = inputs.pyscipopt-src;
+
+          nativeBuildInputs = with pkgs.python3Packages; [
+            setuptools
+            pkgs.pkg-config
+            inputs'.scip.packages.scip
+            pkgs.python311Packages.cython
+          ];
+          buildInputs = with pkgs.python3Packages; [
+            inputs'.scip.packages.scip
+            cython
+          ];
+        };
+
         dep = name:
           builtins.head (pkgs.lib.lists.filter
             (x: pkgs.lib.strings.hasInfix name x.name)
@@ -302,8 +332,14 @@
             pydantic-extra-types = super.pydantic-extra-types.overridePythonAttrs (old: {
               buildInputs = old.buildInputs or [] ++ [self.python.pkgs.hatchling];
             });
+
+            pyscipopt = pyscipopt-latest;
             google = super.google.overridePythonAttrs (old: {
               buildInputs = old.buildInputs or [] ++ [self.python.pkgs.setuptools];
+            });
+            cylp = super.cylp.overridePythonAttrs (old: {
+              buildInputs = old.buildInputs or [] ++ [self.python.pkgs.setuptools self.python.pkgs.wheel pkgs.cbc pkgs.pkg-config];
+              nativeBuildInputs = old.nativeBuildInputs or [] ++ [self.python.pkgs.setuptools self.python.pkgs.wheel pkgs.cbc pkgs.pkg-config];
             });
             google-cloud = super.google-cloud.overridePythonAttrs (old: {
               buildInputs = old.buildInputs or [] ++ [self.python.pkgs.setuptools];
@@ -317,6 +353,7 @@
 
         envShell = mkPoetryEnv {
           projectDir = ./mantis;
+
           overrides = override overrides;
         };
         mantis-blackbox-package = mkPoetryApplication {
@@ -366,6 +403,13 @@
               curl --request GET --url https://api.skip.money/v1/fungible/assets --header 'accept: application/json' | jq . > schema/skip_money_assets.json
             '';
           };
+        native-deps = [
+          pkgs.cbc
+          inputs'.scip.packages.scip
+          pkgs.CoinMP
+          #pkgs.ipopt
+          #pkgs.or-tools
+        ];
       in {
         _module.args.pkgs = import self.inputs.nixpkgs {
           inherit system;
@@ -385,33 +429,36 @@
               pkgs.zlib
               pkgs.zlib.dev
               pkgs.zlib.out
+
+              "${inputs'.scip.packages.scip}/lib"
             ];
           };
 
-          packages = [
-            pkgs.nix
-            pkgs.cbc
-            pkgs.zlib
-            pkgs.zlib.dev
-            pkgs.zlib.out
-            devour-flake
-            pkgs.conda
-            pkgs.nodejs
-            pkgs.nodePackages.npm
-            pkgs.poetry
-            pkgs.pyo3-pack
-            pkgs.python3Packages.flit
-            pkgs.python3Packages.flit-core
-            pkgs.python3Packages.uvicorn
-            pkgs.virtualenv
-            pkgs.zlib
-            pkgs.zlib.dev
-            pkgs.zlib.out
-            rust.cargo
-            rust.rustc
-            envShell
-            devour-flake
-          ];
+          packages =
+            [
+              pkgs.nix
+              pkgs.zlib
+              pkgs.zlib.dev
+              pkgs.zlib.out
+              devour-flake
+              pkgs.conda
+              pkgs.nodejs
+              pkgs.nodePackages.npm
+              pkgs.poetry
+              pkgs.pyo3-pack
+              pkgs.python3Packages.flit
+              pkgs.python3Packages.flit-core
+              pkgs.python3Packages.uvicorn
+              pkgs.virtualenv
+              pkgs.zlib
+              pkgs.zlib.dev
+              pkgs.zlib.out
+              rust.cargo
+              rust.rustc
+              envShell
+              devour-flake
+            ]
+            ++ native-deps;
           devcontainer.enable = true;
           enterShell = ''
             if [[ -f ./.env ]]; then
@@ -425,7 +472,17 @@
         };
         formatter = pkgs.alejandra;
         packages = rec {
-          inherit cw-mantis-order cw-cvm-executor cw-cvm-outpost cosmwasm-contracts cosmwasm-json-schema-py datamodel-code-generator cosmwasm-json-schema-ts mantis-blackbox;
+          inherit
+            cw-mantis-order
+            cw-cvm-executor
+            cw-cvm-outpost
+            cosmwasm-contracts
+            cosmwasm-json-schema-py
+            datamodel-code-generator
+            cosmwasm-json-schema-ts
+            mantis-blackbox
+            pyscipopt-latest
+            ;
           all =
             pkgs.linkFarmFromDrvs "all"
             (with self'.packages; [
@@ -444,7 +501,7 @@
               pname = "mantis";
               name = "mantis";
               cargoBuildCommand = "cargo build --release --bin mantis";
-              nativeBuildInputs = [pkgs.cbc];
+              nativeBuildInputs = native-deps;
             });
           default = mantis-blackbox;
           ci = pkgs.writeShellApplication {

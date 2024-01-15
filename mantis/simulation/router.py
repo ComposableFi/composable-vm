@@ -59,6 +59,7 @@ def solve(
     
     # received (wanted) amounts
     lambdas = [cp.Variable(len(l), nonneg=True) for l in all_cfmms]
+    
     eta = cp.Variable(
         count_cfmms, nonneg=True
     )  # Binary value, indicates tx or not for given pool
@@ -98,7 +99,7 @@ def solve(
 
     # Set up and solve problem
     prob = cp.Problem(obj, constrains)
-    prob.solve(verbose= True)
+    prob.solve(verbose= True, solver = "CBC")
 
     print(
         f"\033[1;91mTotal amount out: {psi.value[all_tokens.index(obj_token)]}\033[0m"
