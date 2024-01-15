@@ -407,8 +407,8 @@
           pkgs.cbc
           inputs'.scip.packages.scip
           pkgs.CoinMP
-          #pkgs.ipopt
-          #pkgs.or-tools
+          pkgs.ipopt
+          pkgs.or-tools
         ];
       in {
         _module.args.pkgs = import self.inputs.nixpkgs {

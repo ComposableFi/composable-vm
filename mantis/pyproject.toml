@@ -37,7 +37,7 @@ rpds-py = "0.13.2"
 scipy = "1.9.3"
 strictly-typed-pandas = "0.1.24"
 uvicorn = "0.25.0"
-#PySCIPOpt = "4.3.0"
+PySCIPOpt = "4.3.0"
 # cylp = "0.92.2"
 # ortools="9.4.1874"
 
