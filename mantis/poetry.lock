@@ -216,6 +216,27 @@ files = [
 ]
 
 [[package]]
+name = "clarabel"
+version = "0.6.0"
+description = "Clarabel Conic Interior Point Solver for Rust / Python"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "clarabel-0.6.0-cp37-abi3-macosx_10_7_x86_64.whl", hash = "sha256:4f366de79b8bc66bef8dc170987840b672ccab9222e710c09536d78ef47f606d"},
+    {file = "clarabel-0.6.0-cp37-abi3-macosx_10_9_x86_64.macosx_11_0_arm64.macosx_10_9_universal2.whl", hash = "sha256:edcebbfc14073cd32bfb664317fd2555716c96be8b2a54efdb2b728453582bea"},
+    {file = "clarabel-0.6.0-cp37-abi3-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:e737d2818b9ca10e92ccd3fa9ad1a805b039976016415a0c45adef3427d70792"},
+    {file = "clarabel-0.6.0-cp37-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:2e0b1891d8e507eb0bfc7e0b981584c388b2ab28658056e600997dbbc23f1ab4"},
+    {file = "clarabel-0.6.0-cp37-abi3-manylinux_2_5_i686.manylinux1_i686.whl", hash = "sha256:9946d3b5db346421b6d839d868e7b1151b590f871344fe95113bfd55b5be2433"},
+    {file = "clarabel-0.6.0-cp37-abi3-win32.whl", hash = "sha256:73ed408c975a8ea021c3d8262d5d023a18e1ac3f6bb59a37cd69a11dba8f86ed"},
+    {file = "clarabel-0.6.0-cp37-abi3-win_amd64.whl", hash = "sha256:5a6be4df9fed98b6f73f034836def913a1ecd52e8b79ca230ddf7cd66ebcdee7"},
+    {file = "clarabel-0.6.0.tar.gz", hash = "sha256:ef909a393e72981ca10b1d866d9cc7fb6295ece20ae035def764338894961184"},
+]
+
+[package.dependencies]
+numpy = "*"
+scipy = "*"
+
+[[package]]
 name = "click"
 version = "8.1.7"
 description = "Composable command line interface toolkit"
@@ -329,6 +350,7 @@ files = [
 ]
 
 [package.dependencies]
+clarabel = {version = "*", optional = true, markers = "extra == \"clarabel\""}
 cvxopt = {version = "*", optional = true, markers = "extra == \"cvxopt\""}
 cylp = {version = ">=0.91.5", optional = true, markers = "extra == \"cbc\""}
 ecos = ">=2"
@@ -336,6 +358,7 @@ gurobipy = {version = "*", optional = true, markers = "extra == \"gurobi\""}
 Mosek = {version = "*", optional = true, markers = "extra == \"mosek\""}
 numpy = ">=1.15"
 osqp = ">=0.4.1"
+PySCIPOpt = {version = "*", optional = true, markers = "extra == \"scip\""}
 scipy = ">=1.1.0"
 scs = ">=1.1.6"
 setuptools = ">65.5.1"
@@ -2323,4 +2346,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "3.11.6"
-content-hash = "615714fad02390b75f769c2a101437b05cf234b9893490f2ccaf8382cd28069b"
+content-hash = "aa2aaacd3c98871331d9500d59b30d464f1dca8910e364913eb813953b72db70"

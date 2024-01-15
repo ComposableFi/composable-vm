@@ -99,7 +99,8 @@ def solve(
 
     # Set up and solve problem
     prob = cp.Problem(obj, constrains)
-    prob.solve(verbose= True, solver = "GUROBI")
+    # CLARABEL, ECOS, CVXOPT, GLOP, GLPK, GLPK_MI, SCS, SDPA, GUROBI, OSQP, CPLEX, MOSEK, CBC, COPT, XPRESS, PIQP, PROXQP, NAG, PDLP, SCIP, SCIPY, DAQP
+    prob.solve(verbose= True, solver = "CLARABEL")
 
     print(
         f"\033[1;91mTotal amount out: {psi.value[all_tokens.index(obj_token)]}\033[0m"
