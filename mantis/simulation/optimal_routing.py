@@ -36,7 +36,7 @@ def simulate():
 
     # simulate reserves and gas costs to CFMMS
     for cfmm in all_cfmms:
-        reserves.append(np.random.uniform(9500, 10051, 2))
+        reserves.append(np.random.uniform(95000000, 100510000, 2))
         cfmm_tx_cost.append(np.random.uniform(0, 20))
 
     # simulate IBC "pools"
