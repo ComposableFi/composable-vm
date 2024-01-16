@@ -58,10 +58,7 @@ class Input(BaseModel):
     # if max is False, user wants to get exact out, but spent as small as possible in
     # please fail if bool is False for now
     max: bool
-    @classmethod
-    def max(cls, in_token_id, out_token_id, in_amount, out_amount):
-        return cls(in_token_id, out_token_id, in_amount, out_amount, True)     
-    
+
     
 class SingleInputAssetCvmRoute(BaseModel):
     pass    
@@ -120,7 +117,17 @@ class AllData(BaseModel):
     fork_joins : str | None
     
 
+# helpers to setup tests data
+
 def test_all_data() -> AllData:
     asset_transfers =  PydanticDataSet[AssetTransfers](pd.read_csv("asset_transfers.csv"))
     assets_pairs_xyk=  PydanticDataSet[AssetPairsXyk](pd.read_csv("assets_pairs_xyk.csv"))
     return AllData(assets_pairs_xyk, asset_transfers)
+
+
+def new_input(in_token_id, out_token_id, in_amount, out_amount):
+    return Input(in_token_id = in_token_id, out_token_id = out_token_id, in_amount = in_amount, out_amount = out_amount, max = True)     
+
+def new_pair(pool_id, in_asset_id, out_asset_id, fee_of_in_per_million, fee_of_out_per_million, weight_of_a, weight_of_b, pool_value_in_usd, in_token_amount, out_token_amount, metadata):
+    return AssetPairsXyk(pool_id = pool_id, in_asset_id = in_asset_id, out_asset_id = out_asset_id, fee_of_in_per_million = fee_of_in_per_million, fee_of_out_per_million = fee_of_out_per_million, weight_of_a = weight_of_a, weight_of_b = weight_of_b, pool_value_in_usd = pool_value_in_usd, in_token_amount = in_token_amount, out_token_amount = out_token_amount, metadata = metadata)
+    

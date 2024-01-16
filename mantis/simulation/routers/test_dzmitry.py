@@ -4,7 +4,7 @@ import cvxpy as cp
 
 MAX_RESERVE = 1e10
 
-from simulation.routers.data import Input, TAssetId, TNetworkId, AssetTransfers, AssetPairsXyk, AllData
+from simulation.routers.data import Input, TAssetId, TNetworkId, AssetTransfers, AssetPairsXyk, AllData, new_input
 
 
 # clarabel cvxpy local mip
@@ -15,7 +15,7 @@ from  simulation.routers.dzmitry import solve, route
 
 # simulate denom paths to and from chains, with center node
 def populate_chain_dict(chains: dict[TNetworkId, list[TAssetId]], center_node: TNetworkId):
-    # Add tokens with denom to Center Node
+    # Add tokens with denom to Center Nod
     # Basic IBC transfer
     for chain, tokens in chains.items():
         if chain != center_node:
@@ -34,7 +34,7 @@ def populate_chain_dict(chains: dict[TNetworkId, list[TAssetId]], center_node: T
 
 
 def test_single_chain_single_cffm_route_full_symmetry_exist():
-    input = Input.max("1", "2", 100, 100)
+    input = new_input("1", "2", 100, 100)
     
     
 
