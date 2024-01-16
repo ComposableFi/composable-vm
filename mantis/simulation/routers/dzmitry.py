@@ -6,7 +6,7 @@ MAX_RESERVE = 1e10
 
 from simulation.routers.data import AllData, Input, TAssetId, TNetworkId
 
-
+# prepares data for solving and outputs raw solution from underlying engine
 def solve(
     all_data: AllData,
     all_cfmms: list[tuple[TAssetId, TAssetId]],
@@ -101,6 +101,7 @@ def solve(
     return deltas, lambdas, psi, eta
 
 
+# solves and decide if routable
 def route(input: Input, all_data: AllData, all_cfmms, reserves, fees, cfmm_tx_cost, ibc_pools):
     _deltas, _lambdas, psi, n = solve(
         all_data, 

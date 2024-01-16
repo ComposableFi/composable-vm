@@ -43,28 +43,19 @@ def test_single_chain_single_cffm_route_full_symmetry_exist():
     
 
 def simulate():
-    print("=============== chains and tokens ========================")
-    CENTER_NODE = "CENTAURI"  # Name of center Node
-
-    input = new_input("WETH", "ATOM", 2000, 1)
-
-    chains: dict[str, list[str]] = {
-        "ETHEREUM": [input.in_token_id, "USDC", "SHIBA"],
-        CENTER_NODE: [],
-        "OSMOSIS": [input.out_token_id,"SCRT"],
-    }
-    populate_chain_dict(chains,CENTER_NODE)
-
-    all_tokens = []
-    all_cfmms = []
-    reserves = []
-    fees = []
-    cfmm_tx_cost = []
-    ibc_pools = 0
-    tol = 1e-4
-
+    CENTER_NODE, chains = simulate_all_to_all_connected_chains()
     print(chains)
+    
+    all_data = simulate_all_connected_pools(CENTER_NODE, chains) 
+    print(all_data)
+    
+    print("=============== solving ========================")
+    return route(ORIGIN_TOKEN, OBJ_TOKEN, all_tokens, all_cfmms, reserves, fees, cfmm_tx_cost, ibc_pools, input_amount)
 
+def simulate_all_connected_pools(CENTER_NODE, chains):
+    pools : list[AssetPairsXyk] = []
+    transfers : list[AssetTransfers] = []
+    
     # simulate in chain CFMMS
     for other_chain, other_tokens in chains.items():
         all_tokens.extend(other_tokens)
@@ -91,18 +82,17 @@ def simulate():
     # simulate random fees
     fees.extend(np.random.uniform(0.97, 0.999) for _ in range(len(all_cfmms)))
 
-    print(reserves)
+def simulate_all_to_all_connected_chains():
+    CENTER_NODE = "CENTAURI"  # Name of center Node
+    input = new_input("WETH", "ATOM", 2000, 1)
 
-    for i, token in enumerate(all_tokens):
-        print(i, token)
-
-    for i, cfmm in enumerate(all_cfmms):
-        print(i, cfmm)
- 
-    
-
-    print("=============== solving ========================")
-    return route(ORIGIN_TOKEN, OBJ_TOKEN, all_tokens, all_cfmms, reserves, fees, cfmm_tx_cost, ibc_pools, input_amount)
+    chains: dict[str, list[str]] = {
+        "ETHEREUM": [input.in_token_id, "USDC", "SHIBA"],
+        CENTER_NODE: [],
+        "OSMOSIS": [input.out_token_id,"SCRT"],
+    }
+    populate_chain_dict(chains,CENTER_NODE)
+    return CENTER_NODE,chains
     
 if __name__ == "__main__":
     simulate()
