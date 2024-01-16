@@ -1,54 +1,55 @@
 # for alignment on input and output of algorithm
 import pandas as pd
 from enum import Enum
-from typing import TypeVar
+from typing import TypeVar, Generic
 from pydantic import BaseModel
 from strictly_typed_pandas import DataSet
 
 TAssetId = TypeVar("TAssetId")
 TNetworkId = TypeVar("TNetworkId")
+TAmount = TypeVar("TAmount")
 
-class AssetTransfers(BaseModel):
+class AssetTransfers(Generic[TAssetId, TAmount], BaseModel):
     # positive whole numbers, set key
-    in_asset_id: str
-    out_asset_id: str 
+    in_asset_id: TAssetId
+    out_asset_id: TAssetId
     
     # this is positive whole number too
     # if it is hard if None, please fail if it is None - for now will be always some
-    usd_fee_transfer: int | None
+    usd_fee_transfer: TAmount | None
     
     # do not care
     metadata: str | None 
     
 # pool are bidirectional, so so in can be out and other way
-class AssetPairsXyk(BaseModel):
+class AssetPairsXyk(Generic[TAssetId, TAmount], BaseModel):
     # set key
-    pool_id: int
-    in_asset_id: int
-    out_asset_id: int
+    pool_id: TAssetId
+    in_asset_id: TAssetId
+    out_asset_id: TAssetId
     
     fee_of_in_per_million: int
     fee_of_out_per_million: int 
     weight_of_a: int 
     weight_of_b: int 
     # if it is hard if None, please fail if it is None - for now will be always some
-    pool_value_in_usd: int  | None
+    pool_value_in_usd: TAmount  | None
     
     # total amounts in reserves R
-    in_token_amount: int
-    out_token_amount: int
+    in_token_amount: TAmount
+    out_token_amount: TAmount
     
     metadata: str | None
     
 # this is what user asks for
-class Input(BaseModel):
+class Input(Generic[TAssetId, TAmount],BaseModel):
     # natural set key is ordered pair (in_token_id, out_token_id)
-    in_token_id: int
-    out_token_id: int
+    in_token_id: TAssetId
+    out_token_id: TAssetId
     # tendered amount DELTA
-    in_amount: int
+    in_amount: TAmount
     # expected received amount LAMBDA
-    out_amount: int
+    out_amount: TAmount
     # if max is True, user wants to spent all in to get at least out
     # if max is False, user wants to get exact out, but spent as small as possible in
     # please fail if bool is False for now
@@ -110,7 +111,16 @@ class AllData(BaseModel):
     # so A was split into B and C, and then B and C were moved to be D
     # D must "summed" from 2 amounts must be 2 separate routes branches
     fork_joins : list[str] | None
+    def all_tokens(self) -> list[TAssetId]:
+        set = set()
+        for x in self.asset_pairs_xyk:
+            set.add(x.in_asset_id)
+            set.add(x.out_asset_id)
+        for x in self.asset_transfers:
+            set.add(x.in_asset_id)
+            set.add(x.out_asset_id)    
     
+
 
 # helpers to setup tests data
 
