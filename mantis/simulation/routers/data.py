@@ -10,7 +10,7 @@ TAssetId = TypeVar("TAssetId")
 TNetworkId = TypeVar("TNetworkId")
 TAmount = TypeVar("TAmount")
 
-class AssetTransfers(Generic[TAssetId, TAmount], BaseModel):
+class AssetTransfers(BaseModel, Generic[TAssetId, TAmount],):
     # positive whole numbers, set key
     in_asset_id: TAssetId
     out_asset_id: TAssetId
@@ -19,11 +19,20 @@ class AssetTransfers(Generic[TAssetId, TAmount], BaseModel):
     # if it is hard if None, please fail if it is None - for now will be always some
     usd_fee_transfer: TAmount | None
     
+    # amount of token on chain were it is 
+    amount_of_in_token : TAmount
+    
+    # amount of token on chain where token can go 
+    amount_of_out_token : TAmount
+    
+    # fee per million to transfer
+    fee_per_million: int
+        
     # do not care
     metadata: str | None 
     
 # pool are bidirectional, so so in can be out and other way
-class AssetPairsXyk(Generic[TAssetId, TAmount], BaseModel):
+class AssetPairsXyk(BaseModel, Generic[TAssetId, TAmount],):
     # set key
     pool_id: TAssetId
     in_asset_id: TAssetId
@@ -46,7 +55,7 @@ class AssetPairsXyk(Generic[TAssetId, TAmount], BaseModel):
     metadata: str | None
     
 # this is what user asks for
-class Input(Generic[TAssetId, TAmount],BaseModel):
+class Input(BaseModel, Generic[TAssetId, TAmount],):
     # natural set key is ordered pair (in_token_id, out_token_id)
     in_token_id: TAssetId
     out_token_id: TAssetId
@@ -153,3 +162,5 @@ def new_input(in_token_id, out_token_id, in_amount, out_amount) -> Input:
 def new_pair(pool_id, in_asset_id, out_asset_id, fee_of_in_per_million, fee_of_out_per_million, weight_of_a, weight_of_b, pool_value_in_usd, in_token_amount, out_token_amount, metadata = None) -> AssetPairsXyk:
     return AssetPairsXyk(pool_id = pool_id, in_asset_id = in_asset_id, out_asset_id = out_asset_id, fee_of_in_per_million = fee_of_in_per_million, fee_of_out_per_million = fee_of_out_per_million, weight_of_a = weight_of_a, weight_of_b = weight_of_b, pool_value_in_usd = pool_value_in_usd, in_token_amount = in_token_amount, out_token_amount = out_token_amount, metadata = metadata)
     
+def new_transfer(in_asset_id, out_asset_id, usd_fee_transfer, amount_of_in_token, amount_of_out_token, fee_per_million, metadata = None) -> AssetTransfers:
+    return AssetTransfers(in_asset_id = in_asset_id, out_asset_id = out_asset_id, usd_fee_transfer = usd_fee_transfer, amount_of_in_token = amount_of_in_token, amount_of_out_token = amount_of_out_token, fee_per_million = fee_per_million, metadata = metadata)

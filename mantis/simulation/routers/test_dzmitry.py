@@ -5,7 +5,7 @@ from strictly_typed_pandas import DataSet
 
 MAX_RESERVE = 1e10
 
-from simulation.routers.data import Input, PydanticDataSet, TAssetId, TNetworkId, AssetTransfers, AssetPairsXyk, AllData, new_data, new_input, new_pair
+from simulation.routers.data import Input, PydanticDataSet, TAssetId, TNetworkId, AssetTransfers, AssetPairsXyk, AllData, new_data, new_input, new_pair, new_transfer
 
 
 # clarabel cvxpy local mip
@@ -50,10 +50,10 @@ def simulate():
     all_data = simulate_all_connected_pools(CENTER_NODE, chains) 
     print(all_data)
     
-    print("=============== solving ========================")
-    return route(input, all_data, all_cfmms, reserves, fees, cfmm_tx_cost, ibc_pools, input_amount)
+    # print("=============== solving ========================")
+    # return route(input, all_data, all_cfmms, reserves, fees, cfmm_tx_cost, ibc_pools, input_amount)
 
-def simulate_all_connected_pools(CENTER_NODE, chains):
+def simulate_all_connected_pools(CENTER_NODE, chains) -> AllData:
     pools : list[AssetPairsXyk] = []
     transfers : list[AssetTransfers] = []
     
@@ -64,10 +64,14 @@ def simulate_all_connected_pools(CENTER_NODE, chains):
 
     # simulate reserves and gas costs to CFMMS
     for i, pair in enumerate(all_token_pairs):
-        [a, b] = np.random.uniform(95000000, 100510000, 2)
-        pair = new_pair(i, pair[0], pair[1], 2, 0, 0, 1, 1, 100, a, b)
+        [a, b] = np.random.randint(95000000, 100510000, 2)
+        fee = np.random.randint(0, 10_000)
+        pair = new_pair(i, pair[0], pair[1], fee, fee, 1, 1, 1_000, a, b)
+        pools.append(pair)
+        
 
     # simulate crosschain transfers as "pools"
+    all_token_transfers = []
     for token_on_center in chains[CENTER_NODE]:
         for other_chain, other_tokens in chains.items():
             if other_chain != CENTER_NODE:
@@ -75,13 +79,15 @@ def simulate_all_connected_pools(CENTER_NODE, chains):
                     # Check wether the chain has the token in center, or the other way around
                     # Could cause problems if chainName == tokensName (for example OSMOSIS)
                     if other_token in token_on_center or token_on_center in other_token:
-                        all_cfmms.append((token_on_center, other_token))
-                        reserves.append(np.random.uniform(10000, 11000, 2))
-                        cfmm_tx_cost.append(np.random.uniform(0, 20))
-                        ibc_pools += 1
+                        all_token_transfers.append((token_on_center, other_token))
 
-    # simulate random fees
-    fees.extend(np.random.uniform(0.97, 0.999) for _ in range(len(all_cfmms)))
+    for _i, transfer in enumerate(all_token_transfers):
+        [a, b] = np.random.randint(1000, 100000, 2)
+        tx_cost = np.random.randint(0, 1_000)
+        fee = np.random.randint(0, 10_000)
+        transfer = new_transfer(transfer[0], transfer[1], tx_cost, a,b, fee)
+        transfers.append(transfer)
+    return new_data(pools, transfers)
 
 def simulate_all_to_all_connected_chains(input: Input):
     CENTER_NODE = "CENTAURI"  # Name of center Node
