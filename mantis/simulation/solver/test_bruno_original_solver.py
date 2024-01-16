@@ -1,7 +1,7 @@
 import itertools
 import numpy as np
 
-from  simulation.router import solve,populate_chain_dict
+from  mantis.simulation.solver.bruno_original_solver import solve,populate_chain_dict
 
 def simulate():
     print("=============== chains and tokens ========================")

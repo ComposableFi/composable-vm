@@ -12,7 +12,8 @@ from fastapi import FastAPI
 import blackbox.cvm_runtime.query as cvm_query
 import requests
 import uvicorn
-from simulation import data, optimal_routing
+from mantis.simulation.solver import test_bruno_original_solver
+from simulation import data
 import sys
 import os
 from typing import List
@@ -96,7 +97,7 @@ def get_data() -> AllData:
 
 @app.get("/simulator/dummy")
 def simulator_dummy():
-    return optimal_routing.simulate()
+    return test_bruno_original_solver.simulate()
 
 def start():
     print(sys.path)
