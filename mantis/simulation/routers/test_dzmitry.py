@@ -43,30 +43,31 @@ def test_single_chain_single_cffm_route_full_symmetry_exist():
     
 
 def simulate():
-    CENTER_NODE, chains = simulate_all_to_all_connected_chains()
+    input = new_input("WETH", "ATOM", 2000, 1)
+    CENTER_NODE, chains = simulate_all_to_all_connected_chains(input)
     print(chains)
     
     all_data = simulate_all_connected_pools(CENTER_NODE, chains) 
     print(all_data)
     
     print("=============== solving ========================")
-    return route(ORIGIN_TOKEN, OBJ_TOKEN, all_tokens, all_cfmms, reserves, fees, cfmm_tx_cost, ibc_pools, input_amount)
+    return route(input, all_data, all_cfmms, reserves, fees, cfmm_tx_cost, ibc_pools, input_amount)
 
 def simulate_all_connected_pools(CENTER_NODE, chains):
     pools : list[AssetPairsXyk] = []
     transfers : list[AssetTransfers] = []
     
     # simulate in chain CFMMS
-    for other_chain, other_tokens in chains.items():
-        all_tokens.extend(other_tokens)
-        all_cfmms.extend(itertools.combinations(other_tokens, 2))
+    all_token_pairs = []
+    for _other_chain, other_tokens in chains.items():
+        all_token_pairs.extend(itertools.combinations(other_tokens, 2))
 
     # simulate reserves and gas costs to CFMMS
-    for cfmm in all_cfmms:
-        reserves.append(np.random.uniform(95000000, 100510000, 2))
-        cfmm_tx_cost.append(np.random.uniform(0, 20))
+    for i, pair in enumerate(all_token_pairs):
+        [a, b] = np.random.uniform(95000000, 100510000, 2)
+        pair = new_pair(i, pair[0], pair[1], 2, 0, 0, 1, 1, 100, a, b)
 
-    # simulate IBC "pools"
+    # simulate crosschain transfers as "pools"
     for token_on_center in chains[CENTER_NODE]:
         for other_chain, other_tokens in chains.items():
             if other_chain != CENTER_NODE:
@@ -82,9 +83,8 @@ def simulate_all_connected_pools(CENTER_NODE, chains):
     # simulate random fees
     fees.extend(np.random.uniform(0.97, 0.999) for _ in range(len(all_cfmms)))
 
-def simulate_all_to_all_connected_chains():
+def simulate_all_to_all_connected_chains(input: Input):
     CENTER_NODE = "CENTAURI"  # Name of center Node
-    input = new_input("WETH", "ATOM", 2000, 1)
 
     chains: dict[str, list[str]] = {
         "ETHEREUM": [input.in_token_id, "USDC", "SHIBA"],

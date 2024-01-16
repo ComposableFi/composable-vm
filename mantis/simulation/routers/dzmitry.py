@@ -102,7 +102,8 @@ def solve(
 
 
 # solves and decide if routable
-def route(input: Input, all_data: AllData, all_cfmms, reserves, fees, cfmm_tx_cost, ibc_pools):
+def route(input: Input, all_data: AllData,):
+    
     _deltas, _lambdas, psi, n = solve(
         all_data, 
         all_cfmms, 
@@ -147,7 +148,7 @@ def route(input: Input, all_data: AllData, all_cfmms, reserves, fees, cfmm_tx_co
                 if all(delta_i.value < 1e-04 for delta_i in delta):
                     n_max[idx] = 0
                     eta_change = True
-            d_max, l, psi, eta = solve(
+            d_max, _lambdas, psi, eta = solve(
                 all_data,
                 all_cfmms,
                 reserves,

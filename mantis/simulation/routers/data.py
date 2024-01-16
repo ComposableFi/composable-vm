@@ -29,8 +29,11 @@ class AssetPairsXyk(Generic[TAssetId, TAmount], BaseModel):
     in_asset_id: TAssetId
     out_asset_id: TAssetId
     
+    # assumed that all all CFMM take fee from pair token in proportion 
     fee_of_in_per_million: int
     fee_of_out_per_million: int 
+    # in reality fee can be flat or in other tokens, but not for now
+    
     weight_of_a: int 
     weight_of_b: int 
     # if it is hard if None, please fail if it is None - for now will be always some
