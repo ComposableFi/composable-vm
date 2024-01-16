@@ -43,7 +43,9 @@ def solve(
     lambdas = [cp.Variable(len(l), nonneg=True) for l in all_cfmms]
     
     eta = cp.Variable(
-        count_cfmms, nonneg=True
+        count_cfmms, 
+        nonneg=True, 
+        # boolean=True, # Problem is mixed-integer, but candidate QP/Conic solvers ([]) are not MIP-capable.
     )  # Binary value, indicates tx or not for given pool
 
     # network trade vector - net amount received over all trades(transfers/exchanges)
