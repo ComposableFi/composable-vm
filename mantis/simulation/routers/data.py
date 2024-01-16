@@ -1,4 +1,5 @@
 # for alignment on input and output of algorithm
+from functools import cache
 import pandas as pd
 from enum import Enum
 from typing import TypeVar, Generic
@@ -111,6 +112,8 @@ class AllData(BaseModel):
     # so A was split into B and C, and then B and C were moved to be D
     # D must "summed" from 2 amounts must be 2 separate routes branches
     fork_joins : list[str] | None
+    @property
+    @cache
     def all_tokens(self) -> list[TAssetId]:
         set = set()
         for x in self.asset_pairs_xyk:
@@ -119,7 +122,11 @@ class AllData(BaseModel):
         for x in self.asset_transfers:
             set.add(x.in_asset_id)
             set.add(x.out_asset_id)    
-    
+    def index_of_token(self, token: TAssetId) -> int:
+        return self.all_tokens().index(token)
+    @property
+    def tokens_count(self) -> int :
+        return len(self.all_tokens())
 
 
 # helpers to setup tests data

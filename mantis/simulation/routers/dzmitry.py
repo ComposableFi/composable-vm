@@ -4,34 +4,32 @@ import cvxpy as cp
 
 MAX_RESERVE = 1e10
 
-from simulation.routers.data import Input, TAssetId, TNetworkId
+from simulation.routers.data import AllData, Input, TAssetId, TNetworkId
 
 
 def solve(
-    all_tokens: list[TAssetId],
+    all_data: AllData,
     all_cfmms: list[tuple[TAssetId, TAssetId]],
     reserves: list[np.ndarray[np.float64]],
     cfmm_tx_cost: list[float],
     fees: list[float],
     ibc_pools: int,
-    origin_token: TAssetId,
-    number_of_init_tokens: float,
-    obj_token: TAssetId,
+    input : Input,
     force_eta: list[float] = None,
 ):
     # Build local-global matrices
-    count_tokens = len(all_tokens)
+    count_tokens = len(all_data.tokens_count)
     count_cfmms = len(all_cfmms)
 
     current_assets = np.zeros(count_tokens)  # Initial assets
-    current_assets[all_tokens.index(origin_token)] = number_of_init_tokens
+    current_assets[all_data.index_of_token(input.in_token_id)] = input.in_amount
 
     A = []
     for cfmm in all_cfmms:
         n_i = len(cfmm)  # Number of tokens in pool (default to 2)
         A_i = np.zeros((count_tokens, n_i))
         for i, token in enumerate(cfmm):
-            A_i[all_tokens.index(token), i] = 1
+            A_i[all_data.index_of_token(token), i] = 1
         A.append(A_i)
 
     # Build variables
@@ -52,7 +50,7 @@ def solve(
     psi = cp.sum([A_i @ (LAMBDA - DELTA) for A_i, DELTA, LAMBDA in zip(A, deltas, lambdas)])
     
     # Objective is to trade number_of_init_tokens of asset origin_token for a maximum amount of asset objective_token
-    obj = cp.Maximize(psi[all_tokens.index(obj_token)] - eta @ cfmm_tx_cost)
+    obj = cp.Maximize(psi[all_data.index_of_token(input.out_token_id)] - eta @ cfmm_tx_cost)
 
     # Reserves after trade
     new_reserves = [
@@ -90,7 +88,7 @@ def solve(
     prob.solve(verbose= True, solver = "CLARABEL", qcp = False, )
 
     print(
-        f"\033[1;91mTotal amount out: {psi.value[all_tokens.index(obj_token)]}\033[0m"
+        f"\033[1;91mTotal amount out: {psi.value[all_data.index_of_token(input.out_token_id)]}\033[0m"
     )
 
     for i in range(count_cfmms):
@@ -103,9 +101,9 @@ def solve(
     return deltas, lambdas, psi, eta
 
 
-def route(input: Input, all_tokens, all_cfmms, reserves, fees, cfmm_tx_cost, ibc_pools):
+def route(input: Input, all_data: AllData, all_cfmms, reserves, fees, cfmm_tx_cost, ibc_pools):
     _deltas, _lambdas, psi, n = solve(
-        all_tokens, 
+        all_data, 
         all_cfmms, 
         reserves, 
         cfmm_tx_cost, 
@@ -122,18 +120,16 @@ def route(input: Input, all_tokens, all_cfmms, reserves, fees, cfmm_tx_cost, ibc
     for t in sorted(to_look_n):
         try:
             d2, l2, p2, n2 =  solve(
-                all_tokens,
+                all_data,
                 all_cfmms,
                 reserves,
                 cfmm_tx_cost,
                 fees,
                 ibc_pools,
-                input.in_token_id,
-                input.in_amount,
-                input.out_token_id,
+                input,
                 [1 if value <= t else 0 for value in to_look_n],
             )
-            if psi.value[all_tokens.index(input.out_token_id)] > _max:
+            if psi.value[ all_data.index_of_token(input.out_token_id)] > _max:
                 d_max, l_max, p_max, n_max = d2, l2, p2, n2 
             print("---")
         except:
@@ -141,7 +137,7 @@ def route(input: Input, all_tokens, all_cfmms, reserves, fees, cfmm_tx_cost, ibc
     eta = n_max
     eta_change = True
     print("---------")
-    lastp_value = psi.value[all_tokens.index(OBJ_TOKEN)]
+    lastp_value = psi.value[all_data.index_of_token(OBJ_TOKEN)]
     while eta_change:
         try:
             eta_change = False
@@ -151,7 +147,7 @@ def route(input: Input, all_tokens, all_cfmms, reserves, fees, cfmm_tx_cost, ibc
                     n_max[idx] = 0
                     eta_change = True
             d_max, l, psi, eta = solve(
-                all_tokens,
+                all_data,
                 all_cfmms,
                 reserves,
                 cfmm_tx_cost,
@@ -168,7 +164,7 @@ def route(input: Input, all_tokens, all_cfmms, reserves, fees, cfmm_tx_cost, ibc
 
     print("---")
     deltas, lambdas, psi, eta = solve(
-                    all_tokens,
+                     all_data,
                     all_cfmms,
                     reserves,
                     cfmm_tx_cost,
@@ -185,9 +181,9 @@ def route(input: Input, all_tokens, all_cfmms, reserves, fees, cfmm_tx_cost, ibc
             f"Market {all_cfmms[i][0]}<->{all_cfmms[i][1]}, delta: {deltas[i].value}, lambda: {lambdas[i].value}, eta: {eta[i].value}",
         )
 
-    print(psi.value[all_tokens.index(OBJ_TOKEN)],lastp_value)
+    print(psi.value[ all_data.index_of_token(OBJ_TOKEN)],lastp_value)
     # basically, we have matrix where rows are in tokens (DELTA)
     # columns are outs (LAMBDA)
     # so recursively going DELTA-LAMBDA and subtracting values from cells
     # will allow to build route with amounts 
-    return (psi.value[all_tokens.index(OBJ_TOKEN)],lastp_value)
+    return (psi.value[ all_data.index_of_token(OBJ_TOKEN)],lastp_value)
