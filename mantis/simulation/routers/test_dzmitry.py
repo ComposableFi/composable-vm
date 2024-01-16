@@ -1,10 +1,11 @@
 # solves using convex optimization
 import numpy as np
 import cvxpy as cp
+from strictly_typed_pandas import DataSet
 
 MAX_RESERVE = 1e10
 
-from simulation.routers.data import Input, TAssetId, TNetworkId, AssetTransfers, AssetPairsXyk, AllData, new_input
+from simulation.routers.data import Input, PydanticDataSet, TAssetId, TNetworkId, AssetTransfers, AssetPairsXyk, AllData, new_data, new_input, new_pair
 
 
 # clarabel cvxpy local mip
@@ -34,8 +35,11 @@ def populate_chain_dict(chains: dict[TNetworkId, list[TAssetId]], center_node: T
 
 
 def test_single_chain_single_cffm_route_full_symmetry_exist():
-    input = new_input("1", "2", 100, 100)
+    input = new_input(1, 2, 100, 50)
+    pair = new_pair(1, 1, 2, 0, 0, 1, 1, 100, 1_000_000, 1_000_000)
+    data = new_data([pair], [])
     
+    print(data)
     
 
 def simulate():

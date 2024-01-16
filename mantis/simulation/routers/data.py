@@ -19,11 +19,6 @@ class AssetTransfers(BaseModel):
     
     # do not care
     metadata: str | None 
-    def __init__(self, in_asset_id, out_asset_id, usd_fee_transfer, metadata):
-        self.in_asset_id = in_asset_id
-        self.out_asset_id = out_asset_id
-        self.metadata = metadata
-        self.usd_fee_transfer = usd_fee_transfer
     
 # pool are bidirectional, so so in can be out and other way
 class AssetPairsXyk(BaseModel):
@@ -37,7 +32,7 @@ class AssetPairsXyk(BaseModel):
     weight_of_a: int 
     weight_of_b: int 
     # if it is hard if None, please fail if it is None - for now will be always some
-    pool_value_in_usd: int | None
+    pool_value_in_usd: int  | None
     
     # total amounts in reserves R
     in_token_amount: int
@@ -109,12 +104,12 @@ class PydanticDataSet(BaseModel, DataSet[T]):
 class AllData(BaseModel):
     # DataSet inherits from DataFrame
     # If key is in first set, it cannot be in second set, and other way around
-    asset_transfers : PydanticDataSet[AssetTransfers]
-    asset_pairs_xyk : PydanticDataSet[AssetPairsXyk]
+    asset_transfers : list[AssetTransfers]
+    asset_pairs_xyk : list[AssetPairsXyk]
     # if None, than solution must not contain any joins after forks
     # so A was split into B and C, and then B and C were moved to be D
     # D must "summed" from 2 amounts must be 2 separate routes branches
-    fork_joins : str | None
+    fork_joins : list[str] | None
     
 
 # helpers to setup tests data
@@ -124,10 +119,16 @@ def test_all_data() -> AllData:
     assets_pairs_xyk=  PydanticDataSet[AssetPairsXyk](pd.read_csv("assets_pairs_xyk.csv"))
     return AllData(assets_pairs_xyk, asset_transfers)
 
+def new_data(pairs: list[AssetPairsXyk], transfers: list[AssetTransfers]) -> AllData:
+    return AllData(
+        asset_pairs_xyk = list[AssetPairsXyk](pairs),
+        asset_transfers = list[AssetTransfers](transfers),
+        fork_joins= None,
+    )
 
 def new_input(in_token_id, out_token_id, in_amount, out_amount):
     return Input(in_token_id = in_token_id, out_token_id = out_token_id, in_amount = in_amount, out_amount = out_amount, max = True)     
 
-def new_pair(pool_id, in_asset_id, out_asset_id, fee_of_in_per_million, fee_of_out_per_million, weight_of_a, weight_of_b, pool_value_in_usd, in_token_amount, out_token_amount, metadata):
+def new_pair(pool_id, in_asset_id, out_asset_id, fee_of_in_per_million, fee_of_out_per_million, weight_of_a, weight_of_b, pool_value_in_usd, in_token_amount, out_token_amount, metadata = None):
     return AssetPairsXyk(pool_id = pool_id, in_asset_id = in_asset_id, out_asset_id = out_asset_id, fee_of_in_per_million = fee_of_in_per_million, fee_of_out_per_million = fee_of_out_per_million, weight_of_a = weight_of_a, weight_of_b = weight_of_b, pool_value_in_usd = pool_value_in_usd, in_token_amount = in_token_amount, out_token_amount = out_token_amount, metadata = metadata)
     
