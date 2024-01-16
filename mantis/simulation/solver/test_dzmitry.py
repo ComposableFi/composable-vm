@@ -10,7 +10,7 @@ from simulation.data import TAssetId, TNetworkId
 import itertools
 import numpy as np
 
-from  simulation.solver.dzmitry import solve
+from  simulation.solver.dzmitry import solve, route
 
 # simulate denom paths to and from chains, with center node
 def populate_chain_dict(chains: dict[TNetworkId, list[TAssetId]], center_node: TNetworkId):
@@ -93,95 +93,7 @@ def simulate():
     
 
     print("=============== solving ========================")
-    _deltas, _lambdas, psi, n = solve(
-        all_tokens, 
-        all_cfmms, 
-        reserves, 
-        cfmm_tx_cost, 
-        fees, 
-        ibc_pools, 
-        ORIGIN_TOKEN,
-        input_amount,
-        OBJ_TOKEN
-        )
-
-    to_look_n: list[float] = []
-    for i in range(len(all_cfmms)):
-        to_look_n.append(n[i].value)
-
-    _max = 0
-    for t in sorted(to_look_n):
-        try:
-            d2, l2, p2, n2 =  solve(
-                all_tokens,
-                all_cfmms,
-                reserves,
-                cfmm_tx_cost,
-                fees,
-                ibc_pools,
-                ORIGIN_TOKEN,
-                input_amount,
-                OBJ_TOKEN,
-                [1 if value <= t else 0 for value in to_look_n],
-            )
-            if psi.value[all_tokens.index(OBJ_TOKEN)] > _max:
-                d_max, l_max, p_max, n_max = d2, l2, p2, n2 
-            print("---")
-        except:
-            continue
-    eta = n_max
-    eta_change = True
-    print("---------")
-    lastp_value = psi.value[all_tokens.index(OBJ_TOKEN)]
-    while eta_change:
-        try:
-            eta_change = False
-
-            for idx, delta in enumerate(d_max):
-                if all(delta_i.value < 1e-04 for delta_i in delta):
-                    n_max[idx] = 0
-                    eta_change = True
-            d_max, l, psi, eta = solve(
-                all_tokens,
-                all_cfmms,
-                reserves,
-                cfmm_tx_cost,
-                fees,
-                ibc_pools,
-                ORIGIN_TOKEN,
-                input_amount,
-                OBJ_TOKEN,
-                eta,
-            )
-
-        except:
-            continue
-
-    print("---")
-    deltas, lambdas, psi, eta = solve(
-                    all_tokens,
-                    all_cfmms,
-                    reserves,
-                    cfmm_tx_cost,
-                    fees,
-                    ibc_pools,
-                    ORIGIN_TOKEN,
-                    input_amount,
-                    OBJ_TOKEN,
-                    eta,
-                )
-    m = len(all_cfmms)
-    for i in range(m):
-        print(
-            f"Market {all_cfmms[i][0]}<->{all_cfmms[i][1]}, delta: {deltas[i].value}, lambda: {lambdas[i].value}, eta: {eta[i].value}",
-        )
-
-    print(psi.value[all_tokens.index(OBJ_TOKEN)],lastp_value)
-    # basically, we have matrix where rows are in tokens (DELTA)
-    # columns are outs (LAMBDA)
-    # so recursively going DELTA-LAMBDA and subtracting values from cells
-    # will allow to build route with amounts 
-    return (psi.value[all_tokens.index(OBJ_TOKEN)],lastp_value)
+    return route(ORIGIN_TOKEN, OBJ_TOKEN, all_tokens, all_cfmms, reserves, fees, cfmm_tx_cost, ibc_pools, input_amount)
     
 if __name__ == "__main__":
     simulate()
