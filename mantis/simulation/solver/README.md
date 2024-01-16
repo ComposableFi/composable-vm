@@ -7,3 +7,5 @@
 3.1. NLP solvers has servers like NEOS, Gurobi, MOSEK and standard format to consume
 4. Any solver Python code used to call it to be installed via ../../pyproject.toml Poetry dependency
 5. There should be test prefixed python file in same folder as solver simulating and/or testing case(s) of data input
+
+**It is okey to send solver only as separate file and point 5, but without points 3 and 4 I will not be able to run it - so it will not be evaluated, without 1 cannot plug it into procution**
