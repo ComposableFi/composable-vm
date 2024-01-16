@@ -18,7 +18,12 @@ class AssetTransfers(BaseModel):
     usd_fee_transfer: int | None
     
     # do not care
-    metadata: str 
+    metadata: str | None 
+    def __init__(self, in_asset_id, out_asset_id, usd_fee_transfer, metadata):
+        self.in_asset_id = in_asset_id
+        self.out_asset_id = out_asset_id
+        self.metadata = metadata
+        self.usd_fee_transfer = usd_fee_transfer
     
 # pool are bidirectional, so so in can be out and other way
 class AssetPairsXyk(BaseModel):
@@ -53,6 +58,10 @@ class Input(BaseModel):
     # if max is False, user wants to get exact out, but spent as small as possible in
     # please fail if bool is False for now
     max: bool
+    @classmethod
+    def max(cls, in_token_id, out_token_id, in_amount, out_amount):
+        return cls(in_token_id, out_token_id, in_amount, out_amount, True)     
+    
     
 class SingleInputAssetCvmRoute(BaseModel):
     pass    

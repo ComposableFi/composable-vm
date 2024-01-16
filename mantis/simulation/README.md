@@ -1,4 +1,3 @@
-
 ## Proposed usage
 
 1. Solver solves Coincidence of Wants orders

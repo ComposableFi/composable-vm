@@ -4,7 +4,7 @@ import cvxpy as cp
 
 MAX_RESERVE = 1e10
 
-from simulation.data import TAssetId, TNetworkId
+from simulation.routers.data import TAssetId, TNetworkId
 
 
 def solve(
@@ -103,7 +103,7 @@ def solve(
     return deltas, lambdas, psi, eta
 
 
-def route(ORIGIN_TOKEN, OBJ_TOKEN, all_tokens, all_cfmms, reserves, fees, cfmm_tx_cost, ibc_pools, input_amount):
+def route(ORIGIN_TOKEN : TAssetId, OBJ_TOKEN : TAssetId, all_tokens, all_cfmms, reserves, fees, cfmm_tx_cost, ibc_pools, input_amount):
     _deltas, _lambdas, psi, n = solve(
         all_tokens, 
         all_cfmms, 

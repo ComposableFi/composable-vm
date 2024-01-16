@@ -4,13 +4,14 @@ import cvxpy as cp
 
 MAX_RESERVE = 1e10
 
-from simulation.data import TAssetId, TNetworkId
+from simulation.routers.data import Input, TAssetId, TNetworkId, AssetTransfers, AssetPairsXyk, AllData
+
 
 # clarabel cvxpy local mip
 import itertools
 import numpy as np
 
-from  simulation.solver.dzmitry import solve, route
+from  simulation.routers.dzmitry import solve, route
 
 # simulate denom paths to and from chains, with center node
 def populate_chain_dict(chains: dict[TNetworkId, list[TAssetId]], center_node: TNetworkId):
@@ -30,6 +31,12 @@ def populate_chain_dict(chains: dict[TNetworkId, list[TAssetId]], center_node: T
                 for token in chains[center_node]
                 if f"{chain}/" not in token
             )
+
+
+def test_single_chain_single_cffm_route_full_symmetry_exist():
+    input = Input.max("1", "2", 100, 100)
+    
+    
 
 def simulate():
     print("=============== chains and tokens ========================")
@@ -52,7 +59,6 @@ def simulate():
     cfmm_tx_cost = []
     ibc_pools = 0
     tol = 1e-4
-
 
     print(chains)
 

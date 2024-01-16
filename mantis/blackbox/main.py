@@ -12,8 +12,8 @@ from fastapi import FastAPI
 import blackbox.cvm_runtime.query as cvm_query
 import requests
 import uvicorn
-from simulation.solver import test_bruno_original_solver
-from simulation import data
+from simulation.routers import test_bruno_original_solver
+from mantis.simulation.routers import data
 import sys
 import os
 from typing import List
