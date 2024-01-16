@@ -1,7 +1,26 @@
 import itertools
 import numpy as np
 
-from  simulation.router import solve,populate_chain_dict
+from  mantis.simulation.solver.bruno_original_solver import solve,populate_chain_dict
+
+# simulate denom paths to and from chains, with center node
+def populate_chain_dict(chains: dict[TNetworkId, list[TAssetId]], center_node: TNetworkId):
+    # Add tokens with denom to Center Node
+    # Basic IBC transfer
+    for chain, tokens in chains.items():
+        if chain != center_node:
+            chains[center_node].extend(f"{chain}/{token}" for token in tokens)
+
+    1# Add tokens from Center Node to outers
+    
+    # Simulate IBC transfer through Composable Cosmos
+    for chain, tokens in chains.items():
+        if chain != center_node:
+            chains[chain].extend(
+                f"{center_node}/{token}"
+                for token in chains[center_node]
+                if f"{chain}/" not in token
+            )
 
 def simulate():
     print("=============== chains and tokens ========================")

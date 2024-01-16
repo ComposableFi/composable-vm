@@ -65,5 +65,4 @@ build-backend = "poetry.core.masonry.api"
 [tool.poetry.scripts]
 blackbox = 'blackbox.main:start'
 mantis-blackbox = 'blackbox.main:main'
-simulation = 'simulation.optimal_routing:simulate'
-test = 'simulation.test:test'
+dzmitry_solver = 'simulation.solver.test_dzmitry:simulate'

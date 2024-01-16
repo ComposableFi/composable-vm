@@ -10,7 +10,7 @@ from simulation.data import TAssetId, TNetworkId
 import itertools
 import numpy as np
 
-from  simulation.router import solve,populate_chain_dict
+from  simulation.solver.dzmitry import solve
 
 # simulate denom paths to and from chains, with center node
 def populate_chain_dict(chains: dict[TNetworkId, list[TAssetId]], center_node: TNetworkId):
@@ -29,6 +29,7 @@ def populate_chain_dict(chains: dict[TNetworkId, list[TAssetId]], center_node: T
                 f"{center_node}/{token}"
                 for token in chains[center_node]
                 if f"{chain}/" not in token
+            )
 
 def simulate():
     print("=============== chains and tokens ========================")
@@ -43,7 +44,6 @@ def simulate():
         "OSMOSIS": ["ATOM","SCRT"],
     }
     populate_chain_dict(chains,CENTER_NODE)
-
 
     all_tokens = []
     all_cfmms = []

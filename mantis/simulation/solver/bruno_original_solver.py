@@ -6,25 +6,6 @@ MAX_RESERVE = 1e10
 
 from simulation.data import TAssetId, TNetworkId
 
-# simulate denom paths to and from chains, with center node
-def populate_chain_dict(chains: dict[TNetworkId, list[TAssetId]], center_node: TNetworkId):
-    # Add tokens with denom to Center Node
-    # Basic IBC transfer
-    for chain, tokens in chains.items():
-        if chain != center_node:
-            chains[center_node].extend(f"{chain}/{token}" for token in tokens)
-
-    1# Add tokens from Center Node to outers
-    
-    # Simulate IBC transfer through Composable Cosmos
-    for chain, tokens in chains.items():
-        if chain != center_node:
-            chains[chain].extend(
-                f"{center_node}/{token}"
-                for token in chains[center_node]
-                if f"{chain}/" not in token
-            )
-
 def solve(
     all_tokens: list[TAssetId],
     all_cfmms: list[tuple[TAssetId, TAssetId]],
