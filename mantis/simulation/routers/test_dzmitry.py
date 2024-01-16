@@ -46,13 +46,12 @@ def simulate():
     print("=============== chains and tokens ========================")
     CENTER_NODE = "CENTAURI"  # Name of center Node
 
-    ORIGIN_TOKEN = "WETH"
-    OBJ_TOKEN = "ATOM"
+    input = new_input("WETH", "ATOM", 2000, 1)
 
     chains: dict[str, list[str]] = {
-        "ETHEREUM": ["WETH", "USDC", "SHIBA"],
+        "ETHEREUM": [input.in_token_id, "USDC", "SHIBA"],
         CENTER_NODE: [],
-        "OSMOSIS": ["ATOM","SCRT"],
+        "OSMOSIS": [input.out_token_id,"SCRT"],
     }
     populate_chain_dict(chains,CENTER_NODE)
 
@@ -99,7 +98,7 @@ def simulate():
 
     for i, cfmm in enumerate(all_cfmms):
         print(i, cfmm)
-    input_amount = 2000
+ 
     
 
     print("=============== solving ========================")

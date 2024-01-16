@@ -112,6 +112,7 @@ class AllData(BaseModel):
     # so A was split into B and C, and then B and C were moved to be D
     # D must "summed" from 2 amounts must be 2 separate routes branches
     fork_joins : list[str] | None
+    
     @property
     @cache
     def all_tokens(self) -> list[TAssetId]:
@@ -143,9 +144,9 @@ def new_data(pairs: list[AssetPairsXyk], transfers: list[AssetTransfers]) -> All
         fork_joins= None,
     )
 
-def new_input(in_token_id, out_token_id, in_amount, out_amount):
+def new_input(in_token_id, out_token_id, in_amount, out_amount) -> Input:
     return Input(in_token_id = in_token_id, out_token_id = out_token_id, in_amount = in_amount, out_amount = out_amount, max = True)     
 
-def new_pair(pool_id, in_asset_id, out_asset_id, fee_of_in_per_million, fee_of_out_per_million, weight_of_a, weight_of_b, pool_value_in_usd, in_token_amount, out_token_amount, metadata = None):
+def new_pair(pool_id, in_asset_id, out_asset_id, fee_of_in_per_million, fee_of_out_per_million, weight_of_a, weight_of_b, pool_value_in_usd, in_token_amount, out_token_amount, metadata = None) -> AssetPairsXyk:
     return AssetPairsXyk(pool_id = pool_id, in_asset_id = in_asset_id, out_asset_id = out_asset_id, fee_of_in_per_million = fee_of_in_per_million, fee_of_out_per_million = fee_of_out_per_million, weight_of_a = weight_of_a, weight_of_b = weight_of_b, pool_value_in_usd = pool_value_in_usd, in_token_amount = in_token_amount, out_token_amount = out_token_amount, metadata = metadata)
     

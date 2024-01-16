@@ -129,15 +129,15 @@ def route(input: Input, all_data: AllData, all_cfmms, reserves, fees, cfmm_tx_co
                 input,
                 [1 if value <= t else 0 for value in to_look_n],
             )
-            if psi.value[ all_data.index_of_token(input.out_token_id)] > _max:
-                d_max, l_max, p_max, n_max = d2, l2, p2, n2 
+            if psi.value[all_data.index_of_token(input.out_token_id)] > _max:
+                d_max, _l_max, _p_max, n_max = d2, l2, p2, n2 
             print("---")
         except:
             continue
     eta = n_max
     eta_change = True
     print("---------")
-    lastp_value = psi.value[all_data.index_of_token(OBJ_TOKEN)]
+    lastp_value = psi.value[all_data.index_of_token(input.out_token_id)]
     while eta_change:
         try:
             eta_change = False
@@ -164,15 +164,13 @@ def route(input: Input, all_data: AllData, all_cfmms, reserves, fees, cfmm_tx_co
 
     print("---")
     deltas, lambdas, psi, eta = solve(
-                     all_data,
+                    all_data,
                     all_cfmms,
                     reserves,
                     cfmm_tx_cost,
                     fees,
                     ibc_pools,
-                    ORIGIN_TOKEN,
-                    input_amount,
-                    OBJ_TOKEN,
+                    input,
                     eta,
                 )
     m = len(all_cfmms)
@@ -181,9 +179,9 @@ def route(input: Input, all_data: AllData, all_cfmms, reserves, fees, cfmm_tx_co
             f"Market {all_cfmms[i][0]}<->{all_cfmms[i][1]}, delta: {deltas[i].value}, lambda: {lambdas[i].value}, eta: {eta[i].value}",
         )
 
-    print(psi.value[ all_data.index_of_token(OBJ_TOKEN)],lastp_value)
+    print(psi.value[all_data.index_of_token(input.out_token_id)],lastp_value)
     # basically, we have matrix where rows are in tokens (DELTA)
     # columns are outs (LAMBDA)
     # so recursively going DELTA-LAMBDA and subtracting values from cells
     # will allow to build route with amounts 
-    return (psi.value[ all_data.index_of_token(OBJ_TOKEN)],lastp_value)
+    return (psi.value[all_data.index_of_token(input.out_token_id)],lastp_value)
