@@ -4,7 +4,7 @@ import cvxpy as cp
 
 MAX_RESERVE = 1e10
 
-from mantis.simulation.routers.data import TAssetId, TNetworkId
+from mantis.simulation.routers.data import TAssetId
 
 def solve(
     all_tokens: list[TAssetId],

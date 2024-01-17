@@ -11,7 +11,7 @@ packages = [
 ]
 
 [tool.poetry.dependencies]
-python = "3.11.6"
+python = ">=3.11.6, <=3.11.7"
 
 #fastapi-cache2 = "^0.2.1"  # no needed now, too many things
 bech32 = "1.2.0"
@@ -37,8 +37,8 @@ grpcio = "==1.51.1"
 jsonschema = "4.20.0"
 maturin = "1.4.0"
 numpy = "1.23.4"
-pandas = { extras = [], version = "2.1.4" }
-pendulum = "2.1.2"
+pandas = { extras = [], version = "^2.1.4" }
+pendulum = "==2.0.3" # Mac M1 support https://github.com/sdispater/pendulum/issues/454#issuecomment-1847991459
 protobuf = "4.25.1"
 pycryptodome = "3.19.1"
 pydantic = "2.5.3"
@@ -49,7 +49,9 @@ rpds-py = "0.13.2"
 scipy = "1.9.3"
 strictly-typed-pandas = "0.1.24"
 uvicorn = "0.25.0"
-PySCIPOpt = "4.3.0"
+
+# on if used only:
+# PySCIPOpt = "4.3.0"
 # cylp = "0.92.2"  # have problems installing
 # ortools="9.4.1874" # have problems installing
 

@@ -1,4 +1,4 @@
-pool_id,in_asset_id,out_asset_id,fee_of_in_per_million,fee_of_out_per_million,weight_of_a, weigth_of_b, pool_value_in_usd, in_token_amount, out_token_amount, metadata
+pool_id,in_asset_id,out_asset_id,fee_of_in_per_million,fee_of_out_per_million,weight_of_a,weight_of_b,pool_value_in_usd,in_token_amount,out_token_amount,metadata
 1, 1,123,1000, 1000, 5000,5000, 10000000, 1000000000000, 1000000000000, "very normal pool"
 2, 4,42,100, 1000, 1000,5000, 10000000, 1234567, 666, "little bit assymetric pool"
 300, 7,12,100,100, 100, 100,5000, 10000000, 123,

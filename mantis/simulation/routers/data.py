@@ -3,7 +3,7 @@ from functools import cache
 import pandas as pd
 from enum import Enum
 from typing import TypeVar, Generic
-from pydantic import BaseModel
+from pydantic import BaseModel, validator
 from strictly_typed_pandas import DataSet
 
 TAssetId = TypeVar("TAssetId")
@@ -17,7 +17,7 @@ class AssetTransfers(BaseModel, Generic[TAssetId, TAmount],):
     
     # this is positive whole number too
     # if it is hard if None, please fail if it is None - for now will be always some
-    usd_fee_transfer: TAmount | None
+    usd_fee_transfer: TAmount | None = None
     
     # amount of token on chain were it is 
     amount_of_in_token : TAmount
@@ -29,7 +29,10 @@ class AssetTransfers(BaseModel, Generic[TAssetId, TAmount],):
     fee_per_million: int
         
     # do not care
-    metadata: str | None 
+    metadata: str | None = None
+    @validator("metadata", pre=True, always=True)
+    def replace_nan_with_None(cls, v):
+        return None if isinstance(v, float) else v       
     
 # pool are bidirectional, so so in can be out and other way
 class AssetPairsXyk(BaseModel, Generic[TAssetId, TAmount],):
@@ -46,13 +49,20 @@ class AssetPairsXyk(BaseModel, Generic[TAssetId, TAmount],):
     weight_of_a: int 
     weight_of_b: int 
     # if it is hard if None, please fail if it is None - for now will be always some
-    pool_value_in_usd: TAmount  | None
+    pool_value_in_usd: TAmount  | None = None
     
+    @validator("pool_value_in_usd", pre=True, always=True)
+    def replace_nan_with_None(cls, v):
+        return v if v == v else None
+        
     # total amounts in reserves R
     in_token_amount: TAmount
     out_token_amount: TAmount
     
-    metadata: str | None
+    metadata: str | None = None    
+    @validator("metadata", pre=True, always=True)
+    def replace_nan_with_None(cls, v):
+        return None if isinstance(v, float) else v    
     
 # this is what user asks for
 class Input(BaseModel, Generic[TAssetId, TAmount],):
@@ -77,13 +87,13 @@ class SingleInputAssetCvmRoute(BaseModel):
 class Spawn(BaseModel):
     # amount to take with transfer
     # None means all (DELTA)
-    in_asset_amount: int | None
+    in_asset_amount: int | None = None
     out_asset_id: int
     next: SingleInputAssetCvmRoute
 
 class Exchange(BaseModel):
     # none means all (DELTA)
-    in_asset_amount: int | None
+    in_asset_amount: int | None = None
     pool_id : int
     next: SingleInputAssetCvmRoute
 
@@ -114,6 +124,7 @@ T = TypeVar("T")
 class PydanticDataSet(BaseModel, DataSet[T]):
     pass
 
+
 # global labelling of assets and exchanges
 class AllData(BaseModel):
     # DataSet inherits from DataFrame
@@ -123,7 +134,7 @@ class AllData(BaseModel):
     # if None, than solution must not contain any joins after forks
     # so A was split into B and C, and then B and C were moved to be D
     # D must "summed" from 2 amounts must be 2 separate routes branches
-    fork_joins : list[str] | None
+    fork_joins : list[str] | None = None
     
     @property
     @cache
@@ -164,3 +175,10 @@ def new_pair(pool_id, in_asset_id, out_asset_id, fee_of_in_per_million, fee_of_o
     
 def new_transfer(in_asset_id, out_asset_id, usd_fee_transfer, amount_of_in_token, amount_of_out_token, fee_per_million, metadata = None) -> AssetTransfers:
     return AssetTransfers(in_asset_id = in_asset_id, out_asset_id = out_asset_id, usd_fee_transfer = usd_fee_transfer, amount_of_in_token = amount_of_in_token, amount_of_out_token = amount_of_out_token, fee_per_million = fee_per_million, metadata = metadata)
+
+
+def read_dummy_data(TEST_DATA_DIR: str = "./") -> AllData:
+    return AllData(
+        asset_pairs_xyk=[AssetPairsXyk(**row) for _index, row in pd.read_csv(TEST_DATA_DIR / "assets_pairs_xyk.csv").iterrows()],
+        asset_transfers=[AssetTransfers(**row) for _index, row in pd.read_csv(TEST_DATA_DIR / "assets_transfers.csv").iterrows()],
+    )

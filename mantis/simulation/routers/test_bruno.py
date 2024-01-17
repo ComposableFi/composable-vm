@@ -1,7 +1,8 @@
 import itertools
 import numpy as np
 
-from  mantis.simulation.routers.bruno_original_solver import solve,populate_chain_dict
+from  mantis.simulation.routers.bruno import solve
+from mantis.simulation.routers.data import TNetworkId, TAssetId
 
 # simulate denom paths to and from chains, with center node
 def populate_chain_dict(chains: dict[TNetworkId, list[TAssetId]], center_node: TNetworkId):

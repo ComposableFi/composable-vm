@@ -99,7 +99,8 @@
       imports = [
         inputs.devenv.flakeModule
       ];
-      systems = nixpkgs.lib.systems.flakeExposed;
+      # would be happy to support more, so solver engines are crazy heavy on some hardcode deps 
+      systems = [ "x86_64-linux" "aarch64-darwin"];
       perSystem = {
         config,
         self',
@@ -276,7 +277,7 @@
         dep = name:
           builtins.head (pkgs.lib.lists.filter
             (x: pkgs.lib.strings.hasInfix name x.name)
-            deps.poetryPackages);
+            poetryDeps.poetryPackages);
 
         cvxpy-latest = pkgs.python3Packages.buildPythonPackage {
           name = "cvxpy";
@@ -319,7 +320,7 @@
           ];
         };
 
-        deps = mkPoetryPackages {
+        poetryDeps = mkPoetryPackages {
           projectDir = ./mantis;
         };
 
@@ -353,7 +354,6 @@
 
         envShell = mkPoetryEnv {
           projectDir = ./mantis;
-
           overrides = override overrides;
         };
         mantis-blackbox-package = mkPoetryApplication {
@@ -508,9 +508,16 @@
             name = "nix-build-all";
             runtimeInputs = [
               pkgs.nix
-              devour-flake
-            ];
+              devour-flake              
+            ] ++ poetryDeps.poetryPackages;
             text = ''
+              (
+                cd mantis
+                poetry lock --no-update --check --no-interaction
+                poetry install
+                poetry run pytest
+              )
+              nix flake show --all-systems --json --no-write-lock-file
               nix flake lock --no-update-lock-file
               # devour-flake . "$@" --impure
               nix build .#all

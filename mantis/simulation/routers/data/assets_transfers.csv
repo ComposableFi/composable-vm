@@ -1,0 +1,15 @@
+in_asset_id,out_asset_id,usd_fee_transfer,metadata,amount_of_in_token,amount_of_out_token,fee_per_million
+1,2,100,"token id A to B with tranfer fee normalized to USD",10000000,1000000,1000
+2,3,100,"",10000000,1000000,1000
+3,2,100,"",10000000,1000000,1000
+2,1,100,"there is B to C usually with same price",10000000,1000000,1000
+5,6,1000,"",10000000,1000000,1000
+6,7,2000,"",10000000,1000000,1000
+7,6,2000,"",10000000,1000000,1000
+6,5,1000, "sometimes back price is different",10000000,1000000,1000
+8,9,2,"",10000000,1000000,1000
+9,10,4,"",10000000,1000000,1000
+3,666,0,"Not all assets may have USD transfer",10000000,1000000,1000
+10,11,8,"",10000000,1000000,1000
+11,12,16,"sometimes there is no B to A, only A to B",10000000,1000000,1000
+42,123,0, "(in id <-> out id) is set id",10000000,1000000,1000

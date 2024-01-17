@@ -43,11 +43,13 @@ def test_single_chain_single_cffm_route_full_symmetry_exist():
     
 
 def simulate():
+    
     input = new_input("WETH", "ATOM", 2000, 1)
     CENTER_NODE, chains = simulate_all_to_all_connected_chains(input)
     print(chains)
     
     all_data = simulate_all_connected_pools(CENTER_NODE, chains) 
+    all_data = PydanticDataSet()
     print(all_data)
     
     # print("=============== solving ========================")
