@@ -19,7 +19,7 @@ jobs:
           authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
           name: composable
           skipPush: false
-      - run: nix run .#ci
+      - run: nix run .#ci --print-build-logs --verbose
 
   publish:
     if: github.event_name == 'push'
