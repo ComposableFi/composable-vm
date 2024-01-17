@@ -942,6 +942,23 @@ patchelf = ["patchelf"]
 zig = ["ziglang (>=0.10.0,<0.11.0)"]
 
 [[package]]
+name = "methodtools"
+version = "0.4.7"
+description = "Expand standard functools to methods"
+optional = false
+python-versions = "*"
+files = [
+    {file = "methodtools-0.4.7.tar.gz", hash = "sha256:e213439dd64cfe60213f7015da6efe5dd4003fd89376db3baa09fe13ec2bb0ba"},
+]
+
+[package.dependencies]
+wirerope = ">=0.4.7"
+
+[package.extras]
+doc = ["sphinx"]
+test = ["functools32 (>=3.2.3-2)", "pytest (>=4.6.7)", "pytest-cov (>=2.6.1)"]
+
+[[package]]
 name = "mosek"
 version = "10.1.21"
 description = "Python API for Mosek"
@@ -2353,6 +2370,23 @@ files = [
 ]
 
 [[package]]
+name = "wirerope"
+version = "0.4.7"
+description = "'Turn functions and methods into fully controllable objects'"
+optional = false
+python-versions = "*"
+files = [
+    {file = "wirerope-0.4.7.tar.gz", hash = "sha256:f3961039218276283c5037da0fa164619def0327595f10892d562a61a8603990"},
+]
+
+[package.dependencies]
+six = ">=1.11.0"
+
+[package.extras]
+doc = ["sphinx"]
+test = ["pytest (>=4.6.7)", "pytest-cov (>=2.6.1)"]
+
+[[package]]
 name = "xpress"
 version = "9.2.5"
 description = "FICO Xpress Optimizer Python interface"
@@ -2391,4 +2425,4 @@ numpy = ">=1.23,<2.0a0"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.11.6, <=3.11.7"
-content-hash = "ac761f6ebc135467773b978d9ced43ce426ac7e0b00a25eb3e38c2bc0c910335"
+content-hash = "50007d3ef9c2b1c51708bafa823d7efd175a9a36f683e8c03e42753a5f9b3bc1"

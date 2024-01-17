@@ -4,29 +4,33 @@ import pandas as pd
 from enum import Enum
 from typing import TypeVar, Generic
 from pydantic import BaseModel, validator
-from strictly_typed_pandas import DataSet
+from methodtools import lru_cache
 
-TAssetId = TypeVar("TAssetId")
+# This is global unique ID for token(asset) or exchange(pool)
+TId = TypeVar("TId")
 TNetworkId = TypeVar("TNetworkId")
 TAmount = TypeVar("TAmount")
 
-class AssetTransfers(BaseModel, Generic[TAssetId, TAmount],):
-    # positive whole numbers, set key
-    in_asset_id: TAssetId
-    out_asset_id: TAssetId
+class AssetTransfers(BaseModel, Generic[TId, TAmount],):
+    # set key
+    in_asset_id: TId
+    out_asset_id: TId
     
-    # this is positive whole number too
-    # if it is hard if None, please fail if it is None - for now will be always some
     usd_fee_transfer: TAmount | None = None
+    """_summary_
+        this is positive whole number too
+        if it is hard if None, please fail if it is None - for now will be always some
+        In reality it can be any token
+    """
     
     # amount of token on chain were it is 
     amount_of_in_token : TAmount
     
-    # amount of token on chain where token can go 
+    # amount of token on chain wherane token can go 
     amount_of_out_token : TAmount
     
-    # fee per million to transfer
-    fee_per_million: int
+    # fee per million to transfer of asset itself
+    fee_per_million: int | None = None
         
     # do not care
     metadata: str | None = None
@@ -35,11 +39,11 @@ class AssetTransfers(BaseModel, Generic[TAssetId, TAmount],):
         return None if isinstance(v, float) else v       
     
 # pool are bidirectional, so so in can be out and other way
-class AssetPairsXyk(BaseModel, Generic[TAssetId, TAmount],):
+class AssetPairsXyk(BaseModel, Generic[TId, TAmount],):
     # set key
-    pool_id: TAssetId
-    in_asset_id: TAssetId
-    out_asset_id: TAssetId
+    pool_id: TId
+    in_asset_id: TId
+    out_asset_id: TId
     
     # assumed that all all CFMM take fee from pair token in proportion 
     fee_of_in_per_million: int
@@ -59,16 +63,30 @@ class AssetPairsXyk(BaseModel, Generic[TAssetId, TAmount],):
     in_token_amount: TAmount
     out_token_amount: TAmount
     
-    metadata: str | None = None    
+    @property
+    def fee_in(self) -> float:
+        """_summary_
+            Part of amount taken as fee
+        """
+        self.fee_of_in_per_million / 1_000_000
+    
+    @property
+    def fee_out(self) -> float:
+        """_summary_
+            Part of amount taken as fee
+        """
+        self.fee_of_out_per_million / 1_000_000        
+        
+    metadata: str | None = None        
     @validator("metadata", pre=True, always=True)
     def replace_nan_with_None(cls, v):
         return None if isinstance(v, float) else v    
     
 # this is what user asks for
-class Input(BaseModel, Generic[TAssetId, TAmount],):
+class Input(BaseModel, Generic[TId, TAmount],):
     # natural set key is ordered pair (in_token_id, out_token_id)
-    in_token_id: TAssetId
-    out_token_id: TAssetId
+    in_token_id: TId
+    out_token_id: TId
     # tendered amount DELTA
     in_amount: TAmount
     # expected received amount LAMBDA
@@ -78,10 +96,8 @@ class Input(BaseModel, Generic[TAssetId, TAmount],):
     # please fail if bool is False for now
     max: bool
 
-    
 class SingleInputAssetCvmRoute(BaseModel):
-    pass    
-
+    pass
 
 # transfer assets
 class Spawn(BaseModel):
@@ -119,26 +135,27 @@ class Output(BaseModel):
     route: SingleInputAssetCvmRoute | str
     solution_type: SolutionType     
 
-T = TypeVar("T")
-
-class PydanticDataSet(BaseModel, DataSet[T]):
-    pass
 
 
 # global labelling of assets and exchanges
-class AllData(BaseModel):
+class AllData(BaseModel, Generic[TId, TAmount]):
     # DataSet inherits from DataFrame
     # If key is in first set, it cannot be in second set, and other way around
-    asset_transfers : list[AssetTransfers]
-    asset_pairs_xyk : list[AssetPairsXyk]
+    asset_transfers : list[AssetTransfers[TId, TAmount]] = []
+    asset_pairs_xyk : list[AssetPairsXyk[TId, TAmount]] = []
     # if None, than solution must not contain any joins after forks
     # so A was split into B and C, and then B and C were moved to be D
     # D must "summed" from 2 amounts must be 2 separate routes branches
-    fork_joins : list[str] | None = None
-    
+    fork_joins : list[str] | None = None    
+    usd_oracles: dict[TId, int] = [[]]
+    """_summary_
+      asset ids which we consider to be USD equivalents
+      value - decimal exponent of token to make 1 USD
+    """
+        
     @property
     @cache
-    def all_tokens(self) -> list[TAssetId]:
+    def all_tokens(self) -> list[TId]:
         set = set()
         for x in self.asset_pairs_xyk:
             set.add(x.in_asset_id)
@@ -146,19 +163,38 @@ class AllData(BaseModel):
         for x in self.asset_transfers:
             set.add(x.in_asset_id)
             set.add(x.out_asset_id)    
-    def index_of_token(self, token: TAssetId) -> int:
+    def index_of_token(self, token: TId) -> int:
         return self.all_tokens().index(token)
     @property
     def tokens_count(self) -> int :
         return len(self.all_tokens())
 
+    def token_price_in_usd(self, token: TId) -> float | None:
+        """_summary_
+        Either uses direct USD price from pool official oracle
+        Or uses list of USD and tres to find pool for that assets directly with USD.     
+        Returns:
+            float | None: Value if found price, None if no price founds
+        """
+        hit = None
+        for pair in self.asset_pairs_xyk:
+            if pair.in_asset_id == token or pair.out_asset_id == token or pair.pool_value_in_usd:
+                hit = pair
+                break
+        if hit:
+            usd_volume = hit.pool_value_in_usd
+            numerator = hit.weight_of_a if pair.in_asset_id == token else hit.weight_of_b
+            denum = hit.weight_of_a + hit.weight_of_b
+            top = numerator * usd_volume 
+            btm = (hit.in_token_amount if pair.in_asset_id == token else hit.out_token_amount) * denum
+            return top * 1.0 / btm
+        else:
+            # go over usd_oracles and than pools(breadth first search)
+            return None
+                
+    
 
 # helpers to setup tests data
-
-def test_all_data() -> AllData:
-    asset_transfers =  PydanticDataSet[AssetTransfers](pd.read_csv("asset_transfers.csv"))
-    assets_pairs_xyk=  PydanticDataSet[AssetPairsXyk](pd.read_csv("assets_pairs_xyk.csv"))
-    return AllData(assets_pairs_xyk, asset_transfers)
 
 def new_data(pairs: list[AssetPairsXyk], transfers: list[AssetTransfers]) -> AllData:
     return AllData(
@@ -177,8 +213,36 @@ def new_transfer(in_asset_id, out_asset_id, usd_fee_transfer, amount_of_in_token
     return AssetTransfers(in_asset_id = in_asset_id, out_asset_id = out_asset_id, usd_fee_transfer = usd_fee_transfer, amount_of_in_token = amount_of_in_token, amount_of_out_token = amount_of_out_token, fee_per_million = fee_per_million, metadata = metadata)
 
 
+class AssetPairsXyk1(BaseModel):
+    # set key
+    pool_id: int
+    in_asset_id: int
+    out_asset_id: int
+    
+    # assumed that all all CFMM take fee from pair token in proportion 
+    fee_of_in_per_million: int
+    fee_of_out_per_million: int 
+    # in reality fee can be flat or in other tokens, but not for now
+    
+    weight_of_a: int 
+    weight_of_b: int 
+    # if it is hard if None, please fail if it is None - for now will be always some
+    pool_value_in_usd: int  | None = None
+    
+    @validator("pool_value_in_usd", pre=True, always=True)
+    def replace_nan_with_None(cls, v):
+        return v if v == v else None
+        
+    # total amounts in reserves R
+    in_token_amount: int
+    out_token_amount: int
+    
+    metadata: str | None = None  
+
+    
 def read_dummy_data(TEST_DATA_DIR: str = "./") -> AllData:
+    pairs = pd.read_csv(TEST_DATA_DIR / "assets_pairs_xyk.csv")
     return AllData(
-        asset_pairs_xyk=[AssetPairsXyk(**row) for _index, row in pd.read_csv(TEST_DATA_DIR / "assets_pairs_xyk.csv").iterrows()],
+        asset_pairs_xyk=[AssetPairsXyk(**row) for _index, row in pairs.iterrows()],
         asset_transfers=[AssetTransfers(**row) for _index, row in pd.read_csv(TEST_DATA_DIR / "assets_transfers.csv").iterrows()],
     )

@@ -4,12 +4,12 @@ import cvxpy as cp
 
 MAX_RESERVE = 1e10
 
-from simulation.routers.data import AllData, Input, TAssetId, TNetworkId
+from simulation.routers.data import AllData, Input, TId, TNetworkId
 
 # prepares data for solving and outputs raw solution from underlying engine
 def solve(
     all_data: AllData,
-    all_cfmms: list[tuple[TAssetId, TAssetId]],
+    all_cfmms: list[tuple[TId, TId]],
     reserves: list[np.ndarray[np.float64]],
     cfmm_tx_cost: list[float],
     fees: list[float],

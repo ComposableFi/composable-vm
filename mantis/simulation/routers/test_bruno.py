@@ -2,10 +2,10 @@ import itertools
 import numpy as np
 
 from  mantis.simulation.routers.bruno import solve
-from mantis.simulation.routers.data import TNetworkId, TAssetId
+from mantis.simulation.routers.data import TNetworkId, TId
 
 # simulate denom paths to and from chains, with center node
-def populate_chain_dict(chains: dict[TNetworkId, list[TAssetId]], center_node: TNetworkId):
+def populate_chain_dict(chains: dict[TNetworkId, list[TId]], center_node: TNetworkId):
     # Add tokens with denom to Center Node
     # Basic IBC transfer
     for chain, tokens in chains.items():

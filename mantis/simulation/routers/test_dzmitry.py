@@ -5,7 +5,7 @@ from strictly_typed_pandas import DataSet
 
 MAX_RESERVE = 1e10
 
-from simulation.routers.data import Input, PydanticDataSet, TAssetId, TNetworkId, AssetTransfers, AssetPairsXyk, AllData, new_data, new_input, new_pair, new_transfer
+from simulation.routers.data import Input, TId, TNetworkId, AssetTransfers, AssetPairsXyk, AllData, new_data, new_input, new_pair, new_transfer
 
 
 # clarabel cvxpy local mip
@@ -15,7 +15,7 @@ import numpy as np
 from  simulation.routers.dzmitry import solve, route
 
 # simulate denom paths to and from chains, with center node
-def populate_chain_dict(chains: dict[TNetworkId, list[TAssetId]], center_node: TNetworkId):
+def populate_chain_dict(chains: dict[TNetworkId, list[TId]], center_node: TNetworkId):
     # Add tokens with denom to Center Nod
     # Basic IBC transfer
     for chain, tokens in chains.items():
@@ -43,13 +43,11 @@ def test_single_chain_single_cffm_route_full_symmetry_exist():
     
 
 def simulate():
-    
     input = new_input("WETH", "ATOM", 2000, 1)
     CENTER_NODE, chains = simulate_all_to_all_connected_chains(input)
     print(chains)
     
-    all_data = simulate_all_connected_pools(CENTER_NODE, chains) 
-    all_data = PydanticDataSet()
+    all_data = simulate_all_connected_pools(CENTER_NODE, chains)     
     print(all_data)
     
     # print("=============== solving ========================")
