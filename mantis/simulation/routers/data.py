@@ -108,6 +108,10 @@ class AssetPairsXyk(
     metadata: str | None = None
 
     @validator("metadata", pre=True, always=True)
+    def replace_nan_metadata_with_None(cls, v):
+        return None if isinstance(v, float) else v
+
+    @validator("pool_value_in_usd", pre=True, always=True)
     def replace_nan_with_None(cls, v):
         return None if isinstance(v, float) else v
 
