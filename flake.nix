@@ -99,8 +99,8 @@
       imports = [
         inputs.devenv.flakeModule
       ];
-      # would be happy to support more, so solver engines are crazy heavy on some hardcode deps 
-      systems = [ "x86_64-linux" "aarch64-darwin"];
+      # would be happy to support more, so solver engines are crazy heavy on some hardcode deps
+      systems = ["x86_64-linux" "aarch64-darwin"];
       perSystem = {
         config,
         self',
@@ -334,6 +334,11 @@
               buildInputs = old.buildInputs or [] ++ [self.python.pkgs.hatchling];
             });
 
+            clarabel = super.pydantic-extra-types.overridePythonAttrs (old: {
+              buildInputs = old.buildInputs or [] ++ [self.python.pkgs.maturin];
+              nativeBuildInputs = old.buildInputs or [] ++ [self.python.pkgs.maturin];
+            });
+
             pyscipopt = pyscipopt-latest;
             google = super.google.overridePythonAttrs (old: {
               buildInputs = old.buildInputs or [] ++ [self.python.pkgs.setuptools];
@@ -508,14 +513,14 @@
             name = "nix-build-all";
             runtimeInputs = [
               pkgs.nix
-              devour-flake              
-            ] ++ poetryDeps.poetryPackages;
+              devour-flake
+            ];
             text = ''
               (
                 cd mantis
-                poetry lock --no-update --check --no-interaction
-                poetry install
-                poetry run pytest
+                echo "running tests"
+                nix develop --impure --command poetry run pytest
+                nix develop --impure --command poetry lock --no-update --check --no-interaction
               )
               nix flake show --all-systems --json --no-write-lock-file
               nix flake lock --no-update-lock-file
