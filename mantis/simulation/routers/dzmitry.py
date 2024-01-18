@@ -59,11 +59,11 @@ def solve(
     psi = cp.sum([A_i @ (LAMBDA - DELTA) for A_i, DELTA, LAMBDA in zip(A, deltas, lambdas)])
     
     # Objective is to trade number_of_init_tokens of asset origin_token for a maximum amount of asset objective_token
-    obj = cp.Maximize(psi[all_data.index_of_token(input.out_token_id)] - eta @ cfmm_tx_cost)
+    obj = cp.Maximize(psi[all_data.index_of_token(input.out_token_id)] - eta @ all_data.venue_fixed_costs_in_usd)
 
     # Reserves after trade
     new_reserves = [
-        R + gamma_i * D - L for R, gamma_i, D, L in zip(reserves, fees, deltas, lambdas)
+        R + gamma_i * D - L for R, gamma_i, D, L in zip(reserves, all_data.venues_proportial_costs, deltas, lambdas)
     ]
 
     # Trading function constraints
