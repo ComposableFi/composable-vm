@@ -64,7 +64,7 @@ def solve(
     assert(len(current_assets) == len(all_data.all_tokens))
     
     # Objective is to trade number_of_init_tokens of asset origin_token for a maximum amount of asset objective_token
-    obj = cp.Maximize(psi[all_data.index_of_token(input.out_token_id)] - eta @ all_data.venue_fixed_costs_in_usd)
+    obj = cp.Maximize(psi[all_data.index_of_token(input.out_token_id)] - eta @ all_data.venue_fixed_costs_in_usd) # divide costs by target price in usd
 
     # Reserves after trade
     new_reserves = [
@@ -103,13 +103,13 @@ def solve(
     # GLOP, SDPA, GUROBI, OSQP, CPLEX, MOSEK, , COPT, XPRESS, PIQP, PROXQP, NAG, PDLP, SCIP, DAQP
     prob.solve(verbose= True, solver = "CLARABEL", qcp = False, )
 
-    print("==========================================================================================")
-    print(all_data.index_of_token(input.out_token_id))
-    print("==========================================================================================")
-    assert(psi != None)
-    assert(psi.value != None)
-    assert(all_data != None)
-    assert(all_data.index_of_token(input.out_token_id) != None)
+    # print("==========================================================================================")
+    # print(all_data.index_of_token(input.out_token_id))
+    # print("==========================================================================================")
+    # assert(psi != None)
+    # assert(psi.value != None)
+    # assert(all_data != None)
+    # assert(all_data.index_of_token(input.out_token_id) != None)
     
     print(
         f"\033[1;91mTotal amount out: {psi.value[all_data.index_of_token(input.out_token_id)]}\033[0m"
@@ -138,7 +138,6 @@ def route(input: Input, all_data: AllData,):
         all_data, 
         input,
         )
-    raise Exception("buy")
     to_look_n: list[float] = []
     for i in range(all_data.venues_count):
         to_look_n.append(n[i].value)
