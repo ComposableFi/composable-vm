@@ -29,6 +29,8 @@ def test_usd_price():
         80,
     )
     data = new_data([pica_usd], [])
-    price = data.token_price_in_usd(2)
+    price = data.token_price_in_usd(2)    
     assert(price == 0.625)
+    assert( data.all_tokens  == [1,2])
+    assert( data.venues_count  == 1)
     

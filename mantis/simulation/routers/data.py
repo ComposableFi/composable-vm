@@ -1,5 +1,6 @@
 # for alignment on input and output of algorithm
 from functools import cache
+import numpy as np
 import pandas as pd
 from enum import Enum
 from typing import TypeVar, Generic
@@ -138,11 +139,12 @@ class Output(BaseModel):
     route: SingleInputAssetCvmRoute | str
     solution_type: SolutionType     
 
-
-
-# global labelling of assets and exchanges
 class AllData(BaseModel, Generic[TId, TAmount]):
-    # DataSet inherits from DataFrame
+    """
+    Immutable(frozen) after creation (so can cache everything)
+    Global labelling of assets and exchanges
+    """
+
     # If key is in first set, it cannot be in second set, and other way around
     asset_transfers : list[AssetTransfers[TId, TAmount]] = []
     asset_pairs_xyk : list[AssetPairsXyk[TId, TAmount]] = []
@@ -157,26 +159,50 @@ class AllData(BaseModel, Generic[TId, TAmount]):
     """
         
     @property
-    @cache
+    #@cache
     def all_tokens(self) -> list[TId]:
-        set = set()
+        tokens = []
         for x in self.asset_pairs_xyk:
-            set.add(x.in_asset_id)
-            set.add(x.out_asset_id)
+            tokens.append(x.in_asset_id)
+            tokens.append(x.out_asset_id)
         for x in self.asset_transfers:
-            set.add(x.in_asset_id)
-            set.add(x.out_asset_id)    
+            tokens.append(x.in_asset_id)
+            tokens.append(x.out_asset_id)    
+        return  list(set(tokens))
+    
     def index_of_token(self, token: TId) -> int:
-        return self.all_tokens().index(token)
+        return self.all_tokens.index(token)
+    
+    
+    def get_index_in_all(self, venue: AssetPairsXyk | AssetTransfers) -> int:
+        if isinstance(venue, AssetPairsXyk):
+            return self.asset_pairs_xyk.index(venue)
+        else:
+            return len(self.asset_pairs_xyk) + self.asset_transfers.index(venue)
+                        
         
+    @property
+    #@lru_cache
+    def all_reserves(self) -> list[np.ndarray[np.float64]]:
+        """_summary_
+            Produces reserves per asset in next order
+            - xyk
+            - escrow amounts
+        """
+        reserves = []
+        for x in self.asset_pairs_xyk:
+            reserves.append(np.array([x.in_token_amount, x.out_token_amount]))
+        for x in self.asset_transfers:
+            reserves.append(np.array([x.amount_of_in_token, x.amount_of_out_token]))
+        return reserves
     
     @property
-    @lru_cache
+    #@lru_cache
     def tokens_count(self) -> int :
         """_summary_
             in solver global matrices NxN
         """
-        return len(self.all_tokens())
+        return len(self.all_tokens)
     
     @property
     def venues_count(self) -> int:
@@ -187,8 +213,8 @@ class AllData(BaseModel, Generic[TId, TAmount]):
         return len(self.asset_pairs_xyk) + len(self.asset_transfers) 
 
 
-    @property
-    @lru_cache
+    #@property
+    #@lru_cache
     def token_price_in_usd(self, token: TId) -> float | None:
         """_summary_
         Either uses direct USD price from pool official oracle.

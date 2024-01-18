@@ -1,4 +1,7 @@
-# solves using convex optimization
+# solves using NLP optimization (or what best underlying engine decides)
+# Models cross chain transfers as fees as """pools"""
+# Uses decision variables to decide if to do Transfer to tap pool or not. 
+
 import numpy as np
 import cvxpy as cp
 
@@ -9,19 +12,19 @@ from simulation.routers.data import AllData, Input, TId, TNetworkId
 # prepares data for solving and outputs raw solution from underlying engine
 def solve(
     all_data: AllData,
-    all_cfmms: list[tuple[TId, TId]],
-    reserves: list[np.ndarray[np.float64]],
-    cfmm_tx_cost: list[float],
-    fees: list[float],
-    ibc_pools: int,
     input : Input,
     force_eta: list[float] = None,
-):
-    
+):    
     # initial input assets
     current_assets = np.zeros(all_data.tokens_count)  
     current_assets[all_data.index_of_token(input.in_token_id)] = input.in_amount
 
+    reserves = all_data.all_reserves
+    
+    
+    # build local-global matrices
+    A = []
+    
     for x in all_data.asset_pairs_xyk:
         n_i = 2  # number of tokens in transfer
         A_i = np.zeros((all_data.tokens_count, n_i))
@@ -29,8 +32,6 @@ def solve(
         A_i[all_data.index_of_token(x.out_asset_id), 1] = 1
         A.append(A_i)        
         
-    # build local-global matrices
-    A = []
     for x in all_data.asset_pairs_xyk:
         n_i = 2  # number of tokens in pool
         A_i = np.zeros((all_data.tokens_count, n_i))
@@ -41,10 +42,10 @@ def solve(
     # Build variables
     
     # tendered (given) amount
-    deltas = [cp.Variable(A_i.shape.1, nonneg=True) for A_i in A]
+    deltas = [cp.Variable(A_i.shape[1], nonneg=True) for A_i in A]
     
     # received (wanted) amounts
-    lambdas = [cp.Variable(A_i.shape.1, nonneg=True) for A_i in A]
+    lambdas = [cp.Variable(A_i.shape[1], nonneg=True) for A_i in A]
     
     # indicates tx or not for given pool
     # zero means no TX it sure
@@ -71,18 +72,20 @@ def solve(
     ]
 
     # Pool constraint (Uniswap v2 like)
-    for i in range(count_conversion - ibc_pools):
+    
+    for x in all_data.asset_pairs_xyk:
+        i = all_data.get_index_in_all(x)
         constrains.append(cp.geo_mean(new_reserves[i]) >= cp.geo_mean(reserves[i]))
 
-    # Pool constraint for IBC transfer (constant sum)
-    # NOTE: Ibc pools are at the bottom of the cfmm list
-    for i in range(count_conversion - ibc_pools, count_conversion):
+    # Pool constraint for cross chain transfer transfer (constant sum)
+    for x in all_data.asset_transfers:
+        i = all_data.get_index_in_all(x)
         constrains.append(cp.sum(new_reserves[i]) >= cp.sum(reserves[i]))
         constrains.append(new_reserves[i] >= 0)
 
     # Enforce deltas depending on pass or not pass variable
     # MAX_RESERVE should be big enough so delta <<< MAX_RESERVE
-    for i in range(count_conversion):
+    for i in range(all_data.venues_count):
         constrains.append(deltas[i] <= eta[i] * MAX_RESERVE)
         if force_eta:
             constrains.append(eta[i] == force_eta[i])
@@ -99,9 +102,9 @@ def solve(
         f"\033[1;91mTotal amount out: {psi.value[all_data.index_of_token(input.out_token_id)]}\033[0m"
     )
 
-    for i in range(count_conversion):
+    for i in range(all_data.venues_count):
         print(
-            f"Market {all_cfmms[i][0]}<->{all_cfmms[i][1]}, delta: {deltas[i].value}, lambda: {lambdas[i].value}, eta: {eta[i].value}",
+            f"Market {all_data.all_reserves[i][0]}<->{all_data.all_reserves[i][1]}, delta: {deltas[i].value}, lambda: {lambdas[i].value}, eta: {eta[i].value}",
         )
     
     # deltas[i] - how much one gives to pool i
@@ -120,16 +123,11 @@ def route(input: Input, all_data: AllData,):
     
     _deltas, _lambdas, psi, n = solve(
         all_data, 
-        all_cfmms, 
-        reserves, 
-        cfmm_tx_cost, 
-        fees, 
-        ibc_pools, 
         input,
         )
 
     to_look_n: list[float] = []
-    for i in range(len(all_cfmms)):
+    for i in range(all_data.venues_count):
         to_look_n.append(n[i].value)
 
     _max = 0
@@ -137,11 +135,6 @@ def route(input: Input, all_data: AllData,):
         try:
             d2, l2, p2, n2 =  solve(
                 all_data,
-                all_cfmms,
-                reserves,
-                cfmm_tx_cost,
-                fees,
-                ibc_pools,
                 input,
                 [1 if value <= t else 0 for value in to_look_n],
             )
@@ -164,14 +157,7 @@ def route(input: Input, all_data: AllData,):
                     eta_change = True
             d_max, _lambdas, psi, eta = solve(
                 all_data,
-                all_cfmms,
-                reserves,
-                cfmm_tx_cost,
-                fees,
-                ibc_pools,
-                input.in_token_id,
-                input.in_amount,
-                input.out_token_id,
+                input,
                 eta,
             )
 
@@ -181,18 +167,12 @@ def route(input: Input, all_data: AllData,):
     print("---")
     deltas, lambdas, psi, eta = solve(
                     all_data,
-                    all_cfmms,
-                    reserves,
-                    cfmm_tx_cost,
-                    fees,
-                    ibc_pools,
                     input,
                     eta,
                 )
-    m = len(all_cfmms)
-    for i in range(m):
+    for i in range(all_data.venues_count):
         print(
-            f"Market {all_cfmms[i][0]}<->{all_cfmms[i][1]}, delta: {deltas[i].value}, lambda: {lambdas[i].value}, eta: {eta[i].value}",
+            f"Market {all_data.all_reserves[i][0]}<->{all_data.all_reserves[i][1]}, delta: {deltas[i].value}, lambda: {lambdas[i].value}, eta: {eta[i].value}",
         )
 
     print(psi.value[all_data.index_of_token(input.out_token_id)],lastp_value)
