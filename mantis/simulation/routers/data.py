@@ -181,6 +181,33 @@ class AllData(BaseModel, Generic[TId, TAmount]):
             return len(self.asset_pairs_xyk) + self.asset_transfers.index(venue)
                         
         
+    @property 
+    def venue_fixed_costs_in_usd(self) -> list[float]:
+        """_summary_
+            fixed costs of using venue in USD
+        """
+        costs = []
+        for x in self.asset_pairs_xyk:
+            costs.append(0.0)
+        for x in self.asset_transfers:
+            costs.append(x.usd_fee_transfer)
+        return costs
+        
+    @property
+    def venues_proportional_reductions(self) -> list[float]:
+        """_summary_
+        remaining_% = 1 - fee_%
+        """
+        reduced = []
+        for x in self.asset_pairs_xyk:
+            fee = max(x.fee_of_in_per_million, x.fee_of_in_per_million) / 1_000_000.0
+            reduced.append(1 - fee)
+        for x in self.asset_transfers:
+            fee = max(x.fee_per_million, x.fee_per_million) / 1_000_000.0
+            reduced.append(1 - fee)
+        return reduced
+                         
+        
     @property
     #@lru_cache
     def all_reserves(self) -> list[np.ndarray[np.float64]]:

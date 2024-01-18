@@ -63,7 +63,7 @@ def solve(
 
     # Reserves after trade
     new_reserves = [
-        R + gamma_i * D - L for R, gamma_i, D, L in zip(reserves, all_data.venues_proportial_costs, deltas, lambdas)
+        R + gamma_i * D - L for R, gamma_i, D, L in zip(reserves, all_data.venues_proportional_reductions, deltas, lambdas)
     ]
 
     # Trading function constraints
@@ -98,6 +98,14 @@ def solve(
     # GLOP, SDPA, GUROBI, OSQP, CPLEX, MOSEK, , COPT, XPRESS, PIQP, PROXQP, NAG, PDLP, SCIP, DAQP
     prob.solve(verbose= True, solver = "CLARABEL", qcp = False, )
 
+    print("==========================================================================================")
+    print(all_data.index_of_token(input.out_token_id))
+    print("==========================================================================================")
+    assert(psi != None)
+    assert(psi.value != None)
+    assert(all_data != None)
+    assert(all_data.index_of_token(input.out_token_id) != None)
+    
     print(
         f"\033[1;91mTotal amount out: {psi.value[all_data.index_of_token(input.out_token_id)]}\033[0m"
     )
