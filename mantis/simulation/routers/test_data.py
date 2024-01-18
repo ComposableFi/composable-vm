@@ -33,4 +33,6 @@ def test_usd_price():
     assert(price == 0.625)
     assert( data.all_tokens  == [1,2])
     assert( data.venues_count  == 1)
+    assert( data.index_of_token(1)  == 0)
+    assert( data.index_of_token(2)  == 1)
     

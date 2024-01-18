@@ -32,7 +32,7 @@ def solve(
         A_i[all_data.index_of_token(x.out_asset_id), 1] = 1
         A.append(A_i)        
         
-    for x in all_data.asset_pairs_xyk:
+    for x in all_data.asset_transfers:
         n_i = 2  # number of tokens in pool
         A_i = np.zeros((all_data.tokens_count, n_i))
         A_i[all_data.index_of_token(x.in_asset_id), 0] = 1
@@ -57,6 +57,11 @@ def solve(
 
     # network trade vector - net amount received over all trades(transfers/exchanges)
     psi = cp.sum([A_i @ (LAMBDA - DELTA) for A_i, DELTA, LAMBDA in zip(A, deltas, lambdas)])
+
+    assert(len(A) == all_data.venues_count)
+    assert(len(reserves)  == all_data.venues_count)
+    assert(all_data.venues_count == eta.shape[0])
+    assert(len(current_assets) == len(all_data.all_tokens))
     
     # Objective is to trade number_of_init_tokens of asset origin_token for a maximum amount of asset objective_token
     obj = cp.Maximize(psi[all_data.index_of_token(input.out_token_id)] - eta @ all_data.venue_fixed_costs_in_usd)
@@ -133,7 +138,7 @@ def route(input: Input, all_data: AllData,):
         all_data, 
         input,
         )
-
+    raise Exception("buy")
     to_look_n: list[float] = []
     for i in range(all_data.venues_count):
         to_look_n.append(n[i].value)

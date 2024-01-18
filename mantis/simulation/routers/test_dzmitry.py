@@ -42,18 +42,22 @@ def test_single_chain_single_cffm_route_full_symmetry_exist():
     print(data)
     
 
-def test_simulate():
+def test_simulate_all_connected_venues():
     input = new_input("WETH", "ATOM", 2000, 1)
-    CENTER_NODE, chains = simulate_all_to_all_connected_chains(input)
+    CENTER_NODE, chains = simulate_all_to_all_connected_chains_topology(input)
     print(chains)
     
-    all_data = simulate_all_connected_pools(CENTER_NODE, chains)     
+    all_data = simulate_all_connected_venue(CENTER_NODE, chains)     
     print(all_data)
+    print(all_data.all_tokens)
+    print(all_data.index_of_token("WETH"))
+    print(all_data.index_of_token("ATOM"))
     
     print("=============== solving ========================")
-    return route(input, all_data)
+    result = route(input, all_data)
+    print(result)
 
-def simulate_all_connected_pools(CENTER_NODE, chains) -> AllData:
+def simulate_all_connected_venue(CENTER_NODE, chains) -> AllData:
     pools : list[AssetPairsXyk] = []
     transfers : list[AssetTransfers] = []
     
@@ -63,11 +67,11 @@ def simulate_all_connected_pools(CENTER_NODE, chains) -> AllData:
         all_token_pairs.extend(itertools.combinations(other_tokens, 2))
 
     # simulate reserves and gas costs to CFMMS
-    for i, pair in enumerate(all_token_pairs):
+    for i, x in enumerate(all_token_pairs):
         [a, b] = np.random.randint(95000000, 100510000, 2)
         fee = np.random.randint(0, 10_000)
-        pair = new_pair(i, pair[0], pair[1], fee, fee, 1, 1, 1_000, a, b)
-        pools.append(pair)
+        x = new_pair(i, x[0], x[1], fee, fee, 1, 1, 1_000, a, b)
+        pools.append(x)
         
 
     # simulate crosschain transfers as "pools"
@@ -81,21 +85,27 @@ def simulate_all_connected_pools(CENTER_NODE, chains) -> AllData:
                     if other_token in token_on_center or token_on_center in other_token:
                         all_token_transfers.append((token_on_center, other_token))
 
-    for _i, transfer in enumerate(all_token_transfers):
+    for _i, x in enumerate(all_token_transfers):
         [a, b] = np.random.randint(1000, 100000, 2)
         tx_cost = np.random.randint(0, 1_000)
         fee = np.random.randint(0, 10_000)
-        transfer = new_transfer(transfer[0], transfer[1], tx_cost, a,b, fee)
-        transfers.append(transfer)
+        x = new_transfer(x[0], x[1], tx_cost, a,b, fee)
+        transfers.append(x)
+    
     return new_data(pools, transfers)
 
-def simulate_all_to_all_connected_chains(input: Input):
+def simulate_all_to_all_connected_chains_topology(input: Input):
     CENTER_NODE = "CENTAURI"  # Name of center Node
 
+    # chains: dict[str, list[str]] = {
+    #     "ETHEREUM": [input.in_token_id, "USDC", "SHIBA"],
+    #     CENTER_NODE: [],
+    #     "OSMOSIS": [input.out_token_id,"SCRT"],
+    # }
     chains: dict[str, list[str]] = {
-        "ETHEREUM": [input.in_token_id, "USDC", "SHIBA"],
+        "ETHEREUM": [input.in_token_id],
         CENTER_NODE: [],
-        "OSMOSIS": [input.out_token_id,"SCRT"],
+        "OSMOSIS": [input.out_token_id],
     }
     populate_chain_dict(chains,CENTER_NODE)
     return CENTER_NODE,chains
