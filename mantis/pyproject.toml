@@ -50,6 +50,8 @@ scipy = "1.9.3"
 pydantic-extra-types = "2.4.1"
 strictly-typed-pandas = "0.1.24"
 uvicorn = "0.25.0"
+methodtools = "0.4.7"
+
 # on if used only:
 # clarabel = "0.6.0"
 # PySCIPOpt = "4.3.0"

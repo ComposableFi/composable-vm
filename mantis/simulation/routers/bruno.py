@@ -4,18 +4,18 @@ import cvxpy as cp
 
 MAX_RESERVE = 1e10
 
-from mantis.simulation.routers.data import TAssetId
+from mantis.simulation.routers.data import TId
 
 def solve(
-    all_tokens: list[TAssetId],
-    all_cfmms: list[tuple[TAssetId, TAssetId]],
+    all_tokens: list[TId],
+    all_cfmms: list[tuple[TId, TId]],
     reserves: list[np.ndarray[np.float64]],
     cfmm_tx_cost: list[float],
     fees: list[float],
     ibc_pools: int,
-    origin_token: TAssetId,
+    origin_token: TId,
     number_of_init_tokens: float,
-    obj_token: TAssetId,
+    obj_token: TId,
     force_eta: list[float] = None,
 ):
     # Build local-global matrices
