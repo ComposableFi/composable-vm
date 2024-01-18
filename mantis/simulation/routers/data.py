@@ -26,7 +26,7 @@ class AssetTransfers(BaseModel, Generic[TId, TAmount],):
     # amount of token on chain were it is 
     amount_of_in_token : TAmount
     
-    # amount of token on chain wherane token can go 
+    # amount of token on chain where ane token can go 
     amount_of_out_token : TAmount
     
     # fee per million to transfer of asset itself
@@ -38,8 +38,11 @@ class AssetTransfers(BaseModel, Generic[TId, TAmount],):
     def replace_nan_with_None(cls, v):
         return None if isinstance(v, float) else v       
     
-# pool are bidirectional, so so in can be out and other way
 class AssetPairsXyk(BaseModel, Generic[TId, TAmount],):
+    """_summary_
+    Strictly 2 asset pool with weights (1/1 for original uniswap).
+    Pool are bidirectional, so so in can be out and other way
+    """
     # set key
     pool_id: TId
     in_asset_id: TId
@@ -165,13 +168,30 @@ class AllData(BaseModel, Generic[TId, TAmount]):
             set.add(x.out_asset_id)    
     def index_of_token(self, token: TId) -> int:
         return self.all_tokens().index(token)
+        
+    
     @property
+    @lru_cache
     def tokens_count(self) -> int :
+        """_summary_
+            in solver global matrices NxN
+        """
         return len(self.all_tokens())
+    
+    @property
+    def venues_count(self) -> int:
+        """_summary_
+            Number of ways any one specific token can be converted to other one.     
+            In solver local matrix row count        
+        """
+        return len(self.asset_pairs_xyk) + len(self.asset_transfers) 
 
+
+    @property
+    @lru_cache
     def token_price_in_usd(self, token: TId) -> float | None:
         """_summary_
-        Either uses direct USD price from pool official oracle
+        Either uses direct USD price from pool official oracle.
         Or uses list of USD and tres to find pool for that assets directly with USD.     
         Returns:
             float | None: Value if found price, None if no price founds

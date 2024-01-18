@@ -17,34 +17,42 @@ def solve(
     input : Input,
     force_eta: list[float] = None,
 ):
-    # Build local-global matrices
-    count_tokens = len(all_data.tokens_count)
-    count_cfmms = len(all_cfmms)
-
-    current_assets = np.zeros(count_tokens)  # Initial assets
+    
+    # initial input assets
+    current_assets = np.zeros(all_data.tokens_count)  
     current_assets[all_data.index_of_token(input.in_token_id)] = input.in_amount
 
+    for x in all_data.asset_pairs_xyk:
+        n_i = 2  # number of tokens in transfer
+        A_i = np.zeros((all_data.tokens_count, n_i))
+        A_i[all_data.index_of_token(x.in_asset_id), 0] = 1
+        A_i[all_data.index_of_token(x.out_asset_id), 1] = 1
+        A.append(A_i)        
+        
+    # build local-global matrices
     A = []
-    for cfmm in all_cfmms:
-        n_i = len(cfmm)  # Number of tokens in pool (default to 2)
-        A_i = np.zeros((count_tokens, n_i))
-        for i, token in enumerate(cfmm):
-            A_i[all_data.index_of_token(token), i] = 1
+    for x in all_data.asset_pairs_xyk:
+        n_i = 2  # number of tokens in pool
+        A_i = np.zeros((all_data.tokens_count, n_i))
+        A_i[all_data.index_of_token(x.in_asset_id), 0] = 1
+        A_i[all_data.index_of_token(x.out_asset_id), 1] = 1
         A.append(A_i)
 
     # Build variables
     
     # tendered (given) amount
-    deltas = [cp.Variable(len(l), nonneg=True) for l in all_cfmms]
+    deltas = [cp.Variable(A_i.shape.1, nonneg=True) for A_i in A]
     
     # received (wanted) amounts
-    lambdas = [cp.Variable(len(l), nonneg=True) for l in all_cfmms]
+    lambdas = [cp.Variable(A_i.shape.1, nonneg=True) for A_i in A]
     
+    # indicates tx or not for given pool
+    # zero means no TX it sure
     eta = cp.Variable(
-        count_cfmms, 
+        all_data.venues_count, 
         nonneg=True, 
         # boolean=True, # Problem is mixed-integer, but candidate QP/Conic solvers ([]) are not MIP-capable.
-    )  # Binary value, indicates tx or not for given pool
+    )
 
     # network trade vector - net amount received over all trades(transfers/exchanges)
     psi = cp.sum([A_i @ (LAMBDA - DELTA) for A_i, DELTA, LAMBDA in zip(A, deltas, lambdas)])
@@ -63,18 +71,18 @@ def solve(
     ]
 
     # Pool constraint (Uniswap v2 like)
-    for i in range(count_cfmms - ibc_pools):
+    for i in range(count_conversion - ibc_pools):
         constrains.append(cp.geo_mean(new_reserves[i]) >= cp.geo_mean(reserves[i]))
 
     # Pool constraint for IBC transfer (constant sum)
     # NOTE: Ibc pools are at the bottom of the cfmm list
-    for i in range(count_cfmms - ibc_pools, count_cfmms):
+    for i in range(count_conversion - ibc_pools, count_conversion):
         constrains.append(cp.sum(new_reserves[i]) >= cp.sum(reserves[i]))
         constrains.append(new_reserves[i] >= 0)
 
     # Enforce deltas depending on pass or not pass variable
     # MAX_RESERVE should be big enough so delta <<< MAX_RESERVE
-    for i in range(count_cfmms):
+    for i in range(count_conversion):
         constrains.append(deltas[i] <= eta[i] * MAX_RESERVE)
         if force_eta:
             constrains.append(eta[i] == force_eta[i])
@@ -91,7 +99,7 @@ def solve(
         f"\033[1;91mTotal amount out: {psi.value[all_data.index_of_token(input.out_token_id)]}\033[0m"
     )
 
-    for i in range(count_cfmms):
+    for i in range(count_conversion):
         print(
             f"Market {all_cfmms[i][0]}<->{all_cfmms[i][1]}, delta: {deltas[i].value}, lambda: {lambdas[i].value}, eta: {eta[i].value}",
         )
@@ -99,6 +107,12 @@ def solve(
     # deltas[i] - how much one gives to pool i
     # lambdas[i] - how much one wants to get from pool i
     return deltas, lambdas, psi, eta
+
+def prepare_data(input: Input, all_data: AllData):
+    """_summary_
+        Prepares data usable specifically by this solver from general input
+    """
+    pass
 
 
 # solves and decide if routable

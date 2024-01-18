@@ -42,7 +42,7 @@ def test_single_chain_single_cffm_route_full_symmetry_exist():
     print(data)
     
 
-def simulate():
+def test_simulate():
     input = new_input("WETH", "ATOM", 2000, 1)
     CENTER_NODE, chains = simulate_all_to_all_connected_chains(input)
     print(chains)
@@ -50,8 +50,8 @@ def simulate():
     all_data = simulate_all_connected_pools(CENTER_NODE, chains)     
     print(all_data)
     
-    # print("=============== solving ========================")
-    # return route(input, all_data, all_cfmms, reserves, fees, cfmm_tx_cost, ibc_pools, input_amount)
+    print("=============== solving ========================")
+    return route(input, all_data)
 
 def simulate_all_connected_pools(CENTER_NODE, chains) -> AllData:
     pools : list[AssetPairsXyk] = []

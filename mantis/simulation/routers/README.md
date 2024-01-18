@@ -25,3 +25,12 @@ Difference from convex optimal routing solver to be described.
 ## 4. Production
 
 Should use ../data.py as input/output.
+
+
+# How each router(solver) works
+
+Router is solver which interprets its output a route
+
+1. prepares data from general input into what it can use, or rejects if cannot handle request
+2. solves problem
+3. "interprets" route from its solution, or reason why no route found
