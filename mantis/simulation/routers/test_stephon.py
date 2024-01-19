@@ -28,6 +28,21 @@ class CFMM:
     
     def __repr__(self) -> str:
         return str(self)
+    
+class Swap: 
+    
+    def __init__(self, in_token: str, in_token_amount: float, out_token: str, out_token_amount: float, swap_type: str) -> None:
+        self.in_token = in_token
+        self.in_token_amount = in_token_amount
+        self.out_token = out_token
+        self.out_token_amount = out_token_amount
+        self.swap_type = swap_type
+        
+    def __str__(self) -> str:
+        return f'Swap({self.in_token}, {self.in_token_amount}, {self.out_token}, {self.out_token_amount}, {self.swap_type})'
+    
+    def __repr__(self) -> str:
+        return str(self)
 
 # Container class for the simulation environment
 class OrderRoutingSimulationEnvironment: 
@@ -110,6 +125,13 @@ def get_mapping_matrices(all_tokens, all_cfmms):
         mapping_matrices.append(A_i)
         
     return mapping_matrices
+
+def get_tokens_from_trade(trade, all_tokens): 
+    non_zero_indices = np.nonzero(trade)[0]
+    traded_tokens = [all_tokens[i] for i in non_zero_indices]
+    traded_amounts = [trade[i] for i in non_zero_indices]
+    
+    return dict(zip(traded_tokens, traded_amounts))
 
 def solve_with_unknown_eta(origin_token: str, number_of_init_tokens: float, obj_token: str, all_tokens, all_cfmms, mapping_matrices, MAX_RESERVE=1e10):
     """In this function we solve the optimal routing problem with unknown eta values. These eta values go between 0 and 1. 
@@ -242,3 +264,104 @@ def solve_with_known_eta(origin_token: str, number_of_init_tokens: float, obj_to
     problem.solve(verbose=False, solver='CLARABEL', qcp=False)
     
     return deltas, lambdas, psi, objective
+
+if __name__ == '__main__': 
+    # Setting up simulation environment 
+    chains: dict[str, list[str]] = {
+    "ETHEREUM": ["WETH", "USDC", "SHIBA"],
+    'CENTAURI': [],
+    "OSMOSIS": ["ATOM","SCRT"],
+    }
+
+    sim_env = OrderRoutingSimulationEnvironment(
+        center_node='CENTAURI', 
+        max_reserve=1e10, 
+        chains=chains
+    )
+    
+    # Solving with unknnown eta values
+    origin_token = "WETH"
+    number_of_init_tokens = 2000 
+    obj_token = "ATOM"
+
+
+    deltas, lambdas, psi, eta = solve_with_unknown_eta(
+        origin_token, 
+        number_of_init_tokens, 
+        obj_token, 
+        sim_env.all_tokens, 
+        sim_env.all_cfmms, 
+        sim_env.mapping_matrices
+    )
+    
+    # Taking the eta values and shutting them off one by one and collecting results
+    t_values = sorted([eta[i].value for i in range(len(sim_env.all_cfmms))])    
+    results = {} 
+    
+    for j in tqdm(range(len(t_values))):
+        example_eta = [int(eta[i].value >= t_values[j]) for i in range(len(sim_env.all_cfmms))]
+    
+        try: 
+            deltas, lambdas, psi, objective = solve_with_known_eta(
+                origin_token, 
+                number_of_init_tokens, 
+                obj_token, 
+                sim_env.all_tokens, 
+                sim_env.all_cfmms, 
+                sim_env.mapping_matrices,
+                example_eta
+            )
+            
+            results[j] = {
+                'deltas': [delta.value for delta in deltas],
+                'lambdas': [lambda_.value for lambda_ in lambdas],
+                'psi': psi.value,
+                'objective': objective.value, 
+                'eta': example_eta,
+            }
+            
+        except:
+            print(f"Failed for t={t_values[j]}")
+            continue
+        
+    # Getting the best result by looking at the objective value
+    best_result_key = max(results, key=lambda x: results[x]['objective'])
+    best_result = results[best_result_key]
+    
+    best_eta = best_result['eta']
+    best_deltas = best_result['deltas']
+    best_lambdas = best_result['lambdas']
+    best_psi = best_result['psi']
+
+    chosen_cfmms = [cfmm for i, cfmm in enumerate(sim_env.all_cfmms) if best_eta[i] == 1]
+    chosen_mapping_matrices = [mapping_matrix for i, mapping_matrix in enumerate(sim_env.mapping_matrices) if best_eta[i] == 1]
+    chosen_deltas = [delta for i, delta in enumerate(best_deltas) if best_eta[i] == 1]
+    chosen_lambdas = [lambda_ for i, lambda_ in enumerate(best_lambdas) if best_eta[i] == 1]
+    
+    swaps = [] 
+
+    for i in range(len(chosen_cfmms)): 
+        c = chosen_cfmms[i]
+        m = chosen_mapping_matrices[i]
+        d = chosen_deltas[i]
+        l = chosen_lambdas[i]
+        
+        trade = m @ (l - d)
+        
+        tokens_from_trade = get_tokens_from_trade(trade, sim_env.all_tokens)
+        
+        if tokens_from_trade[c.tokens[0]] > 0:
+            in_token = c.tokens[0]
+            out_token = c.tokens[1]
+        else: 
+            in_token = c.tokens[1]
+            out_token = c.tokens[0]
+        
+        if c.is_transfer: 
+            swap_type = 'transfer'
+        else: 
+            swap_type = 'swap'
+            
+        swaps.append(Swap(in_token, tokens_from_trade[in_token], out_token, tokens_from_trade[out_token], swap_type))
+        
+    print(swaps)
