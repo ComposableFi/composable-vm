@@ -428,7 +428,7 @@ class AssetPairsXyk1(BaseModel):
     pool_value_in_usd: int | None = None
 
     @validator("pool_value_in_usd", pre=True, always=True)
-    def replace_nan_with_None(cls, v):
+    def replace_nan_with_none(cls, v):
         return v if v == v else None
 
     # total amounts in reserves R
@@ -439,7 +439,7 @@ class AssetPairsXyk1(BaseModel):
 
 
 def read_dummy_data(TEST_DATA_DIR: str = "./") -> AllData:
-    pairs = pd.read_csv(TEST_DATA_DIR / "assets_pairs_xyk.csv")
+    pairs = pd.read_csv(TEST_DATA_DIR + "assets_pairs_xyk.csv")
     return AllData(
         asset_pairs_xyk=[AssetPairsXyk(**row) for _index, row in pairs.iterrows()],
         asset_transfers=[

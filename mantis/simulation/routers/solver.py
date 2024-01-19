@@ -6,7 +6,7 @@ import cvxpy as cp
 from cvxpy.expressions.expression import Expression
 from cvxpy.expressions.variable import Variable
 
-from simulation.routers.data import AllData, Input, Output, test_all_data
+from simulation.routers.data import AllData, Input, Output, read_dummy_data
 
 
 @dataclass
@@ -47,24 +47,29 @@ class ConvexRouter():
 
 
     def parse_data(self, data: AllData) -> tuple[list[RouterExchange], list[RouterAsset]]:
-        assets: set[RouterAsset] = set()
+        assets: list[RouterAsset] = []
         exchanges: list[RouterExchange] = []
-
+        for token in data.all_tokens:
+            price_usd =  data.token_price_in_usd(token)
+            assets.append(RouterAsset(token, price_usd))
+            
+        print(assets)
         # Pools 
         for pool in data.asset_pairs_xyk:
             if pool.pool_value_in_usd is None:
                 # TODO: Maybe just ignore this pools???
+                continue
                 raise ValueError(f"There is no information about USD value for pool {pool}")
             
-            token_in_id = pool.in_asset_id
-            token_out_id = pool.out_asset_id
+            in_asset = [asset for asset in assets if pool.in_asset_id == asset.id][0]
+            out_asset = [asset for asset in assets if pool.out_asset_id == asset.id][0]
 
 
             exchanges.append(
-                ConstantProductPool(assets=[], 
+                ConstantProductPool(assets=[in_asset, out_asset], 
                                     fix_cost=0, #TODO: No information about this yet 
                                     reserves=[pool.in_token_amount, pool.out_token_amount], 
-                                    fee_in=pool.fee_of_in_per_million/1e6, 
+                                    fee_in=pool.fee_of_in_per_million/1e6,
                                     fee_out=pool.fee_of_out_per_million/1e6
                     )
             )
@@ -74,12 +79,16 @@ class ConvexRouter():
             # TODO: No way to determine the price per asset when asset is not in 
             # pool, is there any way to get the list of USD price, per asset, to
             # route this fixed price in USD
-            IbcTransfer(assets=[], 
+            
+            in_asset = [asset for asset in assets if transfer.in_asset_id == asset.id][0]
+            out_asset = [asset for asset in assets if transfer.out_asset_id == asset.id][0]
+            exchanges.append(IbcTransfer(assets=[in_asset, out_asset], 
                                     fix_cost=transfer.usd_fee_transfer,
-                                    reserves=[1e20, 1e20], 
-                                    fee_in=0, # No fee, only fix cost at the moment
+                                    reserves=[transfer.amount_of_in_token, transfer.amount_of_out_token], 
+                                    fee_in=transfer.fee_per_million/1e6, # No fee, only fix cost at the moment
                                     fee_out=0
                     )
+            )
         return exchanges, assets
 
     def get_new_reserve(
@@ -128,7 +137,7 @@ class ConvexRouter():
         # Binary value, indicates tx or not for given pool
         eta = cp.Variable(
             num_exchanges, boolean=is_micp, nonneg=not is_micp
-        )  
+        )
 
         # network trade vector - net amount received over all trades(transfers/exchanges)
         psi = cp.sum(
@@ -164,7 +173,7 @@ class ConvexRouter():
 
         # Set up and solve problem
         prob = cp.Problem(obj, constrains)
-        prob.solve(solver=cp.SCIP, verbose=False)
+        prob.solve(solver=cp.SCIP, verbose=True)
 
         print(
             f"\033[1;91m[{num_exchanges}]Total amount out: {psi.value[asset_index(input.out_token_id)]}\033[0m"
@@ -187,14 +196,10 @@ class ConvexRouter():
 
 
 if __name__ == "__main__":
-
-    data = test_all_data()
-
-    router = ConvexRouter()
-    input_obj = Input(in_token_id=1, 
-                      out_token_id=4, 
-                      in_amount=1, 
-                      out_amount=100, 
-                      max=True
-                      )
-    router.solve(data, input_obj)
+    from simulation.routers.data import new_data, new_input, new_pair
+    
+    input = new_input(1, 2, 100, 50)
+    pair = new_pair(1, 1, 2, 0, 0, 1, 10, 1000, 1_000_0000_000, 1_000_000_000)    
+    data = new_data([pair], [])
+    result = ConvexRouter().solve(data, input)
+    print(result)
