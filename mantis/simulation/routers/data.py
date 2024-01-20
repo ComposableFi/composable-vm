@@ -243,6 +243,22 @@ class AllData(BaseModel, Generic[TId, TAmount]):
         return reserves
 
     @property
+    #@lru_cache
+    def all_venues(self) -> list[list[TId]]:        
+        venues = []
+        for x in self.asset_pairs_xyk:
+            venues.append((x.in_asset_id, x.out_asset_id))
+        for x in self.asset_transfers:
+            venues.append((x.in_asset_id, x.out_asset_id))
+        return venues        
+    
+    
+    def venue(self, i: int):
+        reserves = self.all_reserves
+        venues = self.all_venues
+        return (venues[i], reserves[i])
+        
+    @property
     # @lru_cache
     def tokens_count(self) -> int:
         """_summary_

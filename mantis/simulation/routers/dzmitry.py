@@ -199,7 +199,7 @@ def route(
     )
     for i in range(all_data.venues_count):
         print(
-            f"Market {all_data.all_reserves[i][0]}<->{all_data.all_reserves[i][1]}, delta: {deltas[i].value}, lambda: {lambdas[i].value}, eta: {eta[i].value}",
+            f"Market {all_data.venue(i)}, delta: {deltas[i].value}, lambda: {lambdas[i].value}, eta: {eta[i].value}",
         )
 
     print(psi.value[all_data.index_of_token(input.out_token_id)], lastp_value)

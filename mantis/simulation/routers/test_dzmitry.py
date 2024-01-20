@@ -50,9 +50,16 @@ def test_single_chain_single_cffm_route_full_symmetry_exist():
     input = new_input(1, 2, 100, 50)
     pair = new_pair(1, 1, 2, 0, 0, 1, 1, 100, 1_000_000, 1_000_000)
     data = new_data([pair], [])
-
-    print(data)
-
+    result = route(input, data)
+    print(result)
+    
+def test_big_numeric_range():
+    input = new_input(1, 2, 100, 50)
+    pair = new_pair(1, 1, 2, 0, 0, 1, 10, 1000, 1_000_0000_000, 1_000_000_000)
+    data = new_data([pair], [])
+    result = route(input, data)
+    print(result)    
+    
 
 def test_simulate_all_connected_venues():
     input = new_input("WETH", "ATOM", 2000, 1)
@@ -110,15 +117,10 @@ def simulate_all_connected_venue(CENTER_NODE, chains) -> AllData:
 def simulate_all_to_all_connected_chains_topology(input: Input):
     CENTER_NODE = "CENTAURI"  # Name of center Node
 
-    # chains: dict[str, list[str]] = {
-    #     "ETHEREUM": [input.in_token_id, "USDC", "SHIBA"],
-    #     CENTER_NODE: [],
-    #     "OSMOSIS": [input.out_token_id,"SCRT"],
-    # }
     chains: dict[str, list[str]] = {
-        "ETHEREUM": [input.in_token_id],
+        "ETHEREUM": [input.in_token_id, "USDC", "SHIBA"],
         CENTER_NODE: [],
-        "OSMOSIS": [input.out_token_id],
+        "OSMOSIS": [input.out_token_id,"SCRT"],
     }
     populate_chain_dict(chains, CENTER_NODE)
     return CENTER_NODE, chains
