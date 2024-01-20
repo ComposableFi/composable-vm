@@ -43,7 +43,7 @@
     };
 
     scip = {
-      url = github:dzmitry-lahoda-forks/scip/169747d9a7d5b01a44722ea7db2ed389443e7a57;
+      url = github:dzmitry-lahoda-forks/scip/54daffd8e6f0c613c5a50e9555af22928947acb7;
     };
     devenv.url = "github:cachix/devenv";
     strictly-typed-pandas-src = {

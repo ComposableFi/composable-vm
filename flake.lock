@@ -1712,17 +1712,17 @@
         "suite-src": "suite-src"
       },
       "locked": {
-        "lastModified": 1705329512,
-        "narHash": "sha256-povisH+/D731BYg1GGaxQ8BlQPVtR+x/utxWw7o80+U=",
+        "lastModified": 1705778611,
+        "narHash": "sha256-eHnpL4GR8gGwh0X7nFmKK6H2wRoC2C7z4HsaTqZeSbQ=",
         "owner": "dzmitry-lahoda-forks",
         "repo": "scip",
-        "rev": "169747d9a7d5b01a44722ea7db2ed389443e7a57",
+        "rev": "54daffd8e6f0c613c5a50e9555af22928947acb7",
         "type": "github"
       },
       "original": {
         "owner": "dzmitry-lahoda-forks",
         "repo": "scip",
-        "rev": "169747d9a7d5b01a44722ea7db2ed389443e7a57",
+        "rev": "54daffd8e6f0c613c5a50e9555af22928947acb7",
         "type": "github"
       }
     },
