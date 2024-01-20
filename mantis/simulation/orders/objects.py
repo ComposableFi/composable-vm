@@ -8,7 +8,7 @@ import copy
 from dataclasses import dataclass
 import functools
 import time
-from .routers import bruno_original_solver 
+from .routers import bruno_original_solver
 
 getcontext().prec = 18
 BuyToken = NewType("BuyToken", Decimal)
@@ -21,7 +21,7 @@ def timeit(func: Callable):
     def wrapper(*arg, **kwargs):
         t1 = time.time()
         res = func(*arg, **kwargs)
-             
+
         t2 = time.time()
         # if t2 - t1 > 1e-3:
         # print(f"Time elapsed in {func.__name__} {t2-t1:.6f}s args: {arg} kwargs: {kwargs}")
