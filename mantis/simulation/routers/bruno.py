@@ -6,6 +6,7 @@ MAX_RESERVE = 1e10
 
 from mantis.simulation.routers.data import TId
 
+
 def solve(
     all_tokens: list[TId],
     all_cfmms: list[tuple[TId, TId]],
@@ -34,20 +35,22 @@ def solve(
         A.append(A_i)
 
     # Build variables
-    
+
     # tendered (given) amount
     deltas = [cp.Variable(len(l), nonneg=True) for l in all_cfmms]
-    
+
     # received (wanted) amounts
     lambdas = [cp.Variable(len(l), nonneg=True) for l in all_cfmms]
-    
+
     eta = cp.Variable(
         count_cfmms, nonneg=True
     )  # Binary value, indicates tx or not for given pool
 
     # network trade vector - net amount received over all trades(transfers/exchanges)
-    psi = cp.sum([A_i @ (LAMBDA - DELTA) for A_i, DELTA, LAMBDA in zip(A, deltas, lambdas)])
-    
+    psi = cp.sum(
+        [A_i @ (LAMBDA - DELTA) for A_i, DELTA, LAMBDA in zip(A, deltas, lambdas)]
+    )
+
     # Objective is to trade number_of_init_tokens of asset origin_token for a maximum amount of asset objective_token
     obj = cp.Maximize(psi[all_tokens.index(obj_token)] - eta @ cfmm_tx_cost)
 
@@ -82,9 +85,9 @@ def solve(
     prob = cp.Problem(obj, constrains)
     # success: CLARABEL,
     # failed: ECOS, GLPK, GLPK_MI, CVXOPT, SCIPY, CBC, SCS
-    # 
+    #
     # GLOP, SDPA, GUROBI, OSQP, CPLEX, MOSEK, , COPT, XPRESS, PIQP, PROXQP, NAG, PDLP, SCIP, DAQP
-    prob.solve(verbose= True)
+    prob.solve(verbose=True)
 
     print(
         f"\033[1;91mTotal amount out: {psi.value[all_tokens.index(obj_token)]}\033[0m"
@@ -94,7 +97,7 @@ def solve(
         print(
             f"Market {all_cfmms[i][0]}<->{all_cfmms[i][1]}, delta: {deltas[i].value}, lambda: {lambdas[i].value}, eta: {eta[i].value}",
         )
-    
+
     # deltas[i] - how much one gives to pool i
     # lambdas[i] - how much one wants to get from pool i
     return deltas, lambdas, psi, eta

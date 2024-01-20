@@ -8,7 +8,7 @@ import copy
 from dataclasses import dataclass
 import functools
 import time
-from .routers import bruno_original_solver 
+from .routers import bruno_original_solver
 
 getcontext().prec = 18
 BuyToken = NewType("BuyToken", Decimal)
@@ -21,6 +21,7 @@ def timeit(func: Callable):
     def wrapper(*arg, **kwargs):
         t1 = time.time()
         res = func(*arg, **kwargs)
+
         t2 = time.time()
         # if t2 - t1 > 1e-3:
         # print(f"Time elapsed in {func.__name__} {t2-t1:.6f}s args: {arg} kwargs: {kwargs}")
@@ -134,7 +135,10 @@ class Order:
 
     @classmethod
     def random(
-        cls, mean: float = 1.0, std: float = 0.05, volume_range: tuple[int, int] = (50, 150)
+        cls,
+        mean: float = 1.0,
+        std: float = 0.05,
+        volume_range: tuple[int, int] = (50, 150),
     ) -> Order:
         return cls(
             random.uniform(*volume_range),
@@ -216,7 +220,7 @@ class OrderList:
 
     def __hash__(self) -> int:
         return hash(tuple(order.id for order in self))
-    
+
     @functools.cache
     def compute_optimal_price(self, num_range=50) -> Price:
         """Computes the optimal price that will maximize the transacted volume in batch auction"""
@@ -224,7 +228,7 @@ class OrderList:
         max_volume = -1
         min_price = min(self.value, key=lambda x: x.limit_price).limit_price
         max_price = max(self.value, key=lambda x: x.limit_price).limit_price
-        for i in range(num_range+1):
+        for i in range(num_range + 1):
             price = min_price + i * (max_price - min_price) / num_range
             volume = self.volume_by_price(price)
             if volume > max_volume:
@@ -279,7 +283,7 @@ class Solution:
     @property
     def buy_orders(self) -> OrderList:
         return self.orders.buy()
-    
+
     @property
     def match_volume(self) -> Decimal:
         return self.buy_volume * self.sell_volume
@@ -298,8 +302,8 @@ class Solution:
         return copy.deepcopy(self)
 
     @classmethod
-    def match_orders(cls, orders : OrderList, price: Price) -> Solution:
-        orders =  orders.clone()
+    def match_orders(cls, orders: OrderList, price: Price) -> Solution:
+        orders = orders.clone()
         orders.value.sort(key=lambda x: x.limit_price)
 
         matched = orders.is_acceptable_price(price)
@@ -319,7 +323,7 @@ class Solution:
         solution = Solution(matched.filled().value)
 
         solution.check_constraints()
-        
+
         return solution
 
     @classmethod
@@ -327,13 +331,13 @@ class Solution:
         return cls([Order.random(*args, **kwargs) for _ in range(num_orders)])
 
     def print(self):
-        print("#"* 20 + " Start Solution " + "#"*20)
+        print("#" * 20 + " Start Solution " + "#" * 20)
         self.orders.print()
 
         print(
             f"\033[1mMatched Price {self.matched_price:.4f} \tSell volume {self.sell_volume:.4f}\tBuy volume {self.buy_volume:.4f}\033[0m"
         )
-        print("#"* 20 + " End Solution " + "#"*20)
+        print("#" * 20 + " End Solution " + "#" * 20)
         print()
 
 
@@ -404,7 +408,9 @@ class Solver:
 class CFMMSolver(Solver):
     cfmm: CFMM
 
-    def __init__(self, ob: Solution, cfmm: CFMM, buy_token: BuyToken, sell_token: SellToken):
+    def __init__(
+        self, ob: Solution, cfmm: CFMM, buy_token: BuyToken, sell_token: SellToken
+    ):
         self.cfmm = cfmm
         self.orders = ob
         self.buy_token = buy_token
@@ -482,7 +488,9 @@ class CFMM:
         return amount_out
 
     def swap(self, Delta: BuyToken | SellToken, in_reserve, out_reserve):
-        return out_reserve - in_reserve * out_reserve / (in_reserve + self.gamma * Delta)
+        return out_reserve - in_reserve * out_reserve / (
+            in_reserve + self.gamma * Delta
+        )
 
     @property
     def price(self):

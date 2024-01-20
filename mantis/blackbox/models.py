@@ -4,16 +4,22 @@ from blackbox.osmosis_pools import Model as OsmosisPoolsModel
 from blackbox.skip_money import Chain
 from pydantic import BaseModel
 
+
 class OsmosisPoolsResponse(BaseModel):
     pools: OsmosisPoolsModel
-    
+
+
 class CosmosChains(BaseModel):
     chains: list[Chain]
+
+
 class NeutronPoolsResponseData(BaseModel):
-    data : NeutronPoolsModel
+    data: NeutronPoolsModel
+
 
 class NeutronPoolsResponse(BaseModel):
-    result : NeutronPoolsResponseData
+    result: NeutronPoolsResponseData
+
 
 class AllData(BaseModel):
     osmosis_pools: OsmosisPoolsModel

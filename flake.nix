@@ -527,6 +527,7 @@
                 cd mantis
                 echo "running tests"
                 nix develop --impure --command poetry run pytest
+                nix develop --impure --command poetry run black . --check
                 nix develop --impure --command poetry check --lock
               )
               nix flake show --all-systems --json --no-write-lock-file

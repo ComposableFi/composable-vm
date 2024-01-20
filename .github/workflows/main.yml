@@ -8,6 +8,7 @@ on:
 jobs:
   check:
     runs-on: "ubuntu-latest-m"
+    if: github.event_name != 'push'
     concurrency:  
       cancel-in-progress: true
       group: "${{ github.event_name }}-${{ github.ref_name }}-${{ github.ref_type }}--${{ github.ref }}-check"

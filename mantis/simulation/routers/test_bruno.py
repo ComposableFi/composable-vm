@@ -1,8 +1,9 @@
 import itertools
 import numpy as np
 
-from  mantis.simulation.routers.bruno import solve
+from mantis.simulation.routers.bruno import solve
 from mantis.simulation.routers.data import TNetworkId, TId
+
 
 # simulate denom paths to and from chains, with center node
 def populate_chain_dict(chains: dict[TNetworkId, list[TId]], center_node: TNetworkId):
@@ -12,8 +13,8 @@ def populate_chain_dict(chains: dict[TNetworkId, list[TId]], center_node: TNetwo
         if chain != center_node:
             chains[center_node].extend(f"{chain}/{token}" for token in tokens)
 
-    1# Add tokens from Center Node to outers
-    
+    1  # Add tokens from Center Node to outers
+
     # Simulate IBC transfer through Composable Cosmos
     for chain, tokens in chains.items():
         if chain != center_node:
@@ -22,6 +23,7 @@ def populate_chain_dict(chains: dict[TNetworkId, list[TId]], center_node: TNetwo
                 for token in chains[center_node]
                 if f"{chain}/" not in token
             )
+
 
 def simulate():
     print("=============== chains and tokens ========================")
@@ -33,10 +35,9 @@ def simulate():
     chains: dict[str, list[str]] = {
         "ETHEREUM": ["WETH", "USDC", "SHIBA"],
         CENTER_NODE: [],
-        "OSMOSIS": ["ATOM","SCRT"],
+        "OSMOSIS": ["ATOM", "SCRT"],
     }
-    populate_chain_dict(chains,CENTER_NODE)
-
+    populate_chain_dict(chains, CENTER_NODE)
 
     all_tokens = []
     all_cfmms = []
@@ -45,7 +46,6 @@ def simulate():
     cfmm_tx_cost = []
     ibc_pools = 0
     tol = 1e-4
-
 
     print(chains)
 
@@ -83,20 +83,19 @@ def simulate():
     for i, cfmm in enumerate(all_cfmms):
         print(i, cfmm)
     input_amount = 2000
-    
 
     print("=============== solving ========================")
     _deltas, _lambdas, psi, n = solve(
-        all_tokens, 
-        all_cfmms, 
-        reserves, 
-        cfmm_tx_cost, 
-        fees, 
-        ibc_pools, 
+        all_tokens,
+        all_cfmms,
+        reserves,
+        cfmm_tx_cost,
+        fees,
+        ibc_pools,
         ORIGIN_TOKEN,
         input_amount,
-        OBJ_TOKEN
-        )
+        OBJ_TOKEN,
+    )
 
     to_look_n: list[float] = []
     for i in range(len(all_cfmms)):
@@ -105,7 +104,7 @@ def simulate():
     _max = 0
     for t in sorted(to_look_n):
         try:
-            d2, l2, p2, n2 =  solve(
+            d2, l2, p2, n2 = solve(
                 all_tokens,
                 all_cfmms,
                 reserves,
@@ -118,7 +117,7 @@ def simulate():
                 [1 if value <= t else 0 for value in to_look_n],
             )
             if psi.value[all_tokens.index(OBJ_TOKEN)] > _max:
-                d_max, l_max, p_max, n_max = d2, l2, p2, n2 
+                d_max, l_max, p_max, n_max = d2, l2, p2, n2
             print("---")
         except:
             continue
@@ -152,29 +151,30 @@ def simulate():
 
     print("---")
     deltas, lambdas, psi, eta = solve(
-                    all_tokens,
-                    all_cfmms,
-                    reserves,
-                    cfmm_tx_cost,
-                    fees,
-                    ibc_pools,
-                    ORIGIN_TOKEN,
-                    input_amount,
-                    OBJ_TOKEN,
-                    eta,
-                )
+        all_tokens,
+        all_cfmms,
+        reserves,
+        cfmm_tx_cost,
+        fees,
+        ibc_pools,
+        ORIGIN_TOKEN,
+        input_amount,
+        OBJ_TOKEN,
+        eta,
+    )
     m = len(all_cfmms)
     for i in range(m):
         print(
             f"Market {all_cfmms[i][0]}<->{all_cfmms[i][1]}, delta: {deltas[i].value}, lambda: {lambdas[i].value}, eta: {eta[i].value}",
         )
 
-    print(psi.value[all_tokens.index(OBJ_TOKEN)],lastp_value)
+    print(psi.value[all_tokens.index(OBJ_TOKEN)], lastp_value)
     # basically, we have matrix where rows are in tokens (DELTA)
     # columns are outs (LAMBDA)
     # so recursively going DELTA-LAMBDA and subtracting values from cells
-    # will allow to build route with amounts 
-    return (psi.value[all_tokens.index(OBJ_TOKEN)],lastp_value)
-    
+    # will allow to build route with amounts
+    return (psi.value[all_tokens.index(OBJ_TOKEN)], lastp_value)
+
+
 if __name__ == "__main__":
     simulate()
