@@ -2445,4 +2445,4 @@ numpy = ">=1.23,<2.0a0"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.11.6, <=3.11.7"
-content-hash = "cf024650729cc90540e249c5b80318d73960e196075ca5881dfa1a4c8bf15728"
+content-hash = "0e831dbdf107c3a96b8fd5da09907c291ae86188cad81231e4523dab715bce1e"

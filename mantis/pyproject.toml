@@ -53,6 +53,7 @@ uvicorn = "0.25.0"
 methodtools = "0.4.7"
 tqdm = "^4.66.0"
 orjson="3.9.10"
+typeguard = "2.13.3"
 
 # on if used only:
 # clarabel = "0.6.0"
