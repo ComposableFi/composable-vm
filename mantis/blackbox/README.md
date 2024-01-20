@@ -1,9 +1,6 @@
 # Readme
 
-
-
 Blackbox never calls any transactions, because it is need higher level of security and because TX clients are binary highly tuned to network, to which Python may not hae good access.
-
 
 ## Integration
 
