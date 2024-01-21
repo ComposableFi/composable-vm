@@ -169,6 +169,15 @@ class SolutionType(Enum):
     PARTIAL = 3
 
 
+class PreBaked(BaseModel):
+    """_summary_
+     Prebaked data with well know numeric ranges.
+     Used for numeric to work in solver.
+     Reduces scale and holds rediction parameters so that,
+     allong with _AllData_ can be used to convert to expected original _Output_ range
+    """
+    pass
+
 class Output(BaseModel):
     # str describing failure to find any solution
     route: SingleInputAssetCvmRoute | str
