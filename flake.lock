@@ -1575,16 +1575,16 @@
     "pyscipopt-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1679082070,
-        "narHash": "sha256-TTGE1nq9JIPpPax+c782KuFn9SObBtwNKuHejiYOFzw=",
+        "lastModified": 1701706375,
+        "narHash": "sha256-xI5auBByQIA/eb/u1/8u7A0xyZHeRMw3hA+BGTFWf84=",
         "owner": "scipopt",
         "repo": "PySCIPOpt",
-        "rev": "a5936a7617904cf41c3f176b4516acbf6bf3791f",
+        "rev": "0b6bb13db6dd6eafa1ece660dedee11f4c226865",
         "type": "github"
       },
       "original": {
         "owner": "scipopt",
-        "ref": "v4.3.0",
+        "ref": "v4.4.0",
         "repo": "PySCIPOpt",
         "type": "github"
       }

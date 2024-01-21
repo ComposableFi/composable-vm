@@ -1,5 +1,7 @@
 # for alignment on input and output of algorithm
+from fractions import Fraction
 from functools import cache
+import math
 import numpy as np
 import pandas as pd
 from enum import Enum
@@ -12,17 +14,18 @@ TId = TypeVar("TId")
 TNetworkId = TypeVar("TNetworkId")
 TAmount = TypeVar("TAmount")
 
+
 class Ctx(BaseModel):
-    debug : bool = False
+    debug: bool = False
     """_summary_
      If set to true, solver must output maxima inormation about solution 
     """
-    integer : bool = False
+    integer: bool = False
     """_summary_
      If set too true, solver must solve only integer problems.
      All inputs to solver are really integers. 
     """
-    
+
 
 class AssetTransfers(
     BaseModel,
@@ -54,6 +57,7 @@ class AssetTransfers(
     @validator("metadata", pre=True, always=True)
     def replace_nan_with_None(cls, v):
         return None if isinstance(v, float) else v
+
 
 class AssetPairsXyk(
     BaseModel,
@@ -175,6 +179,8 @@ class AllData(BaseModel, Generic[TId, TAmount]):
     """
     Immutable(frozen) after creation (so can cache everything)
     Global labelling of assets and exchanges
+    It can be expected that original value of input can be up 2^128 integer (so it is edge case).
+    Expected real case 2^64.
     """
 
     # If key is in first set, it cannot be in second set, and other way around
@@ -223,29 +229,41 @@ class AllData(BaseModel, Generic[TId, TAmount]):
             costs.append(x.usd_fee_transfer)
         return costs
 
+    def venue_fixed_costs_in(self, token: TId) -> list[int]:
+        """_summary_
+        Converts fixed price of venue in usd to specific token
+        """
+        venues_prices_usd = self.venue_fixed_costs_in_usd
+        in_token = []
+        for x in venues_prices_usd:
+            token_in_usd = self.token_price_in_usd(token)
+            assert token_in_usd != None
+            in_token.append(math.ceil(x / token_in_usd))
+        return in_token
+
     @property
-    def venues_proportional_reductions(self) -> list[float]:
+    def venues_proportional_reductions(self) -> list[Fraction]:
         """_summary_
         remaining_% = 1 - fee_%
         """
+        denom = 1_000_000
         reduced = []
         for x in self.asset_pairs_xyk:
-            fee = max(x.fee_of_in_per_million, x.fee_of_in_per_million) / 1_000_000.0
+            fee = Fraction(max(x.fee_of_in_per_million, x.fee_of_in_per_million), denom)
             reduced.append(1 - fee)
         for x in self.asset_transfers:
-            fee = max(x.fee_per_million, x.fee_per_million) / 1_000_000.0
+            fee = Fraction(max(x.fee_per_million, x.fee_per_million), denom)
             reduced.append(1 - fee)
         return reduced
 
     @property
-    # @lru_cache
-    def all_reserves(self) -> list[np.ndarray[np.uint64]]:
+    def all_reserves(self) -> list[np.ndarray[int]]:
         """_summary_
         Produces reserves per asset in next order
         - xyk
         - escrow amounts
         """
-        
+
         reserves = []
         for x in self.asset_pairs_xyk:
             reserves.append(np.array([x.in_token_amount, x.out_token_amount]))
@@ -254,21 +272,20 @@ class AllData(BaseModel, Generic[TId, TAmount]):
         return reserves
 
     @property
-    #@lru_cache
-    def all_venues(self) -> list[list[TId]]:        
+    # @lru_cache
+    def all_venues(self) -> list[list[TId]]:
         venues = []
         for x in self.asset_pairs_xyk:
             venues.append((x.in_asset_id, x.out_asset_id))
         for x in self.asset_transfers:
             venues.append((x.in_asset_id, x.out_asset_id))
-        return venues        
-    
-    
+        return venues
+
     def venue(self, i: int):
         reserves = self.all_reserves
         venues = self.all_venues
         return (venues[i], reserves[i])
-        
+
     @property
     # @lru_cache
     def tokens_count(self) -> int:

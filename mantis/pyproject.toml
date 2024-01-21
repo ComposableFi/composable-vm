@@ -55,9 +55,9 @@ tqdm = "^4.66.0"
 orjson="3.9.10"
 typeguard = "2.13.3"
 
+PySCIPOpt = "4.4.0" # i set it directly to allow override SCIP dep (currently it is goes as binary with this wheel)s
 # on if used only:
 # clarabel = "0.6.0"
-PySCIPOpt = "4.4.0"
 # cylp = "0.92.2"  # have problems installing
 # ortools="9.4.1874" # have problems installing
 

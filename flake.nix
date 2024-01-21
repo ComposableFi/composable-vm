@@ -78,7 +78,7 @@
     };
 
     pyscipopt-src = {
-      url = "github:scipopt/PySCIPOpt/v4.3.0";
+      url = "github:scipopt/PySCIPOpt/v4.4.0";
       flake = false;
     };
   };
@@ -422,7 +422,7 @@
         native-deps = [
           pkgs.cbc
           inputs'.scip.packages.scip
-          pkgs.CoinMP
+          #pkgs.CoinMP
           pkgs.ipopt
           pkgs.or-tools
         ];
@@ -522,6 +522,14 @@
               nativeBuildInputs = native-deps;
             });
           default = mantis-blackbox;
+          fix = pkgs.writeShellApplication {
+            name = "fix";
+            text = ''
+              poetry lock --no-update
+              poetry install
+              poetry run black .
+            '';
+          };
           ci = pkgs.writeShellApplication {
             name = "nix-build-all";
             runtimeInputs = [
