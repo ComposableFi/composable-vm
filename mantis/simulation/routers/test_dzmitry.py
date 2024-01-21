@@ -53,9 +53,9 @@ def test_single_chain_single_cffm_route_full_symmetry_exist():
     result = route(input, data)
     print(result)
     
-def _test_big_numeric_range():
+def test_big_numeric_range():
     input = new_input(1, 2, 100, 50)
-    pair = new_pair(1, 1, 2, 0, 0, 1, 10, 1000, 1_000_0000_000, 1_000_000_000)
+    pair = new_pair(1, 1, 2, 0, 0, 1, 10, 1000, 10_000_000_000, 1_000_000_000)
     data = new_data([pair], [])
     result = route(input, data)
     print(result)    

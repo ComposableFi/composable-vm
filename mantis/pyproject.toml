@@ -57,7 +57,7 @@ typeguard = "2.13.3"
 
 # on if used only:
 # clarabel = "0.6.0"
-# PySCIPOpt = "4.3.0"
+PySCIPOpt = "4.4.0"
 # cylp = "0.92.2"  # have problems installing
 # ortools="9.4.1874" # have problems installing
 

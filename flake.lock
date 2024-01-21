@@ -1453,22 +1453,6 @@
         "type": "github"
       }
     },
-    "nixpkgs_6": {
-      "locked": {
-        "lastModified": 1705133751,
-        "narHash": "sha256-rCIsyE80jgiOU78gCWN3A0wE0tR2GI5nH6MlS+HaaSQ=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "9b19f5e77dd906cb52dade0b7bd280339d2a1f3d",
-        "type": "github"
-      },
-      "original": {
-        "owner": "NixOS",
-        "ref": "nixos-unstable",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
     "osmosis-src": {
       "flake": false,
       "locked": {
@@ -1706,23 +1690,25 @@
     "scip": {
       "inputs": {
         "flake-parts": "flake-parts_3",
-        "nixpkgs": "nixpkgs_6",
+        "nixpkgs": [
+          "nixpkgs"
+        ],
         "papilo-src": "papilo-src",
         "soplex-src": "soplex-src",
         "suite-src": "suite-src"
       },
       "locked": {
-        "lastModified": 1705778611,
-        "narHash": "sha256-eHnpL4GR8gGwh0X7nFmKK6H2wRoC2C7z4HsaTqZeSbQ=",
+        "lastModified": 1705788282,
+        "narHash": "sha256-I763x6ibkjebXStWm5s/iNn9Eoirfrcz0LJaTpYCg0Y=",
         "owner": "dzmitry-lahoda-forks",
         "repo": "scip",
-        "rev": "54daffd8e6f0c613c5a50e9555af22928947acb7",
+        "rev": "7f083e91574527c8fb788c608e3b47f39217b47b",
         "type": "github"
       },
       "original": {
         "owner": "dzmitry-lahoda-forks",
         "repo": "scip",
-        "rev": "54daffd8e6f0c613c5a50e9555af22928947acb7",
+        "rev": "7f083e91574527c8fb788c608e3b47f39217b47b",
         "type": "github"
       }
     },

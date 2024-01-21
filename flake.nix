@@ -43,7 +43,8 @@
     };
 
     scip = {
-      url = github:dzmitry-lahoda-forks/scip/54daffd8e6f0c613c5a50e9555af22928947acb7;
+      url = github:dzmitry-lahoda-forks/scip/7f083e91574527c8fb788c608e3b47f39217b47b;
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     devenv.url = "github:cachix/devenv";
     strictly-typed-pandas-src = {
@@ -259,8 +260,11 @@
           name = "pyscipopt";
           version = "v4.3.0";
           format = "pyproject";
-
+          SCIPOPTDIR = inputs'.scip.packages.scip;
           src = inputs.pyscipopt-src;
+          propagatedBuildInputs = [
+            inputs'.scip.packages.scip
+          ];
 
           nativeBuildInputs = with pkgs.python3Packages; [
             setuptools
@@ -443,6 +447,7 @@
               pkgs.zlib.out
 
               "${inputs'.scip.packages.scip}/lib"
+              inputs'.scip.packages.scip
             ];
           };
 
@@ -484,6 +489,7 @@
         };
         formatter = pkgs.alejandra;
         packages = rec {
+            scip = inputs'.scip.packages.scip;
           inherit
             cw-mantis-order
             cw-cvm-executor

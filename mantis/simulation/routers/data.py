@@ -12,6 +12,17 @@ TId = TypeVar("TId")
 TNetworkId = TypeVar("TNetworkId")
 TAmount = TypeVar("TAmount")
 
+class Ctx(BaseModel):
+    debug : bool = False
+    """_summary_
+     If set to true, solver must output maxima inormation about solution 
+    """
+    integer : bool = False
+    """_summary_
+     If set too true, solver must solve only integer problems.
+     All inputs to solver are really integers. 
+    """
+    
 
 class AssetTransfers(
     BaseModel,
@@ -43,7 +54,6 @@ class AssetTransfers(
     @validator("metadata", pre=True, always=True)
     def replace_nan_with_None(cls, v):
         return None if isinstance(v, float) else v
-
 
 class AssetPairsXyk(
     BaseModel,
@@ -229,12 +239,13 @@ class AllData(BaseModel, Generic[TId, TAmount]):
 
     @property
     # @lru_cache
-    def all_reserves(self) -> list[np.ndarray[np.float64]]:
+    def all_reserves(self) -> list[np.ndarray[np.uint64]]:
         """_summary_
         Produces reserves per asset in next order
         - xyk
         - escrow amounts
         """
+        
         reserves = []
         for x in self.asset_pairs_xyk:
             reserves.append(np.array([x.in_token_amount, x.out_token_amount]))
