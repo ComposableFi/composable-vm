@@ -1453,22 +1453,6 @@
         "type": "github"
       }
     },
-    "nixpkgs_6": {
-      "locked": {
-        "lastModified": 1705133751,
-        "narHash": "sha256-rCIsyE80jgiOU78gCWN3A0wE0tR2GI5nH6MlS+HaaSQ=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "9b19f5e77dd906cb52dade0b7bd280339d2a1f3d",
-        "type": "github"
-      },
-      "original": {
-        "owner": "NixOS",
-        "ref": "nixos-unstable",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
     "osmosis-src": {
       "flake": false,
       "locked": {
@@ -1591,16 +1575,16 @@
     "pyscipopt-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1679082070,
-        "narHash": "sha256-TTGE1nq9JIPpPax+c782KuFn9SObBtwNKuHejiYOFzw=",
+        "lastModified": 1701706375,
+        "narHash": "sha256-xI5auBByQIA/eb/u1/8u7A0xyZHeRMw3hA+BGTFWf84=",
         "owner": "scipopt",
         "repo": "PySCIPOpt",
-        "rev": "a5936a7617904cf41c3f176b4516acbf6bf3791f",
+        "rev": "0b6bb13db6dd6eafa1ece660dedee11f4c226865",
         "type": "github"
       },
       "original": {
         "owner": "scipopt",
-        "ref": "v4.3.0",
+        "ref": "v4.4.0",
         "repo": "PySCIPOpt",
         "type": "github"
       }
@@ -1706,23 +1690,25 @@
     "scip": {
       "inputs": {
         "flake-parts": "flake-parts_3",
-        "nixpkgs": "nixpkgs_6",
+        "nixpkgs": [
+          "nixpkgs"
+        ],
         "papilo-src": "papilo-src",
         "soplex-src": "soplex-src",
         "suite-src": "suite-src"
       },
       "locked": {
-        "lastModified": 1705329512,
-        "narHash": "sha256-povisH+/D731BYg1GGaxQ8BlQPVtR+x/utxWw7o80+U=",
+        "lastModified": 1705788282,
+        "narHash": "sha256-I763x6ibkjebXStWm5s/iNn9Eoirfrcz0LJaTpYCg0Y=",
         "owner": "dzmitry-lahoda-forks",
         "repo": "scip",
-        "rev": "169747d9a7d5b01a44722ea7db2ed389443e7a57",
+        "rev": "7f083e91574527c8fb788c608e3b47f39217b47b",
         "type": "github"
       },
       "original": {
         "owner": "dzmitry-lahoda-forks",
         "repo": "scip",
-        "rev": "169747d9a7d5b01a44722ea7db2ed389443e7a57",
+        "rev": "7f083e91574527c8fb788c608e3b47f39217b47b",
         "type": "github"
       }
     },

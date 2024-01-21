@@ -43,7 +43,8 @@
     };
 
     scip = {
-      url = github:dzmitry-lahoda-forks/scip/169747d9a7d5b01a44722ea7db2ed389443e7a57;
+      url = github:dzmitry-lahoda-forks/scip/7f083e91574527c8fb788c608e3b47f39217b47b;
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     devenv.url = "github:cachix/devenv";
     strictly-typed-pandas-src = {
@@ -77,7 +78,7 @@
     };
 
     pyscipopt-src = {
-      url = "github:scipopt/PySCIPOpt/v4.3.0";
+      url = "github:scipopt/PySCIPOpt/v4.4.0";
       flake = false;
     };
   };
@@ -259,8 +260,11 @@
           name = "pyscipopt";
           version = "v4.3.0";
           format = "pyproject";
-
+          SCIPOPTDIR = inputs'.scip.packages.scip;
           src = inputs.pyscipopt-src;
+          propagatedBuildInputs = [
+            inputs'.scip.packages.scip
+          ];
 
           nativeBuildInputs = with pkgs.python3Packages; [
             setuptools
@@ -418,7 +422,7 @@
         native-deps = [
           pkgs.cbc
           inputs'.scip.packages.scip
-          pkgs.CoinMP
+          #pkgs.CoinMP
           pkgs.ipopt
           pkgs.or-tools
         ];
@@ -443,6 +447,7 @@
               pkgs.zlib.out
 
               "${inputs'.scip.packages.scip}/lib"
+              inputs'.scip.packages.scip
             ];
           };
 
@@ -484,6 +489,7 @@
         };
         formatter = pkgs.alejandra;
         packages = rec {
+            scip = inputs'.scip.packages.scip;
           inherit
             cw-mantis-order
             cw-cvm-executor
@@ -516,6 +522,14 @@
               nativeBuildInputs = native-deps;
             });
           default = mantis-blackbox;
+          fix = pkgs.writeShellApplication {
+            name = "fix";
+            text = ''
+              poetry lock --no-update
+              poetry install
+              poetry run black .
+            '';
+          };
           ci = pkgs.writeShellApplication {
             name = "nix-build-all";
             runtimeInputs = [

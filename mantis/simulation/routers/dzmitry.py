@@ -7,7 +7,7 @@ import cvxpy as cp
 
 MAX_RESERVE = 1e10
 
-from simulation.routers.data import AllData, Input, TId, TNetworkId
+from simulation.routers.data import AllData, Input, TId, TNetworkId, Ctx
 
 
 # prepares data for solving and outputs raw solution from underlying engine
@@ -17,7 +17,8 @@ def solve(
     force_eta: list[float] = None,
 ):
     # initial input assets
-    current_assets = np.zeros(all_data.tokens_count)
+
+    current_assets = np.full((all_data.tokens_count), int(0))
     current_assets[all_data.index_of_token(input.in_token_id)] = input.in_amount
 
     reserves = all_data.all_reserves
@@ -27,14 +28,14 @@ def solve(
 
     for x in all_data.asset_pairs_xyk:
         n_i = 2  # number of tokens in transfer
-        A_i = np.zeros((all_data.tokens_count, n_i))
+        A_i = np.full((all_data.tokens_count, n_i), int(0))
         A_i[all_data.index_of_token(x.in_asset_id), 0] = 1
         A_i[all_data.index_of_token(x.out_asset_id), 1] = 1
         A.append(A_i)
 
     for x in all_data.asset_transfers:
         n_i = 2  # number of tokens in pool
-        A_i = np.zeros((all_data.tokens_count, n_i))
+        A_i = np.full((all_data.tokens_count, n_i), int(0))
         A_i[all_data.index_of_token(x.in_asset_id), 0] = 1
         A_i[all_data.index_of_token(x.out_asset_id), 1] = 1
         A.append(A_i)
@@ -52,8 +53,9 @@ def solve(
     eta = cp.Variable(
         all_data.venues_count,
         nonneg=True,
-        # boolean=True, # Problem is mixed-integer, but candidate QP/Conic solvers ([]) are not MIP-capable.
+        # boolean=True, # Problem is mixed-integer
     )
+    assert all_data.venues_count == eta.shape[0]
 
     # network trade vector - net amount received over all trades(transfers/exchanges)
     psi = cp.sum(
@@ -62,13 +64,12 @@ def solve(
 
     assert len(A) == all_data.venues_count
     assert len(reserves) == all_data.venues_count
-    assert all_data.venues_count == eta.shape[0]
     assert len(current_assets) == len(all_data.all_tokens)
 
     # Objective is to trade number_of_init_tokens of asset origin_token for a maximum amount of asset objective_token
     obj = cp.Maximize(
         psi[all_data.index_of_token(input.out_token_id)]
-        - eta @ all_data.venue_fixed_costs_in_usd
+        - eta @ all_data.venue_fixed_costs_in(input.out_token_id)
     )  # divide costs by target price in usd
 
     # Reserves after trade
@@ -85,7 +86,6 @@ def solve(
     ]
 
     # Pool constraint (Uniswap v2 like)
-
     for x in all_data.asset_pairs_xyk:
         i = all_data.get_index_in_all(x)
         constrains.append(cp.geo_mean(new_reserves[i]) >= cp.geo_mean(reserves[i]))
@@ -115,14 +115,6 @@ def solve(
         qcp=False,
     )
 
-    # print("==========================================================================================")
-    # print(all_data.index_of_token(input.out_token_id))
-    # print("==========================================================================================")
-    # assert(psi != None)
-    # assert(psi.value != None)
-    # assert(all_data != None)
-    # assert(all_data.index_of_token(input.out_token_id) != None)
-
     print(
         f"\033[1;91mTotal amount out: {psi.value[all_data.index_of_token(input.out_token_id)]}\033[0m"
     )
@@ -148,6 +140,7 @@ def prepare_data(input: Input, all_data: AllData):
 def route(
     input: Input,
     all_data: AllData,
+    _ctx: Ctx = Ctx(),
 ):
     _deltas, _lambdas, psi, n = solve(
         all_data,
@@ -199,7 +192,7 @@ def route(
     )
     for i in range(all_data.venues_count):
         print(
-            f"Market {all_data.all_reserves[i][0]}<->{all_data.all_reserves[i][1]}, delta: {deltas[i].value}, lambda: {lambdas[i].value}, eta: {eta[i].value}",
+            f"Market {all_data.venue(i)}, delta: {deltas[i].value}, lambda: {lambdas[i].value}, eta: {eta[i].value}",
         )
 
     print(psi.value[all_data.index_of_token(input.out_token_id)], lastp_value)
