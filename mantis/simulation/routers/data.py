@@ -14,11 +14,10 @@ TId = TypeVar("TId")
 TNetworkId = TypeVar("TNetworkId")
 TAmount = TypeVar("TAmount")
 
-
 class Ctx(BaseModel):
     debug: bool = False
     """_summary_
-     If set to true, solver must output maxima inormation about solution 
+     If set to true, solver must output maxima information about solution 
     """
     integer: bool = False
     """_summary_
@@ -120,10 +119,17 @@ class Input(
     # natural set key is ordered pair (in_token_id, out_token_id)
     in_token_id: TId
     out_token_id: TId
-    # tendered amount DELTA
     in_amount: TAmount
-    # expected received amount LAMBDA
+    """
+        tendered amount DELTA
+    """
+    
     out_amount: TAmount
+    """
+      Expected received amount LAMBDA.
+      Can be used to find out A/B min price  per user in case there is no pool
+    """
+    
     # if max is True, user wants to spent all in to get at least out
     # if max is False, user wants to get exact out, but spent as small as possible in
     # please fail if bool is False for now
