@@ -5,8 +5,6 @@
 import numpy as np
 import cvxpy as cp
 
-MAX_RESERVE = 1e10
-
 from simulation.routers.data import AllData, Input, TId, TNetworkId, Ctx
 
 
@@ -14,6 +12,7 @@ from simulation.routers.data import AllData, Input, TId, TNetworkId, Ctx
 def solve(
     all_data: AllData,
     input: Input,
+    ctx : Ctx,
     force_eta: list[float] = None,
 ):
     # initial input assets
@@ -81,36 +80,41 @@ def solve(
     ]
 
     # Trading function constraints
-    constrains = [
+    constraints = [
         psi + current_assets >= 0,
     ]
 
     # Pool constraint (Uniswap v2 like)
     for x in all_data.asset_pairs_xyk:
         i = all_data.get_index_in_all(x)
-        constrains.append(cp.geo_mean(new_reserves[i]) >= cp.geo_mean(reserves[i]))
+        constraints.append(cp.geo_mean(new_reserves[i]) >= cp.geo_mean(reserves[i]))
 
     # Pool constraint for cross chain transfer transfer (constant sum)
     for x in all_data.asset_transfers:
         i = all_data.get_index_in_all(x)
-        constrains.append(cp.sum(new_reserves[i]) >= cp.sum(reserves[i]))
-        constrains.append(new_reserves[i] >= 0)
+        constraints.append(cp.sum(new_reserves[i]) >= cp.sum(reserves[i]))
+        constraints.append(new_reserves[i] >= 0)
 
     # Enforce deltas depending on pass or not pass variable
-    # MAX_RESERVE should be big enough so delta <<< MAX_RESERVE
     for i in range(all_data.venues_count):
-        constrains.append(deltas[i] <= eta[i] * MAX_RESERVE)
         if force_eta:
-            constrains.append(eta[i] == force_eta[i])
-
+            constraints.append(eta[i] == force_eta[i])
+        if force_eta and force_eta[i] == 0:
+            # Forcing delta and lambda to be 0 if eta is 0
+            constraints.append(deltas[i] == 0)
+            constraints.append(lambdas[i] == 0)
+        else: 
+            # MAX_RESERVE should be big enough so delta <<< MAX_RESERVE
+            constraints.append(deltas[i] <= eta[i] * ctx.max_reserve)
+        
     # Set up and solve problem
-    prob = cp.Problem(obj, constrains)
+    prob = cp.Problem(obj, constraints)
     # success: CLARABEL,
     # failed: ECOS, GLPK, GLPK_MI, CVXOPT, SCIPY, CBC, SCS
     #
     # GLOP, SDPA, GUROBI, OSQP, CPLEX, MOSEK, , COPT, XPRESS, PIQP, PROXQP, NAG, PDLP, SCIP, DAQP
     prob.solve(
-        verbose=True,
+        verbose=ctx.debug,
         solver=cp.SCIP,
         qcp=False,
     )
@@ -140,46 +144,50 @@ def prepare_data(input: Input, all_data: AllData):
 def route(
     input: Input,
     all_data: AllData,
-    _ctx: Ctx = Ctx(),
+    ctx: Ctx = Ctx(),
 ):
     _deltas, _lambdas, psi, initial_etas = solve(
         all_data,
         input,
+        ctx,
+        None,
     )
     to_look_n: list[float] = []
     for i in range(all_data.venues_count):
         to_look_n.append(initial_etas[i].value)
 
-    _max = 0
+    received_max = 0
     for t in sorted(to_look_n):
         try:
-            d2, l2, p2, n2 = solve(
+            new_delta, new_lambda, new_psi, new_eta = solve(
                 all_data,
                 input,
+                ctx,
                 [1 if value <= t else 0 for value in to_look_n],
             )
-            if psi.value[all_data.index_of_token(input.out_token_id)] > _max:
-                d_max, _l_max, _p_max, eta_max = d2, l2, p2, n2
+            if psi.value[all_data.index_of_token(input.out_token_id)] > received_max:
+                delta_max, _lambda_max, _psi_max, eta_max = new_delta, new_lambda, new_psi, new_eta
             print("---")
         except:
             continue
     eta = eta_max
     eta_changed = True
     print("---------")
-    # total received token
-    last_psi_value = psi.value[all_data.index_of_token(input.out_token_id)]
+    # received token
+    psi_before_zero_delta_elimination = psi.value[all_data.index_of_token(input.out_token_id)]
     while eta_changed:
         try:
             eta_changed = False
 
-            for idx, delta in enumerate(d_max):
+            for i, delta in enumerate(delta_max):
                 # if input into venue is small, disable using it
                 if all(delta_i.value < 1e-04 for delta_i in delta):
-                    eta_max[idx] = 0
+                    eta_max[i] = 0
                     eta_changed = True
-            d_max, _lambdas, psi, eta = solve(
+            delta_max, _lambdas, psi, eta = solve(
                 all_data,
                 input,
+                ctx,
                 eta,
             )
 
@@ -190,6 +198,7 @@ def route(
     deltas, lambdas, psi, eta = solve(
         all_data,
         input,
+        ctx,
         eta,
     )
     for i in range(all_data.venues_count):
@@ -197,9 +206,9 @@ def route(
             f"Market {all_data.venue(i)}, delta: {deltas[i].value}, lambda: {lambdas[i].value}, eta: {eta[i].value}",
         )
 
-    print(psi.value[all_data.index_of_token(input.out_token_id)], last_psi_value)
+    print(psi.value[all_data.index_of_token(input.out_token_id)], psi_before_zero_delta_elimination)
     # basically, we have matrix where rows are in tokens (DELTA)
     # columns are outs (LAMBDA)
     # so recursively going DELTA-LAMBDA and subtracting values from cells
     # will allow to build route with amounts
-    return (psi.value[all_data.index_of_token(input.out_token_id)], last_psi_value)
+    return (psi.value[all_data.index_of_token(input.out_token_id)], psi_before_zero_delta_elimination)

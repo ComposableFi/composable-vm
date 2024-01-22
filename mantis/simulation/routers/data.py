@@ -25,6 +25,8 @@ class Ctx(BaseModel):
      All inputs to solver are really integers. 
     """
 
+    max_reserve: int = 1e10
+
 
 class AssetTransfers(
     BaseModel,
