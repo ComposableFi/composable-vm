@@ -142,13 +142,13 @@ def route(
     all_data: AllData,
     _ctx: Ctx = Ctx(),
 ):
-    _deltas, _lambdas, psi, n = solve(
+    _deltas, _lambdas, psi, initial_etas = solve(
         all_data,
         input,
     )
     to_look_n: list[float] = []
     for i in range(all_data.venues_count):
-        to_look_n.append(n[i].value)
+        to_look_n.append(initial_etas[i].value)
 
     _max = 0
     for t in sorted(to_look_n):
@@ -164,19 +164,19 @@ def route(
         except:
             continue
     eta = eta_max
-    eta_change = True
+    eta_changed = True
     print("---------")
     # total received token
     last_psi_value = psi.value[all_data.index_of_token(input.out_token_id)]
-    while eta_change:
+    while eta_changed:
         try:
-            eta_change = False
+            eta_changed = False
 
             for idx, delta in enumerate(d_max):
                 # if input into venue is small, disable using it
                 if all(delta_i.value < 1e-04 for delta_i in delta):
                     eta_max[idx] = 0
-                    eta_change = True
+                    eta_changed = True
             d_max, _lambdas, psi, eta = solve(
                 all_data,
                 input,
