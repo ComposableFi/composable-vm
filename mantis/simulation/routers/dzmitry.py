@@ -159,21 +159,23 @@ def route(
                 [1 if value <= t else 0 for value in to_look_n],
             )
             if psi.value[all_data.index_of_token(input.out_token_id)] > _max:
-                d_max, _l_max, _p_max, n_max = d2, l2, p2, n2
+                d_max, _l_max, _p_max, eta_max = d2, l2, p2, n2
             print("---")
         except:
             continue
-    eta = n_max
+    eta = eta_max
     eta_change = True
     print("---------")
-    lastp_value = psi.value[all_data.index_of_token(input.out_token_id)]
+    # total received token
+    last_psi_value = psi.value[all_data.index_of_token(input.out_token_id)]
     while eta_change:
         try:
             eta_change = False
 
             for idx, delta in enumerate(d_max):
+                # if input into venue is small, disable using it
                 if all(delta_i.value < 1e-04 for delta_i in delta):
-                    n_max[idx] = 0
+                    eta_max[idx] = 0
                     eta_change = True
             d_max, _lambdas, psi, eta = solve(
                 all_data,
@@ -195,9 +197,9 @@ def route(
             f"Market {all_data.venue(i)}, delta: {deltas[i].value}, lambda: {lambdas[i].value}, eta: {eta[i].value}",
         )
 
-    print(psi.value[all_data.index_of_token(input.out_token_id)], lastp_value)
+    print(psi.value[all_data.index_of_token(input.out_token_id)], last_psi_value)
     # basically, we have matrix where rows are in tokens (DELTA)
     # columns are outs (LAMBDA)
     # so recursively going DELTA-LAMBDA and subtracting values from cells
     # will allow to build route with amounts
-    return (psi.value[all_data.index_of_token(input.out_token_id)], lastp_value)
+    return (psi.value[all_data.index_of_token(input.out_token_id)], last_psi_value)
