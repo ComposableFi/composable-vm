@@ -76,4 +76,4 @@ class JsonItem(BaseModel):
 
 
 class Model(BaseModel):
-    json_: List[JsonItem] = Field(..., alias='json')
+    json_: List[JsonItem] = Field(..., alias="json")

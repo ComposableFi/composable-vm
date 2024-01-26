@@ -32,7 +32,7 @@ app = FastAPI()
 
 # 1. return csv data + data schema in 127.0.0.1:8000/docs
 @app.get("/xyk_pairs")
-async def xyk_pairs() ->  CvmAllData[int,int]:
+async def xyk_pairs() -> CvmAllData[int, int]:
     data = read_dummy_data("./simulation/routers/data/")
     return data
 
@@ -48,7 +48,6 @@ class White_csv_Data(BaseModel):
     pool_value_in_usd: int
     in_token_amount: int
     out_token_amount: int
-
 
 
 @app.get("/status")
@@ -98,9 +97,9 @@ def get_data() -> AllData:
     # ).result.data
     result = AllData(
         osmosis_pools=osmosis_pools.pools,
-        cvm_registry= None, # cvm_registry,
-        astroport_pools= None, # astroport_pools,
-        cosmos_chains= None, # skip_api,
+        cvm_registry=None,  # cvm_registry,
+        astroport_pools=None,  # astroport_pools,
+        cosmos_chains=None,  # skip_api,
     )
     return result
 
