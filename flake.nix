@@ -477,9 +477,9 @@
               rust.rustc
               envShell
               devour-flake
-              pkgs.vscode-extensions.yzhang.markdown-all-in-one
-              pkgs.vscode-extensions.ms-python.python
-              pkgs.vscode-extensions.ms-python.vscode-pylance
+              # pkgs.vscode-extensions.yzhang.markdown-all-in-one
+              # pkgs.vscode-extensions.ms-python.python
+              # pkgs.vscode-extensions.ms-python.vscode-pylance
             ]
             ++ native-deps;
           devcontainer.enable = false;

@@ -150,6 +150,7 @@ result
 
 # Nix shell file system overlay (like chroot but per repo)
 .devenv
+.direnv
 **/.devenv/**
 
 # Byte-compiled / optimized / DLL files
