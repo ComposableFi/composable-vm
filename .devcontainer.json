@@ -19,7 +19,7 @@
         "ms-python.vscode-pylance"
       ],
       "settings": {
-        "remote.autoForwardPorts": true,P
+        "remote.autoForwardPorts": true,
         "workbench.iconTheme": "vscode-icons",
         "files.watcherExclude": {
           "**/target/**": true,
