@@ -1,10 +1,42 @@
 {
+  "name": "MANTIS",
+  "hostRequirements": {
+    "memory": "20gb",
+    "cpus": 8
+  },
   "customizations": {
     "vscode": {
       "extensions": [
-        "mkhl.direnv"
-      ]
+        "mkhl.direnv",
+        "GitHub.copilot",
+        "bbenoist.Nix",
+        "bierner.markdown-mermaid",
+        "bpruitt-goddard.mermaid-markdown-syntax-highlighting",
+        "humao.rest-client",
+        "jebbs.plantuml",
+        "yzhang.markdown-all-in-one",
+        "ms-python.python",
+        "ms-python.vscode-pylance"
+      ],
+      "settings": {
+        "remote.autoForwardPorts": true,P
+        "workbench.iconTheme": "vscode-icons",
+        "files.watcherExclude": {
+          "**/target/**": true,
+          "**/result/**": true
+        }
+      }
     }
+  },
+  "portsAttributes": {
+    "8000": {
+      "label": "MANTIS Blackbox",
+      "onAutoForward": "notify",
+      "protocol": "http"
+    }
+  },
+  "remoteEnv": {
+    "NIXPKGS_ALLOW_UNFREE": "1"
   },
   "image": "ghcr.io/cachix/devenv:latest",
   "overrideCommand": false,
