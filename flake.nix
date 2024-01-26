@@ -451,7 +451,6 @@
               pkgs.zlib.out
 
               "${inputs'.scip.packages.scip}/lib"
-              inputs'.scip.packages.scip
             ];
           };
 
@@ -478,9 +477,12 @@
               rust.rustc
               envShell
               devour-flake
+              pkgs.vscode-extensions.yzhang.markdown-all-in-one
+              pkgs.vscode-extensions.ms-python.python
+              pkgs.vscode-extensions.ms-python.vscode-pylance
             ]
             ++ native-deps;
-          devcontainer.enable = true;
+          devcontainer.enable = false;
           enterShell = ''
             if [[ -f ./.env ]]; then
               source ./.env
@@ -528,6 +530,7 @@
               nativeBuildInputs = native-deps;
             });
           default = mantis-blackbox;
+          test = pkgs.glib.out;
           fix = pkgs.writeShellApplication {
             name = "fix";
             text = ''
