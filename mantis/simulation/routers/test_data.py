@@ -15,7 +15,7 @@ from mantis.simulation.routers.data import (
     read_dummy_data,
 )
 
-TEST_DATA_DIR = Path(__file__).resolve().parent / "data"
+TEST_DATA_DIR = Path(__file__).resolve().parent.as_posix() + "/data/"
 
 
 def test_all_data_from_csv():

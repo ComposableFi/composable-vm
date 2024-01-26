@@ -62,7 +62,7 @@ def _test_big_numeric_range():
     print(result)
 
 
-def test_simulate_all_connected_venues():
+def _test_simulate_all_connected_venues():
     input = new_input("WETH", "ATOM", 2000, 1)
     CENTER_NODE, chains = simulate_all_to_all_connected_chains_topology(input)
     print(chains)
@@ -130,4 +130,4 @@ def simulate_all_to_all_connected_chains_topology(input: Input):
 
 
 if __name__ == "__main__":
-    simulate()
+    _test_simulate_all_connected_venues()

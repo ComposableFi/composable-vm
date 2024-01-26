@@ -57,7 +57,8 @@ pub(crate) fn handle_bridge_forward(
 
         unimplemented!("add tracking lock for funds return usual cosmos message to transfer as defined in {:?}", transfer_shortcut);
     } else {
-        let route: IbcIcs20ProgramRoute = get_this_route(deps.storage, msg.to_network, *local_asset)?;
+        let route: IbcIcs20ProgramRoute =
+            get_this_route(deps.storage, msg.to_network, *local_asset)?;
         crate::state::tracking::bridge_lock(deps.storage, (msg.clone(), route.clone()))?;
 
         let asset = msg

@@ -2,7 +2,7 @@
   description = "CVM and MANTIS";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:NixOS/nixpkgs/23.11";
     rust-overlay = {
       url = "github:oxalica/rust-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -25,7 +25,7 @@
       flake = false;
     };
     poetry2nix = {
-      url = "github:nix-community/poetry2nix";
+      url = "github:nix-community/poetry2nix/2023.12.1479959";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     networks = {
@@ -33,7 +33,7 @@
     };
 
     cosmpy-src = {
-      url = "github:fetchai/cosmpy";
+      url = "github:fetchai/cosmpy/v0.9.1";
       flake = false;
     };
 
@@ -311,7 +311,7 @@
             src = inputs.maturin-src;
             name = "maturin";
             version = "0.0.1";
-            hash = "sha256-3zPG/6EQiXaDaxgNYIAsJ5A7MbbK2Gxj8NDpEukUit4=";
+            hash = "sha256-ujbZ9AfDKPva/E/xGVr6Pq/M++U+B3Iv0TVGpE1aGQM=";
           };
 
           nativeBuildInputs = with pkgs.python3Packages; [
@@ -338,6 +338,10 @@
               buildInputs = old.buildInputs or [] ++ [self.python.pkgs.hatchling];
             });
 
+            dnspython = super.dnspython.overridePythonAttrs (old: {
+              buildInputs = old.buildInputs or [] ++ [self.python.pkgs.hatchling];
+            });
+
             clarabel = super.pydantic-extra-types.overridePythonAttrs (old: {
               buildInputs = old.buildInputs or [] ++ [self.python.pkgs.maturin];
               nativeBuildInputs = old.buildInputs or [] ++ [self.python.pkgs.maturin];
@@ -357,7 +361,7 @@
               buildInputs = old.buildInputs or [] ++ [self.python.pkgs.setuptools self.python.pkgs.wheel pkgs.cbc pkgs.pkg-config];
               nativeBuildInputs = old.nativeBuildInputs or [] ++ [self.python.pkgs.setuptools self.python.pkgs.wheel pkgs.cbc pkgs.pkg-config];
             });
-            
+
             google-cloud = super.google-cloud.overridePythonAttrs (old: {
               buildInputs = old.buildInputs or [] ++ [self.python.pkgs.setuptools];
             });
@@ -489,7 +493,7 @@
         };
         formatter = pkgs.alejandra;
         packages = rec {
-            scip = inputs'.scip.packages.scip;
+          scip = inputs'.scip.packages.scip;
           inherit
             cw-mantis-order
             cw-cvm-executor
@@ -500,6 +504,8 @@
             cosmwasm-json-schema-ts
             mantis-blackbox
             pyscipopt-latest
+            maturin-latest
+            cosmpy
             ;
           all =
             pkgs.linkFarmFromDrvs "all"
@@ -525,9 +531,14 @@
           fix = pkgs.writeShellApplication {
             name = "fix";
             text = ''
-              poetry lock --no-update
-              poetry install
-              poetry run black .
+              (
+                cd ./mantis
+                nix develop --impure --command poetry lock --no-update
+                nix develop --impure --command poetry install
+                nix develop --impure --command poetry run black .
+              )
+              nix fmt
+              cargo fmt
             '';
           };
           ci = pkgs.writeShellApplication {
@@ -538,8 +549,7 @@
             ];
             text = ''
               (
-                cd mantis
-                echo "running tests"
+                cd ./mantis
                 nix develop --impure --command poetry run pytest
                 nix develop --impure --command poetry run black . --check
                 nix develop --impure --command poetry check --lock

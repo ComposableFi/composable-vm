@@ -149,6 +149,7 @@ dist
 result
 
 # Nix shell file system overlay (like chroot but per repo)
+.devenv
 **/.devenv/**
 
 # Byte-compiled / optimized / DLL files
