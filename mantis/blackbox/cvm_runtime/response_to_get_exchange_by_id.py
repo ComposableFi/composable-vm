@@ -30,7 +30,7 @@ class OsmosisPoolManagerModuleV1Beta1(BaseModel):
 
 class ExchangeType5(BaseModel):
     model_config = ConfigDict(
-        extra="forbid",
+        extra='forbid',
     )
     osmosis_pool_manager_module_v1_beta1: OsmosisPoolManagerModuleV1Beta1
 
@@ -43,7 +43,7 @@ class AstroportRouterContract(BaseModel):
 
 class ExchangeType6(BaseModel):
     model_config = ConfigDict(
-        extra="forbid",
+        extra='forbid',
     )
     astroport_router_contract: AstroportRouterContract
 
@@ -55,7 +55,7 @@ class ExchangeType(RootModel[Union[ExchangeType5, ExchangeType6]]):
 class NetworkId(RootModel[conint(ge=0)]):
     root: conint(ge=0) = Field(
         ...,
-        description="Newtype for CVM networks ID. Must be unique for each network and must never change. This ID is an opaque, arbitrary type from the CVM protocol and no assumption must be made on how it is computed.",
+        description='Newtype for CVM networks ID. Must be unique for each network and must never change. This ID is an opaque, arbitrary type from the CVM protocol and no assumption must be made on how it is computed.',
     )
 
 

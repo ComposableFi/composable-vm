@@ -435,13 +435,13 @@ class AssetPairsXyk1(BaseModel):
 
 
 def read_dummy_data(TEST_DATA_DIR: str = "./") -> AllData:
-    pairs = pd.read_csv(TEST_DATA_DIR / "assets_pairs_xyk.csv")
+    pairs = pd.read_csv(TEST_DATA_DIR + "assets_pairs_xyk.csv")
     return AllData(
         asset_pairs_xyk=[AssetPairsXyk(**row) for _index, row in pairs.iterrows()],
         asset_transfers=[
             AssetTransfers(**row)
             for _index, row in pd.read_csv(
-                TEST_DATA_DIR / "assets_transfers.csv"
+                TEST_DATA_DIR + "assets_transfers.csv"
             ).iterrows()
         ],
     )

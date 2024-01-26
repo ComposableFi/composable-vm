@@ -18,21 +18,23 @@ from fastapi import FastAPI
 import blackbox.cvm_runtime.query as cvm_query
 import requests
 import uvicorn
-from mantis.simulation.routers import test_bruno
-from mantis.simulation.routers import data
+from simulation.routers import test_bruno
+from simulation.routers import data
 import sys
 import os
 from typing import List
 from pydantic import BaseModel
 import pandas as pd
+from simulation.routers.data import read_dummy_data, AllData as CvmAllData
 
 app = FastAPI()
 
 
+# 1. return csv data + data schema in 127.0.0.1:8000/docs
 @app.get("/xyk_pairs")
-async def xyk_pairs():
-    data = read_and_validate_csv()
-    return {"status": 200, "data": data}
+async def xyk_pairs() ->  CvmAllData[int,int]:
+    data = read_dummy_data("./simulation/routers/data/")
+    return data
 
 
 class White_csv_Data(BaseModel):
@@ -47,16 +49,6 @@ class White_csv_Data(BaseModel):
     in_token_amount: int
     out_token_amount: int
 
-
-def read_and_validate_csv():
-    df = pd.read_csv("../simulation/assets_pairs_xyk.csv")
-    df.columns = df.columns.str.replace(" ", "")
-    df = df.fillna(0)
-    df = df.iloc[:, :10]
-    validated_data = []
-    for _, row in df.iterrows():
-        validated_data.append(White_csv_Data(**row.to_dict()))
-    return validated_data
 
 
 @app.get("/status")
@@ -89,26 +81,26 @@ def get_data() -> AllData:
         staking_denomination="ppica",
     )
     client = LedgerClient(cfg)
-    cvm_contract = LedgerContract(
-        path=None, client=client, address=settings.cvm_address
-    )
+    # cvm_contract = LedgerContract(
+    #     path=None, client=client, address=settings.cvm_address
+    # )
 
-    cvm_registry_response = cvm_contract.query({"get_config": {}})
-    cvm_registry = GetConfigResponse.parse_obj(cvm_registry_response)
-    skip_api = CosmosChains.parse_raw(
-        requests.get(settings.skip_money + "v1/info/chains").content
-    )
+    # cvm_registry_response = cvm_contract.query({"get_config": {}})
+    # cvm_registry = GetConfigResponse.parse_obj(cvm_registry_response)
+    # skip_api = CosmosChains.parse_raw(
+    #     requests.get(settings.skip_money + "v1/info/chains").content
+    # )
     osmosis_pools = OsmosisPoolsResponse.parse_raw(
         requests.get(settings.osmosis_pools).content
     )
-    astroport_pools = NeutronPoolsResponse.parse_raw(
-        requests.get(settings.astroport_pools).content
-    ).result.data
+    # astroport_pools = NeutronPoolsResponse.parse_raw(
+    #     requests.get(settings.astroport_pools).content
+    # ).result.data
     result = AllData(
         osmosis_pools=osmosis_pools.pools,
-        cvm_registry=cvm_registry,
-        astroport_pools=astroport_pools,
-        cosmos_chains=skip_api,
+        cvm_registry= None, # cvm_registry,
+        astroport_pools= None, # astroport_pools,
+        cosmos_chains= None, # skip_api,
     )
     return result
 

@@ -22,7 +22,7 @@ class NeutronPoolsResponse(BaseModel):
 
 
 class AllData(BaseModel):
-    osmosis_pools: OsmosisPoolsModel
+    osmosis_pools: OsmosisPoolsModel | None
     cvm_registry: CvmRegistry | None
     astroport_pools: NeutronPoolsModel | None
-    cosmos_chains: CosmosChains
+    cosmos_chains: CosmosChains | None

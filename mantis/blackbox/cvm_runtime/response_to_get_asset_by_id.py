@@ -7,7 +7,6 @@ from typing import Optional, Union
 
 from pydantic import BaseModel, ConfigDict, Field, RootModel, conint
 
-
 class Addr(RootModel[str]):
     root: str = Field(
         ...,
@@ -18,7 +17,7 @@ class Addr(RootModel[str]):
 class AssetId(RootModel[str]):
     root: str = Field(
         ...,
-        description="Newtype for XCVM assets ID. Must be unique for each asset and must never change. This ID is an opaque, arbitrary type from the XCVM protocol and no assumption must be made on how it is computed.",
+        description='Newtype for XCVM assets ID. Must be unique for each asset and must never change. This ID is an opaque, arbitrary type from the XCVM protocol and no assumption must be made on how it is computed.',
     )
 
 
@@ -32,7 +31,7 @@ class AssetReference5(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra='forbid',
     )
     native: Native
 
@@ -47,7 +46,7 @@ class AssetReference6(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra='forbid',
     )
     cw20: Cw20
 
@@ -55,14 +54,14 @@ class AssetReference6(BaseModel):
 class AssetReference(RootModel[Union[AssetReference5, AssetReference6]]):
     root: Union[AssetReference5, AssetReference6] = Field(
         ...,
-        description="Definition of an asset native to some chain to operate on. For example for Cosmos CW and EVM chains both CW20 and ERC20 can be actual. So if asset is local or only remote to some chain depends on context of network or connection. this design leads to some dummy matches, but in general unifies code (so that if one have to solve other chain route it can)",
+        description='Definition of an asset native to some chain to operate on. For example for Cosmos CW and EVM chains both CW20 and ERC20 can be actual. So if asset is local or only remote to some chain depends on context of network or connection. this design leads to some dummy matches, but in general unifies code (so that if one have to solve other chain route it can)',
     )
 
 
 class NetworkId(RootModel[conint(ge=0)]):
     root: conint(ge=0) = Field(
         ...,
-        description="Newtype for CVM networks ID. Must be unique for each network and must never change. This ID is an opaque, arbitrary type from the CVM protocol and no assumption must be made on how it is computed.",
+        description='Newtype for CVM networks ID. Must be unique for each network and must never change. This ID is an opaque, arbitrary type from the CVM protocol and no assumption must be made on how it is computed.',
     )
 
 
@@ -72,17 +71,17 @@ class PrefixedDenom(BaseModel):
     """
 
     base_denom: str = Field(
-        ..., description="Base denomination of the relayed fungible token."
+        ..., description='Base denomination of the relayed fungible token.'
     )
     trace_path: str = Field(
         ...,
-        description="A series of `{port-id}/{channel-id}`s for tracing the source of the token.",
+        description='A series of `{port-id}/{channel-id}`s for tracing the source of the token.',
     )
 
 
 class ForeignAssetId2(BaseModel):
     model_config = ConfigDict(
-        extra="forbid",
+        extra='forbid',
     )
     ibc_ics20: PrefixedDenom
 
@@ -99,11 +98,11 @@ class AssetItem(BaseModel):
     asset_id: AssetId
     bridged: Optional[BridgeAsset] = Field(
         None,
-        description="if asset was bridged, it would have way to identify bridge/source/channel",
+        description='if asset was bridged, it would have way to identify bridge/source/channel',
     )
     local: AssetReference
     network_id: NetworkId = Field(
-        ..., description="network id on which this asset id can be used locally"
+        ..., description='network id on which this asset id can be used locally'
     )
 
 

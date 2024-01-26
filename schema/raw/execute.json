@@ -332,7 +332,7 @@
       "required": [
         "executor_origin",
         "msg",
-        "to"
+        "to_network"
       ],
       "properties": {
         "executor_origin": {
@@ -341,7 +341,7 @@
         "msg": {
           "$ref": "#/definitions/ExecuteProgramMsg_for_Funds_for_Displayed_for_uint128"
         },
-        "to": {
+        "to_network": {
           "description": "target network",
           "allOf": [
             {

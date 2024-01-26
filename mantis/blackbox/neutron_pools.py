@@ -3,9 +3,20 @@
 
 from __future__ import annotations
 
-from typing import List, Optional
+from typing import List, Optional, Union
 
 from pydantic import BaseModel, Field
+
+
+class Config(BaseModel):
+    migrateToAddress: Optional[str] = None
+
+
+class Prices(BaseModel):
+    token1Address: str
+    token1PriceUsd: float
+    token2Address: str
+    token2PriceUsd: float
 
 
 class Asset(BaseModel):
@@ -21,126 +32,48 @@ class AstroRewards(BaseModel):
     day: float
 
 
-class Config(BaseModel):
-    migrateToAddress: Optional[str] = None
-
-
-class MarketStats(BaseModel):
-    lastSwapPrice: float
-    token0DayVolume: float
-    token0Name: str
-    token0Symbol: str
-    token1DayVolume: float
-    token1Name: str
-    token1Symbol: str
-
-
-class Prices(BaseModel):
-    token1Address: str
-    token1PriceUsd: float
-    token2Address: str
-    token2PriceUsd: float
-
-
 class ProtocolRewards(BaseModel):
-    apr: int
-    apy: int
-    day: int
-
-
-class TotalRewards(BaseModel):
     apr: float
-    apy: int
-    day: float
-
-
-class TradingFees(BaseModel):
-    apr: int
     apy: float
     day: float
 
 
-class PoolParams(BaseModel):
-    mid_fee: str
-    out_fee: str
-    fee_gamma: str
-    repeg_profit_threshold: str
-    min_price_scale_delta: str
-    ma_half_time: int
+class TotalRewards(BaseModel):
+    apr: Union[float, str]
+    apy: int
+    day: int
 
 
-class Initial(BaseModel):
-    amp: str
-    gamma: str
-
-
-class Future(BaseModel):
-    amp: str
-    gamma: str
-
-
-class PriceState(BaseModel):
-    oracle_price: str
-    last_price: str
-    price_scale: str
-    last_price_update: int
-    xcp_profit: str
-    xcp_profit_real: str
-
-
-class PoolState(BaseModel):
-    initial: Initial
-    future: Future
-    future_time: int
-    initial_time: int
-    price_state: PriceState
-
-
-class PoolConfig(BaseModel):
-    block_time_last: Optional[int] = None
-    price0_cumulative_last: Optional[str] = None
-    price1_cumulative_last: Optional[str] = None
-    pool_params: Optional[PoolParams] = None
-    pool_state: Optional[PoolState] = None
-    init_amp: Optional[int] = None
-    init_amp_time: Optional[int] = None
-    next_amp: Optional[int] = None
-    next_amp_time: Optional[int] = None
+class TradingFees(BaseModel):
+    apr: int
+    apy: Union[float, str]
+    day: float
 
 
 class JsonItem(BaseModel):
-    assets: List[Asset]
-    astroRewards: AstroRewards
-    config: Optional[Config] = None
-    marketStats: Optional[MarketStats] = None
-    prices: Prices
-    protocolRewards: ProtocolRewards
-    totalRewards: TotalRewards
-    tradingFees: TradingFees
-    chainId: str
-    dayVolumeUsd: float
-    deregistered: Optional[bool] = None
-    feeRate: List[str]
-    lpAddress: str
-    pairName: Optional[str] = None
     poolAddress: str
-    poolDescription: str
-    poolLiquidity: int
+    lpAddress: str
+    dayVolumeUsd: float
     poolLiquidityUsd: float
-    poolType: str
+    poolLiquidity: int
     rewardTokenSymbol: Optional[str] = None
-    stakeable: bool
-    tags: List[str]
-    token0Address: str
-    token1Address: str
-    poolConfig: PoolConfig
+    config: Optional[Config] = None
+    feeRate: List[str]
+    poolType: str
     isBlocked: bool
+    prices: Prices
+    stakeable: bool
+    assets: List[Asset]
     name: str
     isNew: bool
     isIlliquid: bool
     isDeregistered: bool
     sortingAssets: List[str]
+    astroRewards: AstroRewards
+    protocolRewards: ProtocolRewards
+    totalRewards: TotalRewards
+    tradingFees: TradingFees
 
 
 class Model(BaseModel):
-    json_: List[JsonItem] = Field(..., alias="json")
+    json_: List[JsonItem] = Field(..., alias='json')

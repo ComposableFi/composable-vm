@@ -33,6 +33,14 @@ paths:
           example:
             false
         - in: query
+          name: include_testnets
+          required: false
+          schema:
+            type: boolean
+          description: Whether to include testnets in the response
+          example:
+            false
+        - in: query
           name: client_id
           required: false
           schema:
@@ -47,44 +55,48 @@ paths:
             application/json:
               example:
                 chains:
-                  - chain_name: cosmoshub
-                    chain_id: cosmoshub-4
-                    pfm_enabled: true
-                    modules:
-                      github.com/cosmos/ibc-go:
-                        path: github.com/cosmos/ibc-go/v4
-                        version: v4.4.2
-                        sum: h1:pg4_yy0/bw6_hvmha3r_zbc53k_yza_cwu_b07_ot4g_lyzc_bvo=
-                    bech32_prefix: cosmos
-                    logo_uri: https://raw.githubusercontent.com/cosmos/chain-registry/master/cosmoshub/images/atom.png
-                    fee_assets:
-                      - denom: uatom
-                        gas_price:
-                          low: "0.01"
-                          average: "0.025"
-                          high: "0.03"
-                    chain_type: cosmos
-                  - chain_name: osmosis
-                    chain_id: osmosis-1
-                    pfm_enabled: true
-                    modules:
-                      github.com/cosmos/ibc-go:
-                        path: github.com/cosmos/ibc-go/v4
-                        version: v4.4.2
-                        sum: h1:PG4Yy0/bw6Hvmha3RZbc53KYzaCwuB07Ot4GLyzcBvo=
-                      github.com/osmosis-labs/osmosis/x/ibc-hooks:
-                        path: github.com/cosmos/ibc-go/v4
-                        version: v0.0.6
-                        sum: h1:PjfLL5rwwm44CeLnNQssrFgmj4BdeIS5DriKYhGz7IM=
-                    bech32_prefix: osmo
-                    logo_uri: https://raw.githubusercontent.com/cosmos/chain-registry/master/osmosis/images/osmosis-chain-logo.png
-                    fee_assets:
-                      - denom: uosmo
-                        gas_price:
-                          low: "0.0025"
-                          average: "0.025"
-                          high: "0.04"
-                    chain_type: cosmos
+                - chain_name: cosmoshub
+                  chain_id: cosmoshub-4
+                  pfm_enabled: true
+                  cosmos_module_support:
+                    authz: true
+                    feegrant: true
+                  supports_memo: true                
+                  logo_uri: https://raw.githubusercontent.com/cosmos/chain-registry/master/cosmoshub/images/atom.png
+                  bech32_prefix: cosmos
+                  fee_assets:
+                  - denom: uatom
+                    gas_price:
+                      low: '0.01'
+                      average: '0.025'
+                      high: '0.03'
+                  chain_type: cosmos
+                  ibc_capabilities:
+                    cosmos_pfm: true
+                    cosmos_ibc_hooks: true
+                    cosmos_memo: true
+                    cosmos_autopilot: true
+                - chain_name: osmosis
+                  chain_id: osmosis-1
+                  pfm_enabled: true
+                  cosmos_module_support:
+                    authz: true
+                    feegrant: true
+                  supports_memo: true      
+                  bech32_prefix: osmo
+                  logo_uri: https://raw.githubusercontent.com/cosmos/chain-registry/master/osmosis/images/osmosis-chain-logo.png
+                  fee_assets:
+                  - denom: uosmo
+                    gas_price:
+                      low: '0.0025'
+                      average: '0.025'
+                      high: '0.04'
+                  chain_type: cosmos
+                  ibc_capabilities:
+                    cosmos_pfm: true
+                    cosmos_ibc_hooks: true
+                    cosmos_memo: true
+                    cosmos_autopilot: true      
               schema:
                 type: object
                 properties:
@@ -93,6 +105,46 @@ paths:
                     items:
                       $ref: "#/components/schemas/Chain"
                     description: Array of supported chain-ids
+  /v2/info/bridges:
+    get:
+      operationId: getBridges
+      tags:
+        - "Info"
+      description: 
+        Get all supported bridges
+      parameters:
+        - in: query
+          name: client_id
+          required: false
+          schema:
+            type: string
+          description: Recognizable identifier for callers (e.g. skip-api-docs, best-wallet, etc...)
+          example:
+            skip-api-docs
+      responses:
+        "200":
+          description: A list of supported bridges
+          content:
+            application/json:
+              example:
+                bridges:
+                  - id: IBC
+                    name: IBC
+                    logo_uri: https://raw.githubusercontent.com/skip-mev/skip-api-registry/main/bridges/ibc/logo.svg
+                  - id: AXELAR
+                    name: Axelar
+                    logo_uri: https://raw.githubusercontent.com/skip-mev/skip-api-registry/main/bridges/axelar/logo.svg
+                  - id: CCTP
+                    name: CCTP
+                    logo_uri: https://raw.githubusercontent.com/skip-mev/skip-api-registry/main/bridges/cctp/logo.svg
+              schema:
+                type: object
+                properties:
+                  bridges:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Bridge"
+                    description: Array of supported bridges
   /v1/fungible/venues:
     get:
       operationId: getVenues
@@ -415,7 +467,7 @@ paths:
               transfer_matic_to_osmosis:
                 value:
                   amount_in: "3000000000000000000"
-                  source_asset_denom: "matic"
+                  source_asset_denom: "polygon-native"
                   source_asset_chain_id: "137"
                   dest_asset_denom: "ibc/AB589511ED0DD5FA56171A39978AFBF1371DB986EC1C3526CE138A16377E39BB"
                   dest_asset_chain_id: osmosis-1
@@ -432,6 +484,20 @@ paths:
                   cumulative_affiliate_fee_bps: "0"
                   client_id: skip-api-docs
                 summary: "Transfer 1 USDC in from Noble to Osmosis"
+              transfer_usdc_from_noble_to_eth_via_cctp:
+                value:
+                  amount_in: "1000000"
+                  source_asset_denom: uusdc
+                  source_asset_chain_id: noble-1
+                  dest_asset_denom: uusdc
+                  dest_asset_chain_id: "1"
+                  cumulative_affiliate_fee_bps: "0"
+                  client_id: skip-api-docs
+                  experimental_features:
+                    - cctp
+                  bridges:
+                    - CCTP
+                summary: "Transfer 1 USDC from Noble to Ethereum via CCTP"
               receive_usdc_out_from_noble_on_osmosis:
                 value:
                   amount_out: "1000000"
@@ -472,6 +538,30 @@ paths:
                   cumulative_affiliate_fee_bps: "0"
                   client_id: skip-api-docs
                 summary: "Receive 1 Noble USDC on Cosmos Hub from OSMO on Osmosis"
+              swap_with_allow_unsafe_false:
+                value:
+                  amount_in: "100000000000000"
+                  source_asset_denom: uusdc
+                  source_asset_chain_id: axelar-dojo-1
+                  dest_asset_denom: uatom
+                  dest_asset_chain_id: cosmoshub-4
+                  cumulative_affiliate_fee_bps: "0"
+                  client_id: skip-api-docs
+                  allow_unsafe: false
+                summary: "High price impact swap with allow_unsafe=false"
+              experimental_features:
+                value:
+                  amount_in: "100000000000000"
+                  source_asset_denom: uusdc
+                  source_asset_chain_id: "1"
+                  dest_asset_denom: uusdc
+                  dest_asset_chain_id: noble-1
+                  cumulative_affiliate_fee_bps: "0"
+                  client_id: skip-api-docs
+                  allow_unsafe: false
+                  experimental_features:
+                    - cctp
+                summary: "Experimental features request"
             schema:
               type: object
               properties:
@@ -504,6 +594,19 @@ paths:
                 client_id:
                   type: string
                   description: Recognizable identifier for callers (e.g. skip-api-docs, best-wallet, etc...)
+                allow_unsafe:
+                  type: boolean
+                  description: Toggles whether the api should return routes that fail price safety checks.
+                experimental_features:
+                  type: array
+                  description: Array of experimental features to enable
+                  items:
+                    type: string
+                bridges:
+                  type: array
+                  description: Array of bridges to use
+                  items:
+                    $ref: '#/components/schemas/BridgeType'
 
       responses:
         "200":
@@ -513,7 +616,7 @@ paths:
               example:
                 amount_in: "1000000000000000000"
                 amount_out: "721110"
-                source_asset_denom: matic
+                source_asset_denom: "polygon-native"
                 source_asset_chain_id: "137"
                 dest_asset_denom: uosmo
                 dest_asset_chain_id: osmosis-1
@@ -541,6 +644,7 @@ paths:
                         decimals: 18
                         token_contract: ""
                       is_testnet: false
+                      bridge_id: AXELAR
                   - swap:
                       swap_in:
                         swap_venue:
@@ -570,13 +674,20 @@ paths:
                 $ref: "#/components/schemas/RouteResponse"
         "400":
           description:
-            The request was invalid, e.g. an invalid amount was passed.
+            The request was invalid, e.g. an invalid amount was passed or the swap size is unsafe
           content:
             application/json:
               example:
                 code: 3
-                message: "invalid amount_in"
-                details: []
+                message: "difference in usd value of route input and output is too large. input usd value: 100000.00 output usd value: 98811.81"
+                details: [
+                  {
+                    "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+                    "reason": "BAD_PRICE_ERROR",
+                    "domain": "skip.money",
+                    "metadata": { }
+                  }
+                ]
               schema:
                 $ref: "#/components/schemas/Error"
         "500":
@@ -647,7 +758,7 @@ paths:
                 summary: "Swap 1 USDC on Axelar to ATOM on the Hub"
               transfer_matic_to_osmosis:
                 value:
-                  source_asset_denom: matic 
+                  source_asset_denom: "polygon-native" 
                   source_asset_chain_id: "137" 
                   dest_asset_denom: ibc/AB589511ED0DD5FA56171A39978AFBF1371DB986EC1C3526CE138A16377E39BB
                   dest_asset_chain_id: osmosis-1
@@ -659,7 +770,7 @@ paths:
                       from_chain_id: "137"
                       to_chain: "osmosis"
                       to_chain_id: "osmosis-1"
-                      asset: "matic" 
+                      asset: "polygon-native" 
                       should_unwrap: false
                       is_testnet: false
                   affiliates: []
@@ -667,6 +778,24 @@ paths:
                   - "0x00b40F326Ab76189170cA2FfeCfa4B34b43949dA"
                   - "osmo1tsmt8ezjrp7w0mls5p4rv8gcaz4yx5lzqyww8m"
                 summary: "Transfer 3 MATIC from Polygon to Osmosis"
+              cctp_transfer_noble_to_ethereum:
+                value:
+                  source_asset_denom: uusdc
+                  source_asset_chain_id: "noble-1"
+                  dest_asset_denom: uusdc
+                  dest_asset_chain_id: "1"
+                  amount_in: "1000000"
+                  amount_out: "1000000"
+                  operations:
+                    - cctp_transfer:
+                        from_chain_id: "noble-1"
+                        to_chain_id: "1"
+                        burn_token: "uusdc"
+                  affiliates: [ ]
+                  address_list:
+                    - "noble13vjmklxq8nkdmv2a0w5m887t38jz9na30vl8g6"
+                    - "0x8EB49E3D65d74967CC0Fe987FA2d015ae816352E"
+                summary: "Transfer 1 USDC from Noble to Ethereum via CCTP"
             schema:
               type: object
               properties:
@@ -795,7 +924,7 @@ paths:
               transfer_matic_to_osmosis:
                 value:
                   amount_in: "3000000000000000000"
-                  source_asset_denom: "matic"
+                  source_asset_denom: "polygon-native"
                   source_asset_chain_id: "137"
                   dest_asset_denom: "ibc/AB589511ED0DD5FA56171A39978AFBF1371DB986EC1C3526CE138A16377E39BB"
                   dest_asset_chain_id: osmosis-1
@@ -804,7 +933,54 @@ paths:
                     137: "0x00b40F326Ab76189170cA2FfeCfa4B34b43949dA" 
                     osmosis-1: "osmo1x8ad0zyw52mvndh7hlnafrg0gt284ga7syxplu"
                   slippage_tolerance_percent: "3"
-                summary: "Transfer 3 MATIC from Polygon to Osmosis" 
+                summary: "Transfer 3 MATIC from Polygon to Osmosis"
+              transfer_usdc_from_eth_to_noble_via_cctp:
+                value:
+                  amount_in: "100"
+                  source_asset_denom: "uusdc"
+                  source_asset_chain_id: "1"
+                  dest_asset_denom: "uusdc"
+                  dest_asset_chain_id: noble-1
+                  client_id: skip-api-docs
+                  chain_ids_to_addresses:
+                    1: "0x00b40F326Ab76189170cA2FfeCfa4B34b43949dA" 
+                    noble-1: "noble1x8ad0zyw52mvndh7hlnafrg0gt284ga7suqe3q"
+                  slippage_tolerance_percent: "3"
+                  experimental_features:
+                    - cctp
+                  bridges:
+                    - CCTP
+                summary: "Transfer USDC from Ethereum to Noble via CCTP"
+              swap_with_allow_unsafe_false:
+                value:
+                  source_asset_denom: uusdc
+                  source_asset_chain_id: axelar-dojo-1
+                  dest_asset_denom: uatom
+                  dest_asset_chain_id: cosmoshub-4
+                  amount_in: "100000000000000"
+                  chain_ids_to_addresses:
+                    axelar-dojo-1: axelar1x8ad0zyw52mvndh7hlnafrg0gt284ga7u3rez0
+                    osmosis-1: osmo1x8ad0zyw52mvndh7hlnafrg0gt284ga7syxplu
+                    cosmoshub-4: cosmos1x8ad0zyw52mvndh7hlnafrg0gt284ga7cl43fw
+                  slippage_tolerance_percent: "3"
+                  client_id: skip-api-docs
+                  allow_unsafe: false
+                summary: "High price impact swap with allow_unsafe=false"
+              experimental_features:
+                value:
+                  amount_in: "100"
+                  source_asset_denom: "usdc"
+                  source_asset_chain_id: "1"
+                  dest_asset_denom: "uusdc"
+                  dest_asset_chain_id: noble-1
+                  client_id: skip-api-docs
+                  chain_ids_to_addresses:
+                    1: "0x00b40F326Ab76189170cA2FfeCfa4B34b43949dA" 
+                    noble-1: "noble1x8ad0zyw52mvndh7hlnafrg0gt284ga7suqe3q"
+                  slippage_tolerance_percent: "3"
+                  experimental_features:
+                    - cctp
+                summary: "Experimental features request"
             schema:
               type: object
               properties:
@@ -849,6 +1025,19 @@ paths:
                     $ref: "#/components/schemas/Affiliate"
                 post_route_handler:
                   $ref: "#/components/schemas/PostHandler"
+                allow_unsafe:
+                  type: boolean
+                  description: Toggles whether the api should return routes that fail price safety checks.
+                experimental_features:
+                  type: array
+                  description: Array of experimental features to enable
+                  items:
+                    type: string
+                bridges:
+                  type: array
+                  description: Array of bridges to use
+                  items:
+                    $ref: '#/components/schemas/BridgeType'
       responses:
         "200":
           description:
@@ -877,6 +1066,7 @@ paths:
                         chain_id: axelar-dojo-1
                         pfm_enabled: false
                         dest_denom: ibc/D189335C6E4A68B513C10AB227BF1C1D38C746766278BA3EEB4FB14124F1D858
+                        bridge_id: IBC
                     - swap:
                         swap_in:
                           swap_venue:
@@ -898,6 +1088,7 @@ paths:
                         chain_id: osmosis-1
                         pfm_enabled: true
                         dest_denom: uatom
+                        bridge_id: IBC
                   chain_ids:
                     - axelar-dojo-1
                     - osmosis-1
@@ -922,13 +1113,20 @@ paths:
                     $ref: "#/components/schemas/RouteResponse"
         "400":
           description:
-            The request was invalid, e.g. an invalid amount was passed.
+            The request was invalid, e.g. an invalid amount was passed or the swap size is unsafe
           content:
             application/json:
               example:
                 code: 3
-                message: "invalid amount_in"
-                details: []
+                message: "difference in usd value of route input and output is too large. input usd value: 100000.00 output usd value: 98811.81"
+                details: [
+                  {
+                    "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+                    "reason": "BAD_PRICE_ERROR",
+                    "domain": "skip.money",
+                    "metadata": { }
+                  }
+                ]
               schema:
                 $ref: "#/components/schemas/Error"
         "500":
@@ -970,22 +1168,7 @@ paths:
                   type: array
                   description: Array where each entry corresponds to a distinct asset recommendation request.
                   items:
-                    properties:
-                        source_asset_denom:
-                            type: string
-                            description: Denom of the source asset
-                        source_asset_chain_id:
-                            type: string
-                            description: Chain-id of the source asset
-                        dest_chain_id:
-                            type: string
-                            nullable: true
-                            description: Chain-id of the recommended destination asset
-                        reason:
-                            description: Reason for recommendation (optional)
-                            allOf:
-                            - $ref: "#/components/schemas/Reason"
-                            nullable: true
+                    $ref: "#/components/schemas/RecommendationRequest"
 
       responses:
         "200":
@@ -1380,6 +1563,29 @@ paths:
                                 denom: ibc/9117A26BA81E29FA4F78F57DC2BD90CD3D26848101BA880445F119B22A1E254E
                               error: null
                   summary: "Multiple transfers of Atom from Osmosis to Juno and from Osmosis to Canto"
+                Transfer from Noble to Ethereum via CCTP:
+                  value:
+                    transfers:
+                      - state: STATE_COMPLETED_SUCCESS
+                        transfer_sequence:
+                          - cctp_transfer:
+                              src_chain_id: noble-1
+                              dst_chain_id: "1"
+                              state: CCTP_TRANSFER_RECEIVED
+                              txs:
+                                send_tx:
+                                  chain_id: noble-1
+                                  tx_hash: 8D87951B3D6EC4B3915CC4C035C48664B97D5964224940A2178A642B5FE83E8B
+                                  explorer_link: https://www.mintscan.io/noble/txs/8D87951B3D6EC4B3915CC4C035C48664B97D5964224940A2178A642B5FE83E8B
+                                receive_tx:
+                                  chain_id: "1"
+                                  tx_hash: "0xf9b23f873107fe631ba2880a322510ab9a43e15e46dfcacfcdfd75fb66765a7d"
+                                  explorer_link: https://etherscan.io/tx/0xf9b23f873107fe631ba2880a322510ab9a43e15e46dfcacfcdfd75fb66765a7d
+                        next_blocking_transfer: null
+                        transfer_asset_release:
+                          chain_id: "1"
+                          denom: uusdc
+                        error: null
               schema:
                 type: object
                 properties:
@@ -1595,9 +1801,9 @@ paths:
                   value:
                     assets_between_chains:
                       - asset_on_source:
-                          denom: usdc
+                          denom: uusdc
                           chain_id: '1'
-                          origin_denom: usdc
+                          origin_denom: uusdc
                           origin_chain_id: '1'
                           trace: ''
                           is_cw20: false
@@ -1813,6 +2019,8 @@ components:
           description: Amount of the fee asset to be paid as the Axelar bridge fee, converted
             to USD value
           type: string
+        bridge_id:
+          $ref: '#/components/schemas/BridgeType'
       type: object
     AxelarTransferInfo:
       properties:
@@ -1867,6 +2075,67 @@ components:
         axelar_transfer:
           $ref: '#/components/schemas/AxelarTransfer'
       type: object
+    CCTPTransfer:
+      description: A transfer facilitated by the CCTP bridge
+      properties:
+        from_chain_id:
+          description: Canonical chain-id of the source chain of the bridge transaction
+          type: string
+        to_chain_id:
+          description: Canonical chain-id of the destination chain of the bridge transaction
+          type: string
+        burn_token:
+          description: Name of the asset to bridge. It will be the erc-20 contract address for EVM chains and `uusdc` for Noble.
+          type: string
+        bridge_id:
+          $ref: '#/components/schemas/BridgeType'
+      type: object
+    CCTPTransferInfo:
+      properties:
+        cctp_transfer:
+          properties:
+            dst_chain_id:
+              description: Chain ID of the destination chain
+              type: string
+            src_chain_id:
+              description: Chain ID of the source chain
+              type: string
+            state:
+              $ref: '#/components/schemas/CCTPTransferState'
+            txs:
+              $ref: '#/components/schemas/CCTPTransferTxs'
+          type: object
+      type: object
+    CCTPTransferTxs:
+      properties:
+        send_tx:
+          allOf:
+            - $ref: '#/components/schemas/PacketTransaction'
+          nullable: true
+        receive_tx:
+          allOf:
+            - $ref: '#/components/schemas/PacketTransaction'
+          nullable: true
+      type: object
+    CCTPTransferState:
+      description: 'CCTP transfer state: <br/> * CCTP_TRANSFER_UNKNOWN - Unknown error
+        <br/> * CCTP_TRANSFER_SENT - The burn transaction on the source chain has executed
+        <br/> * CCTP_TRANSFER_PENDING_CONFIRMATION - CCTP transfer is pending confirmation by the cctp attestation api
+        <br/> * CCTP_TRANSFER_CONFIRMED - CCTP transfer has been confirmed by the cctp attestation api
+        <br/> * CCTP_TRANSFER_RECEIVED - CCTP transfer has been received at the destination chain
+        '
+      enum:
+        - CCTP_TRANSFER_UNKNOWN
+        - CCTP_TRANSFER_SENT
+        - CCTP_TRANSFER_PENDING_CONFIRMATION
+        - CCTP_TRANSFER_CONFIRMED
+        - CCTP_TRANSFER_RECEIVED
+      type: string
+    CCTPTransferWrapper:
+      properties:
+        cctp_transfer:
+          $ref: '#/components/schemas/CCTPTransfer'
+      type: object
     BankSend:
       type: object
     BankSendWrapper:
@@ -1874,36 +2143,61 @@ components:
         bank_send:
           $ref: '#/components/schemas/BankSend'
       type: object
+    Bridge:
+      properties:
+        id:
+          $ref: '#/components/schemas/BridgeType'
+        name:
+          description: Name of the bridge
+          type: string
+        logo_uri:
+          description: URI pointing to an image of the logo of the bridge
+          type: string
+      type: object
     BridgeType:
+      description: 'Bridge Type: <br/> * IBC - IBC Bridge
+        <br/> * AXELAR - Axelar Bridge
+        <br/> * CCTP - CCTP Bridge
+        '
       enum:
       - IBC
-      - AXELAR      
+      - AXELAR
+      - CCTP
     Chain:
       properties:
-        bech32_prefix:
-          description: Bech32 prefix of the chain
+        chain_name:
+          description: Name of the chain
           type: string
         chain_id:
           description: Chain-id of the chain
           type: string
-        chain_name:
-          description: Name of the chain
+        pfm_enabled:
+          description: Whether the PFM module is enabled on the chain
+          type: boolean
+        cosmos_module_support:
+          description: Supported cosmos modules
+          $ref: '#/components/schemas/CosmosModuleSupport'
+        supports_memo:
+          description: Whether the chain supports IBC memos
+          type: boolean
+        logo_uri:
+          description: chain logo URI
+          nullable: true
+          type: string
+        bech32_prefix:
+          description: Bech32 prefix of the chain
           type: string
         fee_assets:
           description: Fee assets of the chain
           items:
             $ref: '#/components/schemas/FeeAsset'
           type: array
-        logo_uri:
-          description: chain logo URI
-          nullable: true
-          type: string
-        pfm_enabled:
-          description: Whether the PFM module is enabled on the chain
-          type: boolean
         chain_type:
           description: Type of chain, e.g. "cosmos" or "evm"
-          type: string 
+          type: string
+        ibc_capabilities:
+          description: IBC capabilities of the chain
+          $ref: '#/components/schemas/IbcCapabilities'
       type: object
     ContractCallWithTokenError:
       properties:
@@ -1975,6 +2269,17 @@ components:
           description: Address of the ERC20 token contract
           type: string
       type: object
+    ErrorDetail:
+     type: object
+     properties:
+       reason:
+         description: 'Error detail: <br/> * LOW_INFO_ERROR - Not enough asset pricing information to determine the price safety of the route.
+          <br/> * BAD_PRICE_ERROR - The execution price of the route deviates significantly from the current market price.
+          '
+         enum:
+           - LOW_INFO_ERROR
+           - BAD_PRICE_ERROR
+         type: string
     Error:
       properties:
         code:
@@ -1984,7 +2289,7 @@ components:
         details:
           description: Additional error details
           items:
-            type: string
+            $ref: '#/components/schemas/ErrorDetail'
           type: array
         message:
           description: Error message
@@ -2080,6 +2385,7 @@ components:
       - $ref: '#/components/schemas/SwapWrapper'
       - $ref: '#/components/schemas/AxelarTransferWrapper'
       - $ref: '#/components/schemas/BankSendWrapper'
+      - $ref: '#/components/schemas/CCTPTransferWrapper'
     OptionalAsset:
       properties:
         asset:
@@ -2164,6 +2470,14 @@ components:
       - BASE_TOKEN
       - DIRECT
       type: string
+    RoutePriceWarningType:
+      description: 'Recommendation reason: <br/> * LOW_INFO_WARNING - Not enough asset pricing information to determine the price safety of the route.
+        <br/> * BAD_PRICE_WARNING - The execution price of the route deviates significantly from the current market price.
+        '
+      enum:
+        - LOW_INFO_WARNING
+        - BAD_PRICE_WARNING
+      type: string
     RouteResponse:
       properties:
         amount_in:
@@ -2216,9 +2530,19 @@ components:
             to USD value
           type: string
         swap_price_impact_percent:
-          description: Price impact of the estimated swap, if present
+          description: Price impact of the estimated swap, if present.  Measured in percentage e.g. "0.5" is .5%
           nullable: true
           type: string
+        warning:
+          description: Indicates if the route is unsafe due to poor execution price or if safety cannot be determined due to lack of pricing information
+          nullable: true
+          type: object
+          properties:
+            type:
+              $ref: '#/components/schemas/RoutePriceWarningType'
+            message:
+              description: Warning message
+              type: string
       type: object
     SendTokenError:
       properties:
@@ -2307,7 +2631,7 @@ components:
           - $ref: '#/components/schemas/SwapVenue'
           description: Swap venue that this swap should execute on
         price_impact_percent:
-          description: Price impact of the estimated swap
+          description: Price impact of the estimated swap, if present.  Measured in percentage e.g. "0.5" is .5%
           nullable: true
           type: string
       type: object
@@ -2327,7 +2651,7 @@ components:
           - $ref: '#/components/schemas/SwapVenue'
           description: Swap venue that this swap should execute on
         price_impact_percent:
-          description: Price impact of the estimated swap
+          description: Price impact of the estimated swap, if present.  Measured in percentage e.g. "0.5" is .5%
           nullable: true
           type: string
       type: object
@@ -2434,11 +2758,14 @@ components:
           description: Asset to be paid as the transfer fee if applicable.
           $ref: '#/components/schemas/Asset'
           nullable: true
+        bridge_id:
+          $ref: '#/components/schemas/BridgeType'
       type: object
     TransferEvent:
       oneOf:
       - $ref: '#/components/schemas/IBCTransferInfo'
       - $ref: '#/components/schemas/AxelarTransferInfo'
+      - $ref: '#/components/schemas/CCTPTransferInfo'
     TransferInfo:
       properties:
         dst_chain_id:
@@ -2507,4 +2834,44 @@ components:
       properties:
         transfer:
           $ref: '#/components/schemas/Transfer'
-      type: object 
+      type: object
+    RecommendationRequest:
+      properties:
+        source_asset_denom:
+          type: string
+          description: Denom of the source asset
+        source_asset_chain_id:
+          type: string
+          description: Chain-id of the source asset
+        dest_chain_id:
+          type: string
+          nullable: true
+          description: Chain-id of the recommended destination asset
+        reason:
+          description: Reason for recommendation (optional)
+          allOf:
+            - $ref: "#/components/schemas/Reason"
+          nullable: true
+      type: object
+    CosmosModuleSupport:
+      properties:
+        authz:
+          description: Whether the authz module is supported
+          type: boolean
+        feegrant:
+          description: Whether the feegrant module is supported
+          type: boolean
+    IbcCapabilities:
+      properties:
+        cosmos_pfm:
+          description: Whether the packet forwarding middleware module is supported
+          type: boolean
+        cosmos_ibc_hooks:
+          description: Whether the ibc hooks module is supported
+          type: boolean
+        cosmos_memo:
+          description: Whether the chain supports IBC memos
+          type: boolean
+        cosmos_autopilot:
+          description: Whether the autopilot module is supported
+          type: boolean      

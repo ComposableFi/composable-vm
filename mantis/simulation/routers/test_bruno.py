@@ -1,8 +1,8 @@
 import itertools
 import numpy as np
 
-from mantis.simulation.routers.bruno import solve
-from mantis.simulation.routers.data import TNetworkId, TId
+from simulation.routers.bruno import solve
+from simulation.routers.data import TNetworkId, TId
 
 
 # simulate denom paths to and from chains, with center node

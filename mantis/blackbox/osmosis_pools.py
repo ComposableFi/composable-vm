@@ -35,7 +35,7 @@ class PoolAsset(BaseModel):
 
 
 class ModelItem(BaseModel):
-    field_type: str = Field(..., alias="@type")
+    field_type: str = Field(..., alias='@type')
     id: Optional[str] = None
     pool_params: Optional[PoolParams] = None
     total_shares: Optional[TotalShares] = None

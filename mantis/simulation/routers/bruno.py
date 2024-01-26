@@ -4,7 +4,7 @@ import cvxpy as cp
 
 MAX_RESERVE = 1e10
 
-from mantis.simulation.routers.data import TId
+from simulation.routers.data import TId
 
 
 def solve(
