@@ -31,6 +31,7 @@ app = FastAPI()
 
 
 # 1. return csv data + data schema in 127.0.0.1:8000/docs
+# https://github.com/ComposableFi/composable/issues/4434
 @app.get("/xyk_pairs")
 async def xyk_pairs() -> CvmAllData[int, int]:
     data = read_dummy_data("./simulation/routers/data/")
