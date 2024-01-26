@@ -23,7 +23,7 @@ jobs:
           authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
           name: composable
           skipPush: false
-      - run: nix run .#ci --print-build-logs --verbose
+      - run: export NIXPKGS_ALLOW_UNFREE=1 && nix run .#ci --print-build-logs --verbose
 
   publish:
     if: github.event_name == 'push'
@@ -45,7 +45,7 @@ jobs:
           authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
           name: composable
           skipPush: false
-      - run: nix run .#ci
+      - run: export NIXPKGS_ALLOW_UNFREE=1 && nix run .#ci
       - uses: "DeterminateSystems/flakehub-push@main"
         with:
           visibility: "public"
