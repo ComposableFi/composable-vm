@@ -1,5 +1,7 @@
 # solves using convex optimization
 import numpy as np
+import cvxpy as cp
+from strictly_typed_pandas import DataSet
 
 MAX_RESERVE = 1e10
 
@@ -21,7 +23,7 @@ from simulation.routers.data import (
 import itertools
 import numpy as np
 
-from simulation.routers.dzmitry import route
+from simulation.routers.dzmitry import solve, route
 
 
 # simulate denom paths to and from chains, with center node

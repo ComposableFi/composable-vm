@@ -65,11 +65,6 @@ PySCIPOpt = "4.4.0" # i set it directly to allow override SCIP dep (currently it
 pytest = "^7.4.3"
 black = "^23.12.1"
 
-[tool.black]
-line-length = 88
-skip-string-normalization = true
-
-
 
 [build-system]
 requires = ["poetry-core"]
@@ -79,27 +74,3 @@ build-backend = "poetry.core.masonry.api"
 blackbox = 'blackbox.main:start'
 mantis-blackbox = 'blackbox.main:main'
 dzmitry_solver = 'simulation.routers.test_dzmitry:simulate'
-
-[tool.ruff]
-exclude = [
-    ".bzr",
-    ".devenv",
-    ".direnv",
-    ".eggs",
-    ".git",
-    ".hg",
-    ".ipynb_checkpoints",
-    ".mypy_cache",
-    ".nox",
-    ".pytest_cache",
-    ".tox",
-    ".venv",
-    "build",
-    "dist",
-    "result",
-]
-
-
-line-length = 88
-indent-width = 4
-target-version = "py310"

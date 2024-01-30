@@ -7,7 +7,7 @@ import cvxpy as cp
 
 MAX_RESERVE = 1e10
 
-from simulation.routers.data import AllData, Input, Ctx
+from simulation.routers.data import AllData, Input, TId, TNetworkId, Ctx
 
 
 # prepares data for solving and outputs raw solution from underlying engine

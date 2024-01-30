@@ -1,11 +1,13 @@
 # for alignment on input and output of algorithm
 from fractions import Fraction
+from functools import cache
 import math
 import numpy as np
 import pandas as pd
 from enum import Enum
 from typing import TypeVar, Generic
 from pydantic import BaseModel, validator
+from methodtools import lru_cache
 
 # This is global unique ID for token(asset) or exchange(pool)
 TId = TypeVar("TId")
