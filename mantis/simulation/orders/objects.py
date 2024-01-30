@@ -2,13 +2,12 @@ from __future__ import annotations
 from decimal import Decimal, getcontext
 import enum
 import random
-from typing import NewType, Callable, get_type_hints
+from typing import NewType, Callable
 from uuid import uuid4
 import copy
 from dataclasses import dataclass
 import functools
 import time
-from .routers import bruno_original_solver
 
 getcontext().prec = 18
 BuyToken = NewType("BuyToken", Decimal)

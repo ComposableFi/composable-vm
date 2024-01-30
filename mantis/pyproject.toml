@@ -13,6 +13,11 @@ packages = [
 [tool.poetry.dependencies]
 python = ">=3.11.6, <=3.11.7"
 
+[tool.black]
+line-length = 88
+skip-string-normalization = true
+
+
 #fastapi-cache2 = "^0.2.1"  # no needed now, too many things
 bech32 = "1.2.0"
 cosmpy = { version = "0.9.1" }
@@ -65,7 +70,6 @@ PySCIPOpt = "4.4.0" # i set it directly to allow override SCIP dep (currently it
 pytest = "^7.4.3"
 black = "^23.12.1"
 
-
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
@@ -74,3 +78,26 @@ build-backend = "poetry.core.masonry.api"
 blackbox = 'blackbox.main:start'
 mantis-blackbox = 'blackbox.main:main'
 dzmitry_solver = 'simulation.routers.test_dzmitry:simulate'
+
+[tool.ruff]
+exclude = [
+    ".bzr",
+    ".devenv",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".hg",
+    ".ipynb_checkpoints",
+    ".mypy_cache",
+    ".nox",
+    ".pytest_cache",
+    ".tox",
+    ".venv",
+    "build",
+    "dist",
+    "result",
+]
+
+line-length = 88
+indent-width = 4
+target-version = "py311"
