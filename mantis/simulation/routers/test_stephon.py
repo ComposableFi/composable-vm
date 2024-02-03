@@ -3,6 +3,7 @@ import numpy as np
 import cvxpy as cp
 import pandas as pd
 import random
+import queue
 
 from typing import TypeVar, Tuple, Dict, List
 from tqdm import tqdm
@@ -107,7 +108,31 @@ class OrderRoutingSimulationEnvironment:
 
         self.mapping_matrices = get_mapping_matrices(self.all_tokens, self.all_cfmms)
 
-
+class Node: 
+    
+    def __init__(self, token: str, amount: float) -> None:
+        self.token = token 
+        self.amount = amount
+        self.directions = []
+        
+    def __repr__(self) -> str:
+        return f'{self.token}({self.amount})'
+    
+    def __str__(self) -> str:
+        return self.__repr__()
+        
+class DirectionNode: 
+    
+    def __init__(self, token: str, amount: float) -> None:
+        self.token = token 
+        self.amount = amount
+        
+    def __repr__(self) -> str:
+        return f'{self.token}({self.amount})'
+    
+    def __str__(self) -> str:
+        return self.__repr__()
+    
 def flip(p: float) -> bool:
     return random.random() < p
 
@@ -420,5 +445,88 @@ if __name__ == "__main__":
             
         swaps.append(Swap(in_token, abs(tokens_from_trade[in_token]), out_token, abs(tokens_from_trade[out_token]), swap_type))
         
+    # Taking the swaps and creating something meaningful with it to see
+    # Creating the graph for the tokens and swaps
+    unique_tokens = set()
     for swap in swaps: 
-        print(swap)
+        unique_tokens.add(swap.in_token)
+        unique_tokens.add(swap.out_token)
+        
+    edges = {k: [] for k in unique_tokens}
+
+    for swap in swaps:
+        edges[swap.in_token].append(swap.out_token)
+        
+    # Creating the nodes from the swaps 
+    nodes = {token: Node(token, 0) for token in unique_tokens}
+
+    target_token = obj_token
+    for swap in swaps: 
+        # Upading the amount of the nodes
+        in_token = swap.in_token
+        out_token = swap.out_token
+        nodes[in_token].amount += swap.in_token_amount
+        
+        if out_token == target_token:
+            nodes[out_token].amount += swap.out_token_amount
+        
+        # Adding the children
+        nodes[in_token].directions.append(Swap(in_token, swap.in_token_amount, out_token, swap.out_token_amount, swap.swap_type))  
+        
+    starting_node = nodes[origin_token]
+    visited_nodes = [] 
+
+    # Starting the BFS to get the directions in an order that we want
+    bfs_queue = queue.SimpleQueue()
+    bfs_queue.put(starting_node)
+    directions = []
+
+    while not bfs_queue.empty():
+        current_node = bfs_queue.get()
+        
+        # Checking that we have not been here before
+        if current_node in visited_nodes: 
+            break
+        else: 
+            visited_nodes.append(current_node)
+        
+        if (len(current_node.directions) > 0) and (current_node.token != target_token): 
+            
+            for direction in current_node.directions: 
+                next_node = nodes[direction.out_token]
+                bfs_queue.put(next_node)
+                directions.append(direction)
+                
+                
+    # Simulating going through the token swap process with logs
+    token_swap_queue = queue.SimpleQueue()
+
+    start_token = origin_token
+    target_token = obj_token
+    token_swap_queue.put(start_token)
+    
+    while token_swap_queue.qsize() > 0: 
+        # Getting the current token
+        current_token = token_swap_queue.get()
+        current_amount = nodes[current_token].amount
+        
+        print(f"Current token: {current_token}")
+        print(f'Current amount of {current_token}: {current_amount}')
+        
+        directions = nodes[current_token].directions
+        
+        for direction in directions: 
+            if direction.swap_type == 'transfer': 
+                print(f"Transfering {direction.in_token_amount} {direction.in_token} to {direction.out_token_amount} {direction.out_token}")
+            else: 
+                print(f"Swapping {direction.in_token_amount} {direction.in_token} for {direction.out_token_amount} {direction.out_token}")
+        
+        
+        print("*" * 50)
+        # Look for the swaps that have this token as the input and are not the 
+        next_tokens = [x.out_token for x in directions if x.out_token != target_token]
+        
+        # Append the next token to the queue
+        for token in next_tokens: 
+            token_swap_queue.put(token)
+        
