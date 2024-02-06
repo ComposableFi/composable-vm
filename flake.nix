@@ -347,6 +347,10 @@
               nativeBuildInputs = old.buildInputs or [] ++ [self.python.pkgs.maturin];
             });
 
+            disjoint-set = super.disjoint-set.overridePythonAttrs (old: {
+              buildInputs = old.buildInputs or [] ++ [self.python.pkgs.poetry];
+            });
+
             pyscipopt = pyscipopt-latest;
             google = super.google.overridePythonAttrs (old: {
               buildInputs = old.buildInputs or [] ++ [self.python.pkgs.setuptools];
