@@ -1,15 +1,10 @@
 # for alignment on input and output of algorithm
-from functools import cache
 from pathlib import Path
-import pandas as pd
-from enum import Enum
-from typing import TypeVar, Generic
-from pydantic import BaseModel, validator
-from strictly_typed_pandas import DataSet
 
 from mantis.simulation.routers.data import (
-    AssetPairsXyk,
-    AssetTransfers,
+    Exchange,
+    SingleInputAssetCvmRoute,
+    Spawn,
     new_data,
     new_pair,
     read_dummy_data,
@@ -42,3 +37,14 @@ def test_usd_price():
     assert data.venues_count == 1
     assert data.index_of_token(1) == 0
     assert data.index_of_token(2) == 1
+
+
+def test_output_route_centauri_osmosis():
+    exchange = Exchange(in_asset_amount=100, pool_id=1, next=[])
+
+    spawn = Spawn(
+        in_asset_amount=100,
+        out_asset_id=1,
+        next=[exchange.model_dump()],
+    )
+    SingleInputAssetCvmRoute(start=[spawn])

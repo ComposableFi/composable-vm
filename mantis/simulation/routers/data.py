@@ -1,13 +1,11 @@
 # for alignment on input and output of algorithm
 from fractions import Fraction
-from functools import cache
 import math
 import numpy as np
 import pandas as pd
 from enum import Enum
-from typing import TypeVar, Generic
+from typing import TypeVar, Generic, Union
 from pydantic import BaseModel, validator
-from methodtools import lru_cache
 
 # This is global unique ID for token(asset) or exchange(pool)
 TId = TypeVar("TId")
@@ -130,7 +128,11 @@ class Input(
     max: bool
 
 
-class SingleInputAssetCvmRoute(BaseModel):
+class Exchange(BaseModel):
+    pass
+
+
+class Spawn(BaseModel):
     pass
 
 
@@ -140,22 +142,29 @@ class Spawn(BaseModel):
     # None means all (DELTA)
     in_asset_amount: int | None = None
     out_asset_id: int
-    next: SingleInputAssetCvmRoute
+    next: list[Union[Exchange, Spawn]] = []
 
 
 class Exchange(BaseModel):
     # none means all (DELTA)
     in_asset_amount: int | None = None
     pool_id: int
-    next: SingleInputAssetCvmRoute
+    next: list[Union[Exchange, Spawn]] = []
 
 
-# always starts with Input amount and asset
+Exchange.model_rebuild()
+Spawn.model_rebuild()
+
+
 class SingleInputAssetCvmRoute(BaseModel):
-    next: list[Exchange | Spawn]
+    """
+    always starts with Input amount and asset
+    """
+
+    start: list[Union[Exchange, Spawn]]
 
 
-SingleInputAssetCvmRoute.update_forward_refs()
+SingleInputAssetCvmRoute.model_rebuild()
 
 
 class SolutionType(Enum):
