@@ -1,11 +1,12 @@
 # for alignment on input and output of algorithm
+from dataclasses import dataclass
 from fractions import Fraction
 from functools import cache
 import math
 import numpy as np
 import pandas as pd
 from enum import Enum
-from typing import TypeVar, Generic
+from typing import Annotated, TypeVar, Generic, Union
 from pydantic import BaseModel, validator
 from methodtools import lru_cache
 
@@ -129,10 +130,10 @@ class Input(
     # please fail if bool is False for now
     max: bool
 
-
-class SingleInputAssetCvmRoute(BaseModel):
+class Exchange(BaseModel):
     pass
-
+class Spawn(BaseModel):
+    pass
 
 # transfer assets
 class Spawn(BaseModel):
@@ -140,22 +141,25 @@ class Spawn(BaseModel):
     # None means all (DELTA)
     in_asset_amount: int | None = None
     out_asset_id: int
-    next: SingleInputAssetCvmRoute
-
+    next: list[Union[Exchange, Spawn]] = []
 
 class Exchange(BaseModel):
     # none means all (DELTA)
     in_asset_amount: int | None = None
     pool_id: int
-    next: SingleInputAssetCvmRoute
+    next: list[Union[Exchange, Spawn]] = []
 
 
-# always starts with Input amount and asset
+Exchange.model_rebuild()
+Spawn.model_rebuild()
+
 class SingleInputAssetCvmRoute(BaseModel):
-    next: list[Exchange | Spawn]
+    """
+    always starts with Input amount and asset
+    """
+    start: list[Union[Exchange, Spawn]]
 
-
-SingleInputAssetCvmRoute.update_forward_refs()
+SingleInputAssetCvmRoute.model_rebuild()
 
 
 class SolutionType(Enum):
