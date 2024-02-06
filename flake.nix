@@ -539,7 +539,7 @@
                 nix develop --impure --command poetry lock --no-update
                 nix develop --impure --command poetry install
                 nix develop --impure --command poetry run ruff format .
-                nix develop --impure --command poetry run ruff --fix .
+                nix develop --impure --command poetry run ruff . --exit-non-zero-on-fix --fix-only --no-unsafe-fixes
               )
               nix fmt
               cargo fmt
@@ -555,7 +555,7 @@
               (
                 cd ./mantis
                 nix develop --impure --command poetry run pytest
-                nix develop --impure --command poetry run ruff check .
+                nix develop --impure --command poetry run ruff check . --exit-non-zero-on-fix --fix-only --no-unsafe-fixes
                 nix develop --impure --command poetry check --lock
               )
               nix flake show --all-systems --json --no-write-lock-file

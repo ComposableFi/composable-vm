@@ -74,3 +74,6 @@ build-backend = "poetry.core.masonry.api"
 blackbox = 'blackbox.main:start'
 mantis-blackbox = 'blackbox.main:main'
 dzmitry_solver = 'simulation.routers.test_dzmitry:simulate'
+
+[tool.ruff]
+unsafe-fixes = false
