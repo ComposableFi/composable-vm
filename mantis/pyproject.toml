@@ -63,7 +63,7 @@ PySCIPOpt = "4.4.0" # i set it directly to allow override SCIP dep (currently it
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.4.3"
-ruff = "^0.2.1"
+ruff = "0.1.4"
 
 
 [build-system]
