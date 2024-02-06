@@ -74,3 +74,9 @@ build-backend = "poetry.core.masonry.api"
 blackbox = 'blackbox.main:start'
 mantis-blackbox = 'blackbox.main:main'
 dzmitry_solver = 'simulation.routers.test_dzmitry:simulate'
+
+[tool.black]
+line-length = 88
+skip-string-normalization = false
+skip-magic-trailing-comma = false
+fast = false

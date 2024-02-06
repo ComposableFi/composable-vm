@@ -48,18 +48,11 @@ def test_usd_price():
 
 
 def test_output_route_centauri_osmosis():
-    exchange = Exchange(
-            in_asset_amount=100,
-            pool_id=1,
-            next=[]
-        )
-    
+    exchange = Exchange(in_asset_amount=100, pool_id=1, next=[])
+
     spawn = Spawn(
         in_asset_amount=100,
         out_asset_id=1,
-        next= [exchange.model_dump()],
-                 
+        next=[exchange.model_dump()],
     )
-    SingleInputAssetCvmRoute(start = [
-        spawn
-    ])
+    SingleInputAssetCvmRoute(start=[spawn])

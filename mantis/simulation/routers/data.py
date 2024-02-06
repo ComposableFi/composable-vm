@@ -130,10 +130,14 @@ class Input(
     # please fail if bool is False for now
     max: bool
 
+
 class Exchange(BaseModel):
     pass
+
+
 class Spawn(BaseModel):
     pass
+
 
 # transfer assets
 class Spawn(BaseModel):
@@ -142,6 +146,7 @@ class Spawn(BaseModel):
     in_asset_amount: int | None = None
     out_asset_id: int
     next: list[Union[Exchange, Spawn]] = []
+
 
 class Exchange(BaseModel):
     # none means all (DELTA)
@@ -153,11 +158,14 @@ class Exchange(BaseModel):
 Exchange.model_rebuild()
 Spawn.model_rebuild()
 
+
 class SingleInputAssetCvmRoute(BaseModel):
     """
     always starts with Input amount and asset
     """
+
     start: list[Union[Exchange, Spawn]]
+
 
 SingleInputAssetCvmRoute.model_rebuild()
 
