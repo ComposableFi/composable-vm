@@ -1,29 +1,27 @@
-# solves using NLP optimization (or what best underlying engine decides)
-# Models cross chain transfers as fees as """pools"""
-# Uses decision variables to decide if to do Transfer to tap pool or not.
-
-import numpy as np
-import cvxpy as cp
 import copy 
 import threading as th
 import os
-MAX_RESERVE = 1e10
+# import time
 
-from simulation.routers.data import AllData, Input, TId, TNetworkId, Ctx, AssetTransfers, AssetPairsXyk, TAmount
+from simulation.routers.data import AllData, Input, TId, Ctx, AssetTransfers, AssetPairsXyk, TAmount
 
 class Edge:
-    U : list[int]
-    B : list[TAmount]
-    W : list[int]
-    F : list[float]
+    # A class that represent an edge in an useful way
+    # In the future it could be used in hipergraph algorithms with a few changes
 
-    def toFloat(self, x):
+    U : list[int] # nodes of the edge
+    B : list[TAmount] # amount of each token in the edge
+    W : list[int] # weight of each token in the edge
+    F : list[float] # fee of each token in the edge
+
+    def toFloat(self, x): # Cast to float using 0.0 when it fails
         try:
             return float(x)
         except:
             return 0.0
 
-    def __init__(self, e : [AssetTransfers|AssetPairsXyk], tokensIds : dict[TId, int]): 
+    def __init__(self, e : [AssetTransfers|AssetPairsXyk], tokensIds : dict[TId, int]):
+        # Creates an edge in base to a pool 
         if isinstance(e,AssetTransfers):
             self.__initFromTransfers(e, tokensIds)
         else:
@@ -42,6 +40,7 @@ class Edge:
         self.F = [self.toFloat(e.fee_in), self.toFloat(e.fee_out)]
 
     def GetAmount(self, Ti, Xi):
+        # Send Xi amount of token Ti and return the amount of the other token
         i,o = 0,1
         if Ti == self.U[1]:
             i,o = 1,0
@@ -49,6 +48,7 @@ class Edge:
         return self.B[o] * (1-(self.B[i]/(self.B[i]+Xi))**(self.W[i]/self.W[o]))
 
     def DoChange(self, Ti, Xi):
+        # Actually do the change of the amount of the tokens
         i,o = 0,1
         if Ti == self.U[1]:
             i,o = 1,0
@@ -58,12 +58,15 @@ class Edge:
         self.B[o] -= result        
         return result
     
-    def GetOther(self, Ti):
+    def GetOther(self, Ti): # Asumes only 2 nodes in the edge
         if Ti == self.U[0]:
             return self.U[1]
         return self.U[0]
 
-class Estado:
+
+class State:
+    # A class that represent the state of the algorithm
+    # It's used to pass the state to the threads if executed in parallel
     max_depth : int
     depth : int
     dist : list[list[tuple[int, float]]]
@@ -73,6 +76,7 @@ class Estado:
     revision : bool
     Nopts : int
     j : int
+    n : int
     def __init__(self):
         self.dist = None
         self.max_depth = None
@@ -82,115 +86,165 @@ class Estado:
         self.revision = None
         self.dlock = None
         self.Nopts = None
-        self.j = 0
+        self.j = None
+        self.n = None
     
-def Rango(e0, e1, estado):
-        edges = estado.edges
-        j = estado.j
-        #print(e0, e1, j)
+def Range(e0, e1, state):
+    # A function that is used by the threads to process a range of edges
+        
+    edges = state.edges
+    j = state.j
 
-        dist = estado.dist
-        for ei in range(e0,e1):
-            e = edges[ei]
-            for u in e.U:
-                if dist[j][u][1] == 0: continue
-                v = e.GetOther(u)
-                if estado.revision:
-                    ee = copy.deepcopy(e)
-                    vv = u
-                    for jj in range(j,0,-1):
-                        pad = dist[jj][vv][0]
-                        vv = edges[pad].GetOther(vv)
-                        if pad == ei: 
-                            ee.DoChange(vv,dist[jj-1][vv][1])
-                else : ee = e
-                Xv = ee.GetAmount(u, dist[j][u][1])
-                estado.dlock[v].acquire()
-                if dist[j+1][v][1] < Xv:
-                    dist[j+1][v] = (ei, Xv )
-                estado.dlock[v].release()
+    # For each edge in the range run the BF step
+    dist = state.dist
+    for ei in range(e0,e1):
+        e = edges[ei]
+        for u in e.U:
+            if dist[j*state.n+u][1] == 0: continue
+            v = e.GetOther(u)
+            if state.revision:
+                ee = copy.deepcopy(e)
+                vv = u
+                for jj in range(j,0,-1):
+                    pad = dist[jj*state.n+vv][0]
+                    vv = edges[pad].GetOther(vv)
+                    if pad == ei: 
+                        ee.DoChange(vv,dist[(jj-1)*state.n+vv][1])
+            else : ee = e
+            Xv = ee.GetAmount(u, dist[j*state.n+u][1])
+            state.dlock[v].acquire() # Lock the node
+            if dist[(j+1)*state.n+v][1] < Xv:
+                dist[(j+1)*state.n+v] = (ei, Xv )
+            state.dlock[v].release() # Unlock the node
 
 # Bellman Ford based solution
 
+# The function divides the transaction if several paths (splits) and for each path
+# find an optimal path using the Bellman Ford algorithm without any modification.
+#             
+# If the revision parameter is True, in each step the edge will be used with the information
+# of the path that reached the first node. This might be important in loops.
+#
+# The parameters of the functions allows to go over the runtime-accuracy tradeoff
+
 def route(
     input: Input,
-    all_data: AllData,
-    _ctx: Ctx = Ctx(),
-    max_depth:int = 5,
-    splits:int = 1000,
-    revision = True,
-    Nproces = None,
+    all_data: AllData, 
+    _ctx: Ctx = Ctx(), # Context
+    max_depth:int = 5, # The maximum number of edges that can be used
+    splits:int = 1000, # The number of flow units in which the amount is divided
+    revision = True, # When uses an edge, check if the edge has been used before and if so, use the same edge
+    Nproces = None,  # A parameter used for paralell programing. For now, it seems to be best to use only one threat than paralell programming
 ):
     edges : list[Edge] = []
     all_tokens = all_data.all_tokens
     tokensIds = {x:i for i,x in enumerate(all_tokens)}
     
+    # If the number of processes is not given, use the number of cpus
     if Nproces == None: Nproces = os.cpu_count()
 
+    # If max_depth or splits are not lists, convert them to lists
     if isinstance(max_depth,int): max_depth = [max_depth]
     if isinstance(splits,int): splits = [splits]
 
+    # Create the list of edges
     for x in all_data.asset_transfers:
         edges.append(Edge(x, tokensIds))
     for x in all_data.asset_pairs_xyk:
         edges.append(Edge(x, tokensIds))
     
+    # Number of tokens 
     n = len(all_tokens)
     
+    # Initialize the variables
     deltas : list[float] = [0]*len(edges)
     lambdas: list[float] = [0]*len(edges) 
     paths : list[list[int]] = []
     outcomes : list[float] = [0]
     totSplits = sum(splits)
 
+    # First and last nodes
     u_init = tokensIds[input.in_token_id]
     u_end = tokensIds[input.out_token_id]
 
-    estado = Estado()
-    estado.u_end = u_end
-    estado.edges = edges
-    estado.revision = revision
-    estado.dlock = [th.Lock() for i in range(n)]
-    #print(estado.dlock)
+    # The state of the algorithm that can be passed to the threads if executed in parallel
+    state = State()
+    state.u_end = u_end
+    state.edges = edges
+    state.revision = revision
+    state.dlock = [th.Lock() for i in range(n)]
+    state.n = n
 
-    e0 = [i*len(edges)//Nproces for i in range(Nproces)]
-    e1 = [(i+1)*len(edges)//Nproces for i in range(Nproces)]
-    e1[-1] = len(edges)
-    estado.dlock = [th.Lock() for i in range(n)]
+    # If the number of processes is greater than 1, divide the edges into Nproces parts
+    if Nproces > 1:
+        e0 = [i*len(edges)//Nproces for i in range(Nproces)]
+        e1 = [(i+1)*len(edges)//Nproces for i in range(Nproces)]
+        e1[-1] = len(edges)
+        state.dlock = [th.Lock() for i in range(n)]
+
+    # The dist and previous edge of each node for each length of the path    
+    state.dist = [(None,0)] * ( (max(max_depth)+1) * n)
     
-    n0 = [i*n//Nproces for i in range(Nproces)]
-    n1 = [(i+1)*n//Nproces for i in range(Nproces)]
-    n1[-1] = n
-
-
+    # For each max_depth and splits
     for max_depth_i, splits_i in zip(max_depth, splits):
-        for split in range(splits_i):
-            dist = [[(None,0) for i in range(n)] for j in range(max_depth_i+1)]
-            dist[0][u_init] = (None, input.in_amount/(totSplits))
-            estado.depth = 0
-            estado.dist = dist
-            estado.max_depth = max_depth_i
+        for split in range(splits_i): # The split variable is not used but left for clarity
+            # Reset the dist and previous edge of each node for each length of the path
+            for i in range( ( (max(max_depth)+1) * n)):
+                    state.dist[i] = (None,0)
             
+            # Initialize the first node
+            state.dist[u_init] = (None, input.in_amount/(totSplits))
+            
+            # Actualizate the state
+            state.depth = 0
+            state.max_depth = max_depth_i
+            
+            # Process each legth of the path
             for step in range(max_depth_i):
-                estado.j = step
-                threads = [th.Thread(target=Rango, args=(e0[i], e1[i], estado)) for i in range(Nproces)]
-                for t in threads: t.start()
-                for t in threads: t.join()
-            
-    #        for f in estado.dist:
-    #            print(f)
+            #    start = time.time()
+                if Nproces > 1: # If the number of processes is greater than 1, use the threads
+                    state.j = step
+                    threads = [th.Thread(target=Range, args=(e0[i], e1[i], state)) for i in range(Nproces)]
+                    for t in threads: t.start()
+                    for t in threads: t.join()
+                else: # If the number of processes is 1, use the main thread
+                    for (ei, e) in enumerate(edges):
+                        for u in e.U:
+                            if state.dist[step*state.n+u][1] == 0: continue
+                            v = e.GetOther(u)
+                            if state.revision: # If the revision is active, use the same edge if it has been used before 
+                                ee = copy.deepcopy(e)
+                                vv = u 
+                                # Go back in the path to check if the edge has been used before
+                                for jj in range(step,0,-1):
+                                    pad = state.dist[jj*state.n+vv][0]
+                                    vv = edges[pad].GetOther(vv)
+                                    if pad == ei: 
+                                        ee.DoChange(vv,state.dist[(jj-1)*state.n+vv][1])
+                            else : ee = e # If the revision is not active, use the edge
+                            # Get the amount of the other token    
+                            Xv = ee.GetAmount(u, state.dist[step*state.n+u][1])
+                            # Update the amount of the other token if it is greater than the previous amount
+                            if state.dist[(step+1)*state.n+v][1] < Xv:
+                                state.dist[(step+1)*state.n+v] = (ei, Xv )
 
+            # Get the optimal path
             for j in range(1,max_depth_i+1):
-                if dist[j][u_end] and (estado.depth == 0 or dist[j][u_end][1] > dist[estado.depth][u_end][1]):
-                    estado.depth = j
+                if state.dist[j*n+u_end] and (state.depth == 0 or state.dist[j*n+u_end][1] > state.dist[state.depth*n+u_end][1]):
+                    state.depth = j
 
-            path : list[int] = [0]*estado.depth
+            if state.depth == 0: # if there is no path
+                raise Exception("No path found")
+            
+            path : list[int] = [0]*state.depth
             v = u_end
             
-            for j in range(estado.depth, 0, -1):
-                path[j-1] = dist[j][v][0]
+            # Rebuild the path
+            for j in range(state.depth, 0, -1):
+                path[j-1] = state.dist[j*n+v][0]
                 v = edges[path[j-1]].GetOther(v)
 
+            # Use the path and update the edges
             Xi = input.in_amount/(totSplits)
             u = tokensIds[input.in_token_id]
             for i in range(len(path)-1):
@@ -201,13 +255,14 @@ def route(
                 Xi = Xj
                 v = e.GetOther(u)
             
+            # Update the paths and outcomes
             paths.append(path)
             outcomes.append(outcomes[-1]+Xi)
-    #print(paths)
-    return outcomes[-1], outcomes[-2] 
-    #return outcome, paths, lambdas, deltas
 
-def BuildRoute(max_depth, splits, revision):
+    return outcomes[-1], outcomes[-2], paths, lambdas, deltas 
+
+# A way to fix some parameters of the function, use for a functional approach
+def BuildRoute(max_depth, splits, revision, Nproces = 1):
     def _route(input: Input, all_data: AllData, _ctx: Ctx = Ctx()):
-        return route(input, all_data, _ctx, max_depth, splits, revision)
+        return route(input, all_data, _ctx, max_depth, splits, revision, Nproces)
     return _route
