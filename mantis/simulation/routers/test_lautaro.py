@@ -71,7 +71,7 @@ def _test_simulate_all_connected_venues():
     print(all_data.index_of_token("ATOM"))
 
     print("=============== solving ========================")
-    result = route(input, all_data)
+    result = route(input, all_data, splits = 1000, max_depth = 5)
     print(result)
 
 
