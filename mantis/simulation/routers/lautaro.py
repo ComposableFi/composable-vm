@@ -80,7 +80,7 @@ class Estado:
         self.edges = None
         self.revision = None
     
-def Paso(e0, e1, lock, estado):
+def Rango(e0, e1, lock, estado):
         lock.acquire()
         lock.release()
         edges = estado.edges
@@ -158,7 +158,7 @@ def route(
     e1[-1] = len(edges)
     locks = [th.Lock() for i in range(Nproces)]
     for lock in locks: lock.acquire()
-    threads = [th.Thread(target=Paso, args=(e0[i], e1[i], locks[i], estado)) for i in range(Nproces)]
+    threads = [th.Thread(target=Rango, args=(e0[i], e1[i], locks[i], estado)) for i in range(Nproces)]
     for t in threads: t.start()
     
     for max_depth_i, splits_i in zip(max_depth, splits):
