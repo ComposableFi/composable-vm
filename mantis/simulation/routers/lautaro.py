@@ -71,7 +71,8 @@ class Estado:
     u_end : int
     edges : list[Edge]
     revision : bool
-
+    Nopts : int
+    j : int
     def __init__(self):
         self.dist = None
         self.max_depth = None
@@ -79,37 +80,35 @@ class Estado:
         self.u_end = None
         self.edges = None
         self.revision = None
+        self.dlock = None
+        self.Nopts = None
+        self.j = 0
     
-def Rango(e0, e1, lock, estado):
-        lock.acquire()
-        lock.release()
+def Rango(e0, e1, estado):
         edges = estado.edges
-        u_end = estado.u_end
-        for j in range(estado.max_depth):
-            lock.acquire()
-            dist = estado.dist
-            for ei in range(e0,e1):
-                e = edges[ei]
-                for u in e.U:
-                    if dist[j][u][0] == -1: continue
-                    v = e.GetOther(u)
-                    if estado.revision:
-                        ee = copy.deepcopy(e)
-                        vv = v
-                        for jj in range(j,0,-1):
-                            pad = dist[jj][vv][0]
-                            vv = edges[pad].GetOther(vv)
-                            if pad == ei: 
-                                ee.DoChange(vv,dist[jj-1][vv][1])
-                    else : ee = e
-                    Xv = ee.GetAmount(u, dist[j][u][1])
-                    if Xv > dist[j+1][v][1]:
-                        estado.dlock[v].acquire()
-                        dist[j+1][v] = (ei, Xv)
-                        estado.dlock[v].release()
-                if dist[j+1][u_end][1] > dist[estado.depth][u_end][1]:
-                    estado.depth = j+1
-            lock.release()
+        j = estado.j
+        #print(e0, e1, j)
+
+        dist = estado.dist
+        for ei in range(e0,e1):
+            e = edges[ei]
+            for u in e.U:
+                if dist[j][u][1] == 0: continue
+                v = e.GetOther(u)
+                if estado.revision:
+                    ee = copy.deepcopy(e)
+                    vv = u
+                    for jj in range(j,0,-1):
+                        pad = dist[jj][vv][0]
+                        vv = edges[pad].GetOther(vv)
+                        if pad == ei: 
+                            ee.DoChange(vv,dist[jj-1][vv][1])
+                else : ee = e
+                Xv = ee.GetAmount(u, dist[j][u][1])
+                estado.dlock[v].acquire()
+                if dist[j+1][v][1] < Xv:
+                    dist[j+1][v] = (ei, Xv )
+                estado.dlock[v].release()
 
 # Bellman Ford based solution
 
@@ -120,7 +119,7 @@ def route(
     max_depth:int = 5,
     splits:int = 1000,
     revision = True,
-    Nproces = None
+    Nproces = None,
 ):
     edges : list[Edge] = []
     all_tokens = all_data.all_tokens
@@ -152,26 +151,39 @@ def route(
     estado.edges = edges
     estado.revision = revision
     estado.dlock = [th.Lock() for i in range(n)]
+    #print(estado.dlock)
 
     e0 = [i*len(edges)//Nproces for i in range(Nproces)]
     e1 = [(i+1)*len(edges)//Nproces for i in range(Nproces)]
     e1[-1] = len(edges)
-    locks = [th.Lock() for i in range(Nproces)]
-    for lock in locks: lock.acquire()
-    threads = [th.Thread(target=Rango, args=(e0[i], e1[i], locks[i], estado)) for i in range(Nproces)]
-    for t in threads: t.start()
+    estado.dlock = [th.Lock() for i in range(n)]
     
+    n0 = [i*n//Nproces for i in range(Nproces)]
+    n1 = [(i+1)*n//Nproces for i in range(Nproces)]
+    n1[-1] = n
+
+
     for max_depth_i, splits_i in zip(max_depth, splits):
         for split in range(splits_i):
-            dist = [[(-1,0) for i in range(n)] for j in range(max_depth_i+1)]
-            dist[0][u_init] = (0, input.in_amount/(totSplits))
+            dist = [[(None,0) for i in range(n)] for j in range(max_depth_i+1)]
+            dist[0][u_init] = (None, input.in_amount/(totSplits))
             estado.depth = 0
             estado.dist = dist
             estado.max_depth = max_depth_i
             
-            for lock in locks: lock.release()
-            for lock in locks: lock.acquire()
+            for step in range(max_depth_i):
+                estado.j = step
+                threads = [th.Thread(target=Rango, args=(e0[i], e1[i], estado)) for i in range(Nproces)]
+                for t in threads: t.start()
+                for t in threads: t.join()
             
+    #        for f in estado.dist:
+    #            print(f)
+
+            for j in range(1,max_depth_i+1):
+                if dist[j][u_end] and (estado.depth == 0 or dist[j][u_end][1] > dist[estado.depth][u_end][1]):
+                    estado.depth = j
+
             path : list[int] = [0]*estado.depth
             v = u_end
             
@@ -191,7 +203,7 @@ def route(
             
             paths.append(path)
             outcomes.append(outcomes[-1]+Xi)
-
+    #print(paths)
     return outcomes[-1], outcomes[-2] 
     #return outcome, paths, lambdas, deltas
 

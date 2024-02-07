@@ -61,15 +61,16 @@ def _test_simulate_all_connected_venues(routers):
     print("=============== solving ========================")
     
     results = []
-
+    values = {}
     for (name, route) in routers.items():
         start = time.time()
         result = route(input, all_data)
         end = time.time()
         results.append(f'{name} result: {result} in time: {end - start}')
-
+        values[name] = (result, end - start)
     for result in results:
         print(result)
+    return values
 
 def simulate_all_connected_venue(CENTER_NODE, chains) -> AllData:
     pools: list[AssetPairsXyk] = []
@@ -124,12 +125,9 @@ def simulate_all_to_all_connected_chains_topology(input: Input):
 
 if __name__ == "__main__":
     _test_simulate_all_connected_venues({
-        "Lautaro A": lautaro.BuildRoute(5,4000,False),
-        "Lautaro A2": lautaro.BuildRoute(5,4000,True),
-        "Lautaro B": lautaro.BuildRoute(10,4000, False),
-        "Lautaro B2": lautaro.BuildRoute(10,4000,True),
-        "Lautaro C": lautaro.BuildRoute(15,4000, False),
-        "Lautaro C2": lautaro.BuildRoute(15,4000, True),
-        "Lautaro D": lautaro.BuildRoute([5,10,20,25],[250,250,250,250], False),
+        "Lautaro A0": lautaro.BuildRoute(5,1000,False),
+        "Lautaro A": lautaro.BuildRoute(5,1000,True),
+        "Lautaro B": lautaro.BuildRoute(10,1000,True),
+        "Lautaro C": lautaro.BuildRoute(15,1000,True),
         "Dzmitry": dzmitry.route,
     })
