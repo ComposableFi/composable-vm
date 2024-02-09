@@ -17,7 +17,12 @@ from simulation.routers import data
 import sys
 import os
 from pydantic import BaseModel
-from simulation.routers.data import AssetPairsXyk, AssetTransfers, new_pair, read_dummy_data, AllData as CvmAllData
+from simulation.routers.data import (
+    AssetPairsXyk,
+    new_pair,
+    read_dummy_data,
+    AllData as CvmAllData,
+)
 
 app = FastAPI()
 
@@ -60,6 +65,7 @@ async def exchanges_dummy() -> List[AssetPairsXyk[int, int]]:
         80,
     )
     return [t1, t2]
+
 
 class White_csv_Data(BaseModel):
     pool_id: int
