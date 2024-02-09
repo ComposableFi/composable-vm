@@ -732,7 +732,7 @@ dependencies = [
  "scale-info",
  "schemars",
  "serde",
- "serde-json-wasm 1.0.0",
+ "serde-json-wasm 1.0.1",
 ]
 
 [[package]]
@@ -775,7 +775,7 @@ dependencies = [
  "schemars",
  "serde",
  "serde-cw-value 0.7.0 (git+https://github.com/dzmitry-lahoda-forks/serde-cw-value.git?branch=dz/3)",
- "serde-json-wasm 1.0.0",
+ "serde-json-wasm 1.0.1",
  "sha2 0.10.8",
  "strum",
  "thiserror-core",
@@ -833,7 +833,7 @@ dependencies = [
  "schemars",
  "serde",
  "serde-cw-value 0.7.0 (git+https://github.com/dzmitry-lahoda-forks/serde-cw-value.git?branch=dz/3)",
- "serde-json-wasm 1.0.0",
+ "serde-json-wasm 1.0.1",
  "thiserror-core",
 ]
 
@@ -857,7 +857,7 @@ dependencies = [
  "prost",
  "schemars",
  "serde",
- "serde-json-wasm 1.0.0",
+ "serde-json-wasm 1.0.1",
  "thiserror-core",
 ]
 
@@ -1595,7 +1595,7 @@ source = "git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14#1f
 dependencies = [
  "ibc-app-transfer-types",
  "ibc-core",
- "serde-json-wasm 1.0.0",
+ "serde-json-wasm 1.0.1",
 ]
 
 [[package]]
@@ -1638,7 +1638,7 @@ dependencies = [
  "schemars",
  "serde",
  "serde-cw-value 0.7.0 (git+https://github.com/dzmitry-lahoda-forks/serde-cw-value.git?branch=dz/3)",
- "serde-json-wasm 1.0.0",
+ "serde-json-wasm 1.0.1",
  "sha2 0.10.8",
 ]
 
@@ -2222,7 +2222,7 @@ dependencies = [
  "rust_decimal",
  "rust_decimal_macros",
  "serde",
- "serde-json-wasm 1.0.0",
+ "serde-json-wasm 1.0.1",
  "strum",
  "strum_macros",
  "tokio",
@@ -3240,9 +3240,9 @@ dependencies = [
 
 [[package]]
 name = "serde-json-wasm"
-version = "1.0.0"
+version = "1.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "83c37d03f3b0f6b5f77c11af1e7c772de1c9af83e50bef7bb6069601900ba67b"
+checksum = "f05da0d153dd4595bdffd5099dc0e9ce425b205ee648eb93437ff7302af8c9a5"
 dependencies = [
  "serde",
 ]
@@ -3486,7 +3486,7 @@ dependencies = [
  "schemars",
  "serde",
  "serde-cw-value 0.7.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "serde-json-wasm 1.0.0",
+ "serde-json-wasm 1.0.1",
  "sylvia-derive",
 ]
 
