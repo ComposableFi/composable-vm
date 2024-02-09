@@ -1,6 +1,7 @@
 # from fastapi_cache import FastAPICache
 # from fastapi_cache.decorator import cache
 # from fastapi_cache.backends.inmemory import InMemoryBackend
+from typing import List
 from blackbox.models import (
     AllData,
     OsmosisPoolsResponse,
@@ -16,7 +17,12 @@ from simulation.routers import data
 import sys
 import os
 from pydantic import BaseModel
-from simulation.routers.data import read_dummy_data, AllData as CvmAllData
+from simulation.routers.data import (
+    AssetPairsXyk,
+    new_pair,
+    read_dummy_data,
+    AllData as CvmAllData,
+)
 
 app = FastAPI()
 
@@ -27,6 +33,38 @@ app = FastAPI()
 async def xyk_pairs() -> CvmAllData[int, int]:
     data = read_dummy_data("./simulation/routers/data/")
     return data
+
+
+@app.get("/exchanges/dummy/stables_arbitrage")
+async def exchanges_dummy() -> List[AssetPairsXyk[int, int]]:
+    """
+    example of CVM data registry merged with indexer were we can see stable coin arbitrage
+    """
+    t1 = new_pair(
+        1,
+        1,
+        2,
+        0,
+        0,
+        1,
+        1,
+        100,
+        20,
+        80,
+    )
+    t2 = new_pair(
+        1,
+        1,
+        2,
+        0,
+        0,
+        1,
+        1,
+        100,
+        30,
+        80,
+    )
+    return [t1, t2]
 
 
 class White_csv_Data(BaseModel):
