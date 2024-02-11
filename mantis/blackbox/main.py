@@ -67,6 +67,7 @@ async def exchanges_dummy() -> List[AssetPairsXyk[int, int]]:
     )
     return [t1, t2]
 
+
 @app.get("/simulation/ctx")
 async def ctx() -> Ctx:
     pass
