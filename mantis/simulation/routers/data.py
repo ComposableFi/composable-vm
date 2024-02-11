@@ -4,7 +4,7 @@ import math
 import numpy as np
 import pandas as pd
 from enum import Enum
-from typing import Set, TypeVar, Generic, Union
+from typing import TypeVar, Generic, Union
 from pydantic import BaseModel, validator
 from disjoint_set import DisjointSet
 
