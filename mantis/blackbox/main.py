@@ -1,6 +1,3 @@
-# from fastapi_cache import FastAPICache
-# from fastapi_cache.decorator import cache
-# from fastapi_cache.backends.inmemory import InMemoryBackend
 from typing import List
 from blackbox.models import (
     AllData,
@@ -12,7 +9,7 @@ from cosmpy.aerial.contract import LedgerClient
 from fastapi import FastAPI
 import requests
 import uvicorn
-from simulation.routers import test_bruno
+from simulation.routers import test_generic_linear
 from simulation.routers import data
 import sys
 import os
@@ -140,14 +137,9 @@ def get_data() -> AllData:
     return result
 
 
-# @app.on_event("startup")
-# async def startup():
-#     FastAPICache.init(InMemoryBackend())
-
-
 @app.get("/simulator/dummy")
 def simulator_dummy():
-    return test_bruno.simulate()
+    return test_generic_linear.test_simulate_all_connected_venues()
 
 
 def start():

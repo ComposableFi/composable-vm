@@ -1,6 +1,8 @@
+from copy import copy
 from attr import dataclass
 import cvxpy as cp
 import numpy as np
+from simulation.routers.data import Ctx
 
 
 @dataclass
@@ -27,11 +29,15 @@ class CvxpySolution:
         assert len(self.deltas) > 0
         assert len(self.deltas) == len(self.lambdas) == len(self.eta_values)
 
+    @property
+    def count(self):
+        return len(self.deltas)
+                   
     def received(self, global_index) -> float:
         return self.psi.value[global_index]
 
 
-def cvxpy_to_data(input, all_data, result):
+def cvxpy_to_data(input, all_data, ctx: Ctx, result: CvxpySolution):
     """_summary_
     Converts Angeris CVXPY result to executable route
 
@@ -45,3 +51,7 @@ def cvxpy_to_data(input, all_data, result):
 
     Generate DOT from tree to visualize.
     """
+    result = copy.deepcopy(result)
+    
+    for i in range(result.count):
+        

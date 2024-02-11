@@ -121,7 +121,9 @@ def solve(
     for i in range(all_data.venues_count):
         if force_eta and force_eta[i] is not None:
             constraints.append(etas[i] == force_eta[i])
-
+            if force_eta[i] == 0:
+                constraints.append(deltas[i] == 0)
+                constraints.append(lambdas[i] == 0)
         else:
             issuance = 1
             token_a_global = issuance * all_data.global_reservers_of(
