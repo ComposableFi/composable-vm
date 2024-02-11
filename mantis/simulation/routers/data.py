@@ -192,14 +192,14 @@ class AllData(BaseModel, Generic[TId, TAmount]):
     Expected real case 2^64.
     """
 
-    # If key is in first set, it cannot be in second set, and other way around
+    #   If key is in first set, it cannot be in second set, and other way around
     asset_transfers: list[AssetTransfers[TId, TAmount]] = []
     asset_pairs_xyk: list[AssetPairsXyk[TId, TAmount]] = []
     # if None, than solution must not contain any joins after forks
     # so A was split into B and C, and then B and C were moved to be D
     # D must "summed" from 2 amounts must be 2 separate routes branches
     fork_joins: list[str] | None = None
-    usd_oracles: dict[TId, int] = [[]]
+    usd_oracles: dict[TId, int] = {}
     """_summary_
       asset ids which we consider to be USD equivalents
       value - decimal exponent of token to make 1 USD
