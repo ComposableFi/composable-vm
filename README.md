@@ -4,11 +4,11 @@ The Composable Virtual Machine (CVM) is language and execution runtime for cross
 
 ## [Specification](https://docs.composable.finance/technology/cvm/specification)
 
-## [Composable Account Abstraction](https://docs.composable.finance/technology/cvm/virtual-wallet)
+## [Composable Account Abstraction](https://docs.composable.finance/technology/cvm/composable-account-abstraction)
 
 ## [Tutorial](https://docs.composable.finance/technology/cvm/tutorial)
 
-## [Cross-Domain COWs & Constant Function MM Optimal Routing](https://github.com/ComposableFi/cvm/blob/main/Cross-Domain-COWs-&-Constant-Function-MM-Routing.pdf)
+## [Cross-Domain COWs & Constant Function MM Optimal Routing](https://github.com/ComposableFi/arxiv/blob/main/2024/01/Cross-Domain-COWs-%26-Constant-Function-MM-Routing-2024-Jan-30.pdf)
 
 For an isolated shell (virtual environment):
 
