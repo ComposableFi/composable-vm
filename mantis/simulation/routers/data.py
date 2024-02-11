@@ -6,6 +6,7 @@ import pandas as pd
 from enum import Enum
 from typing import TypeVar, Generic, Union
 from pydantic import BaseModel, validator
+from disjoint_set import DisjointSet
 
 # This is global unique ID for token(asset) or exchange(pool)
 TId = TypeVar("TId")
@@ -13,44 +14,64 @@ TNetworkId = TypeVar("TNetworkId")
 TAmount = TypeVar("TAmount")
 
 
-class Ctx(BaseModel):
-    debug: bool = False
+class Ctx(BaseModel, Generic[TAmount]):
+    debug: bool = True
     """_summary_
-     If set to true, solver must output maxima inormation about solution 
+     If set to true, solver must output maxima information about solution 
     """
-    integer: bool = False
+    integer: bool = True
     """_summary_
      If set too true, solver must solve only integer problems.
      All inputs to solver are really integers. 
     """
 
+    max_reserve_decimals: int = 10
+    """_summary_
+        If algorithm can not handle big numbers, it can be reduced to power of 10
+    """
 
-class AssetTransfers(
-    BaseModel,
-    Generic[TId, TAmount],
-):
-    # set key
+    @property
+    def max_reserve(self):
+        return 10**self.max_reserve_decimals
+
+
+class TwoTokenConverter:
     in_asset_id: TId
     out_asset_id: TId
 
+
+class AssetTransfers(
+    BaseModel,
+    TwoTokenConverter,
+    Generic[TId, TAmount],
+):
     usd_fee_transfer: TAmount | None = None
     """_summary_
         this is positive whole number too
         if it is hard if None, please fail if it is None - for now will be always some
-        In reality it can be any token
+        In reality it can be any token.
+        Fixed costs $q_i$ >= 0s
     """
 
-    # amount of token on chain were it is
     amount_of_in_token: TAmount
+    """
+     Tendered amount of token on chain were it is
+    """
 
-    # amount of token on chain where ane token can go
     amount_of_out_token: TAmount
+    """
+      Expected received amount LAMBDA.      
+    """
 
     # fee per million to transfer of asset itself
     fee_per_million: int | None = None
 
     # do not care
     metadata: str | None = None
+
+    @property
+    def price_limit(self):
+        return self.amount_of_in_token / self.amount_of_out_token
 
     @validator("metadata", pre=True, always=True)
     def replace_nan_with_None(cls, v):
@@ -217,8 +238,32 @@ class AllData(BaseModel, Generic[TId, TAmount]):
             tokens.append(x.out_asset_id)
         return list(set(tokens))
 
+    def global_reservers_of(self, token: TId) -> TAmount:
+        """_summary_
+        Goes over transfers path and finds all pools with same token which server estimate of total issuance
+        """
+        ds = DisjointSet()
+
+        for pair in self.asset_pairs_xyk:
+            ds.union(pair.in_asset_id, pair.in_asset_id)
+            ds.union(pair.out_asset_id, pair.out_asset_id)
+
+        for transfer in self.asset_transfers:
+            ds.union(transfer.out_asset_id, transfer.in_asset_id)
+        total_issuance = 0
+        for span in ds.itersets():
+            if token in span:
+                for token in span:
+                    total_issuance += self.reserves_of(token)
+                break
+        return total_issuance
+
     def index_of_token(self, token: TId) -> int:
         return self.all_tokens.index(token)
+
+    def assets_for_venue(self, venue: int) -> list[TId]:
+        venue = self.all_venues[venue]
+        return [venue[0], venue[1]]
 
     def get_index_in_all(self, venue: AssetPairsXyk | AssetTransfers) -> int:
         if isinstance(venue, AssetPairsXyk):
@@ -242,9 +287,8 @@ class AllData(BaseModel, Generic[TId, TAmount]):
         """_summary_
         Converts fixed price of venue in usd to specific token
         """
-        venues_prices_usd = self.venue_fixed_costs_in_usd
         in_token = []
-        for x in venues_prices_usd:
+        for x in self.venue_fixed_costs_in_usd:
             token_in_usd = self.token_price_in_usd(token)
             assert token_in_usd != None
             in_token.append(math.ceil(x / token_in_usd))
@@ -280,14 +324,31 @@ class AllData(BaseModel, Generic[TId, TAmount]):
             reserves.append(np.array([x.amount_of_in_token, x.amount_of_out_token]))
         return reserves
 
+    def reserves_of(self, token: TId) -> int:
+        global_value_locked = 0
+        for x in self.asset_pairs_xyk:
+            if x.out_asset_id == token:
+                global_value_locked += x.out_token_amount
+            if x.in_asset_id == token:
+                global_value_locked += x.in_token_amount
+        for x in self.asset_transfers:
+            if x.out_asset_id == token:
+                global_value_locked += x.amount_of_out_token
+            if x.in_asset_id == token:
+                global_value_locked += x.amount_of_in_token
+        return global_value_locked
+
     @property
     # @lru_cache
     def all_venues(self) -> list[list[TId]]:
+        """
+        Tokens in venues.
+        """
         venues = []
         for x in self.asset_pairs_xyk:
-            venues.append((x.in_asset_id, x.out_asset_id))
+            venues.append([x.in_asset_id, x.out_asset_id])
         for x in self.asset_transfers:
-            venues.append((x.in_asset_id, x.out_asset_id))
+            venues.append([x.in_asset_id, x.out_asset_id])
         return venues
 
     def venue(self, i: int):
@@ -454,3 +515,12 @@ def read_dummy_data(TEST_DATA_DIR: str = "./") -> AllData:
             ).iterrows()
         ],
     )
+
+
+def simulate_verify(all_data: AllData, input: Input, route: SingleInputAssetCvmRoute):
+    """_summary_
+    Given route and original data,
+     traverse route doing trading.
+    Verify route does not violates user limit neither promise from route
+    """
+    pass

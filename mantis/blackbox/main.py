@@ -23,6 +23,7 @@ from simulation.routers.data import (
     read_dummy_data,
     AllData as CvmAllData,
 )
+from simulation.routers.data import Ctx, read_dummy_data, AllData as CvmAllData
 
 app = FastAPI()
 
@@ -65,6 +66,11 @@ async def exchanges_dummy() -> List[AssetPairsXyk[int, int]]:
         80,
     )
     return [t1, t2]
+
+
+@app.get("/simulation/ctx")
+async def ctx() -> Ctx:
+    pass
 
 
 class White_csv_Data(BaseModel):

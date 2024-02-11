@@ -61,6 +61,8 @@ PySCIPOpt = "4.4.0" # i set it directly to allow override SCIP dep (currently it
 # cylp = "0.92.2"  # have problems installing
 # ortools="9.4.1874" # have problems installing
 
+disjoint-set = "*"
+
 [tool.poetry.dev-dependencies]
 pytest = "^7.4.3"
 ruff = "0.1.4"
@@ -77,3 +79,4 @@ dzmitry_solver = 'simulation.routers.test_dzmitry:simulate'
 
 [tool.ruff]
 unsafe-fixes = false
+# use Unition and Optional for types, not |

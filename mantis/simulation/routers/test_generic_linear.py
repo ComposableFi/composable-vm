@@ -1,4 +1,5 @@
 # solves using convex optimization
+import math
 import numpy as np
 
 MAX_RESERVE = 1e10
@@ -20,7 +21,7 @@ from simulation.routers.data import (
 # clarabel cvxpy local mip
 import itertools
 
-from simulation.routers.dzmitry import route
+from simulation.routers.generic_linear import route
 
 
 # simulate denom paths to and from chains, with center node
@@ -45,10 +46,79 @@ def populate_chain_dict(chains: dict[TNetworkId, list[TId]], center_node: TNetwo
 
 def test_single_chain_single_cffm_route_full_symmetry_exist():
     input = new_input(1, 2, 100, 50)
-    pair = new_pair(1, 1, 2, 0, 0, 1, 1, 100, 1_000_000, 1_000_000)
+    pair = new_pair(1, 1, 2, 0, 0, 1, 1, 1, 1_000_000, 1_000_000)
     data = new_data([pair], [])
     result = route(input, data)
-    print(result)
+    assert result[0] < 100
+    assert result[0] > 95
+
+
+def test_diamond():
+    t1 = new_transfer("CENTAURI/ETHEREUM/USDC", "ETHEREUM/USDC", 0, 100_000, 100_000, 0)
+    t2 = new_transfer(
+        "CENTAURI/ETHEREUM/USDC",
+        "OSMOSIS/CENTAURI/ETHEREUM/USDC",
+        1,
+        100_000,
+        100_000,
+        0,
+    )
+    t3 = new_transfer("OSMOSIS/ETHEREUM/USDC", "ETHEREUM/USDC", 1, 100_000, 100_000, 0)
+
+    s1 = new_pair(
+        1, "ETHEREUM/USDC", "ETHEREUM/USDT", 0, 0, 1, 1, 200_000, 10_000, 10_000
+    )
+    s2 = new_pair(
+        1,
+        "OSMOSIS/ETHEREUM/USDC",
+        "OSMOSIS/ETHEREUM/USDT",
+        0,
+        0,
+        1,
+        1,
+        200_000,
+        10_000,
+        10_000,
+    )
+    s3 = new_pair(
+        1,
+        "CENTAURI/ETHEREUM/USDC",
+        "CENTAURI/ETHEREUM/USDT",
+        0,
+        0,
+        1,
+        1,
+        200_000,
+        10_000,
+        10_000,
+    )
+    s4 = new_pair(
+        1,
+        "OSMOSIS/CENTAURI/ETHEREUM/USDC",
+        "OSMOSIS/ETHEREUM/USDC",
+        0,
+        0,
+        1,
+        1,
+        200_000,
+        10_000,
+        10_000,
+    )
+
+    data = new_data([s1, s2, s3, s4], [t1, t2, t3])
+    result = route(
+        new_input("CENTAURI/ETHEREUM/USDC", "ETHEREUM/USDC", 1_000, 50), data
+    )
+
+    # here we shutdown direct Centauri <-> Ethereum route, and force Centauri -> Osmosis -> Ethereum
+    t1 = new_transfer(
+        "CENTAURI/ETHEREUM/USDC", "ETHEREUM/USDC", 1_000_000, 100_000, 100_000, 0
+    )
+    data = new_data([s1, s2, s3, s4], [t1, t2, t3])
+    result = route(
+        new_input("CENTAURI/ETHEREUM/USDC", "ETHEREUM/USDC", 1_000, 50), data
+    )
+    assert math.floor(result[0]) == 909
 
 
 def _test_big_numeric_range():
@@ -59,23 +129,19 @@ def _test_big_numeric_range():
     print(result)
 
 
-def _test_simulate_all_connected_venues():
+def test_simulate_all_connected_venues():
+    np.random.seed(0)
     input = new_input("WETH", "ATOM", 2000, 1)
     CENTER_NODE, chains = simulate_all_to_all_connected_chains_topology(input)
-    print(chains)
-
-    all_data = simulate_all_connected_venue(CENTER_NODE, chains)
+    all_data = simulate_all_connected_venues(CENTER_NODE, chains)
     print(all_data)
-    print(all_data.all_tokens)
-    print(all_data.index_of_token("WETH"))
-    print(all_data.index_of_token("ATOM"))
 
     print("=============== solving ========================")
     result = route(input, all_data)
     print(result)
 
 
-def simulate_all_connected_venue(CENTER_NODE, chains) -> AllData:
+def simulate_all_connected_venues(CENTER_NODE, chains) -> AllData:
     pools: list[AssetPairsXyk] = []
     transfers: list[AssetTransfers] = []
 
@@ -84,7 +150,7 @@ def simulate_all_connected_venue(CENTER_NODE, chains) -> AllData:
     for _other_chain, other_tokens in chains.items():
         all_token_pairs.extend(itertools.combinations(other_tokens, 2))
 
-    # simulate reserves and gas costs to CFMMS
+    # simulate reserves and gas costs to CFMM
     for i, x in enumerate(all_token_pairs):
         [a, b] = np.random.randint(9500, 10500, 2)
         fee = np.random.randint(0, 10_000)
@@ -106,7 +172,7 @@ def simulate_all_connected_venue(CENTER_NODE, chains) -> AllData:
         abc = np.random.randint(9500, 10500, 2)
         a = abc[0]
         b = abc[1]
-        tx_cost = np.random.randint(0, 1_000)
+        tx_cost = np.random.randint(0, 1_00)
         fee = np.random.randint(0, 10_000)
         x = new_transfer(x[0], x[1], tx_cost, a, b, fee)
         transfers.append(x)
