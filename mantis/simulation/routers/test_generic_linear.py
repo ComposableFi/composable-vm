@@ -1,10 +1,12 @@
 # solves using convex optimization
 import math
 import numpy as np
+from simulation.routers.angeris_cvxpy import cvxpy_to_data
 
 MAX_RESERVE = 1e10
 
 from simulation.routers.data import (
+    Ctx,
     Input,
     TId,
     TNetworkId,
@@ -115,9 +117,11 @@ def test_diamond():
         "CENTAURI/ETHEREUM/USDC", "ETHEREUM/USDC", 1_000_000, 100_000, 100_000, 0
     )
     data = new_data([s1, s2, s3, s4], [t1, t2, t3])
+    ctx = Ctx()
     result = route(
-        new_input("CENTAURI/ETHEREUM/USDC", "ETHEREUM/USDC", 1_000, 50), data
+        new_input("CENTAURI/ETHEREUM/USDC", "ETHEREUM/USDC", 1_000, 50), data, ctx,
     )
+    solution = cvxpy_to_data(input, data, ctx, result)
     assert math.floor(result[0]) == 909
 
 

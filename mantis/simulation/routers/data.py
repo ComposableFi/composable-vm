@@ -30,6 +30,13 @@ class Ctx(BaseModel, Generic[TAmount]):
         If algorithm can not handle big numbers, it can be reduced to power of 10
     """
 
+    minimal_amount : float = 0.000001
+    """_summary_
+    Numerically minimal amount of change goes via venue is accepted, minimal trade.
+    This is numeric amount, not value amount (oracalized amount) limit.
+    Must be equal or larger than solver tolerance.
+    """
+
     @property
     def max_reserve(self):
         return 10**self.max_reserve_decimals

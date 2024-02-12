@@ -188,4 +188,4 @@ def route(
         ctx,
     )
     solution = copy.deepcopy(initial_solution)
-    return (solution.received(all_data.index_of_token(input.out_token_id)), solution)
+    return solution
