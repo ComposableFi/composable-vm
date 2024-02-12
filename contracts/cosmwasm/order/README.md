@@ -5,7 +5,6 @@ It integrates CoW with CFMM cross chain execution found by Solvers.
 
 ## General flow
 
-
 Some users request exchange some assets to other assets.
 Theirs tokens were transferred via well known bridges to here. 
 
@@ -23,7 +22,6 @@ Solution with maximum volume is accepted, and should settle on second largest vo
 Bidders reserve amounts as rewards to pay for percentage of volume solved via their preferred CFMM.
 
 More details semantics will be described in whitepaper. including Solver operations.
-
 
 ## Solution
 
@@ -48,7 +46,6 @@ This contract instantiates CVM executor per CFMM and transfer amount to it, and 
 When bidder joins, percentage averaged appropriately, with always larger bid for same volume.
 For each accepted route, Solver is delegated with relevant amount to withdraw.
 
-
 ## Data model
 
 Order has numeric incremental identifier per pair of tokens.
@@ -56,3 +53,9 @@ Order has numeric incremental identifier per pair of tokens.
 Solution has owner per pair as identifier.
 
 If solution requires multiblock tracking for execution its id added with block solution was accepted.
+
+## What is fork join?
+
+A was split into B and C, and then B and C were moved to be D.
+
+D must "summed" from 2 amounts must be 2 separate CVM routes branches.

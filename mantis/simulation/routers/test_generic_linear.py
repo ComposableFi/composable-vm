@@ -112,7 +112,7 @@ def test_diamond():
     result = route(
         new_input("CENTAURI/ETHEREUM/USDC", "ETHEREUM/USDC", 1_000, 50), data
     )
-    solution = cvxpy_to_data(input, data, ctx, result)
+    #solution = cvxpy_to_data(input, data, ctx, result)
 
     # here we shutdown direct Centauri <-> Ethereum route, and force Centauri -> Osmosis -> Ethereum
     t1 = new_transfer(

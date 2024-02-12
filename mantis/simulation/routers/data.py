@@ -167,16 +167,25 @@ class Spawn(BaseModel):
     pass
 
 
-# transfer assets
-class Spawn(BaseModel):
-    # amount to take with transfer
-    # None means all (DELTA)
-    in_asset_amount: int | None = None
+class Spawn(BaseModel, Generic[TId, TAmount]):
+    """
+    cross chain transfer assets
+    """
+    
+    in_asset_id : TId
+    
+    in_asset_amount: TAmount    
+    """
+    amount to take with transfer
+    (delta)
+    """
+    out_asset_amount: int
+    
     out_asset_id: int
     next: list[Union[Exchange, Spawn]] = []
 
 
-class Exchange(BaseModel):
+class Exchange(BaseModel, Generic[TId, TAmount]):
     # none means all (DELTA)
     in_asset_amount: int | None = None
     pool_id: int
@@ -226,10 +235,7 @@ class AllData(BaseModel, Generic[TId, TAmount]):
     #   If key is in first set, it cannot be in second set, and other way around
     asset_transfers: list[AssetTransfers[TId, TAmount]] = []
     asset_pairs_xyk: list[AssetPairsXyk[TId, TAmount]] = []
-    # if None, than solution must not contain any joins after forks
-    # so A was split into B and C, and then B and C were moved to be D
-    # D must "summed" from 2 amounts must be 2 separate routes branches
-    fork_joins: list[str] | None = None
+
     usd_oracles: dict[TId, int] = {}
     """_summary_
       asset ids which we consider to be USD equivalents
@@ -333,7 +339,12 @@ class AllData(BaseModel, Generic[TId, TAmount]):
         for x in self.asset_transfers:
             reserves.append(np.array([x.amount_of_in_token, x.amount_of_out_token]))
         return reserves
-
+    
+    def venue_by_index(self, index) -> Union[AssetTransfers, AssetPairsXyk]:
+        if index < len(self.asset_pairs_xyk):
+            return self.asset_pairs_xyk[index]
+        return self.asset_transfers[index - len(self.asset_pairs_xyk)]        
+ 
     def reserves_of(self, token: TId) -> int:
         global_value_locked = 0
         for x in self.asset_pairs_xyk:
@@ -425,7 +436,6 @@ def new_data(pairs: list[AssetPairsXyk], transfers: list[AssetTransfers]) -> All
     return AllData(
         asset_pairs_xyk=list[AssetPairsXyk](pairs),
         asset_transfers=list[AssetTransfers](transfers),
-        fork_joins=None,
     )
 
 
