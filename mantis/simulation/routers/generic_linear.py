@@ -127,10 +127,10 @@ def solve(
         else:
             issuance = 1
             token_a_global = issuance * all_data.global_reservers_of(
-                all_data.all_venues[i][0]
+                all_data.venues_tokens[i][0]
             )
             token_b_global = issuance * all_data.global_reservers_of(
-                all_data.all_venues[i][1]
+                all_data.venues_tokens[i][1]
             )
             assert token_a_global > 0
             assert token_b_global > 0

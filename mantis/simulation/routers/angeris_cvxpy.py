@@ -73,8 +73,7 @@ def cvxpy_to_data(input: Input, all_data : AllData, ctx: Ctx, result: CvxpySolut
             etas[i] = 0
             deltas[i] = np.zeros(len(deltas[i]))
             lambdas[i] = np.zeros(len(lambdas[i]))            
-    trades = []
-        
+    trades = []        
     for i in range(result.count):
         trade = lambdas[i] - deltas[i]
         if np.max(np.abs(trade)) < ctx.minimal_amount:
@@ -83,7 +82,20 @@ def cvxpy_to_data(input: Input, all_data : AllData, ctx: Ctx, result: CvxpySolut
             lambdas[i] = np.zeros(len(lambdas[i]))
         trades.append(lambdas[i] - deltas[i])
         
-    raise Exception((trades, etas))
+    exchanges = []
+    for i, trade in enumerate(trades):
+        if np.abs(trade[0]) > 0: 
+            [token_index_a, token_index_b] = all_data.venues_tokens[i]
+            if trade[0] < 0:
+                input = (token_index_a,-trade[0])
+                output = (token_index_b,trade[1])
+                exchanges.append((input,output))
+            else:
+                input  = (token_index_b,-trade[1])
+                output = (token_index_a,trade[0])
+                exchanges.append((input,output))
+        
+    raise Exception((exchanges))
     
         
         

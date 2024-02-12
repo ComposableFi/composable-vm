@@ -1,4 +1,7 @@
-# for alignment on input and output of algorithm
+"""
+Input and output data to any algorithm for routing.
+Connect semantic data model numpy indexed values and back. 
+"""
 from fractions import Fraction
 import math
 import numpy as np
@@ -269,7 +272,7 @@ class AllData(BaseModel, Generic[TId, TAmount]):
         return self.all_tokens.index(token)
 
     def assets_for_venue(self, venue: int) -> list[TId]:
-        venue = self.all_venues[venue]
+        venue = self.venues_tokens[venue]
         return [venue[0], venue[1]]
 
     def get_index_in_all(self, venue: AssetPairsXyk | AssetTransfers) -> int:
@@ -347,7 +350,7 @@ class AllData(BaseModel, Generic[TId, TAmount]):
 
     @property
     # @lru_cache
-    def all_venues(self) -> list[list[TId]]:
+    def venues_tokens(self) -> list[list[TId]]:
         """
         Tokens in venues.
         """
@@ -360,7 +363,7 @@ class AllData(BaseModel, Generic[TId, TAmount]):
 
     def venue(self, i: int):
         reserves = self.all_reserves
-        venues = self.all_venues
+        venues = self.venues_tokens
         return (venues[i], reserves[i])
 
     @property
