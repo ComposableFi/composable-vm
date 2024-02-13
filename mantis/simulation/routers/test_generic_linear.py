@@ -187,6 +187,12 @@ def test_usd_arbitrage_high_fees_long_path():
     assert solution.children[0].children[0].children[0].name == "ETHEREUM/USDC"
 
 def test_arbitrage_loop_of_start_middle_final_assets():
+    """_summary_
+    A can be B and can be more A
+    A can be C and C can be D and can be more C
+    C can be E and E can be G and G can be E
+    E is final    
+    """
     s1 = new_pair(
         1, "A", "B", 0, 0, 1, 1, 200_000, 1_000, 1_000
     )
@@ -198,7 +204,7 @@ def test_arbitrage_loop_of_start_middle_final_assets():
         0,
         1,
         1,
-        200_000,
+        20_000,
         1_000,
         1_000,
     )
@@ -210,7 +216,7 @@ def test_arbitrage_loop_of_start_middle_final_assets():
         0,
         1,
         1,
-        200_000,
+        20_000,
         1_000,
         1_000,
     )
