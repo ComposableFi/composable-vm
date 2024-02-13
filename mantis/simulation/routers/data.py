@@ -40,6 +40,11 @@ class Ctx(BaseModel, Generic[TAmount]):
     Must be equal or larger than solver tolerance.
     """
 
+    mi_for_venue_count: int = 5
+    """
+    If venue count is small, can try MI solution because MI are slow in general
+    """    
+    
     @property
     def max_reserve(self):
         return 10**self.max_reserve_decimals
