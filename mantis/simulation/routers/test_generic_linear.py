@@ -140,11 +140,13 @@ def test_simulate_all_connected_venues():
     np.random.seed(0)
     input = new_input("WETH", "ATOM", 2000, 1)
     CENTER_NODE, chains = simulate_all_to_all_connected_chains_topology(input)
-    all_data = simulate_all_connected_venues(CENTER_NODE, chains)
-    print(all_data)
+    data = simulate_all_connected_venues(CENTER_NODE, chains)
+    print(data)
 
     print("=============== solving ========================")
-    result = route(input, all_data)
+    ctx = Ctx()
+    result = route(input, data, ctx)
+    solution = cvxpy_to_data(input, data, ctx, result)
     print(result)
 
 

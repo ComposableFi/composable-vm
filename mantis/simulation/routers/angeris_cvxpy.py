@@ -117,9 +117,11 @@ def cvxpy_to_data(input: Input, all_data : AllData, ctx: Ctx, result: CvxpySolut
             in_tokens[trade.in_token] += trade.in_amount
             out_tokens[trade.out_token] += trade.out_amount
     
-    inouts = {}
-    tokens = set()
+    # add nodes until burn all input from balance
+    # node identity is token and amount input used and depth
+    # loops naturally expressed in tree and end with burn
     def next(dependant_trade):
+        # handle big amounts first
         from_parent = sorted([trade for trade in trades if trade and trade.in_token == dependant_trade.name], key = lambda x : x.in_amount, reverse=True)
         for trade in from_parent:            
             in_tokens[trade.in_token]-= trade.in_amount
@@ -134,23 +136,9 @@ def cvxpy_to_data(input: Input, all_data : AllData, ctx: Ctx, result: CvxpySolut
     for pre, fill, node in RenderTree(start):
         print("%s%s in=%s out=%s" % (pre, node.name, node.in_amount, node.out_amount))
     raise Exception(start)
+    # convert to CVM route 
+    # ..in progress - set if it Transfer or Exchange
     
-    
-# so redesign is to add nodes until gas (amount) is burned. so same node(token id + depth) appears, but with different children until remaining amount is less than some E or same loop traversed already, then just RenderNode to grahiz
-# start traversing with biggest input to smalles (sort before traverse)
-    
-    
-    # attach venue ids to trades
-    
-    # raw_edges = []
-    # for i, trade in enumerate(trades):
-    #     if trade:
-    #         venue = all_data.venue_by_index(i)
-    #         if isinstance(trade, AssetTransfers):
-    #            raw_edges.push(Spawn()) 
-    #         elif isinstance(trade, AssetPairsXyk)
-    
-    raise Exception((start))
-    
+    return start    
         
         
