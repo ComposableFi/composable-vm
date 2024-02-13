@@ -44,13 +44,16 @@ def solve(
         A.append(A_i)
 
     # Build variables
-    mi = force_eta is not None and len([eta for eta in force_eta if not eta == 0]) <= ctx.mi_for_venue_count
-    
+    mi = (
+        force_eta is not None
+        and len([eta for eta in force_eta if not eta == 0]) <= ctx.mi_for_venue_count
+    )
+
     # tendered (given) amount of reserves
-    deltas = [cp.Variable(A_i.shape[1], integer=mi ) for A_i in A]
+    deltas = [cp.Variable(A_i.shape[1], integer=mi) for A_i in A]
 
     # received (wanted) amountsы of reserves
-    lambdas = [cp.Variable(A_i.shape[1], integer=mi ) for A_i in A]
+    lambdas = [cp.Variable(A_i.shape[1], integer=mi) for A_i in A]
     # indicates tx or not for given pool
     # zero means no TX it sure
     etas = cp.Variable(
@@ -186,5 +189,5 @@ def route(
     forced_etas, _ = parse_trades(ctx, initial_solution)
     forced_eta_solution = solve(all_data, input, ctx, forced_etas)
     solution = copy.deepcopy(forced_eta_solution)
-    
+
     return solution

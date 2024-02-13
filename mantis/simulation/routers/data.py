@@ -33,7 +33,7 @@ class Ctx(BaseModel, Generic[TAmount]):
         If algorithm can not handle big numbers, it can be reduced to power of 10
     """
 
-    minimal_amount : float = 0.000001
+    minimal_amount: float = 0.000001
     """_summary_
     Numerically minimal amount of change goes via venue is accepted, minimal trade.
     This is numeric amount, not value amount (oracalized amount) limit.
@@ -43,8 +43,8 @@ class Ctx(BaseModel, Generic[TAmount]):
     mi_for_venue_count: int = 5
     """
     If venue count is small, can try MI solution because MI are slow in general
-    """    
-    
+    """
+
     @property
     def max_reserve(self):
         return 10**self.max_reserve_decimals
@@ -176,16 +176,16 @@ class Spawn(BaseModel, Generic[TId, TAmount]):
     """
     cross chain transfer assets
     """
-    
-    in_asset_id : TId
-    
-    in_asset_amount: TAmount    
+
+    in_asset_id: TId
+
+    in_asset_amount: TAmount
     """
     amount to take with transfer
     (delta)
     """
     out_asset_amount: int
-    
+
     out_asset_id: int
     next: list[Union[Exchange, Spawn]] = []
 
@@ -344,12 +344,12 @@ class AllData(BaseModel, Generic[TId, TAmount]):
         for x in self.asset_transfers:
             reserves.append(np.array([x.amount_of_in_token, x.amount_of_out_token]))
         return reserves
-    
+
     def venue_by_index(self, index) -> Union[AssetTransfers, AssetPairsXyk]:
         if index < len(self.asset_pairs_xyk):
             return self.asset_pairs_xyk[index]
-        return self.asset_transfers[index - len(self.asset_pairs_xyk)]        
- 
+        return self.asset_transfers[index - len(self.asset_pairs_xyk)]
+
     def reserves_of(self, token: TId) -> int:
         global_value_locked = 0
         for x in self.asset_pairs_xyk:

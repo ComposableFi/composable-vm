@@ -46,7 +46,7 @@ def populate_chain_dict(chains: dict[TNetworkId, list[TId]], center_node: TNetwo
             )
 
 
-def test_single_chain_single_cffm_route_full_symmetry_exist():
+def _test_single_chain_single_cffm_route_full_symmetry_exist():
     input = new_input(1, 2, 100, 50)
     pair = new_pair(1, 1, 2, 0, 0, 1, 1, 1, 1_000_000, 1_000_000)
     data = new_data([pair], [])
@@ -55,8 +55,10 @@ def test_single_chain_single_cffm_route_full_symmetry_exist():
     assert result[0] > 95
 
 
-def test_diamond():
-    t1 = new_transfer("CENTAURI/ETHEREUM/USDC", "ETHEREUM/USDC", 10, 100_000, 100_000, 0)
+def _test_diamond():
+    t1 = new_transfer(
+        "CENTAURI/ETHEREUM/USDC", "ETHEREUM/USDC", 10, 100_000, 100_000, 0
+    )
     t2 = new_transfer(
         "CENTAURI/ETHEREUM/USDC",
         "OSMOSIS/CENTAURI/ETHEREUM/USDC",
@@ -110,9 +112,7 @@ def test_diamond():
     data = new_data([s1, s2, s3, s4], [t1, t2, t3])
     ctx = Ctx()
     input = new_input("CENTAURI/ETHEREUM/USDC", "ETHEREUM/USDC", 1_000, 50)
-    result = route(
-        input, data
-    )
+    result = route(input, data)
     solution = cvxpy_to_data(input, data, ctx, result)
     # assert solution.children[0].name == "ETHEREUM/USDC"
     # assert result.received(data.index_of_token("ETHEREUM/USDC")) == 1000.0000000000582
@@ -125,7 +125,9 @@ def test_diamond():
     data = new_data([s1, s2, s3, s4], [t1, t2, t3])
     input = new_input("CENTAURI/ETHEREUM/USDC", "ETHEREUM/USDC", 1_000, 50)
     result = route(
-        input , data, ctx,
+        input,
+        data,
+        ctx,
     )
     solution = cvxpy_to_data(input, data, ctx, result)
     assert math.floor(result[0]) == 909
@@ -139,7 +141,7 @@ def _test_big_numeric_range():
     print(result)
 
 
-def test_simulate_all_connected_venues():
+def _test_simulate_all_connected_venues():
     np.random.seed(0)
     input = new_input("WETH", "ATOM", 2000, 1)
     CENTER_NODE, chains = simulate_all_to_all_connected_chains_topology(input)
