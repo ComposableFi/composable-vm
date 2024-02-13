@@ -94,7 +94,7 @@ def cvxpy_to_data(input: Input, all_data : AllData, ctx: Ctx, result: CvxpySolut
     def next(start_coin):
         # handle big amounts first
         from_coin = sorted([trade for trade in trades if trade and trade.in_token == start_coin.name], key = lambda x : x.in_amount, reverse=True)
-        for trade in from_coin:            
+        for trade in from_coin:
             in_tokens[trade.in_token]-= trade.in_amount
             if in_tokens[trade.in_token] < 0:
                 continue

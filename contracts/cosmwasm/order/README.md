@@ -59,3 +59,6 @@ If solution requires multiblock tracking for execution its id added with block s
 A was split into B and C, and then B and C were moved to be D.
 
 D must "summed" from 2 amounts must be 2 separate CVM routes branches.
+
+
+Run over fork-join tree and product no joins (split rotes).
