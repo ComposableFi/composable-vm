@@ -55,7 +55,7 @@ def test_single_chain_single_cffm_route_full_symmetry_exist():
     assert result[0] > 95
 
 
-def test_diamond():
+def test_usd_arbitrage_low_fees_short_path():
     t1 = new_transfer(
         "CENTAURI/ETHEREUM/USDC", "ETHEREUM/USDC", 10, 100_000, 100_000, 0
     )
@@ -117,13 +117,64 @@ def test_diamond():
     assert solution.children[0].name == "ETHEREUM/USDC"
     assert len(solution.children[0].children) == 0
     assert result.received(data.index_of_token("ETHEREUM/USDC")) == 1000
-    # raise NotImplementedError()
 
+def test_usd_arbitrage_high_fees_long_path():
     # here we shutdown direct Centauri <-> Ethereum route, and force Centauri -> Osmosis -> Ethereum
     t1 = new_transfer(
         "CENTAURI/ETHEREUM/USDC", "ETHEREUM/USDC", 1_000_000, 100_000, 100_000, 0
+    )    
+    t2 = new_transfer(
+        "CENTAURI/ETHEREUM/USDC",
+        "OSMOSIS/CENTAURI/ETHEREUM/USDC",
+        1,
+        100_000,
+        100_000,
+        0,
     )
+    t3 = new_transfer("OSMOSIS/ETHEREUM/USDC", "ETHEREUM/USDC", 1, 100_000, 100_000, 0)
+
+    s1 = new_pair(
+        1, "ETHEREUM/USDC", "ETHEREUM/USDT", 0, 0, 1, 1, 200_000, 10_000, 10_000
+    )
+    s2 = new_pair(
+        1,
+        "OSMOSIS/ETHEREUM/USDC",
+        "OSMOSIS/ETHEREUM/USDT",
+        0,
+        0,
+        1,
+        1,
+        200_000,
+        10_000,
+        10_000,
+    )
+    s3 = new_pair(
+        1,
+        "CENTAURI/ETHEREUM/USDC",
+        "CENTAURI/ETHEREUM/USDT",
+        0,
+        0,
+        1,
+        1,
+        200_000,
+        10_000,
+        10_000,
+    )
+    s4 = new_pair(
+        1,
+        "OSMOSIS/CENTAURI/ETHEREUM/USDC",
+        "OSMOSIS/ETHEREUM/USDC",
+        0,
+        0,
+        1,
+        1,
+        200_000,
+        10_000,
+        10_000,
+    )
+
     data = new_data([s1, s2, s3, s4], [t1, t2, t3])
+    ctx = Ctx()
     input = new_input("CENTAURI/ETHEREUM/USDC", "ETHEREUM/USDC", 1_000, 50)
     result = route(
         input,
@@ -133,6 +184,7 @@ def test_diamond():
     solution = cvxpy_to_data(input, data, ctx, result)
     
     assert math.floor(result.received(data.index_of_token(input.out_token_id))) == 909
+    assert solution.children[0].children[0].children[0].name == "ETHEREUM/USDC"
 
 
 def _test_big_numeric_range():
