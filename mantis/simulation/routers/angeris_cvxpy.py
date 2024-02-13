@@ -1,11 +1,11 @@
+from collections import defaultdict
 from copy import copy
 from attr import dataclass
 from cvm_runtime.execute import Exchange
 import cvxpy as cp
 import numpy as np
 from simulation.routers.data import AllData, AssetPairsXyk, AssetTransfers, Ctx, Input, Spawn
-
-
+from anytree import Node, RenderTree
 @dataclass
 class CvxpySolution:
     deltas: list[cp.Variable]
@@ -79,6 +79,8 @@ def cvxpy_to_data(input: Input, all_data : AllData, ctx: Ctx, result: CvxpySolut
             deltas[i] = np.zeros(len(deltas[i]))
             lambdas[i] = np.zeros(len(lambdas[i]))            
     
+    
+    # trading instances
     trades_raw = []        
     for i in range(result.count):
         raw_trade = lambdas[i] - deltas[i]
@@ -90,26 +92,50 @@ def cvxpy_to_data(input: Input, all_data : AllData, ctx: Ctx, result: CvxpySolut
         
     # attach tokens ids to trades
     trades = []
+    class Trade:
+        in_token: any
+        in_amount : int
+        out_token: any
+        out_amount: any
+    
     for i, raw_trade in enumerate(trades_raw):
         if np.abs(raw_trade[0]) > 0: 
             [token_index_a, token_index_b] = all_data.venues_tokens[i]
-            if raw_trade[0] < 0:
-                input = (token_index_a,-raw_trade[0])
-                output = (token_index_b,raw_trade[1])
-                trades.append((input,output))
+            if raw_trade[0] < 0:                
+                trades.append(Trade(in_token=token_index_a, in_amount=-raw_trade[0], out_token=token_index_b, out_amount=raw_trade[1]))
             else:
-                input  = (token_index_b,-raw_trade[1])
-                output = (token_index_a,raw_trade[0])
-                trades.append((input,output))
+                trades.append(Trade(in_token=token_index_b, in_amount=-raw_trade[1], out_token=token_index_a, out_amount=raw_trade[0]))
         else: 
             trades.append(None)
     
-    # make deducible mounts by in/out key so can sub it until end
-    inouts = {}
-    
+    # balances
+    in_tokens = defaultdict(int)
+    out_tokens= defaultdict(int)
     for trade in trades:
         if trade:
+            in_tokens[trade.in_token] += trade.in_amount
+            out_tokens[trade.out_token] += trade.out_amount
+    
+    # make deducible mounts by in/out key so can sub it until end
+    inouts = {}
+    tokens = set()
+    start = Node(name=input.in_token_id)
+    def next(parent_node):
+        for trade in trades:
+            if trade:
+                if trade[0][0] == parent_node.name:
+                    node = Node(name=trade[1][0], parent=parent_node)
+                    next(node)
+                    tokens.add(trade[1][0])
+        
+    for trade in trades:
+        
+        if trade:
             inouts[(trade[0][0],trade[1][0])] = (trade[0][1],trade[1][1])
+    
+    
+# so redesign is to add nodes until gas (amount) is burned. so same node(token id + depth) appears, but with different children until remaining amount is less than some E or same loop traversed already, then just RenderNode to grahiz
+# start traversing with biggest input to smalles (sort before traverse)
     
     
     # attach venue ids to trades
