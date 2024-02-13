@@ -61,7 +61,8 @@ PySCIPOpt = "4.4.0" # i set it directly to allow override SCIP dep (currently it
 # cylp = "0.92.2"  # have problems installing
 # ortools="9.4.1874" # have problems installing
 
-disjoint-set = "*"
+disjoint-set = "0.7.4"
+anytree = "2.12.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.4.3"

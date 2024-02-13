@@ -45,6 +45,8 @@ def test_output_route_centauri_osmosis():
     spawn = Spawn(
         in_asset_amount=100,
         out_asset_id=1,
+        in_asset_id=2,
+        out_asset_amount=42,
         next=[exchange.model_dump()],
     )
     SingleInputAssetCvmRoute(start=[spawn])

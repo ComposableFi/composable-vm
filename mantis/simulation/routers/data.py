@@ -1,4 +1,7 @@
-# for alignment on input and output of algorithm
+"""
+Input and output data to any algorithm for routing.
+Connect semantic data model numpy indexed values and back. 
+"""
 from fractions import Fraction
 import math
 import numpy as np
@@ -28,6 +31,18 @@ class Ctx(BaseModel, Generic[TAmount]):
     max_reserve_decimals: int = 10
     """_summary_
         If algorithm can not handle big numbers, it can be reduced to power of 10
+    """
+
+    minimal_amount: float = 0.000001
+    """_summary_
+    Numerically minimal amount of change goes via venue is accepted, minimal trade.
+    This is numeric amount, not value amount (oracalized amount) limit.
+    Must be equal or larger than solver tolerance.
+    """
+
+    mi_for_venue_count: int = 5
+    """
+    If venue count is small, can try MI solution because MI are slow in general
     """
 
     @property
@@ -157,16 +172,25 @@ class Spawn(BaseModel):
     pass
 
 
-# transfer assets
-class Spawn(BaseModel):
-    # amount to take with transfer
-    # None means all (DELTA)
-    in_asset_amount: int | None = None
+class Spawn(BaseModel, Generic[TId, TAmount]):
+    """
+    cross chain transfer assets
+    """
+
+    in_asset_id: TId
+
+    in_asset_amount: TAmount
+    """
+    amount to take with transfer
+    (delta)
+    """
+    out_asset_amount: int
+
     out_asset_id: int
     next: list[Union[Exchange, Spawn]] = []
 
 
-class Exchange(BaseModel):
+class Exchange(BaseModel, Generic[TId, TAmount]):
     # none means all (DELTA)
     in_asset_amount: int | None = None
     pool_id: int
@@ -216,10 +240,7 @@ class AllData(BaseModel, Generic[TId, TAmount]):
     #   If key is in first set, it cannot be in second set, and other way around
     asset_transfers: list[AssetTransfers[TId, TAmount]] = []
     asset_pairs_xyk: list[AssetPairsXyk[TId, TAmount]] = []
-    # if None, than solution must not contain any joins after forks
-    # so A was split into B and C, and then B and C were moved to be D
-    # D must "summed" from 2 amounts must be 2 separate routes branches
-    fork_joins: list[str] | None = None
+
     usd_oracles: dict[TId, int] = {}
     """_summary_
       asset ids which we consider to be USD equivalents
@@ -262,7 +283,7 @@ class AllData(BaseModel, Generic[TId, TAmount]):
         return self.all_tokens.index(token)
 
     def assets_for_venue(self, venue: int) -> list[TId]:
-        venue = self.all_venues[venue]
+        venue = self.venues_tokens[venue]
         return [venue[0], venue[1]]
 
     def get_index_in_all(self, venue: AssetPairsXyk | AssetTransfers) -> int:
@@ -324,6 +345,11 @@ class AllData(BaseModel, Generic[TId, TAmount]):
             reserves.append(np.array([x.amount_of_in_token, x.amount_of_out_token]))
         return reserves
 
+    def venue_by_index(self, index) -> Union[AssetTransfers, AssetPairsXyk]:
+        if index < len(self.asset_pairs_xyk):
+            return self.asset_pairs_xyk[index]
+        return self.asset_transfers[index - len(self.asset_pairs_xyk)]
+
     def reserves_of(self, token: TId) -> int:
         global_value_locked = 0
         for x in self.asset_pairs_xyk:
@@ -340,7 +366,7 @@ class AllData(BaseModel, Generic[TId, TAmount]):
 
     @property
     # @lru_cache
-    def all_venues(self) -> list[list[TId]]:
+    def venues_tokens(self) -> list[list[TId]]:
         """
         Tokens in venues.
         """
@@ -353,7 +379,7 @@ class AllData(BaseModel, Generic[TId, TAmount]):
 
     def venue(self, i: int):
         reserves = self.all_reserves
-        venues = self.all_venues
+        venues = self.venues_tokens
         return (venues[i], reserves[i])
 
     @property
@@ -415,7 +441,6 @@ def new_data(pairs: list[AssetPairsXyk], transfers: list[AssetTransfers]) -> All
     return AllData(
         asset_pairs_xyk=list[AssetPairsXyk](pairs),
         asset_transfers=list[AssetTransfers](transfers),
-        fork_joins=None,
     )
 
 
