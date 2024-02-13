@@ -109,8 +109,9 @@ def test_diamond():
 
     data = new_data([s1, s2, s3, s4], [t1, t2, t3])
     ctx = Ctx()
+    input = new_input("CENTAURI/ETHEREUM/USDC", "ETHEREUM/USDC", 1_000, 50)
     result = route(
-        new_input("CENTAURI/ETHEREUM/USDC", "ETHEREUM/USDC", 1_000, 50), data
+        input, data
     )
     #solution = cvxpy_to_data(input, data, ctx, result)
 
@@ -119,8 +120,9 @@ def test_diamond():
         "CENTAURI/ETHEREUM/USDC", "ETHEREUM/USDC", 1_000_000, 100_000, 100_000, 0
     )
     data = new_data([s1, s2, s3, s4], [t1, t2, t3])
+    input = new_input("CENTAURI/ETHEREUM/USDC", "ETHEREUM/USDC", 1_000, 50)
     result = route(
-        new_input("CENTAURI/ETHEREUM/USDC", "ETHEREUM/USDC", 1_000, 50), data, ctx,
+        input , data, ctx,
     )
     solution = cvxpy_to_data(input, data, ctx, result)
     assert math.floor(result[0]) == 909

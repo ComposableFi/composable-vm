@@ -45,6 +45,12 @@ class CvxpySolution:
     def received(self, global_index) -> float:
         return self.psi.value[global_index]
 
+@dataclass
+class Trade:
+    in_token: any
+    in_amount : int
+    out_token: any
+    out_amount: any
 
 def cvxpy_to_data(input: Input, all_data : AllData, ctx: Ctx, result: CvxpySolution):
     """_summary_
@@ -92,11 +98,6 @@ def cvxpy_to_data(input: Input, all_data : AllData, ctx: Ctx, result: CvxpySolut
         
     # attach tokens ids to trades
     trades = []
-    class Trade:
-        in_token: any
-        in_amount : int
-        out_token: any
-        out_amount: any
     
     for i, raw_trade in enumerate(trades_raw):
         if np.abs(raw_trade[0]) > 0: 
@@ -116,22 +117,23 @@ def cvxpy_to_data(input: Input, all_data : AllData, ctx: Ctx, result: CvxpySolut
             in_tokens[trade.in_token] += trade.in_amount
             out_tokens[trade.out_token] += trade.out_amount
     
-    # make deducible mounts by in/out key so can sub it until end
     inouts = {}
     tokens = set()
-    start = Node(name=input.in_token_id)
-    def next(parent_node):
-        for trade in trades:
-            if trade:
-                if trade[0][0] == parent_node.name:
-                    node = Node(name=trade[1][0], parent=parent_node)
-                    next(node)
-                    tokens.add(trade[1][0])
-        
-    for trade in trades:
-        
-        if trade:
-            inouts[(trade[0][0],trade[1][0])] = (trade[0][1],trade[1][1])
+    def next(dependant_trade):
+        from_parent = sorted([trade for trade in trades if trade and trade.in_token == dependant_trade.name], key = lambda x : x.in_amount, reverse=True)
+        for trade in from_parent:            
+            in_tokens[trade.in_token]-= trade.in_amount
+            if in_tokens[trade.in_token] < 0:
+                continue
+            out_tokens[trade.out_token]-= trade.out_amount
+            next_trade = Node(name=trade.out_token, parent=dependant_trade, in_amount = trade.in_amount, out_amount = trade.out_amount)
+            next(next_trade)
+                    
+    start = Node(name=input.in_token_id, in_amount=input.in_amount, out_amount=input.max, out_token=input.out_token_id)
+    next(start)
+    for pre, fill, node in RenderTree(start):
+        print("%s%s in=%s out=%s" % (pre, node.name, node.in_amount, node.out_amount))
+    raise Exception(start)
     
     
 # so redesign is to add nodes until gas (amount) is burned. so same node(token id + depth) appears, but with different children until remaining amount is less than some E or same loop traversed already, then just RenderNode to grahiz
@@ -148,7 +150,7 @@ def cvxpy_to_data(input: Input, all_data : AllData, ctx: Ctx, result: CvxpySolut
     #            raw_edges.push(Spawn()) 
     #         elif isinstance(trade, AssetPairsXyk)
     
-    raise Exception((inouts))
+    raise Exception((start))
     
         
         
