@@ -65,6 +65,54 @@ def cvxpy_to_data(input: Input, all_data : AllData, ctx: Ctx, result: CvxpySolut
     Visualize.
     """
     
+    _etas, trades_raw = parse_trades(ctx, result)
+        
+    # attach tokens ids to trades
+    trades = []
+    
+    for i, raw_trade in enumerate(trades_raw):
+        if np.abs(raw_trade[0]) > 0: 
+            [token_index_a, token_index_b] = all_data.venues_tokens[i]
+            if raw_trade[0] < 0:                
+                trades.append(VenueOperation(in_token=token_index_a, in_amount=-raw_trade[0], out_token=token_index_b, out_amount=raw_trade[1], venue_index = i))
+            else:
+                trades.append(VenueOperation(in_token=token_index_b, in_amount=-raw_trade[1], out_token=token_index_a, out_amount=raw_trade[0], venue_index  = i ))
+        else: 
+            trades.append(None)
+    
+    # balances
+    in_tokens = defaultdict(int)
+    out_tokens= defaultdict(int)
+    for trade in trades:
+        if trade:
+            in_tokens[trade.in_token] += trade.in_amount
+            out_tokens[trade.out_token] += trade.out_amount
+    
+    # add nodes until burn all input from balance
+    # node identity is token and amount input used and depth
+    # loops naturally expressed in tree and end with burn
+    def next(start_coin):
+        # handle big amounts first
+        from_coin = sorted([trade for trade in trades if trade and trade.in_token == start_coin.name], key = lambda x : x.in_amount, reverse=True)
+        for trade in from_coin:            
+            in_tokens[trade.in_token]-= trade.in_amount
+            if in_tokens[trade.in_token] < 0:
+                continue
+            out_tokens[trade.out_token]-= trade.out_amount
+            next_trade = Node(name=trade.out_token, parent=start_coin, amount = trade.out_amount, venue_index = 0)
+            next(next_trade)
+                    
+    start_coin = Node(name=input.in_token_id, amount=input.in_amount, venue_index = 0)
+    next(start_coin)
+    if ctx.debug:
+        for pre, fill, node in RenderTree(start_coin):
+            print("%s coin=%s/%s" % (pre, node.amount, node.name))
+    # convert to CVM route 
+    # ..in progress - set if it Transfer or Exchange
+    
+    return start_coin 
+
+def parse_trades(ctx, result):
     etas = result.eta_values
     deltas = result.delta_values
     lambdas = result.lambda_values
@@ -91,50 +139,9 @@ def cvxpy_to_data(input: Input, all_data : AllData, ctx: Ctx, result: CvxpySolut
             deltas[i] = np.zeros(len(deltas[i]))
             lambdas[i] = np.zeros(len(lambdas[i]))
         trades_raw.append(lambdas[i] - deltas[i])
-        
-    # attach tokens ids to trades
-    trades = []
-    
-    for i, raw_trade in enumerate(trades_raw):
-        if np.abs(raw_trade[0]) > 0: 
-            [token_index_a, token_index_b] = all_data.venues_tokens[i]
-            if raw_trade[0] < 0:                
-                trades.append(VenueOperation(in_token=token_index_a, in_amount=-raw_trade[0], out_token=token_index_b, out_amount=raw_trade[1]))
-            else:
-                trades.append(VenueOperation(in_token=token_index_b, in_amount=-raw_trade[1], out_token=token_index_a, out_amount=raw_trade[0]))
-        else: 
-            trades.append(None)
-    
-    # balances
-    in_tokens = defaultdict(int)
-    out_tokens= defaultdict(int)
-    for trade in trades:
-        if trade:
-            in_tokens[trade.in_token] += trade.in_amount
-            out_tokens[trade.out_token] += trade.out_amount
-    
-    # add nodes until burn all input from balance
-    # node identity is token and amount input used and depth
-    # loops naturally expressed in tree and end with burn
-    def next(start_coin):
-        # handle big amounts first
-        from_coin = sorted([trade for trade in trades if trade and trade.in_token == start_coin.name], key = lambda x : x.in_amount, reverse=True)
-        for trade in from_coin:            
-            in_tokens[trade.in_token]-= trade.in_amount
-            if in_tokens[trade.in_token] < 0:
-                continue
-            out_tokens[trade.out_token]-= trade.out_amount
-            next_trade = Node(name=trade.out_token, parent=start_coin, amount = trade.out_amount)
-            next(next_trade)
-                    
-    start_coin = Node(name=input.in_token_id, amount=input.in_amount)
-    next(start_coin)
-    if ctx.debug:
-        for pre, fill, node in RenderTree(start_coin):
-            print("%s coin=%s/%s" % (pre, node.amount, node.name))
-    # convert to CVM route 
-    # ..in progress - set if it Transfer or Exchange
-    
-    return start_coin    
+    for i in range(result.count):
+        if not etas[i] ==0:
+            etas[i] == None  
+    return etas,trades_raw   
         
         

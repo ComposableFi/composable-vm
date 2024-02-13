@@ -56,7 +56,7 @@ def test_single_chain_single_cffm_route_full_symmetry_exist():
 
 
 def test_diamond():
-    t1 = new_transfer("CENTAURI/ETHEREUM/USDC", "ETHEREUM/USDC", 10000, 100_000, 100_000, 0)
+    t1 = new_transfer("CENTAURI/ETHEREUM/USDC", "ETHEREUM/USDC", 10, 100_000, 100_000, 0)
     t2 = new_transfer(
         "CENTAURI/ETHEREUM/USDC",
         "OSMOSIS/CENTAURI/ETHEREUM/USDC",

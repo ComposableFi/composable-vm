@@ -7,7 +7,7 @@ import copy
 from typing import Union
 import numpy as np
 import cvxpy as cp
-from simulation.routers.angeris_cvxpy import CvxpySolution
+from simulation.routers.angeris_cvxpy import CvxpySolution, parse_trades
 
 from simulation.routers.data import AllData, Input, Ctx
 
@@ -17,13 +17,8 @@ def solve(
     all_data: AllData,
     input: Input,
     ctx: Ctx,
-    force_eta: list[Union[float, None]] = None,
+    force_eta: list[Union[int, None]] = None,
 ) -> CvxpySolution:
-    if force_eta is not None:
-        if not isinstance(force_eta, list):
-            raise ValueError("force_eta should be list of floats or None")
-        if not isinstance(force_eta[0], float | None):
-            raise ValueError("force_eta should be list of floats or None")
     # initial input assets
 
     current_assets = np.full((all_data.tokens_count), int(0))
@@ -51,10 +46,10 @@ def solve(
     # Build variables
 
     # tendered (given) amount of reserves
-    deltas = [cp.Variable(A_i.shape[1], integer=False) for A_i in A]
+    deltas = [cp.Variable(A_i.shape[1], integer=force_eta is not None ) for A_i in A]
 
     # received (wanted) amountsы of reserves
-    lambdas = [cp.Variable(A_i.shape[1], integer=False) for A_i in A]
+    lambdas = [cp.Variable(A_i.shape[1], integer=force_eta is not None ) for A_i in A]
     # indicates tx or not for given pool
     # zero means no TX it sure
     etas = cp.Variable(
@@ -119,7 +114,7 @@ def solve(
     # Enforce deltas depending on pass or not pass variable
 
     for i in range(all_data.venues_count):
-        if force_eta and force_eta[i] is not None:
+        if force_eta is not None and force_eta[i] is not None:
             constraints.append(etas[i] == force_eta[i])
             if force_eta[i] == 0:
                 constraints.append(deltas[i] == 0)
@@ -187,5 +182,8 @@ def route(
         input,
         ctx,
     )
-    solution = copy.deepcopy(initial_solution)
+    forced_etas, _ = parse_trades(ctx, initial_solution)
+    forced_eta_solution = solve(all_data, input, ctx, forced_etas)
+    solution = copy.deepcopy(forced_eta_solution)
+    
     return solution
