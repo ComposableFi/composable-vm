@@ -56,7 +56,7 @@ def test_single_chain_single_cffm_route_full_symmetry_exist():
 
 
 def test_diamond():
-    t1 = new_transfer("CENTAURI/ETHEREUM/USDC", "ETHEREUM/USDC", 0, 100_000, 100_000, 0)
+    t1 = new_transfer("CENTAURI/ETHEREUM/USDC", "ETHEREUM/USDC", 10000, 100_000, 100_000, 0)
     t2 = new_transfer(
         "CENTAURI/ETHEREUM/USDC",
         "OSMOSIS/CENTAURI/ETHEREUM/USDC",
@@ -113,7 +113,10 @@ def test_diamond():
     result = route(
         input, data
     )
-    #solution = cvxpy_to_data(input, data, ctx, result)
+    solution = cvxpy_to_data(input, data, ctx, result)
+    assert solution.children[0].name == "ETHEREUM/USDC"
+    assert result.received(data.index_of_token("ETHEREUM/USDC")) == 1000.0000000000582
+    raise NotImplementedError()
 
     # here we shutdown direct Centauri <-> Ethereum route, and force Centauri -> Osmosis -> Ethereum
     t1 = new_transfer(

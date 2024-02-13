@@ -45,28 +45,24 @@ class CvxpySolution:
     def received(self, global_index) -> float:
         return self.psi.value[global_index]
 
+
 @dataclass
-class Trade:
+class VenueOperation:
+    venue_index: int
     in_token: any
     in_amount : int
     out_token: any
     out_amount: any
 
-def cvxpy_to_data(input: Input, all_data : AllData, ctx: Ctx, result: CvxpySolution):
+def cvxpy_to_data(input: Input, all_data : AllData, ctx: Ctx, result: CvxpySolution) -> Node:
     """_summary_
     Converts Angeris CVXPY result to executable route.
-    
     Receives solution along with all data and context.
-    
     Clean up near zero trades.
-    
     Make `delta-lambda` to be just single trades over venues.
     Start building fork-join supported route tree tracking venue.
       Find starter node and recurse with minus from input matrix (loops covered).
-
-    Run over fork-join tree and product no joins (split rotes).
-
-    Generate DOT from tree to visualize.
+    Visualize.
     """
     
     etas = result.eta_values
@@ -103,9 +99,9 @@ def cvxpy_to_data(input: Input, all_data : AllData, ctx: Ctx, result: CvxpySolut
         if np.abs(raw_trade[0]) > 0: 
             [token_index_a, token_index_b] = all_data.venues_tokens[i]
             if raw_trade[0] < 0:                
-                trades.append(Trade(in_token=token_index_a, in_amount=-raw_trade[0], out_token=token_index_b, out_amount=raw_trade[1]))
+                trades.append(VenueOperation(in_token=token_index_a, in_amount=-raw_trade[0], out_token=token_index_b, out_amount=raw_trade[1]))
             else:
-                trades.append(Trade(in_token=token_index_b, in_amount=-raw_trade[1], out_token=token_index_a, out_amount=raw_trade[0]))
+                trades.append(VenueOperation(in_token=token_index_b, in_amount=-raw_trade[1], out_token=token_index_a, out_amount=raw_trade[0]))
         else: 
             trades.append(None)
     
@@ -120,25 +116,25 @@ def cvxpy_to_data(input: Input, all_data : AllData, ctx: Ctx, result: CvxpySolut
     # add nodes until burn all input from balance
     # node identity is token and amount input used and depth
     # loops naturally expressed in tree and end with burn
-    def next(dependant_trade):
+    def next(start_coin):
         # handle big amounts first
-        from_parent = sorted([trade for trade in trades if trade and trade.in_token == dependant_trade.name], key = lambda x : x.in_amount, reverse=True)
-        for trade in from_parent:            
+        from_coin = sorted([trade for trade in trades if trade and trade.in_token == start_coin.name], key = lambda x : x.in_amount, reverse=True)
+        for trade in from_coin:            
             in_tokens[trade.in_token]-= trade.in_amount
             if in_tokens[trade.in_token] < 0:
                 continue
             out_tokens[trade.out_token]-= trade.out_amount
-            next_trade = Node(name=trade.out_token, parent=dependant_trade, in_amount = trade.in_amount, out_amount = trade.out_amount)
+            next_trade = Node(name=trade.out_token, parent=start_coin, amount = trade.out_amount)
             next(next_trade)
                     
-    start = Node(name=input.in_token_id, in_amount=input.in_amount, out_amount=input.max, out_token=input.out_token_id)
-    next(start)
-    for pre, fill, node in RenderTree(start):
-        print("%s%s in=%s out=%s" % (pre, node.name, node.in_amount, node.out_amount))
-    raise Exception(start)
+    start_coin = Node(name=input.in_token_id, amount=input.in_amount)
+    next(start_coin)
+    if ctx.debug:
+        for pre, fill, node in RenderTree(start_coin):
+            print("%s coin=%s/%s" % (pre, node.amount, node.name))
     # convert to CVM route 
     # ..in progress - set if it Transfer or Exchange
     
-    return start    
+    return start_coin    
         
         
