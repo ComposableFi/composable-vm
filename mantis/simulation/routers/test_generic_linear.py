@@ -187,6 +187,60 @@ def test_usd_arbitrage_high_fees_long_path():
     assert solution.children[0].children[0].children[0].name == "ETHEREUM/USDC"
 
 
+# simple route
+# arbitrage loop
+# basic splits.
+
+def test_simple_symmetric_and_asymmetric_split():
+    s1 = new_pair(
+        1, "A", "B", 0, 0, 1, 1, 200_000, 1_000, 1_000
+    )
+    s2 = new_pair(
+        1,
+        "A",
+        "C",
+        0,
+        0,
+        1,
+        1,
+        200_000,
+        1_000,
+        1_000,
+    )
+    s3 = new_pair(
+        1,
+        "C",
+        "D",
+        0,
+        0,
+        1,
+        1,
+        200_000,
+        1_000,
+        1_000,
+    )
+    s4 = new_pair(
+        1,
+        "B",
+        "D",
+        0,
+        0,
+        1,
+        1,
+        200_000,
+        1_000,
+        1_000,
+    )
+
+    data = new_data([s1, s2, s3, s4], [])
+    ctx = Ctx()
+    input = new_input("A", "D", 100, 10)
+    result = route(input, data)
+    solution = cvxpy_to_data(input, data, ctx, result)
+    assert solution.children[0].children[0].name == "D"
+    assert solution.children[1].children[0].name == "D"
+    assert result.received(data.index_of_token("D")) == 90 == (solution.children[0].children[0].amount + solution.children[1].children[0].amount)    
+
 def _test_big_numeric_range():
     input = new_input(1, 2, 100, 50)
     pair = new_pair(1, 1, 2, 0, 0, 1, 10, 1000, 10_000_000_000, 1_000_000_000)
