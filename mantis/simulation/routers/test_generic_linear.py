@@ -186,11 +186,22 @@ def test_usd_arbitrage_high_fees_long_path():
     assert math.floor(result.received(data.index_of_token(input.out_token_id))) == 909
     assert solution.children[0].children[0].children[0].name == "ETHEREUM/USDC"
 
+
+
 def test_arbitrage_loop_of_start_middle_final_assets():
     """_summary_
-    A can be B and can be more A
-    A can be C and C can be D and can be more C
-    C can be E and E can be G and G can be E
+    A
+      B
+        A
+          C
+            D
+              C
+                E
+          E
+      
+    A can be B and can be more A,  small part goes to E directly, even smaller goes to C
+    A can be C and C can be D and can be more C, small part goes to E directly, 
+    C can be E and E can be G and G can be E, small part goes to E directly
     E is final    
     """
     s1 = new_pair(
