@@ -12,9 +12,9 @@ from pydantic import BaseModel, validator
 from disjoint_set import DisjointSet
 
 # This is global unique ID for token(asset) or exchange(pool)
-TId = TypeVar("TId")
+TId = TypeVar("TId", int, str)
 TNetworkId = TypeVar("TNetworkId")
-TAmount = TypeVar("TAmount")
+TAmount = TypeVar("TAmount", int, str)
 
 
 class Ctx(BaseModel, Generic[TAmount]):
@@ -238,10 +238,13 @@ class AllData(BaseModel, Generic[TId, TAmount]):
     """
 
     #   If key is in first set, it cannot be in second set, and other way around
-    asset_transfers: list[AssetTransfers[TId, TAmount]] = []
-    asset_pairs_xyk: list[AssetPairsXyk[TId, TAmount]] = []
-
-    usd_oracles: dict[TId, int] = {}
+    asset_transfers: list[
+        AssetTransfers[TId, TAmount]
+    ] | None = None  #    If we want to set default values, we need to save data structure in default
+    asset_pairs_xyk: list[
+        AssetPairsXyk[TId, TAmount]
+    ] | None = None  #    If we want to set default values, we need to save data structure in default
+    usd_oracles: dict[TId, int] | None = None
     """_summary_
       asset ids which we consider to be USD equivalents
       value - decimal exponent of token to make 1 USD
