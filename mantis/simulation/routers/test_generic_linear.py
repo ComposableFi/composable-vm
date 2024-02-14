@@ -46,16 +46,16 @@ def populate_chain_dict(chains: dict[TNetworkId, list[TId]], center_node: TNetwo
             )
 
 
-def _test_single_chain_single_cffm_route_full_symmetry_exist():
+def test_single_chain_single_cffm_route_full_symmetry_exist():
     input = new_input(1, 2, 100, 50)
     pair = new_pair(1, 1, 2, 0, 0, 1, 1, 1, 1_000_000, 1_000_000)
     data = new_data([pair], [])
     result = route(input, data)
-    assert result[0] < 100
-    assert result[0] > 95
+    assert result.psi[1].value < 100
+    assert result.psi[1].value > 95
 
 
-def _test_diamond():
+def test_usd_arbitrage_low_fees_short_path():
     t1 = new_transfer(
         "CENTAURI/ETHEREUM/USDC", "ETHEREUM/USDC", 10, 100_000, 100_000, 0
     )
@@ -114,15 +114,68 @@ def _test_diamond():
     input = new_input("CENTAURI/ETHEREUM/USDC", "ETHEREUM/USDC", 1_000, 50)
     result = route(input, data)
     solution = cvxpy_to_data(input, data, ctx, result)
-    # assert solution.children[0].name == "ETHEREUM/USDC"
-    # assert result.received(data.index_of_token("ETHEREUM/USDC")) == 1000.0000000000582
-    # raise NotImplementedError()
+    assert solution.children[0].name == "ETHEREUM/USDC"
+    assert len(solution.children[0].children) == 0
+    assert result.received(data.index_of_token("ETHEREUM/USDC")) == 1000
 
+
+def test_usd_arbitrage_high_fees_long_path():
     # here we shutdown direct Centauri <-> Ethereum route, and force Centauri -> Osmosis -> Ethereum
     t1 = new_transfer(
         "CENTAURI/ETHEREUM/USDC", "ETHEREUM/USDC", 1_000_000, 100_000, 100_000, 0
     )
+    t2 = new_transfer(
+        "CENTAURI/ETHEREUM/USDC",
+        "OSMOSIS/CENTAURI/ETHEREUM/USDC",
+        1,
+        100_000,
+        100_000,
+        0,
+    )
+    t3 = new_transfer("OSMOSIS/ETHEREUM/USDC", "ETHEREUM/USDC", 1, 100_000, 100_000, 0)
+
+    s1 = new_pair(
+        1, "ETHEREUM/USDC", "ETHEREUM/USDT", 0, 0, 1, 1, 200_000, 10_000, 10_000
+    )
+    s2 = new_pair(
+        1,
+        "OSMOSIS/ETHEREUM/USDC",
+        "OSMOSIS/ETHEREUM/USDT",
+        0,
+        0,
+        1,
+        1,
+        200_000,
+        10_000,
+        10_000,
+    )
+    s3 = new_pair(
+        1,
+        "CENTAURI/ETHEREUM/USDC",
+        "CENTAURI/ETHEREUM/USDT",
+        0,
+        0,
+        1,
+        1,
+        200_000,
+        10_000,
+        10_000,
+    )
+    s4 = new_pair(
+        1,
+        "OSMOSIS/CENTAURI/ETHEREUM/USDC",
+        "OSMOSIS/ETHEREUM/USDC",
+        0,
+        0,
+        1,
+        1,
+        200_000,
+        10_000,
+        10_000,
+    )
+
     data = new_data([s1, s2, s3, s4], [t1, t2, t3])
+    ctx = Ctx()
     input = new_input("CENTAURI/ETHEREUM/USDC", "ETHEREUM/USDC", 1_000, 50)
     result = route(
         input,
@@ -130,7 +183,136 @@ def _test_diamond():
         ctx,
     )
     solution = cvxpy_to_data(input, data, ctx, result)
-    assert math.floor(result[0]) == 909
+
+    assert math.floor(result.received(data.index_of_token(input.out_token_id))) == 909
+    assert solution.children[0].children[0].children[0].name == "ETHEREUM/USDC"
+
+
+def test_arbitrage_loop_of_start_middle_final_assets():
+    """_summary_
+    A
+      B
+        A
+          C
+            D
+              C
+                E
+          E
+
+    A can be B and can be more A,  small part goes to E directly, even smaller goes to C
+    A can be C and C can be D and can be more C, small part goes to E directly,
+    C can be E and E can be G and G can be E, small part goes to E directly
+    E is final
+    """
+    s1 = new_pair(1, "A", "B", 0, 0, 1, 1, 200_000, 1_000, 1_000)
+    s2 = new_pair(
+        1,
+        "A",
+        "C",
+        0,
+        0,
+        1,
+        1,
+        20_000,
+        1_000,
+        1_000,
+    )
+    s3 = new_pair(
+        1,
+        "C",
+        "D",
+        0,
+        0,
+        1,
+        1,
+        20_000,
+        1_000,
+        1_000,
+    )
+    s4 = new_pair(
+        1,
+        "B",
+        "D",
+        0,
+        0,
+        1,
+        1,
+        200_000,
+        1_000,
+        1_000,
+    )
+
+    data = new_data([s1, s2, s3, s4], [])
+    ctx = Ctx()
+    input = new_input("A", "D", 100, 10)
+    result = route(input, data)
+    solution = cvxpy_to_data(input, data, ctx, result)
+    assert solution.children[0].children[0].name == "D"
+    assert solution.children[1].children[0].name == "D"
+    assert (
+        result.received(data.index_of_token("D"))
+        == 90
+        == (
+            solution.children[0].children[0].amount
+            + solution.children[1].children[0].amount
+        )
+    )
+
+
+def test_simple_symmetric_and_asymmetric_split():
+    s1 = new_pair(1, "A", "B", 0, 0, 1, 1, 200_000, 1_000, 1_000)
+    s2 = new_pair(
+        1,
+        "A",
+        "C",
+        0,
+        0,
+        1,
+        1,
+        200_000,
+        1_000,
+        1_000,
+    )
+    s3 = new_pair(
+        1,
+        "C",
+        "D",
+        0,
+        0,
+        1,
+        1,
+        200_000,
+        1_000,
+        1_000,
+    )
+    s4 = new_pair(
+        1,
+        "B",
+        "D",
+        0,
+        0,
+        1,
+        1,
+        200_000,
+        1_000,
+        1_000,
+    )
+
+    data = new_data([s1, s2, s3, s4], [])
+    ctx = Ctx()
+    input = new_input("A", "D", 100, 10)
+    result = route(input, data)
+    solution = cvxpy_to_data(input, data, ctx, result)
+    assert solution.children[0].children[0].name == "D"
+    assert solution.children[1].children[0].name == "D"
+    assert (
+        result.received(data.index_of_token("D"))
+        == 90
+        == (
+            solution.children[0].children[0].amount
+            + solution.children[1].children[0].amount
+        )
+    )
 
 
 def _test_big_numeric_range():
@@ -141,7 +323,7 @@ def _test_big_numeric_range():
     print(result)
 
 
-def _test_simulate_all_connected_venues():
+def test_simulate_all_connected_venues():
     np.random.seed(0)
     input = new_input("WETH", "ATOM", 2000, 1)
     CENTER_NODE, chains = simulate_all_to_all_connected_chains_topology(input)
