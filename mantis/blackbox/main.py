@@ -99,13 +99,8 @@ def simulator_router_data(data: CvmAllData, input: Input):
     ctx = Ctx()
     solution = generic_linear.route(input, data, ctx)
     route = cvxpy_to_data(input, data, ctx, solution)
-    from anytree import RenderTree
-    result = ""
-    for pre, fill, node in RenderTree(route):
-        result += format("%s coin=%s/%s" % (pre, node.amount, node.name))
-        result += """
-        """
-    return result 
+    print(route)
+    return route 
 
 @app.get("/simulator/router/dummy")
 def simulator_dummy():

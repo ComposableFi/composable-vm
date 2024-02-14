@@ -14,7 +14,7 @@ from disjoint_set import DisjointSet
 
 # This is global unique ID for token(asset) or exchange(pool)
 TId = TypeVar("TId", int, str)
-TNetworkId = TypeVar("TNetworkId")
+TNetworkId = TypeVar("TNetworkId", int, str)
 TAmount = TypeVar("TAmount", int, str)
 
 
@@ -173,30 +173,32 @@ class Spawn(BaseModel):
     pass
 
 
-@dataclass
+#@dataclass
 class Spawn(BaseModel, Generic[TId, TAmount]):
     """
     cross chain transfer assets
     """
 
-    in_asset_id: TId
+    in_asset_id: TId | None = None
 
-    in_asset_amount: TAmount
+    in_asset_amount: TAmount | None = None
     """
     amount to take with transfer
     (delta)
     """
-    out_asset_amount: int
+    out_asset_amount: TAmount | None = None
 
-    out_asset_id: int
-    next: list[Union[Exchange, Spawn]] = []
+    out_asset_id: TId | None = None
+    next: list[Union[Exchange, Spawn]] | None = None
 
-@dataclass
+#@dataclass
 class Exchange(BaseModel, Generic[TId, TAmount]):
-    # none means all (DELTA)
     in_asset_amount: int | None = None
-    pool_id: int
-    next: list[Union[Exchange, Spawn]] = []
+    """
+    none means all (DELTA)
+    """
+    pool_id: int | None =  None
+    next: list[Union[Exchange, Spawn]] | None = None
 
 
 Exchange.model_rebuild()
