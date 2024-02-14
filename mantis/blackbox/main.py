@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Union
 from blackbox.models import (
     AllData,
     OsmosisPoolsResponse,
@@ -18,7 +18,9 @@ import os
 from pydantic import BaseModel
 from simulation.routers.data import (
     AssetPairsXyk,
+    Exchange,
     Input,
+    Spawn,
     new_pair,
     read_dummy_data,
     AllData as CvmAllData,
@@ -99,7 +101,7 @@ def simulator_router_data(data: CvmAllData, input: Input):
     ctx = Ctx()
     solution = generic_linear.route(input, data, ctx)
     route = cvxpy_to_data(input, data, ctx, solution)
-    print(route)
+    
     return route 
 
 @app.get("/simulator/router/dummy")

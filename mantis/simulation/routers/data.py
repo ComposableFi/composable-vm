@@ -189,16 +189,16 @@ class Spawn(BaseModel, Generic[TId, TAmount]):
     out_asset_amount: TAmount | None = None
 
     out_asset_id: TId | None = None
-    next: list[Union[Exchange, Spawn]] | None = None
+    next: list[Union[Exchange, Spawn]]
 
 #@dataclass
 class Exchange(BaseModel, Generic[TId, TAmount]):
-    in_asset_amount: int | None = None
+    in_asset_amount: TAmount
     """
     none means all (DELTA)
     """
-    pool_id: int | None =  None
-    next: list[Union[Exchange, Spawn]] | None = None
+    pool_id: TId
+    next: list[Union[Exchange, Spawn]]
 
 
 Exchange.model_rebuild()

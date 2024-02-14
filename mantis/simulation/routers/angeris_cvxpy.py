@@ -1,4 +1,5 @@
 from collections import defaultdict
+from typing import Union
 from attr import dataclass
 import cvxpy as cp
 import numpy as np
@@ -65,7 +66,7 @@ class VenueOperation:
 
 def cvxpy_to_data(
     input: Input, data: AllData, ctx: Ctx, result: CvxpySolution
-) -> Node:
+):
     """_summary_
     Converts Angeris CVXPY result to executable route.
     Receives solution along with all data and context.
@@ -147,27 +148,30 @@ def cvxpy_to_data(
             print("%s via=%s in=%s/%s out=%s/%s" % (pre, node.venue.venue_index, node.venue.in_amount, node.venue.in_token, node.venue.out_amount, node.venue.out_token))
     
     def next_route(parent_node):
-        print("node ", parent_node)
-        if not parent_node.children or len(parent_node.children) == 0:
-            return None
-        else:
-            subs = []
+        print("node QQQQQQQQQQQQQQQQQQQQ", parent_node)
+        subs = []
+        if parent_node.children:
             for child in parent_node.children:                
+                print("child ZZZZZZZZZZZZZZZZ ", child)
                 sub = next_route(child)
-                if sub:
-                    print("child ", sub)
-                    subs.append(sub)       
-            subs = [sub.model_dump() for sub in subs]
-            op: VenueOperation = parent_node.venue
-            venue = data.venue_by_index(parent_node.venue.venue_index)
-            print("subs ", subs)
-            if isinstance(venue, AssetPairsXyk):
-                return Exchange(in_asset_amount=op.in_amount, pool_id = venue.pool_id, next = subs)
-            elif isinstance(venue, AssetTransfers):
-                return Spawn(in_asset_id = op.in_token, in_asset_amount = op.in_amount, out_asset_id = op.out_token, out_amount = op.out_amount, next = subs)
-            else:
-                raise Exception("Unknown venue type")
-    return next_route(start_coin)
+                subs.append(sub)                        
+        print("SUBZ SSSSSSSSSSSSSSSSSSS", subs)
+        op: VenueOperation = parent_node.venue
+        venue = data.venue_by_index(parent_node.venue.venue_index)
+        if isinstance(venue, AssetPairsXyk):
+            return {"in_asset_amount":op.in_amount, "pool_id" : venue.pool_id, "next" : subs, "op" : "exchange"}
+        elif isinstance(venue, AssetTransfers):
+            return {"in_asset_id" : op.in_token, "in_asset_amount" : op.in_amount, "out_asset_id" : op.out_token, "out_amount" : op.out_amount, "next" : subs, "op": "spawn"}
+        else:
+            raise Exception("Unknown venue type")            
+
+            
+    final = next_route(start_coin)
+    print("final", final)
+    assert len(final["next"]) > 0
+    assert len(final["next"][0]["next"]) > 0
+    # raise Exception(final.next[0])
+    return final
 
 def parse_trades(ctx, result):
     etas = result.eta_values
