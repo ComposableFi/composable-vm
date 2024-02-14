@@ -60,7 +60,7 @@ class VenueOperation:
 
 
 def cvxpy_to_data(
-    input: Input, all_data: AllData, ctx: Ctx, result: CvxpySolution
+    input: Input, data: AllData, ctx: Ctx, result: CvxpySolution
 ) -> Node:
     """_summary_
     Converts Angeris CVXPY result to executable route.
@@ -79,7 +79,7 @@ def cvxpy_to_data(
 
     for i, raw_trade in enumerate(trades_raw):
         if np.abs(raw_trade[0]) > 0:
-            [token_index_a, token_index_b] = all_data.venues_tokens[i]
+            [token_index_a, token_index_b] = data.venues_tokens[i]
             if raw_trade[0] < 0:
                 trades.append(
                     VenueOperation(
@@ -117,11 +117,11 @@ def cvxpy_to_data(
     def next(start_coin):
         # handle big amounts first
         from_coin = sorted(
-            [trade for trade in trades if trade and trade.in_token == start_coin.name],
-            key=lambda x: x.in_amount,
+            [(venue, trade) for venue, trade in enumerate(trades) if trade and trade.in_token == start_coin.name],
+            key=lambda x: x[1].in_amount,
             reverse=True,
         )
-        for trade in from_coin:
+        for venue, trade in from_coin:
             in_tokens[trade.in_token] -= trade.in_amount
             if in_tokens[trade.in_token] < 0:
                 continue
@@ -130,18 +130,29 @@ def cvxpy_to_data(
                 name=trade.out_token,
                 parent=start_coin,
                 amount=trade.out_amount,
-                venue_index=0,
+                venue_index=venue,
             )
             next(next_trade)
 
-    start_coin = Node(name=input.in_token_id, amount=input.in_amount, venue_index=0)
+    start_coin = Node(name=input.in_token_id, amount=input.in_amount, venue_index=-1)
     next(start_coin)
     if ctx.debug:
         for pre, fill, node in RenderTree(start_coin):
-            print("%s coin=%s/%s" % (pre, node.amount, node.name))
+            print("%s via=%s coin=%s/%s" % (pre, node.venue_index, node.amount, node.name))
+    
+    start_route = SingleInputAssetCvmRoute(input = start_coin.amount,)
+    def next_route(parent_node):
+        if not parent_node.children or len(parent_node.children) == 0:
+            return []
+        else:
+            subs = []
+            for child in parent_node.children:
+                sub = next_route(child)
+                subs.append(sub)
+        
+    
     # convert to CVM route
     # ..in progress - set if it Transfer or Exchange
-
     return start_coin
 
 

@@ -119,7 +119,7 @@ def test_usd_arbitrage_low_fees_short_path():
     assert result.received(data.index_of_token("ETHEREUM/USDC")) == 1000
 
 
-def test_usd_arbitrage_high_fees_long_path():
+def create_usd_arbitrage_low_fees_long_path():
     # here we shutdown direct Centauri <-> Ethereum route, and force Centauri -> Osmosis -> Ethereum
     t1 = new_transfer(
         "CENTAURI/ETHEREUM/USDC", "ETHEREUM/USDC", 1_000_000, 100_000, 100_000, 0
@@ -174,7 +174,11 @@ def test_usd_arbitrage_high_fees_long_path():
         10_000,
     )
 
-    data = new_data([s1, s2, s3, s4], [t1, t2, t3])
+    return new_data([s1, s2, s3, s4], [t1, t2, t3])
+        
+
+def test_usd_arbitrage_high_fees_long_path():
+    data = create_usd_arbitrage_low_fees_long_path()
     ctx = Ctx()
     input = new_input("CENTAURI/ETHEREUM/USDC", "ETHEREUM/USDC", 1_000, 50)
     result = route(

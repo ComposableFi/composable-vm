@@ -189,5 +189,4 @@ def route(
     forced_etas, _ = parse_trades(ctx, initial_solution)
     forced_eta_solution = solve(all_data, input, ctx, forced_etas)
     solution = copy.deepcopy(forced_eta_solution)
-
     return solution

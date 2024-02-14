@@ -2,6 +2,7 @@
 Input and output data to any algorithm for routing.
 Connect semantic data model numpy indexed values and back. 
 """
+from dataclasses import dataclass
 from fractions import Fraction
 import math
 import numpy as np
@@ -172,6 +173,7 @@ class Spawn(BaseModel):
     pass
 
 
+@dataclass
 class Spawn(BaseModel, Generic[TId, TAmount]):
     """
     cross chain transfer assets
@@ -189,7 +191,7 @@ class Spawn(BaseModel, Generic[TId, TAmount]):
     out_asset_id: int
     next: list[Union[Exchange, Spawn]] = []
 
-
+@dataclass
 class Exchange(BaseModel, Generic[TId, TAmount]):
     # none means all (DELTA)
     in_asset_amount: int | None = None
@@ -200,12 +202,12 @@ class Exchange(BaseModel, Generic[TId, TAmount]):
 Exchange.model_rebuild()
 Spawn.model_rebuild()
 
-
+@dataclass
 class SingleInputAssetCvmRoute(BaseModel):
     """
-    always starts with Input amount and asset
+    always starts with Input asset_id
     """
-
+    input_amount: int
     start: list[Union[Exchange, Spawn]]
 
 
