@@ -51,8 +51,8 @@ def test_single_chain_single_cffm_route_full_symmetry_exist():
     pair = new_pair(1, 1, 2, 0, 0, 1, 1, 1, 1_000_000, 1_000_000)
     data = new_data([pair], [])
     result = route(input, data)
-    assert result[0] < 100
-    assert result[0] > 95
+    assert result.psi[1].value < 100
+    assert result.psi[1].value > 95
 
 
 def test_usd_arbitrage_low_fees_short_path():
@@ -118,11 +118,12 @@ def test_usd_arbitrage_low_fees_short_path():
     assert len(solution.children[0].children) == 0
     assert result.received(data.index_of_token("ETHEREUM/USDC")) == 1000
 
+
 def test_usd_arbitrage_high_fees_long_path():
     # here we shutdown direct Centauri <-> Ethereum route, and force Centauri -> Osmosis -> Ethereum
     t1 = new_transfer(
         "CENTAURI/ETHEREUM/USDC", "ETHEREUM/USDC", 1_000_000, 100_000, 100_000, 0
-    )    
+    )
     t2 = new_transfer(
         "CENTAURI/ETHEREUM/USDC",
         "OSMOSIS/CENTAURI/ETHEREUM/USDC",
@@ -182,10 +183,9 @@ def test_usd_arbitrage_high_fees_long_path():
         ctx,
     )
     solution = cvxpy_to_data(input, data, ctx, result)
-    
+
     assert math.floor(result.received(data.index_of_token(input.out_token_id))) == 909
     assert solution.children[0].children[0].children[0].name == "ETHEREUM/USDC"
-
 
 
 def test_arbitrage_loop_of_start_middle_final_assets():
@@ -198,15 +198,13 @@ def test_arbitrage_loop_of_start_middle_final_assets():
               C
                 E
           E
-      
+
     A can be B and can be more A,  small part goes to E directly, even smaller goes to C
-    A can be C and C can be D and can be more C, small part goes to E directly, 
+    A can be C and C can be D and can be more C, small part goes to E directly,
     C can be E and E can be G and G can be E, small part goes to E directly
-    E is final    
+    E is final
     """
-    s1 = new_pair(
-        1, "A", "B", 0, 0, 1, 1, 200_000, 1_000, 1_000
-    )
+    s1 = new_pair(1, "A", "B", 0, 0, 1, 1, 200_000, 1_000, 1_000)
     s2 = new_pair(
         1,
         "A",
@@ -251,12 +249,18 @@ def test_arbitrage_loop_of_start_middle_final_assets():
     solution = cvxpy_to_data(input, data, ctx, result)
     assert solution.children[0].children[0].name == "D"
     assert solution.children[1].children[0].name == "D"
-    assert result.received(data.index_of_token("D")) == 90 == (solution.children[0].children[0].amount + solution.children[1].children[0].amount)
+    assert (
+        result.received(data.index_of_token("D"))
+        == 90
+        == (
+            solution.children[0].children[0].amount
+            + solution.children[1].children[0].amount
+        )
+    )
+
 
 def test_simple_symmetric_and_asymmetric_split():
-    s1 = new_pair(
-        1, "A", "B", 0, 0, 1, 1, 200_000, 1_000, 1_000
-    )
+    s1 = new_pair(1, "A", "B", 0, 0, 1, 1, 200_000, 1_000, 1_000)
     s2 = new_pair(
         1,
         "A",
@@ -301,7 +305,15 @@ def test_simple_symmetric_and_asymmetric_split():
     solution = cvxpy_to_data(input, data, ctx, result)
     assert solution.children[0].children[0].name == "D"
     assert solution.children[1].children[0].name == "D"
-    assert result.received(data.index_of_token("D")) == 90 == (solution.children[0].children[0].amount + solution.children[1].children[0].amount)    
+    assert (
+        result.received(data.index_of_token("D"))
+        == 90
+        == (
+            solution.children[0].children[0].amount
+            + solution.children[1].children[0].amount
+        )
+    )
+
 
 def _test_big_numeric_range():
     input = new_input(1, 2, 100, 50)
