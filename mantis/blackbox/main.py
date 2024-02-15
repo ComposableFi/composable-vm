@@ -127,9 +127,9 @@ def get_remote_data() -> AllData:
         staking_denomination="ppica",
     )
     client = LedgerClient(cfg)
-    # cvm_contract = LedgerContract(
-    #     path=None, client=client, address=settings.cvm_address
-    # )
+    cvm_contract = LedgerContract(
+        path=None, client=client, address=settings.cvm_address
+    )
 
     # cvm_registry_response = cvm_contract.query({"get_config": {}})
     # cvm_registry = GetConfigResponse.parse_obj(cvm_registry_response)

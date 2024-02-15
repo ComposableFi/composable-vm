@@ -6,6 +6,10 @@ class Settings(BaseSettings):
     CVM_COSMOS_GRPC: str | None = Field(
         alias="CVM_COSMOS_GRPC", default=None
     )
+    CVM_CHAIN_ID: str | None = Field(
+        alias="CVM_COSMOS_GRPC", default=None
+    )
+    
     cvm_address: str | None = Field(alias="CVM_ADDRESS", default=None)
     astroport_pools: str | None = Field(alias="ASTROPORT_POOLS", default=None)
     neutron_rpc: str | None = Field(alias="NEUTRON_RPC", default=None)
