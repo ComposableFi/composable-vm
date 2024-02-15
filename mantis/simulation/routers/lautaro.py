@@ -311,6 +311,7 @@ def route(
                 v = e.GetOther(u)
 
             # Update the paths and outcomes
+            assert Xi > 0
             paths.append(path)
             outcomes.append(outcomes[-1] + Xi)
 

@@ -122,24 +122,25 @@ def simulate_all_to_all_connected_chains_topology(input: Input):
 
 
 if __name__ == "__main__":
-    routes = {
-        f"Lautaro 1 process, depth {depth} and 1000 splits without revision": lautaro.BuildRoute(
-            depth, 1000, False, 1
-        )
-        for depth in [5, 10, 15]
-    }
-
-    routes.update(
-        {
-            f"Lautaro 1 process, depth {depth} and 1000 splits with revision": lautaro.BuildRoute(
-                depth, 1000, True, 1
+    for _ in range(10):
+        routes = {
+            f"Lautaro 1 process, depth {depth} and 1000 splits without revision": lautaro.BuildRoute(
+                depth, 1000, False, 1
             )
-            for depth in [5, 10, 15]
+            for depth in [3, 5, 10, 15]
         }
-    )
 
-    routes["Dzmitry"] = dzmitry.route
-    _test_simulate_all_connected_venues(routes)
+        #routes.update(
+        #    {
+        #        f"Lautaro 1 process, depth {depth} and 1000 splits with revision": lautaro.BuildRoute(
+        #            depth, 1000, True, 1
+        #        )
+        #        for depth in [5, 10, 15]
+        #    }
+        #)
+
+        #routes["Dzmitry"] = dzmitry.route
+        _test_simulate_all_connected_venues(routes)
 
 # Last excecution
 # Lautaro 1 process, depth 5 and 1000 splits without revision result: (1991.5740846424633, 1989.580302533347) in time: 0.7211523056030273
