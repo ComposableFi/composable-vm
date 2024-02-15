@@ -1,8 +1,6 @@
 from typing import List
 from blackbox.models import (
     AllData,
-    CosmosChains,
-    NeutronPoolsResponse,
     OsmosisPoolsResponse,
 )
 from blackbox.settings import settings

@@ -20,7 +20,7 @@ from simulation.routers.data import (
 # clarabel cvxpy local mip
 import itertools
 
-from simulation.routers.lautaro import route
+from simulation.routers.dzmitry import route
 
 
 # simulate denom paths to and from chains, with center node
@@ -71,7 +71,7 @@ def _test_simulate_all_connected_venues():
     print(all_data.index_of_token("ATOM"))
 
     print("=============== solving ========================")
-    result = route(input, all_data, splits=1000, max_depth=5)
+    result = route(input, all_data)
     print(result)
 
 

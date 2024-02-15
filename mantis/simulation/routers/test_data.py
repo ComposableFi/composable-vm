@@ -2,9 +2,6 @@
 from pathlib import Path
 
 from mantis.simulation.routers.data import (
-    Exchange,
-    SingleInputAssetCvmRoute,
-    Spawn,
     new_data,
     new_pair,
     read_dummy_data,
