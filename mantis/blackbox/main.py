@@ -121,7 +121,7 @@ async def get_data_routable() -> data.AllData:
 def get_remote_data() -> AllData:
     cfg = NetworkConfig(
         chain_id="centauri-1",
-        url="grpc+" + settings.composable_cosmos_grpc,
+        url="grpc+" + settings.CVM_COSMOS_GRPC,
         fee_minimum_gas_price=1,
         fee_denomination="ppica",
         staking_denomination="ppica",

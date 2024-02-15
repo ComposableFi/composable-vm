@@ -446,7 +446,7 @@
             OSMOSIS_POOLS = env.OSMOSIS_POOLS;
             ASTROPORT_POOLS = env.ASTROPORT_POOLS;
             SKIP_MONEY = env.SKIP_MONEY;
-            COMPOSABLE_COSMOS_GRPC = inputs.networks.lib.pica.mainnet.GRPC;
+            CVM_COSMOS_GRPC = inputs.networks.lib.pica.mainnet.GRPC;
             CVM_ADDRESS = inputs.networks.lib.pica.mainnet.CVM_OUTPOST_CONTRACT_ADDRESS;
             LD_LIBRARY_PATH = pkgs.lib.strings.makeLibraryPath [
               pkgs.stdenv.cc.cc.lib
