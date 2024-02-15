@@ -25,7 +25,7 @@ class Adr08IbcCallbacks(BaseModel):
 class AssetId(RootModel[str]):
     root: str = Field(
         ...,
-        description="Newtype for XCVM assets ID. Must be unique for each asset and must never change. This ID is an opaque, arbitrary type from the XCVM protocol and no assumption must be made on how it is computed.",
+        description='Newtype for XCVM assets ID. Must be unique for each asset and must never change. This ID is an opaque, arbitrary type from the XCVM protocol and no assumption must be made on how it is computed.',
     )
 
 
@@ -39,7 +39,7 @@ class AssetReference1(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra='forbid',
     )
     native: Native
 
@@ -54,7 +54,7 @@ class AssetReference2(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra='forbid',
     )
     cw20: Cw20
 
@@ -62,7 +62,7 @@ class AssetReference2(BaseModel):
 class AssetReference(RootModel[Union[AssetReference1, AssetReference2]]):
     root: Union[AssetReference1, AssetReference2] = Field(
         ...,
-        description="Definition of an asset native to some chain to operate on. For example for Cosmos CW and EVM chains both CW20 and ERC20 can be actual. So if asset is local or only remote to some chain depends on context of network or connection. this design leads to some dummy matches, but in general unifies code (so that if one have to solve other chain route it can)",
+        description='Definition of an asset native to some chain to operate on. For example for Cosmos CW and EVM chains both CW20 and ERC20 can be actual. So if asset is local or only remote to some chain depends on context of network or connection. this design leads to some dummy matches, but in general unifies code (so that if one have to solve other chain route it can)',
     )
 
 
@@ -72,7 +72,7 @@ class BindingValue2(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra='forbid',
     )
     asset: AssetId
 
@@ -87,7 +87,7 @@ class CallOrigin2(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra='forbid',
     )
     Local: Local
 
@@ -106,7 +106,7 @@ class ConfigSubMsg6(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra='forbid',
     )
     force_remove_asset: ForceRemoveAsset
 
@@ -122,7 +122,7 @@ class ConfigSubMsg8(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra='forbid',
     )
     force_instantiate: ForceInstantiate
 
@@ -132,7 +132,7 @@ class ConnectionId(RootModel[str]):
 
 
 class DestinationForXcAddr1(Enum):
-    tip = "tip"
+    tip = 'tip'
 
 
 class DisplayedForUint128(RootModel[str]):
@@ -157,7 +157,7 @@ class OsmosisPoolManagerModuleV1Beta1(BaseModel):
 
 class ExchangeType1(BaseModel):
     model_config = ConfigDict(
-        extra="forbid",
+        extra='forbid',
     )
     osmosis_pool_manager_module_v1_beta1: OsmosisPoolManagerModuleV1Beta1
 
@@ -170,7 +170,7 @@ class AstroportRouterContract(BaseModel):
 
 class ExchangeType2(BaseModel):
     model_config = ConfigDict(
-        extra="forbid",
+        extra='forbid',
     )
     astroport_router_contract: AstroportRouterContract
 
@@ -195,7 +195,7 @@ class FundsForDisplayedForUint128(
     """
 
     root: List[List[Union[AssetId, DisplayedForUint128]]] = Field(
-        ..., description="a set of assets with non zero balances"
+        ..., description='a set of assets with non zero balances'
     )
 
 
@@ -206,9 +206,9 @@ class IbcEndpoint(BaseModel):
 
 class IbcIcs20Sender(Enum):
     CosmosStargateIbcApplicationsTransferV1MsgTransfer = (
-        "CosmosStargateIbcApplicationsTransferV1MsgTransfer"
+        'CosmosStargateIbcApplicationsTransferV1MsgTransfer'
     )
-    CosmWasmStd1_3 = "CosmWasmStd1_3"
+    CosmWasmStd1_3 = 'CosmWasmStd1_3'
 
 
 class IcsPair(BaseModel):
@@ -227,7 +227,7 @@ class Binding(RootModel[conint(ge=0)]):
 class NetworkId(RootModel[conint(ge=0)]):
     root: conint(ge=0) = Field(
         ...,
-        description="Newtype for CVM networks ID. Must be unique for each network and must never change. This ID is an opaque, arbitrary type from the CVM protocol and no assumption must be made on how it is computed.",
+        description='Newtype for CVM networks ID. Must be unique for each network and must never change. This ID is an opaque, arbitrary type from the CVM protocol and no assumption must be made on how it is computed.',
     )
 
 
@@ -236,10 +236,10 @@ class OsmosisIbcHooks(BaseModel):
 
 
 class CosmWasm(BaseModel):
-    admin: Addr = Field(..., description="admin of everything")
+    admin: Addr = Field(..., description='admin of everything')
     contract: Addr
     executor_code_id: conint(ge=0) = Field(
-        ..., description="CVM executor contract code"
+        ..., description='CVM executor contract code'
     )
 
 
@@ -249,7 +249,7 @@ class OutpostId1(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra='forbid',
     )
     cosm_wasm: CosmWasm
 
@@ -257,7 +257,7 @@ class OutpostId1(BaseModel):
 class OutpostId(RootModel[OutpostId1]):
     root: OutpostId1 = Field(
         ...,
-        description="when message is sent to other side, we should identify receiver of some kind",
+        description='when message is sent to other side, we should identify receiver of some kind',
     )
 
 
@@ -271,7 +271,7 @@ class Prefix1(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra='forbid',
     )
     s_s58: conint(ge=0)
 
@@ -282,7 +282,7 @@ class Prefix2(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra='forbid',
     )
     bech: str
 
@@ -290,7 +290,7 @@ class Prefix2(BaseModel):
 class Prefix(RootModel[Union[Prefix1, Prefix2]]):
     root: Union[Prefix1, Prefix2] = Field(
         ...,
-        description="given prefix you may form accounts from 32 bit addresses or partially identify chains",
+        description='given prefix you may form accounts from 32 bit addresses or partially identify chains',
     )
 
 
@@ -300,11 +300,11 @@ class PrefixedDenom(BaseModel):
     """
 
     base_denom: str = Field(
-        ..., description="Base denomination of the relayed fungible token."
+        ..., description='Base denomination of the relayed fungible token.'
     )
     trace_path: str = Field(
         ...,
-        description="A series of `{port-id}/{channel-id}`s for tracing the source of the token.",
+        description='A series of `{port-id}/{channel-id}`s for tracing the source of the token.',
     )
 
 
@@ -313,7 +313,7 @@ class Register1(Enum):
     Instruction pointer
     """
 
-    ip = "ip"
+    ip = 'ip'
 
 
 class Register2(Enum):
@@ -321,7 +321,7 @@ class Register2(Enum):
     Tip's address
     """
 
-    tip = "tip"
+    tip = 'tip'
 
 
 class Register3(Enum):
@@ -329,7 +329,7 @@ class Register3(Enum):
     Executor's address
     """
 
-    this = "this"
+    this = 'this'
 
 
 class Register4(Enum):
@@ -337,7 +337,7 @@ class Register4(Enum):
     Result of the last executed instruction. If not empty, program did not executed to the end.
     """
 
-    result = "result"
+    result = 'result'
 
 
 class Register5(BaseModel):
@@ -346,7 +346,7 @@ class Register5(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra='forbid',
     )
     carry: AssetId
 
@@ -361,7 +361,7 @@ class RelativeTimeout1(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra='forbid',
     )
     seconds: conint(ge=0)
 
@@ -369,21 +369,21 @@ class RelativeTimeout1(BaseModel):
 class RelativeTimeout(RootModel[RelativeTimeout1]):
     root: RelativeTimeout1 = Field(
         ...,
-        description="relative timeout to CW/IBC-rs time. very small, assumed messages are arriving fast enough, like less than hours",
+        description='relative timeout to CW/IBC-rs time. very small, assumed messages are arriving fast enough, like less than hours',
     )
 
 
 class Uint128(RootModel[str]):
     root: str = Field(
         ...,
-        description="A thin wrapper around u128 that is using strings for JSON encoding/decoding, such that the full u128 range can be used for clients that convert JSON numbers to floats, like JavaScript and jq.\n\n# Examples\n\nUse `from` to create instances of this and `u128` to get the value out:\n\n``` # use cosmwasm_std::Uint128; let a = Uint128::from(123u128); assert_eq!(a.u128(), 123);\n\nlet b = Uint128::from(42u64); assert_eq!(b.u128(), 42);\n\nlet c = Uint128::from(70u32); assert_eq!(c.u128(), 70); ```",
+        description='A thin wrapper around u128 that is using strings for JSON encoding/decoding, such that the full u128 range can be used for clients that convert JSON numbers to floats, like JavaScript and jq.\n\n# Examples\n\nUse `from` to create instances of this and `u128` to get the value out:\n\n``` # use cosmwasm_std::Uint128; let a = Uint128::from(123u128); assert_eq!(a.u128(), 123);\n\nlet b = Uint128::from(42u64); assert_eq!(b.u128(), 42);\n\nlet c = Uint128::from(70u32); assert_eq!(c.u128(), 70); ```',
     )
 
 
 class UserId(RootModel[str]):
     root: str = Field(
         ...,
-        description="Arbitrary `User` type that represent the identity of a user on a given network, usually a public key.",
+        description='Arbitrary `User` type that represent the identity of a user on a given network, usually a public key.',
     )
 
 
@@ -399,7 +399,7 @@ class UserOrigin(BaseModel):
 class XcAddr(RootModel[str]):
     root: str = Field(
         ...,
-        description="A wrapper around any address on any chain. Similar to `ibc_rs::Signer`(multi encoding), but not depend on ibc code bloat. Unlike parity MultiLocation/Account32/Account20 which hard codes enum into code. Better send canonical address to each chain for performance, But it will also decode/reencode best effort. Inner must be either base64 or hex encoded or contain only characters from these. Added with helper per chain to get final address to use.",
+        description='A wrapper around any address on any chain. Similar to `ibc_rs::Signer`(multi encoding), but not depend on ibc code bloat. Unlike parity MultiLocation/Account32/Account20 which hard codes enum into code. Better send canonical address to each chain for performance, But it will also decode/reencode best effort. Inner must be either base64 or hex encoded or contain only characters from these. Added with helper per chain to get final address to use.',
     )
 
 
@@ -409,13 +409,13 @@ class AdminSubMsg1(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra='forbid',
     )
     execute_packet_i_c_s20: ExecutePacketICS20Msg
 
 
 class AdminSubMsg(RootModel[AdminSubMsg1]):
-    root: AdminSubMsg1 = Field(..., description="can only be executed by gov or admin")
+    root: AdminSubMsg1 = Field(..., description='can only be executed by gov or admin')
 
 
 class Amount(BaseModel):
@@ -424,11 +424,11 @@ class Amount(BaseModel):
     """
 
     intercept: Optional[DisplayedForUint128] = Field(
-        None, description="absolute amount, optional, default is 0"
+        None, description='absolute amount, optional, default is 0'
     )
     slope: Optional[DisplayedForUint64] = Field(
         None,
-        description="part of `MAX_PARTS` from remaining after intercept subtraction, optional, default is 0",
+        description='part of `MAX_PARTS` from remaining after intercept subtraction, optional, default is 0',
     )
 
 
@@ -440,14 +440,14 @@ class AssetToNetwork(BaseModel):
 
 class BindingValue1(BaseModel):
     model_config = ConfigDict(
-        extra="forbid",
+        extra='forbid',
     )
-    register_: Register = Field(..., alias="register")
+    register_: Register = Field(..., alias='register')
 
 
 class BindingValue3(BaseModel):
     model_config = ConfigDict(
-        extra="forbid",
+        extra='forbid',
     )
     asset_amount: List[Union[AssetId, Amount]] = Field(..., max_length=2, min_length=2)
 
@@ -466,7 +466,7 @@ class CallOrigin1(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra='forbid',
     )
     Remote: Remote
 
@@ -474,7 +474,7 @@ class CallOrigin1(BaseModel):
 class CallOrigin(RootModel[Union[CallOrigin1, CallOrigin2]]):
     root: Union[CallOrigin1, CallOrigin2] = Field(
         ...,
-        description="The Origin that executed the XCVM operation. Origin was verified to satisfy security semantics for execution.",
+        description='The Origin that executed the XCVM operation. Origin was verified to satisfy security semantics for execution.',
     )
 
 
@@ -485,12 +485,12 @@ class ChannelInfo(BaseModel):
 
     connection_id: ConnectionId = Field(
         ...,
-        description="the connection this exists on (you can use to query client/consensus info)",
+        description='the connection this exists on (you can use to query client/consensus info)',
     )
     counterparty_endpoint: IbcEndpoint = Field(
-        ..., description="the remote channel/port we connect to"
+        ..., description='the remote channel/port we connect to'
     )
-    id: ChannelId = Field(..., description="id of this channel")
+    id: ChannelId = Field(..., description='id of this channel')
 
 
 class ConfigSubMsg4(BaseModel):
@@ -499,14 +499,14 @@ class ConfigSubMsg4(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra='forbid',
     )
     force_asset_to_network_map: AssetToNetwork
 
 
 class DestinationForXcAddr2(BaseModel):
     model_config = ConfigDict(
-        extra="forbid",
+        extra='forbid',
     )
     account: XcAddr
 
@@ -538,7 +538,7 @@ class ExecutorOrigin(BaseModel):
 
 class ForeignAssetId1(BaseModel):
     model_config = ConfigDict(
-        extra="forbid",
+        extra='forbid',
     )
     ibc_ics20: PrefixedDenom
 
@@ -553,7 +553,7 @@ class FundsForAmount(RootModel[List[List[Union[AssetId, Amount]]]]):
     """
 
     root: List[List[Union[AssetId, Amount]]] = Field(
-        ..., description="a set of assets with non zero balances"
+        ..., description='a set of assets with non zero balances'
     )
 
 
@@ -565,7 +565,7 @@ class Ics20Features(BaseModel):
     ibc_callbacks: Optional[Adr08IbcCallbacks] = None
     pfm: Optional[PFM] = None
     wasm_hooks: Optional[OsmosisIbcHooks] = Field(
-        None, description="if it is exists, chain has that enabled"
+        None, description='if it is exists, chain has that enabled'
     )
 
 
@@ -580,7 +580,7 @@ class InstructionForArrayOfUint8AndXcAddrAndFundsForAmount1(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra='forbid',
     )
     transfer: Transfer
 
@@ -600,7 +600,7 @@ class InstructionForArrayOfUint8AndXcAddrAndFundsForAmount2(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra='forbid',
     )
     call: Call
 
@@ -617,38 +617,38 @@ class InstructionForArrayOfUint8AndXcAddrAndFundsForAmount4(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra='forbid',
     )
     exchange: Exchange
 
 
 class OtherNetworkItem(BaseModel):
     counterparty_timeout: RelativeTimeout = Field(
-        ..., description="default timeout to use for direct send"
+        ..., description='default timeout to use for direct send'
     )
     ics27_channel: Optional[ChannelInfo] = Field(
-        None, description="if there is ICS27 IBC channel opened"
+        None, description='if there is ICS27 IBC channel opened'
     )
     ics_20: Optional[IcsPair] = None
     use_shortcut: Optional[bool] = Field(
         None,
-        description="if true, than will use shortcuts for example, if program transfer only program will just use native transfer or if connection supports exchange, it will use exchange default is false if target chain has CVM gateway",
+        description='if true, than will use shortcuts for example, if program transfer only program will just use native transfer or if connection supports exchange, it will use exchange default is false if target chain has CVM gateway',
     )
 
 
 class Transfer1(BaseModel):
     amount: Uint128
-    asset_id: AssetId = Field(..., description="assets from there")
+    asset_id: AssetId = Field(..., description='assets from there')
     network: NetworkId = Field(
         ...,
-        description="target network, can hope over several networks if route is stored in state",
+        description='target network, can hope over several networks if route is stored in state',
     )
-    receiver: Optional[str] = Field(None, description="by default receiver is this")
+    receiver: Optional[str] = Field(None, description='by default receiver is this')
 
 
 class ShortcutSubMsg1(BaseModel):
     model_config = ConfigDict(
-        extra="forbid",
+        extra='forbid',
     )
     transfer: Transfer1
 
@@ -659,7 +659,7 @@ class ShortcutSubMsg(RootModel[ShortcutSubMsg1]):
 
 class ExecuteMsg2(BaseModel):
     model_config = ConfigDict(
-        extra="forbid",
+        extra='forbid',
     )
     admin: AdminSubMsg
 
@@ -670,7 +670,7 @@ class ExecuteMsg6(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra='forbid',
     )
     shortcut: ShortcutSubMsg
 
@@ -685,7 +685,7 @@ class ConfigSubMsg5(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra='forbid',
     )
     force_exchange: ExchangeItem
 
@@ -693,14 +693,14 @@ class ConfigSubMsg5(BaseModel):
 class Ics20Channel(BaseModel):
     features: Optional[Ics20Features] = None
     sender: IbcIcs20Sender = Field(
-        ..., description="specific per chain way to send IBC ICS 20 assets"
+        ..., description='specific per chain way to send IBC ICS 20 assets'
     )
 
 
 class NetworkToNetworkItem(BaseModel):
     from_network_id: NetworkId
     to_network: OtherNetworkItem = Field(
-        ..., description="how to send `to_network_id` chain"
+        ..., description='how to send `to_network_id` chain'
     )
     to_network_id: NetworkId
 
@@ -709,11 +709,11 @@ class AssetItem(BaseModel):
     asset_id: AssetId
     bridged: Optional[BridgeAsset] = Field(
         None,
-        description="if asset was bridged, it would have way to identify bridge/source/channel",
+        description='if asset was bridged, it would have way to identify bridge/source/channel',
     )
     local: AssetReference
     network_id: NetworkId = Field(
-        ..., description="network id on which this asset id can be used locally"
+        ..., description='network id on which this asset id can be used locally'
     )
 
 
@@ -723,7 +723,7 @@ class ConfigSubMsg2(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra='forbid',
     )
     force_network_to_network: NetworkToNetworkItem
 
@@ -734,7 +734,7 @@ class ConfigSubMsg3(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra='forbid',
     )
     force_asset: AssetItem
 
@@ -748,12 +748,12 @@ class IbcEnabled(BaseModel):
 
 
 class NetworkItem(BaseModel):
-    accounts: Optional[Prefix] = Field(None, description="Account encoding type")
+    accounts: Optional[Prefix] = Field(None, description='Account encoding type')
     ibc: Optional[IbcEnabled] = None
     network_id: NetworkId
     outpost: Optional[OutpostId] = Field(
         None,
-        description="something which will be receiver on other side case of network has XCVM deployed as contract, account address is stored here",
+        description='something which will be receiver on other side case of network has XCVM deployed as contract, account address is stored here',
     )
 
 
@@ -763,14 +763,14 @@ class ConfigSubMsg1(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra='forbid',
     )
     force_network: NetworkItem
 
 
 class ExecuteMsg1(BaseModel):
     model_config = ConfigDict(
-        extra="forbid",
+        extra='forbid',
     )
     config: ConfigSubMsg
 
@@ -781,15 +781,15 @@ class ExecuteMsg3(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra='forbid',
     )
     execute_program: ExecuteProgramMsgForNullableFundsForDisplayedForUint128
 
 
 class ExecuteProgramPrivileged(BaseModel):
-    call_origin: CallOrigin = Field(..., description="The origin of the call.")
+    call_origin: CallOrigin = Field(..., description='The origin of the call.')
     execute_program: ExecuteProgramMsgForFundsForDisplayedForUint128 = Field(
-        ..., description="Program to execute."
+        ..., description='Program to execute.'
     )
 
 
@@ -801,7 +801,7 @@ class ExecuteMsg4(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra='forbid',
     )
     execute_program_privileged: ExecuteProgramPrivileged
 
@@ -812,7 +812,7 @@ class ExecuteMsg5(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra='forbid',
     )
     bridge_forward: BridgeForwardMsg
 
@@ -823,7 +823,7 @@ class ExecuteMsg7(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra='forbid',
     )
     message_hook: XcMessageData
 
@@ -849,13 +849,13 @@ class ExecuteMsg(
         ExecuteMsg5,
         ExecuteMsg6,
         ExecuteMsg7,
-    ] = Field(..., title="ExecuteMsg")
+    ] = Field(..., title='ExecuteMsg')
 
 
 class BridgeForwardMsg(BaseModel):
     executor_origin: ExecutorOrigin
     msg: ExecuteProgramMsgForFundsForDisplayedForUint128
-    to_network: NetworkId = Field(..., description="target network")
+    to_network: NetworkId = Field(..., description='target network')
 
 
 class ConfigSubMsg7(BaseModel):
@@ -864,7 +864,7 @@ class ConfigSubMsg7(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra='forbid',
     )
     force: List[ConfigSubMsg]
 
@@ -894,7 +894,7 @@ class ConfigSubMsg(
         ConfigSubMsg8,
     ] = Field(
         ...,
-        description="cross cross chain routing requires a lot of configuration, about chain executing this contract, about connectivity to and of other chains (even if not connected directly) and about assets and services on these chains (in future block hooks and some set of host extensions/precompiles would help to get some info automatically) `Force` message sets the data unconditionally.",
+        description='cross cross chain routing requires a lot of configuration, about chain executing this contract, about connectivity to and of other chains (even if not connected directly) and about assets and services on these chains (in future block hooks and some set of host extensions/precompiles would help to get some info automatically) `Force` message sets the data unconditionally.',
     )
 
 
@@ -905,14 +905,14 @@ class ExecuteProgramMsgForFundsForDisplayedForUint128(BaseModel):
 
     assets: FundsForDisplayedForUint128 = Field(
         ...,
-        description="Assets to fund the CVM executor instance. The executor is funded prior to execution. If None, 100% of received funds go to executor.",
+        description='Assets to fund the CVM executor instance. The executor is funded prior to execution. If None, 100% of received funds go to executor.',
     )
     program: ProgramForArrayOfInstructionForArrayOfUint8AndXcAddrAndFundsForAmount = (
-        Field(..., description="The program.")
+        Field(..., description='The program.')
     )
     salt: Optional[str] = Field(
         None,
-        description="The program salt. If JSON, than hex encoded non prefixed lower case string. If not specified, uses no salt.",
+        description='The program salt. If JSON, than hex encoded non prefixed lower case string. If not specified, uses no salt.',
     )
     tip: Optional[str] = None
 
@@ -924,14 +924,14 @@ class ExecuteProgramMsgForNullableFundsForDisplayedForUint128(BaseModel):
 
     assets: Optional[FundsForDisplayedForUint128] = Field(
         None,
-        description="Assets to fund the CVM executor instance. The executor is funded prior to execution. If None, 100% of received funds go to executor.",
+        description='Assets to fund the CVM executor instance. The executor is funded prior to execution. If None, 100% of received funds go to executor.',
     )
     program: ProgramForArrayOfInstructionForArrayOfUint8AndXcAddrAndFundsForAmount = (
-        Field(..., description="The program.")
+        Field(..., description='The program.')
     )
     salt: Optional[str] = Field(
         None,
-        description="The program salt. If JSON, than hex encoded non prefixed lower case string. If not specified, uses no salt.",
+        description='The program salt. If JSON, than hex encoded non prefixed lower case string. If not specified, uses no salt.',
     )
     tip: Optional[str] = None
 
@@ -942,7 +942,7 @@ class Spawn(BaseModel):
     program: ProgramForArrayOfInstructionForArrayOfUint8AndXcAddrAndFundsForAmount
     salt: Optional[str] = Field(
         None,
-        description="If JSON, than hex encoded non prefixed lower case string. Different salt allows to split funds into different virtual wallets So same salt shares assets on set of derived accounts on chains program executes.",
+        description='If JSON, than hex encoded non prefixed lower case string. Different salt allows to split funds into different virtual wallets So same salt shares assets on set of derived accounts on chains program executes.',
     )
 
 
@@ -954,7 +954,7 @@ class InstructionForArrayOfUint8AndXcAddrAndFundsForAmount3(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra='forbid',
     )
     spawn: Spawn
 
@@ -976,7 +976,7 @@ class InstructionForArrayOfUint8AndXcAddrAndFundsForAmount(
         InstructionForArrayOfUint8AndXcAddrAndFundsForAmount4,
     ] = Field(
         ...,
-        description="Base CVM instructions. This set will remain as small as possible, expressiveness must come on `top` of the base instructions.",
+        description='Base CVM instructions. This set will remain as small as possible, expressiveness must come on `top` of the base instructions.',
     )
 
 
@@ -984,27 +984,27 @@ class PacketForProgramForArrayOfInstructionForArrayOfUint8AndXcAddrAndFundsForAm
     BaseModel
 ):
     assets: FundsForDisplayedForUint128 = Field(
-        ..., description="The assets that were attached to the program."
+        ..., description='The assets that were attached to the program.'
     )
     executor: str = Field(
-        ..., description="The executor that was the origin of this packet."
+        ..., description='The executor that was the origin of this packet.'
     )
     program: ProgramForArrayOfInstructionForArrayOfUint8AndXcAddrAndFundsForAmount = (
-        Field(..., description="The protobuf encoded program.")
+        Field(..., description='The protobuf encoded program.')
     )
-    salt: str = Field(..., description="The salt associated with the program.")
+    salt: str = Field(..., description='The salt associated with the program.')
     user_origin: UserOrigin = Field(
-        ..., description="The user that originated the first XCVM call."
+        ..., description='The user that originated the first XCVM call.'
     )
 
 
 class ProgramForArrayOfInstructionForArrayOfUint8AndXcAddrAndFundsForAmount(BaseModel):
     instructions: List[InstructionForArrayOfUint8AndXcAddrAndFundsForAmount] = Field(
-        ..., description="list of instructions to be executed"
+        ..., description='list of instructions to be executed'
     )
     tag: Optional[str] = Field(
         None,
-        description="In JSON, hex encoded identifiers to identify the program off chain (for example in indexer).",
+        description='In JSON, hex encoded identifiers to identify the program off chain (for example in indexer).',
     )
 
 

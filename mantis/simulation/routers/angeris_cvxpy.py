@@ -144,18 +144,15 @@ def cvxpy_to_data(
     next(start_coin)
     
     if ctx.debug:
-        for pre, fill, node in RenderTree(start_coin):
+        for pre, _fill, node in RenderTree(start_coin):
             print("%s via=%s in=%s/%s out=%s/%s" % (pre, node.venue.venue_index, node.venue.in_amount, node.venue.in_token, node.venue.out_amount, node.venue.out_token))
     
     def next_route(parent_node):
-        print("node QQQQQQQQQQQQQQQQQQQQ", parent_node)
         subs = []
         if parent_node.children:
             for child in parent_node.children:                
-                print("child ZZZZZZZZZZZZZZZZ ", child)
                 sub = next_route(child)
                 subs.append(sub)                        
-        print("SUBZ SSSSSSSSSSSSSSSSSSS", subs)
         op: VenueOperation = parent_node.venue
         venue = data.venue_by_index(parent_node.venue.venue_index)
         if isinstance(venue, AssetPairsXyk):
@@ -164,14 +161,7 @@ def cvxpy_to_data(
             return {"in_asset_id" : op.in_token, "in_asset_amount" : op.in_amount, "out_asset_id" : op.out_token, "out_amount" : op.out_amount, "next" : subs, "op": "spawn"}
         else:
             raise Exception("Unknown venue type")            
-
-            
-    final = next_route(start_coin)
-    print("final", final)
-    assert len(final["next"]) > 0
-    assert len(final["next"][0]["next"]) > 0
-    # raise Exception(final.next[0])
-    return final
+    return next_route(start_coin)
 
 def parse_trades(ctx, result):
     etas = result.eta_values

@@ -3,13 +3,14 @@
 
 from __future__ import annotations
 
-from typing import List, Optional, Union
+from typing import List, Optional
 
 from pydantic import BaseModel, Field
 
 
 class Config(BaseModel):
     migrateToAddress: Optional[str] = None
+    whitelisted: Optional[bool] = None
 
 
 class Prices(BaseModel):
@@ -28,26 +29,37 @@ class Asset(BaseModel):
 
 class AstroRewards(BaseModel):
     apr: float
-    apy: float
+    apy: int
     day: float
 
 
 class ProtocolRewards(BaseModel):
+    apr: int
+    apy: int
+    day: int
+
+
+class TotalRewards(BaseModel):
     apr: float
     apy: float
     day: float
 
 
-class TotalRewards(BaseModel):
-    apr: Union[float, str]
-    apy: int
-    day: int
-
-
 class TradingFees(BaseModel):
-    apr: int
-    apy: Union[float, str]
+    apr: float
+    apy: float
     day: float
+
+
+class Reward(BaseModel):
+    symbol: str
+    amountPerDay: str
+    amountPerSecond: str
+    priceUsd: float
+    precision: int
+    amountPerDayUsd: str
+    yield_: float = Field(..., alias='yield')
+    isExternal: bool
 
 
 class JsonItem(BaseModel):
@@ -73,7 +85,8 @@ class JsonItem(BaseModel):
     protocolRewards: ProtocolRewards
     totalRewards: TotalRewards
     tradingFees: TradingFees
+    rewards: List[Reward]
 
 
 class Model(BaseModel):
-    json_: List[JsonItem] = Field(..., alias="json")
+    json_: List[JsonItem] = Field(..., alias='json')

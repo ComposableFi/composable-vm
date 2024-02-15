@@ -14,7 +14,7 @@ class QueryMsg5(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra='forbid',
     )
     get_config: Dict[str, Any]
 
@@ -29,7 +29,7 @@ class Addr(RootModel[str]):
 class AssetId(RootModel[str]):
     root: str = Field(
         ...,
-        description="Newtype for XCVM assets ID. Must be unique for each asset and must never change. This ID is an opaque, arbitrary type from the XCVM protocol and no assumption must be made on how it is computed.",
+        description='Newtype for XCVM assets ID. Must be unique for each asset and must never change. This ID is an opaque, arbitrary type from the XCVM protocol and no assumption must be made on how it is computed.',
     )
 
 
@@ -43,7 +43,7 @@ class AssetReference3(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra='forbid',
     )
     native: Native
 
@@ -58,7 +58,7 @@ class AssetReference4(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra='forbid',
     )
     cw20: Cw20
 
@@ -66,7 +66,7 @@ class AssetReference4(BaseModel):
 class AssetReference(RootModel[Union[AssetReference3, AssetReference4]]):
     root: Union[AssetReference3, AssetReference4] = Field(
         ...,
-        description="Definition of an asset native to some chain to operate on. For example for Cosmos CW and EVM chains both CW20 and ERC20 can be actual. So if asset is local or only remote to some chain depends on context of network or connection. this design leads to some dummy matches, but in general unifies code (so that if one have to solve other chain route it can)",
+        description='Definition of an asset native to some chain to operate on. For example for Cosmos CW and EVM chains both CW20 and ERC20 can be actual. So if asset is local or only remote to some chain depends on context of network or connection. this design leads to some dummy matches, but in general unifies code (so that if one have to solve other chain route it can)',
     )
 
 
@@ -80,7 +80,7 @@ class DisplayedForUint128(RootModel[str]):
 class NetworkId(RootModel[conint(ge=0)]):
     root: conint(ge=0) = Field(
         ...,
-        description="Newtype for CVM networks ID. Must be unique for each network and must never change. This ID is an opaque, arbitrary type from the CVM protocol and no assumption must be made on how it is computed.",
+        description='Newtype for CVM networks ID. Must be unique for each network and must never change. This ID is an opaque, arbitrary type from the CVM protocol and no assumption must be made on how it is computed.',
     )
 
 
@@ -94,7 +94,7 @@ class QueryMsg1(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra='forbid',
     )
     get_asset_by_id: GetAssetById
 
@@ -109,7 +109,7 @@ class QueryMsg2(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra='forbid',
     )
     get_local_asset_by_reference: GetLocalAssetByReference
 
@@ -121,7 +121,7 @@ class GetIbcIcs20Route(BaseModel):
 
 class QueryMsg3(BaseModel):
     model_config = ConfigDict(
-        extra="forbid",
+        extra='forbid',
     )
     get_ibc_ics20_route: GetIbcIcs20Route
 
@@ -132,12 +132,12 @@ class GetExchangeById(BaseModel):
 
 class QueryMsg4(BaseModel):
     model_config = ConfigDict(
-        extra="forbid",
+        extra='forbid',
     )
     get_exchange_by_id: GetExchangeById
 
 
 class QueryMsg(RootModel[Union[QueryMsg1, QueryMsg2, QueryMsg3, QueryMsg4, QueryMsg5]]):
     root: Union[QueryMsg1, QueryMsg2, QueryMsg3, QueryMsg4, QueryMsg5] = Field(
-        ..., title="QueryMsg"
+        ..., title='QueryMsg'
     )
