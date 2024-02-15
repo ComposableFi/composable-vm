@@ -5,7 +5,6 @@ from objects import (
     OrderType,
     Solver,
     Solution,
-    CFMMSolver,
     CFMMVolumeSolver,
     CFMMProfitSolver,
     CFMM,
