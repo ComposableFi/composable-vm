@@ -320,11 +320,11 @@
     "datamodel-code-generator-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1706205389,
-        "narHash": "sha256-V9QfXlF7WY8JYdk0N/80lDzOdyEve1WY9DKaK9+Sz4c=",
+        "lastModified": 1707847616,
+        "narHash": "sha256-XOaDPcwWpLRDvrTh6WypFXA7ORH4guTpMw3VZ9YMrfs=",
         "owner": "koxudaxi",
         "repo": "datamodel-code-generator",
-        "rev": "acc6bf604b13626f22fc123d72ae08ff0a114155",
+        "rev": "a4a3a429871e1e93dce889f02f765a65dfbffb04",
         "type": "github"
       },
       "original": {

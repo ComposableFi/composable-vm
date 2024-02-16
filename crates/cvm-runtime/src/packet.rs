@@ -72,7 +72,7 @@ pub struct Packet<Program> {
         schemars(with = "String")
     )]
     pub executor: Vec<u8>,
-    /// The user that originated the first XCVM call.
+    /// The user that originated the first CVM call.
     pub user_origin: UserOrigin,
     /// The salt associated with the program.
     #[serde(with = "hex")]

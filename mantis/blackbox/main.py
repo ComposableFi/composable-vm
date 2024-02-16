@@ -32,7 +32,7 @@ from cachetools import TTLCache
 
 app = FastAPI()
 
-cache = PersistentCache(TTLCache, filename="get_remote_data", ttl=120*1000, maxsize = 2)
+cache = PersistentCache(TTLCache, filename="get_remote_data", ttl=120 * 1000, maxsize=2)
 
 
 # 1. return csv data + data schema in 127.0.0.1:8000/docs
@@ -92,7 +92,6 @@ async def status():
 
 # gets all data from all sources
 @app.get("/data/all")
-# @cache(expire=3)
 async def get_data_all() -> AllData:
     result = get_remote_data()
     return result
@@ -119,6 +118,16 @@ def simulator_dummy():
 async def get_data_routable() -> models.AllData:
     result = get_remote_data()
     return result
+
+
+@app.get("/data/routable/cvm")
+async def get_data_routable() -> models.AllData:
+    result = get_remote_data()
+
+    indexer = 1
+
+    return result
+
 
 def get_remote_data() -> AllData:
     if cache["get_remote_data"]:
@@ -148,9 +157,9 @@ def get_remote_data() -> AllData:
     ).result.data
     result = AllData(
         osmosis_pools=osmosis_pools.pools,
-        cvm_registry= cvm_registry,
-        astroport_pools= astroport_pools,
-        cosmos_chains= skip_api,
+        cvm_registry=cvm_registry,
+        astroport_pools=astroport_pools,
+        cosmos_chains=skip_api,
     )
     cache["get_remote_data"] = result
     return cache["get_remote_data"]
