@@ -52,6 +52,11 @@ def test_output_route_centauri_osmosis():
     SingleInputAssetCvmRoute(start=[spawn])
 
 
+# poetry run pytest mantis/simulation/routers/test_data.py
+# read json
+# convert to Xyk with dummy id -> id
+
+
 def test_disjoint_set():
     from disjoint_set import DisjointSet
 

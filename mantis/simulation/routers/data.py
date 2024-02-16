@@ -173,7 +173,7 @@ class Spawn(BaseModel):
     pass
 
 
-#@dataclass
+# @dataclass
 class Spawn(BaseModel, Generic[TId, TAmount]):
     """
     cross chain transfer assets
@@ -191,7 +191,8 @@ class Spawn(BaseModel, Generic[TId, TAmount]):
     out_asset_id: TId | None = None
     next: list[Union[Exchange, Spawn]]
 
-#@dataclass
+
+# @dataclass
 class Exchange(BaseModel, Generic[TId, TAmount]):
     in_asset_amount: TAmount
     """
@@ -204,11 +205,13 @@ class Exchange(BaseModel, Generic[TId, TAmount]):
 Exchange.model_rebuild()
 Spawn.model_rebuild()
 
+
 @dataclass
 class SingleInputAssetCvmRoute(BaseModel):
     """
     always starts with Input asset_id
     """
+
     input_amount: int
     start: list[Union[Exchange, Spawn]]
 

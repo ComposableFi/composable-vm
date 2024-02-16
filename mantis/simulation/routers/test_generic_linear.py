@@ -175,7 +175,7 @@ def create_usd_arbitrage_low_fees_long_path():
     )
 
     return new_data([s1, s2, s3, s4], [t1, t2, t3])
-        
+
 
 def test_usd_arbitrage_high_fees_long_path():
     data = create_usd_arbitrage_low_fees_long_path()

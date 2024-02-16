@@ -7,6 +7,7 @@ from blackbox.cvm_runtime.execute import (
     NetworkId,
 )
 
+
 def test_bases():
     asset = AssetItem(
         asset_id=AssetId(__root__="42"),
