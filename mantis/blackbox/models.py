@@ -4,7 +4,7 @@ from blackbox.neutron_pools import Model as NeutronPoolsModel
 from blackbox.osmosis_pools import Model as OsmosisPoolsModel
 from blackbox.skip_money import Chain
 from pydantic import BaseModel
-
+from blackbox.composablefi_networks import Model as NetworksModel
 
 class OsmosisPoolsResponse(BaseModel):
     pools: OsmosisPoolsModel
@@ -27,3 +27,4 @@ class AllData(BaseModel):
     osmosis_pools: Union[OsmosisPoolsModel, None]
     cvm_registry: CvmRegistry
     cosmos_chains: CosmosChains
+    networks : NetworksModel

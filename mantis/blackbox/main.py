@@ -1,4 +1,6 @@
 from typing import List
+
+import cachetools
 from blackbox.models import (
     AllData,
     CosmosChains,
@@ -12,6 +14,7 @@ from fastapi import FastAPI
 import requests
 from blackbox.cvm_runtime.response_to_get_config import GetConfigResponse
 from blackbox import models
+from blackbox.composablefi_networks import Model as NetworksModel
 from simulation.routers.angeris_cvxpy import cvxpy_to_data
 from simulation.routers import generic_linear
 import uvicorn
@@ -32,7 +35,7 @@ from cachetools import TTLCache
 
 app = FastAPI()
 
-cache = PersistentCache(TTLCache, filename="get_remote_data", ttl=120 * 1000, maxsize=2)
+cache = PersistentCache(TTLCache, filename="get_remote_data.cache", ttl=120 * 1000, maxsize=2)
 
 
 # 1. return csv data + data schema in 127.0.0.1:8000/docs
@@ -129,9 +132,8 @@ async def get_data_routable() -> models.AllData:
     return result
 
 
+@cachetools.cached(cache, lock=None, info=False)
 def get_remote_data() -> AllData:
-    if cache["get_remote_data"]:
-        return cache["get_remote_data"]
     cfg = NetworkConfig(
         chain_id=settings.CVM_CHAIN_ID,
         url="grpc+" + settings.CVM_COSMOS_GRPC,
@@ -149,8 +151,10 @@ def get_remote_data() -> AllData:
     skip_api = CosmosChains.parse_raw(
         requests.get(settings.skip_money + "v1/info/chains").content
     )
+    networks = requests.get(settings.COMPOSABLEFI_NETWORKS).content
+    networks = NetworksModel.parse_raw(networks)
     osmosis_pools = OsmosisPoolsResponse.parse_raw(
-        requests.get(settings.osmosis_pools).content
+        requests.get(settings.OSMOSIS_POOLS).content
     )
     astroport_pools = NeutronPoolsResponse.parse_raw(
         requests.get(settings.astroport_pools).content
@@ -160,9 +164,9 @@ def get_remote_data() -> AllData:
         cvm_registry=cvm_registry,
         astroport_pools=astroport_pools,
         cosmos_chains=skip_api,
+        networks = networks,
     )
-    cache["get_remote_data"] = result
-    return cache["get_remote_data"]
+    return result
 
 
 def start():
