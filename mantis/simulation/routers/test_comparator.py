@@ -47,13 +47,13 @@ def populate_chain_dict(chains: dict[TNetworkId, list[TId]], center_node: TNetwo
 def _test_simulate_all_connected_venues(routers):
     input = new_input("WETH", "ATOM", 2000, 1)
     CENTER_NODE, chains = simulate_all_to_all_connected_chains_topology(input)
-    print(chains)
+    #print(chains)
 
     all_data = simulate_all_connected_venue(CENTER_NODE, chains)
-    print(all_data)
-    print(all_data.all_tokens)
-    print(all_data.index_of_token("WETH"))
-    print(all_data.index_of_token("ATOM"))
+    #print(all_data)
+    #print(all_data.all_tokens)
+    #print(all_data.index_of_token("WETH"))
+    #print(all_data.index_of_token("ATOM"))
 
     print("=============== solving ========================")
 
@@ -122,7 +122,7 @@ def simulate_all_to_all_connected_chains_topology(input: Input):
 
 
 if __name__ == "__main__":
-    for _ in range(1):
+    for _ in range(10):
         routes = {
             f"Lautaro 1 process, depth {depth} and 1000 splits without revision": lautaro.BuildRoute(
                 depth, 1000, False, 1
@@ -130,16 +130,21 @@ if __name__ == "__main__":
             for depth in [3, 5, 10, 15]
         }
 
-        # routes.update(
-        #    {
-        #        f"Lautaro 1 process, depth {depth} and 1000 splits with revision": lautaro.BuildRoute(
-        #            depth, 1000, True, 1
-        #        )
-        #        for depth in [5, 10, 15]
-        #    }
-        # )
+        routes[f"Lautaro 1 process, depth {[3,5,10,20]} and 1000 splits without revision"] = lautaro.BuildRoute([3,5,10,20],[100,300,300,300], revision = False, Nproces = 1)
+        routes[f"Lautaro 1 process, depth {[5,10]} and 1000 splits without revision"] = lautaro.BuildRoute([5,10],[500,500], revision = False, Nproces = 1)
+        routes[f"Lautaro 1 process, depth {[3,5,10]} and 1000 splits without revision"] = lautaro.BuildRoute([3,5,10],[100,400,500], revision = False, Nproces = 1)
+        
 
-        routes["Dzmitry"] = dzmitry.route
+        routes.update(
+            {
+                f"Lautaro 1 process, depth {depth} and 1000 splits with revision": lautaro.BuildRoute(
+                    depth, 1000, True, 1
+                )
+                for depth in [5, 10]
+            }
+        )
+
+        # routes["Dzmitry"] = dzmitry.route
         _test_simulate_all_connected_venues(routes)
 
 # Last excecution
