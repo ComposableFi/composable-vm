@@ -434,17 +434,6 @@ class TransferState(Enum):
     TRANSFER_FAILURE = "TRANSFER_FAILURE"
 
 
-class NextBlockingTransfer(BaseModel):
-    """
-    Indicates which entry in the `transfer_sequence` field that the transfer is blocked on. Will be null if there is no blocked transfer.
-    """
-
-    transfer_sequence_index: Optional[int] = Field(
-        None,
-        description="The index of the entry in the `transfer_sequence` field that the transfer is blocked on.",
-    )
-
-
 class TransferAssetRelease(BaseModel):
     """
     Indicates location and denom of transfer asset release.
@@ -461,6 +450,16 @@ class TransferAssetRelease(BaseModel):
 
 class TransferWrapper(BaseModel):
     transfer: Optional[Transfer] = None
+
+
+class BlockingTransferState(Enum):
+    """
+    Blocking transfer state: <br/> * TRANSFER_PROPAGATING - Transfer is propagating forwards. <br/> * ERROR_PROPAGATING - An error in the transfer sequence is propagating backwards.
+
+    """
+
+    TRANSFER_PROPAGATING = "TRANSFER_PROPAGATING"
+    ERROR_PROPAGATING = "ERROR_PROPAGATING"
 
 
 class RecommendationRequest(BaseModel):
@@ -558,6 +557,7 @@ class AxelarTransfer(BaseModel):
         None,
         description="Amount of the fee asset to be paid as the Axelar bridge fee, converted to USD value",
     )
+    ibc_transfer_to_axelar: Optional[Transfer] = None
     bridge_id: Optional[BridgeType] = None
 
 
@@ -721,6 +721,18 @@ class SwapInWrapper(BaseModel):
 
 class SwapOutWrapper(BaseModel):
     swap_out: Optional[SwapExactCoinOut] = None
+
+
+class NextBlockingTransfer(BaseModel):
+    """
+    Indicates which entry in the `transfer_sequence` field that the transfer is blocked on. Will be null if there is no blocked transfer.
+    """
+
+    transfer_sequence_index: Optional[int] = Field(
+        None,
+        description="The index of the entry in the `transfer_sequence` field that the transfer is blocked on.",
+    )
+    transfer_state: Optional[BlockingTransferState] = None
 
 
 class AxelarTransfer1(BaseModel):

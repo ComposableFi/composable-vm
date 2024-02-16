@@ -1,0 +1,95 @@
+{
+  "data": {
+    "asset_transfers": [
+      {
+        "in_asset_id": "CENTAURI/ETHEREUM/USDC",
+        "out_asset_id": "ETHEREUM/USDC",
+        "usd_fee_transfer": 1000000,
+        "amount_of_in_token": 100000,
+        "amount_of_out_token": 100000,
+        "fee_per_million": 0,
+        "metadata": null
+      },
+      {
+        "in_asset_id": "CENTAURI/ETHEREUM/USDC",
+        "out_asset_id": "OSMOSIS/CENTAURI/ETHEREUM/USDC",
+        "usd_fee_transfer": 1,
+        "amount_of_in_token": 100000,
+        "amount_of_out_token": 100000,
+        "fee_per_million": 0,
+        "metadata": null
+      },
+      {
+        "in_asset_id": "OSMOSIS/ETHEREUM/USDC",
+        "out_asset_id": "ETHEREUM/USDC",
+        "usd_fee_transfer": 1,
+        "amount_of_in_token": 100000,
+        "amount_of_out_token": 100000,
+        "fee_per_million": 0,
+        "metadata": null
+      }
+    ],
+    "asset_pairs_xyk": [
+      {
+        "pool_id": 1,
+        "in_asset_id": "ETHEREUM/USDC",
+        "out_asset_id": "ETHEREUM/USDT",
+        "fee_of_in_per_million": 0,
+        "fee_of_out_per_million": 0,
+        "weight_of_a": 1,
+        "weight_of_b": 1,
+        "pool_value_in_usd": 200000,
+        "in_token_amount": 10000,
+        "out_token_amount": 10000,
+        "metadata": null
+      },
+      {
+        "pool_id": 2,
+        "in_asset_id": "OSMOSIS/ETHEREUM/USDC",
+        "out_asset_id": "OSMOSIS/ETHEREUM/USDT",
+        "fee_of_in_per_million": 0,
+        "fee_of_out_per_million": 0,
+        "weight_of_a": 1,
+        "weight_of_b": 1,
+        "pool_value_in_usd": 200000,
+        "in_token_amount": 10000,
+        "out_token_amount": 10000,
+        "metadata": null
+      },
+      {
+        "pool_id": 3,
+        "in_asset_id": "CENTAURI/ETHEREUM/USDC",
+        "out_asset_id": "CENTAURI/ETHEREUM/USDT",
+        "fee_of_in_per_million": 0,
+        "fee_of_out_per_million": 0,
+        "weight_of_a": 1,
+        "weight_of_b": 1,
+        "pool_value_in_usd": 200000,
+        "in_token_amount": 10000,
+        "out_token_amount": 10000,
+        "metadata": null
+      },
+      {
+        "pool_id": 4,
+        "in_asset_id": "OSMOSIS/CENTAURI/ETHEREUM/USDC",
+        "out_asset_id": "OSMOSIS/ETHEREUM/USDC",
+        "fee_of_in_per_million": 0,
+        "fee_of_out_per_million": 0,
+        "weight_of_a": 1,
+        "weight_of_b": 1,
+        "pool_value_in_usd": 200000,
+        "in_token_amount": 10000,
+        "out_token_amount": 10000,
+        "metadata": null
+      }
+    ],
+    "usd_oracles": null
+  },
+  "input": {
+    "in_token_id": "CENTAURI/ETHEREUM/USDC",
+    "out_token_id": "ETHEREUM/USDC",
+    "in_amount": 1000,
+    "out_amount": 100,
+    "max": true
+  }
+}

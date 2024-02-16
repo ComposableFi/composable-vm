@@ -2,6 +2,7 @@
 Input and output data to any algorithm for routing.
 Connect semantic data model numpy indexed values and back. 
 """
+from __future__ import annotations
 from fractions import Fraction
 import math
 import numpy as np
@@ -13,7 +14,7 @@ from disjoint_set import DisjointSet
 
 # This is global unique ID for token(asset) or exchange(pool)
 TId = TypeVar("TId", int, str)
-TNetworkId = TypeVar("TNetworkId")
+TNetworkId = TypeVar("TNetworkId", int, str)
 TAmount = TypeVar("TAmount", int, str)
 
 
@@ -164,49 +165,50 @@ class Input(
     max: bool
 
 
-class Exchange(BaseModel):
-    pass
-
-
-class Spawn(BaseModel):
-    pass
-
-
+# @dataclass
 class Spawn(BaseModel, Generic[TId, TAmount]):
     """
     cross chain transfer assets
     """
 
-    in_asset_id: TId
+    in_asset_id: TId | None = None
 
-    in_asset_amount: TAmount
+    in_asset_amount: TAmount | None = None
     """
     amount to take with transfer
     (delta)
     """
-    out_asset_amount: int
+    out_asset_amount: TAmount | None = None
 
-    out_asset_id: int
-    next: list[Union[Exchange, Spawn]] = []
+    out_asset_id: TId | None = None
+    next: list[Union[Exchange, Spawn]]
 
 
+# @dataclass
 class Exchange(BaseModel, Generic[TId, TAmount]):
-    # none means all (DELTA)
-    in_asset_amount: int | None = None
-    pool_id: int
-    next: list[Union[Exchange, Spawn]] = []
+    in_asset_amount: TAmount
+    """
+    none means all (DELTA)
+    """
 
+    out_amount: TAmount
+    """_summary_
+    Means expected minimal amount.
+    """
 
-Exchange.model_rebuild()
-Spawn.model_rebuild()
+    out_asset_id: TId
+
+    pool_id: TId
+    next: list[Union[Exchange, Spawn]]
 
 
 class SingleInputAssetCvmRoute(BaseModel):
     """
-    always starts with Input amount and asset
+    always starts with Input asset_id
     """
 
-    start: list[Union[Exchange, Spawn]]
+    input_amount: int
+    next: list[Union[Exchange, Spawn]]
 
 
 SingleInputAssetCvmRoute.model_rebuild()

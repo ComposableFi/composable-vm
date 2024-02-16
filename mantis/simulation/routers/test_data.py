@@ -40,7 +40,9 @@ def test_usd_price():
 
 
 def test_output_route_centauri_osmosis():
-    exchange = Exchange(in_asset_amount=100, pool_id=1, next=[])
+    exchange = Exchange(
+        in_asset_amount=100, pool_id=1, next=[], out_amount=42, out_asset_id=13
+    )
 
     spawn = Spawn(
         in_asset_amount=100,
@@ -49,7 +51,12 @@ def test_output_route_centauri_osmosis():
         out_asset_amount=42,
         next=[exchange.model_dump()],
     )
-    SingleInputAssetCvmRoute(start=[spawn])
+    SingleInputAssetCvmRoute(next=[spawn], input_amount=1000)
+
+
+# poetry run pytest mantis/simulation/routers/test_data.py
+# read json
+# convert to Xyk with dummy id -> id
 
 
 def test_disjoint_set():

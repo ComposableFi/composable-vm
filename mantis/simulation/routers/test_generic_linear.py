@@ -114,12 +114,12 @@ def test_usd_arbitrage_low_fees_short_path():
     input = new_input("CENTAURI/ETHEREUM/USDC", "ETHEREUM/USDC", 1_000, 50)
     result = route(input, data)
     solution = cvxpy_to_data(input, data, ctx, result)
-    assert solution.children[0].name == "ETHEREUM/USDC"
-    assert len(solution.children[0].children) == 0
+    assert solution.next[0].out_asset_id == "ETHEREUM/USDC"
+    assert len(solution.next[0].next) == 0
     assert result.received(data.index_of_token("ETHEREUM/USDC")) == 1000
 
 
-def test_usd_arbitrage_high_fees_long_path():
+def create_usd_arbitrage_low_fees_long_path():
     # here we shutdown direct Centauri <-> Ethereum route, and force Centauri -> Osmosis -> Ethereum
     t1 = new_transfer(
         "CENTAURI/ETHEREUM/USDC", "ETHEREUM/USDC", 1_000_000, 100_000, 100_000, 0
@@ -174,7 +174,11 @@ def test_usd_arbitrage_high_fees_long_path():
         10_000,
     )
 
-    data = new_data([s1, s2, s3, s4], [t1, t2, t3])
+    return new_data([s1, s2, s3, s4], [t1, t2, t3])
+
+
+def test_usd_arbitrage_high_fees_long_path():
+    data = create_usd_arbitrage_low_fees_long_path()
     ctx = Ctx()
     input = new_input("CENTAURI/ETHEREUM/USDC", "ETHEREUM/USDC", 1_000, 50)
     result = route(
@@ -185,7 +189,7 @@ def test_usd_arbitrage_high_fees_long_path():
     solution = cvxpy_to_data(input, data, ctx, result)
 
     assert math.floor(result.received(data.index_of_token(input.out_token_id))) == 909
-    assert solution.children[0].children[0].children[0].name == "ETHEREUM/USDC"
+    assert solution.next[0].next[0].next[0].out_asset_id == "ETHEREUM/USDC"
 
 
 def test_arbitrage_loop_of_start_middle_final_assets():
@@ -247,15 +251,12 @@ def test_arbitrage_loop_of_start_middle_final_assets():
     input = new_input("A", "D", 100, 10)
     result = route(input, data)
     solution = cvxpy_to_data(input, data, ctx, result)
-    assert solution.children[0].children[0].name == "D"
-    assert solution.children[1].children[0].name == "D"
+    assert solution.next[0].next[0].out_asset_id == "D"
+    assert solution.next[1].next[0].out_asset_id == "D"
     assert (
         result.received(data.index_of_token("D"))
         == 90
-        == (
-            solution.children[0].children[0].amount
-            + solution.children[1].children[0].amount
-        )
+        == (solution.next[0].next[0].out_amount + solution.next[1].next[0].out_amount)
     )
 
 
@@ -303,15 +304,12 @@ def test_simple_symmetric_and_asymmetric_split():
     input = new_input("A", "D", 100, 10)
     result = route(input, data)
     solution = cvxpy_to_data(input, data, ctx, result)
-    assert solution.children[0].children[0].name == "D"
-    assert solution.children[1].children[0].name == "D"
+    assert solution.next[0].next[0].out_asset_id == "D"
+    assert solution.next[1].next[0].out_asset_id == "D"
     assert (
         result.received(data.index_of_token("D"))
         == 90
-        == (
-            solution.children[0].children[0].amount
-            + solution.children[1].children[0].amount
-        )
+        == (solution.next[0].next[0].out_amount + solution.next[1].next[0].out_amount)
     )
 
 

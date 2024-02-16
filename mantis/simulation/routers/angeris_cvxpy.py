@@ -1,11 +1,17 @@
 from collections import defaultdict
+import math
+from typing import Union
 from attr import dataclass
 import cvxpy as cp
 import numpy as np
 from simulation.routers.data import (
     AllData,
+    AssetPairsXyk,
+    AssetTransfers,
     Ctx,
+    Exchange,
     Input,
+    Spawn,
 )
 from anytree import Node, RenderTree
 
@@ -60,8 +66,8 @@ class VenueOperation:
 
 
 def cvxpy_to_data(
-    input: Input, all_data: AllData, ctx: Ctx, result: CvxpySolution
-) -> Node:
+    input: Input, data: AllData, ctx: Ctx, result: CvxpySolution
+) -> Union[Exchange, Spawn]:
     """_summary_
     Converts Angeris CVXPY result to executable route.
     Receives solution along with all data and context.
@@ -79,7 +85,7 @@ def cvxpy_to_data(
 
     for i, raw_trade in enumerate(trades_raw):
         if np.abs(raw_trade[0]) > 0:
-            [token_index_a, token_index_b] = all_data.venues_tokens[i]
+            [token_index_a, token_index_b] = data.venues_tokens[i]
             if raw_trade[0] < 0:
                 trades.append(
                     VenueOperation(
@@ -122,6 +128,7 @@ def cvxpy_to_data(
             reverse=True,
         )
         for trade in from_coin:
+            trade: VenueOperation = trade
             in_tokens[trade.in_token] -= trade.in_amount
             if in_tokens[trade.in_token] < 0:
                 continue
@@ -129,20 +136,62 @@ def cvxpy_to_data(
             next_trade = Node(
                 name=trade.out_token,
                 parent=start_coin,
-                amount=trade.out_amount,
-                venue_index=0,
+                venue=trade,
             )
             next(next_trade)
 
-    start_coin = Node(name=input.in_token_id, amount=input.in_amount, venue_index=0)
+    start_venue = VenueOperation(
+        venue_index=-1,
+        in_token=input.in_token_id,
+        in_amount=input.in_amount,
+        out_token=input.out_token_id,
+        out_amount=input.out_amount,
+    )
+    start_coin = Node(name=input.in_token_id, venue=start_venue)
     next(start_coin)
-    if ctx.debug:
-        for pre, fill, node in RenderTree(start_coin):
-            print("%s coin=%s/%s" % (pre, node.amount, node.name))
-    # convert to CVM route
-    # ..in progress - set if it Transfer or Exchange
 
-    return start_coin
+    if ctx.debug:
+        for pre, _fill, node in RenderTree(start_coin):
+            print(
+                "%s via=%s in=%s/%s out=%s/%s"
+                % (
+                    pre,
+                    node.venue.venue_index,
+                    node.venue.in_amount,
+                    node.venue.in_token,
+                    node.venue.out_amount,
+                    node.venue.out_token,
+                )
+            )
+
+    def next_route(parent_node):
+        subs = []
+        if parent_node.children:
+            for child in parent_node.children:
+                sub = next_route(child)
+                subs.append(sub)
+        op: VenueOperation = parent_node.venue
+        venue = data.venue_by_index(parent_node.venue.venue_index)
+        if isinstance(venue, AssetPairsXyk):
+            return Exchange(
+                in_asset_amount=math.ceil(op.in_amount),
+                out_amount=math.floor(op.out_amount),
+                out_asset_id=op.out_token,
+                pool_id=venue.pool_id,
+                next=subs,
+            )
+        elif isinstance(venue, AssetTransfers):
+            return Spawn(
+                in_asset_id=op.in_token,
+                in_asset_amount=math.ceil(op.in_amount),
+                out_asset_id=op.out_token,
+                out_amount=math.floor(op.out_amount),
+                next=subs,
+            )
+        else:
+            raise Exception("Unknown venue type")
+
+    return next_route(start_coin)
 
 
 def parse_trades(ctx, result):
