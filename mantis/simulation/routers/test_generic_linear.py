@@ -114,7 +114,7 @@ def test_usd_arbitrage_low_fees_short_path():
     input = new_input("CENTAURI/ETHEREUM/USDC", "ETHEREUM/USDC", 1_000, 50)
     result = route(input, data)
     solution = cvxpy_to_data(input, data, ctx, result)
-    assert solution.children[0].name == "ETHEREUM/USDC"
+    assert solution.next[0].in_asset_id == "ETHEREUM/USDC"
     assert len(solution.children[0].children) == 0
     assert result.received(data.index_of_token("ETHEREUM/USDC")) == 1000
 

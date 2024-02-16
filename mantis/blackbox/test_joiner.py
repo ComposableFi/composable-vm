@@ -10,24 +10,12 @@ from blackbox.cvm_runtime.execute import (
 
 def test_bases():
     asset = AssetItem(
-        asset_id=AssetId(__root__="42"),
-        local=AssetReference(__root__=AssetReference1(native=Native(denom="osmo"))),
-        network_id=NetworkId(__root__="2"),
+        asset_id=AssetId("42"),
+        local=AssetReference(AssetReference1(native=Native(denom="osmo"))),
+        network_id=NetworkId("2"),
     )
     asset = AssetItem(
-        asset_id=AssetId(__root__="42"),
-        local=AssetReference(__root__=AssetReference1(native=Native(denom="osmo"))),
-        network_id=NetworkId(__root__="2"),
+        asset_id=AssetId("13"),
+        local=AssetReference(AssetReference1(native=Native(denom="pica"))),
+        network_id=NetworkId("3"),
     )
-
-    assert 3 == 2
-
-
-# converting asset A to B with USD price of transfer
-def test_asset_transfers_to_frame():
-    raise NotImplementedError()
-
-
-# converting pools with USD and native amounts, fees
-def test_pools_to_frame():
-    raise NotImplementedError()

@@ -205,15 +205,13 @@ class Exchange(BaseModel, Generic[TId, TAmount]):
 Exchange.model_rebuild()
 Spawn.model_rebuild()
 
-
-@dataclass
 class SingleInputAssetCvmRoute(BaseModel):
     """
     always starts with Input asset_id
     """
 
     input_amount: int
-    start: list[Union[Exchange, Spawn]]
+    next: list[Union[Exchange, Spawn]]
 
 
 SingleInputAssetCvmRoute.model_rebuild()

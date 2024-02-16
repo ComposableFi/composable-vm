@@ -49,7 +49,7 @@ def test_output_route_centauri_osmosis():
         out_asset_amount=42,
         next=[exchange.model_dump()],
     )
-    SingleInputAssetCvmRoute(start=[spawn])
+    SingleInputAssetCvmRoute(next=[spawn], input_amount=1000)
 
 
 # poetry run pytest mantis/simulation/routers/test_data.py
