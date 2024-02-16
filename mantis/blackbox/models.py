@@ -25,8 +25,10 @@ class NeutronPoolsResponse(BaseModel):
 class AllData(BaseModel):
     astroport_pools: Union[NeutronPoolsModel, None]
     osmosis_pools: Union[OsmosisPoolsModel, None]
-    cvm_registry: CvmRegistry
+    
     cosmos_chains: CosmosChains
+    
+    cvm_registry: CvmRegistry
     networks : NetworksModel
 
     @property
@@ -34,3 +36,15 @@ class AllData(BaseModel):
         return [self.networks.pica.mainnet self.networks.osmosis.mainnet]
     
     
+    def to_cvm()
+        """_summary_
+        prodduce non CVMed XYK
+        prodcue from CVM REG all IN OUT PAIRS of assets in good format
+        filter out only CVMed with known assets
+        replace with ids in XYK
+        generate Transfers for all, find ga for comoss_chain_of each
+        normalize all assets to oracle if ALL assets has USD.
+        
+        Produced CVMed data from raw chain data consumable by simulation
+        """
+        pass 
