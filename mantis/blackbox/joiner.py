@@ -33,5 +33,6 @@ def test_asset_transfers_to_frame():
 # converting pools with USD and native amounts, fees
 def test_pools_to_frame():
     raise NotImplementedError()
-# this is up to take production data in heterogenous shape, and force it into CVM and simulator compatible
 
+
+# this is up to take production data in heterogenous shape, and force it into CVM and simulator compatible
