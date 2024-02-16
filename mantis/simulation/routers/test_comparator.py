@@ -21,7 +21,7 @@ from simulation.routers.data import (
 # clarabel cvxpy local mip
 import itertools
 
-from simulation.routers import lautaro, dzmitry
+from simulation.routers import lautaro
 
 
 # simulate denom paths to and from chains, with center node
@@ -130,16 +130,16 @@ if __name__ == "__main__":
             for depth in [3, 5, 10, 15]
         }
 
-        #routes.update(
+        # routes.update(
         #    {
         #        f"Lautaro 1 process, depth {depth} and 1000 splits with revision": lautaro.BuildRoute(
         #            depth, 1000, True, 1
         #        )
         #        for depth in [5, 10, 15]
         #    }
-        #)
+        # )
 
-        #routes["Dzmitry"] = dzmitry.route
+        # routes["Dzmitry"] = dzmitry.route
         _test_simulate_all_connected_venues(routes)
 
 # Last excecution
