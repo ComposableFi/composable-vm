@@ -1,5 +1,18 @@
 # How to contribute solver
 
+## 0. Features
+
+Document what features solver supports:
+
+- loops
+- splits
+- N-1
+- 1-N
+- N-N
+- constant fees
+- asymmetric fees
+- non curved venues
+
 ## 1. Files
 
 Solver to be separate file.
