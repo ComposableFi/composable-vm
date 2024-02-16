@@ -33,4 +33,6 @@ pub struct ExchangeItem {
     pub exchange_id: ExchangeId,
     pub network_id: NetworkId,
     pub exchange: ExchangeType,
+    // if was set, means that cannot exchange via this venue 
+    pub closed : Option<u64>,
 }

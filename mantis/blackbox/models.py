@@ -1,10 +1,10 @@
-from typing import Union
+from typing import List, Union
 from blackbox.cvm_runtime.response_to_get_config import GetConfigResponse as CvmRegistry
 from blackbox.neutron_pools import Model as NeutronPoolsModel
 from blackbox.osmosis_pools import Model as OsmosisPoolsModel
 from blackbox.skip_money import Chain
 from pydantic import BaseModel
-from blackbox.composablefi_networks import Model as NetworksModel
+from blackbox.composablefi_networks import Model as NetworksModel, Mainnet
 
 class OsmosisPoolsResponse(BaseModel):
     pools: OsmosisPoolsModel
@@ -28,3 +28,9 @@ class AllData(BaseModel):
     cvm_registry: CvmRegistry
     cosmos_chains: CosmosChains
     networks : NetworksModel
+
+    @property
+    def nets(self) -> List[Mainnet]:
+        return [self.networks.pica.mainnet self.networks.osmosis.mainnet]
+    
+    
