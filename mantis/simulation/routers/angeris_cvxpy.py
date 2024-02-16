@@ -1,4 +1,5 @@
 from collections import defaultdict
+from typing import Union
 from attr import dataclass
 import cvxpy as cp
 import numpy as np
@@ -7,7 +8,9 @@ from simulation.routers.data import (
     AssetPairsXyk,
     AssetTransfers,
     Ctx,
+    Exchange,
     Input,
+    Spawn,
 )
 from anytree import Node, RenderTree
 
@@ -61,7 +64,7 @@ class VenueOperation:
     out_amount: any
 
 
-def cvxpy_to_data(input: Input, data: AllData, ctx: Ctx, result: CvxpySolution):
+def cvxpy_to_data(input: Input, data: AllData, ctx: Ctx, result: CvxpySolution) -> Union[Exchange, Spawn]:
     """_summary_
     Converts Angeris CVXPY result to executable route.
     Receives solution along with all data and context.
@@ -163,25 +166,23 @@ def cvxpy_to_data(input: Input, data: AllData, ctx: Ctx, result: CvxpySolution):
         if parent_node.children:
             for child in parent_node.children:
                 sub = next_route(child)
-                subs.append(sub)
+                subs.append(sub.model_dump())
         op: VenueOperation = parent_node.venue
         venue = data.venue_by_index(parent_node.venue.venue_index)
         if isinstance(venue, AssetPairsXyk):
-            return {
-                "in_asset_amount": op.in_amount,
-                "pool_id": venue.pool_id,
-                "next": subs,
-                "op": "exchange",
-            }
+            return Exchange(
+                in_asset_amount=  op.in_amount,
+                pool_id = venue.pool_id,
+                next =  subs,
+            )
         elif isinstance(venue, AssetTransfers):
-            return {
-                "in_asset_id": op.in_token,
-                "in_asset_amount": op.in_amount,
-                "out_asset_id": op.out_token,
-                "out_amount": op.out_amount,
-                "next": subs,
-                "op": "spawn",
-            }
+            return Spawn(
+                in_asset_id =  op.in_token,
+                in_asset_amount =  op.in_amount,
+                out_asset_id =  op.out_token,
+                out_amount =  op.out_amount,
+                next =  subs,
+            )
         else:
             raise Exception("Unknown venue type")
 

@@ -2,6 +2,7 @@
 Input and output data to any algorithm for routing.
 Connect semantic data model numpy indexed values and back. 
 """
+from __future__ import annotations
 from dataclasses import dataclass
 from fractions import Fraction
 import math
@@ -164,15 +165,6 @@ class Input(
     # please fail if bool is False for now
     max: bool
 
-
-class Exchange(BaseModel):
-    pass
-
-
-class Spawn(BaseModel):
-    pass
-
-
 # @dataclass
 class Spawn(BaseModel, Generic[TId, TAmount]):
     """
@@ -200,10 +192,6 @@ class Exchange(BaseModel, Generic[TId, TAmount]):
     """
     pool_id: TId
     next: list[Union[Exchange, Spawn]]
-
-
-Exchange.model_rebuild()
-Spawn.model_rebuild()
 
 class SingleInputAssetCvmRoute(BaseModel):
     """

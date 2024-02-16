@@ -114,8 +114,8 @@ def test_usd_arbitrage_low_fees_short_path():
     input = new_input("CENTAURI/ETHEREUM/USDC", "ETHEREUM/USDC", 1_000, 50)
     result = route(input, data)
     solution = cvxpy_to_data(input, data, ctx, result)
-    assert solution.next[0].in_asset_id == "ETHEREUM/USDC"
-    assert len(solution.children[0].children) == 0
+    assert solution.next[0].out_asset_id == "ETHEREUM/USDC"
+    assert len(solution.next[0].next) == 0
     assert result.received(data.index_of_token("ETHEREUM/USDC")) == 1000
 
 
@@ -189,7 +189,9 @@ def test_usd_arbitrage_high_fees_long_path():
     solution = cvxpy_to_data(input, data, ctx, result)
 
     assert math.floor(result.received(data.index_of_token(input.out_token_id))) == 909
-    assert solution.children[0].children[0].children[0].name == "ETHEREUM/USDC"
+    print(solution.next[0])
+    raise Exception(solution.next[0])
+    assert solution.next[0].next[0].next[0].name == "ETHEREUM/USDC"
 
 
 def test_arbitrage_loop_of_start_middle_final_assets():
@@ -251,14 +253,14 @@ def test_arbitrage_loop_of_start_middle_final_assets():
     input = new_input("A", "D", 100, 10)
     result = route(input, data)
     solution = cvxpy_to_data(input, data, ctx, result)
-    assert solution.children[0].children[0].name == "D"
-    assert solution.children[1].children[0].name == "D"
+    assert solution.next[0].next[0].out_token_id == "D"
+    assert solution.next[1].next[0].out_token_id == "D"
     assert (
         result.received(data.index_of_token("D"))
         == 90
         == (
-            solution.children[0].children[0].amount
-            + solution.children[1].children[0].amount
+            solution.next[0].next[0].out_token_amount
+            + solution.next[1].next[0].out_token_amount
         )
     )
 
