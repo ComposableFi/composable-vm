@@ -79,9 +79,9 @@ class Edge:
         i, o = 0, 1
         if Ti == self.U[1]:
             i, o = 1, 0
-        Xi = Xi * (1 - self.F[i])
-        result = (Xi - self.CF[i]) * (self.B[i] / (self.B[i] + Xi)) ** (
-            self.W[i] / self.W[o]
+        Xi =  (Xi - self.CF[i]) * (1 - self.F[i])
+        result = self.B[o] * (
+            1 - (self.B[i] / (self.B[i] + Xi)) ** (self.W[i] / self.W[o])
         )
         self.B[i] += Xi
         self.B[o] -= result
@@ -91,6 +91,9 @@ class Edge:
         if Ti == self.U[0]:
             return self.U[1]
         return self.U[0]
+    
+    def __repr__(self):
+        return f"Edge({self.U}, {self.B}, {self.W}, {self.F}, {self.CF})"
 
 
 class State:
@@ -162,6 +165,19 @@ def Range(e0, e1, state):
 # The parameters of the functions allows to go over the runtime-accuracy tradeoff
 
 
+def conversor(
+    all_data: AllData,
+):
+    edges: list[Edge] = []
+    all_tokens = all_data.all_tokens
+    tokensIds = {x: i for i, x in enumerate(all_tokens)}
+    for x in all_data.asset_transfers:
+        edges.append(Edge(x, tokensIds, all_data.usd_oracles))
+    for x in all_data.asset_pairs_xyk:
+        edges.append(Edge(x, tokensIds, all_data.usd_oracles))
+
+    return edges, tokensIds, all_tokens
+
 def route(
     input: Input,
     all_data: AllData,
@@ -171,9 +187,7 @@ def route(
     revision=True,  # When uses an edge, check if the edge has been used before and if so, use the same edge
     Nproces=None,  # A parameter used for paralell programing. For now, it seems to be best to use only one threat than paralell programming
 ):
-    edges: list[Edge] = []
-    all_tokens = all_data.all_tokens
-    tokensIds = {x: i for i, x in enumerate(all_tokens)}
+
 
     # If the number of processes is not given, use the number of cpus
     if Nproces == None:
@@ -185,11 +199,9 @@ def route(
     if isinstance(splits, int):
         splits = [splits]
 
-    # Create the list of edges
-    for x in all_data.asset_transfers:
-        edges.append(Edge(x, tokensIds, all_data.usd_oracles))
-    for x in all_data.asset_pairs_xyk:
-        edges.append(Edge(x, tokensIds, all_data.usd_oracles))
+    # Create the list of edges and tokens
+
+    edges, tokensIds, all_tokens = conversor(all_data)
 
     # Number of tokens
     n = len(all_tokens)
@@ -302,13 +314,13 @@ def route(
             # Use the path and update the edges
             Xi = input.in_amount / (totSplits)
             u = tokensIds[input.in_token_id]
-            for i in range(len(path) - 1):
+            for i in range(len(path)):
                 e = edges[path[i]]
                 deltas[path[i]] += Xi
                 Xj = e.DoChange(u, Xi)
                 lambdas[path[i]] += Xj
                 Xi = Xj
-                v = e.GetOther(u)
+                u = e.GetOther(u)
 
             # Update the paths and outcomes
             assert Xi > 0
