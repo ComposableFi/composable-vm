@@ -27,8 +27,12 @@ from simulation.routers.data import (
     AllData as CvmAllData,
 )
 from simulation.routers.data import Ctx, read_dummy_data, AllData as CvmAllData
+from shelved_cache import PersistentCache
+from cachetools import TTLCache
 
 app = FastAPI()
+
+cache = PersistentCache(TTLCache, filename="get_remote_data", ttl=120*1000, maxsize = 2)
 
 
 # 1. return csv data + data schema in 127.0.0.1:8000/docs
@@ -117,6 +121,8 @@ async def get_data_routable() -> models.AllData:
     return result
 
 def get_remote_data() -> AllData:
+    if cache["get_remote_data"]:
+        return cache["get_remote_data"]
     cfg = NetworkConfig(
         chain_id=settings.CVM_CHAIN_ID,
         url="grpc+" + settings.CVM_COSMOS_GRPC,
@@ -146,7 +152,8 @@ def get_remote_data() -> AllData:
         astroport_pools= astroport_pools,
         cosmos_chains= skip_api,
     )
-    return result
+    cache["get_remote_data"] = result
+    return cache["get_remote_data"]
 
 
 def start():
