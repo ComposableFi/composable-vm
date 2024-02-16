@@ -7,10 +7,11 @@ from blackbox.models import (
 )
 from blackbox.settings import settings
 from cosmpy.aerial.config import NetworkConfig
-from cosmpy.aerial.contract import LedgerClient
+from cosmpy.aerial.contract import LedgerClient, LedgerContract
 from fastapi import FastAPI
 import requests
-from mantis.blackbox.cvm_runtime.response_to_get_config import GetConfigResponse
+from blackbox.cvm_runtime.response_to_get_config import GetConfigResponse
+from blackbox import models
 from simulation.routers.angeris_cvxpy import cvxpy_to_data
 from simulation.routers import generic_linear
 import uvicorn
@@ -110,12 +111,10 @@ def simulator_dummy():
     return test_generic_linear.test_simulate_all_connected_venues()
 
 
-@app.get("/data/routable")
-async def get_data_routable() -> data.AllData:
+@app.get("/data/routable/raw")
+async def get_data_routable() -> models.AllData:
     result = get_remote_data()
-
     return result
-
 
 def get_remote_data() -> AllData:
     cfg = NetworkConfig(
@@ -143,9 +142,9 @@ def get_remote_data() -> AllData:
     ).result.data
     result = AllData(
         osmosis_pools=osmosis_pools.pools,
-        cvm_registry=None,  # cvm_registry,
-        astroport_pools=None,  # astroport_pools,
-        cosmos_chains=None,  # skip_api,
+        cvm_registry= cvm_registry,
+        astroport_pools= astroport_pools,
+        cosmos_chains= skip_api,
     )
     return result
 
