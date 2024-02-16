@@ -22,7 +22,7 @@ from simulation.routers.data import (
 import itertools
 
 from simulation.routers import lautaro
-
+from simulation.routers import dzmitry
 
 # simulate denom paths to and from chains, with center node
 def populate_chain_dict(chains: dict[TNetworkId, list[TId]], center_node: TNetworkId):
@@ -122,7 +122,7 @@ def simulate_all_to_all_connected_chains_topology(input: Input):
 
 
 if __name__ == "__main__":
-    for _ in range(10):
+    for _ in range(1):
         routes = {
             f"Lautaro 1 process, depth {depth} and 1000 splits without revision": lautaro.BuildRoute(
                 depth, 1000, False, 1
@@ -139,7 +139,7 @@ if __name__ == "__main__":
         #    }
         # )
 
-        # routes["Dzmitry"] = dzmitry.route
+        routes["Dzmitry"] = dzmitry.route
         _test_simulate_all_connected_venues(routes)
 
 # Last excecution
