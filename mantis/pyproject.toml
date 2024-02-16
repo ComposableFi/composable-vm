@@ -63,6 +63,7 @@ PySCIPOpt = "4.4.0" # i set it directly to allow override SCIP dep (currently it
 
 disjoint-set = "0.7.4"
 anytree = "2.12.1"
+fastapi-cache2 = {extras = ["memcache"], version = "^0.2.1"}
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.4.3"
