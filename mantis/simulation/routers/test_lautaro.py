@@ -86,7 +86,7 @@ def simulate_all_connected_venue(CENTER_NODE, chains) -> AllData:
 
     # simulate reserves and gas costs to CFMMS
     for i, x in enumerate(all_token_pairs):
-        [a, b] = np.random.randint(9500, 10500, 2)
+        [a, b] = np.random.randint(95000, 105000, 2)
         fee = np.random.randint(0, 10_000)
         x = new_pair(i, x[0], x[1], fee, fee, 1, 1, 1_000, a, b)
         pools.append(x)
