@@ -1,4 +1,5 @@
 from collections import defaultdict
+import math
 from typing import Union
 from attr import dataclass
 import cvxpy as cp
@@ -64,7 +65,9 @@ class VenueOperation:
     out_amount: any
 
 
-def cvxpy_to_data(input: Input, data: AllData, ctx: Ctx, result: CvxpySolution) -> Union[Exchange, Spawn]:
+def cvxpy_to_data(
+    input: Input, data: AllData, ctx: Ctx, result: CvxpySolution
+) -> Union[Exchange, Spawn]:
     """_summary_
     Converts Angeris CVXPY result to executable route.
     Receives solution along with all data and context.
@@ -166,22 +169,24 @@ def cvxpy_to_data(input: Input, data: AllData, ctx: Ctx, result: CvxpySolution) 
         if parent_node.children:
             for child in parent_node.children:
                 sub = next_route(child)
-                subs.append(sub.model_dump())
+                subs.append(sub)
         op: VenueOperation = parent_node.venue
         venue = data.venue_by_index(parent_node.venue.venue_index)
         if isinstance(venue, AssetPairsXyk):
             return Exchange(
-                in_asset_amount=  op.in_amount,
-                pool_id = venue.pool_id,
-                next =  subs,
+                in_asset_amount=math.ceil(op.in_amount),
+                out_amount=math.floor(op.out_amount),
+                out_asset_id=op.out_token,
+                pool_id=venue.pool_id,
+                next=subs,
             )
         elif isinstance(venue, AssetTransfers):
             return Spawn(
-                in_asset_id =  op.in_token,
-                in_asset_amount =  op.in_amount,
-                out_asset_id =  op.out_token,
-                out_amount =  op.out_amount,
-                next =  subs,
+                in_asset_id=op.in_token,
+                in_asset_amount=math.ceil(op.in_amount),
+                out_asset_id=op.out_token,
+                out_amount=math.floor(op.out_amount),
+                next=subs,
             )
         else:
             raise Exception("Unknown venue type")

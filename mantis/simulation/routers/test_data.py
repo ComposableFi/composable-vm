@@ -40,7 +40,9 @@ def test_usd_price():
 
 
 def test_output_route_centauri_osmosis():
-    exchange = Exchange(in_asset_amount=100, pool_id=1, next=[])
+    exchange = Exchange(
+        in_asset_amount=100, pool_id=1, next=[], out_amount=42, out_asset_id=13
+    )
 
     spawn = Spawn(
         in_asset_amount=100,
