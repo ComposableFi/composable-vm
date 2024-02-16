@@ -79,7 +79,7 @@ class Edge:
         i, o = 0, 1
         if Ti == self.U[1]:
             i, o = 1, 0
-        Xi =  (Xi - self.CF[i]) * (1 - self.F[i])
+        Xi = (Xi - self.CF[i]) * (1 - self.F[i])
         result = self.B[o] * (
             1 - (self.B[i] / (self.B[i] + Xi)) ** (self.W[i] / self.W[o])
         )
@@ -91,7 +91,7 @@ class Edge:
         if Ti == self.U[0]:
             return self.U[1]
         return self.U[0]
-    
+
     def __repr__(self):
         return f"Edge({self.U}, {self.B}, {self.W}, {self.F}, {self.CF})"
 
@@ -178,6 +178,7 @@ def conversor(
 
     return edges, tokensIds, all_tokens
 
+
 def route(
     input: Input,
     all_data: AllData,
@@ -187,8 +188,6 @@ def route(
     revision=True,  # When uses an edge, check if the edge has been used before and if so, use the same edge
     Nproces=None,  # A parameter used for paralell programing. For now, it seems to be best to use only one threat than paralell programming
 ):
-
-
     # If the number of processes is not given, use the number of cpus
     if Nproces == None:
         Nproces = os.cpu_count()
