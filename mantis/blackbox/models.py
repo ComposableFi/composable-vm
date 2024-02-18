@@ -47,4 +47,5 @@ class AllData(BaseModel):
         
         Produced CVMed data from raw chain data consumable by simulation
         """
+        
         pass 

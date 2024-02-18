@@ -25,7 +25,7 @@
       flake = false;
     };
     poetry2nix = {
-      url = "github:nix-community/poetry2nix/2023.12.1479959";
+      url = "github:nix-community/poetry2nix/master";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     networks = {
@@ -33,7 +33,7 @@
     };
 
     cosmpy-src = {
-      url = "github:fetchai/cosmpy/v0.9.1";
+      url = "github:fetchai/cosmpy/v0.9.2";
       flake = false;
     };
 
@@ -212,17 +212,17 @@
           checkGroups = [];
         };
 
-        cosmpy = pkgs.python3Packages.buildPythonPackage {
-          name = "cosmpy";
-          version = "0.9.1";
-          format = "pyproject";
+        # cosmpy = pkgs.python3Packages.buildPythonPackage {
+        #   name = "cosmpy";
+        #   version = "0.9.2";
+        #   format = "pyproject";
 
-          src = cosmpy-src;
+        #   src = cosmpy-src;
 
-          nativeBuildInputs = [
-            pkgs.python3Packages.poetry-core
-          ];
-        };
+        #   nativeBuildInputs = [
+        #     pkgs.python3Packages.poetry-core
+        #   ];
+        # };
 
         # https://github.com/nanne-aben/strictly_typed_pandas/issues/140
         strictly-typed-pandas-latest = pkgs.python3Packages.buildPythonPackage {
@@ -333,27 +333,14 @@
             editables = super.editables.overridePythonAttrs (old: {
               buildInputs = old.buildInputs or [] ++ [self.python.pkgs.flit-core];
             });
-
-            pydantic-extra-types = super.pydantic-extra-types.overridePythonAttrs (old: {
+              dnspython = super.dnspython.overridePythonAttrs (old: {
               buildInputs = old.buildInputs or [] ++ [self.python.pkgs.hatchling];
             });
 
-            dnspython = super.dnspython.overridePythonAttrs (old: {
-              buildInputs = old.buildInputs or [] ++ [self.python.pkgs.hatchling];
-            });
 
-            clarabel = super.pydantic-extra-types.overridePythonAttrs (old: {
-              buildInputs = old.buildInputs or [] ++ [self.python.pkgs.maturin];
-              nativeBuildInputs = old.buildInputs or [] ++ [self.python.pkgs.maturin];
-            });
 
-            disjoint-set = super.disjoint-set.overridePythonAttrs (old: {
-              buildInputs = old.buildInputs or [] ++ [self.python.pkgs.poetry];
-            });
 
-            shelved-cache = super.shelved-cache.overridePythonAttrs (old: {
-              buildInputs = old.buildInputs or [] ++ [self.python.pkgs.poetry];
-            });
+
             pyscipopt = pyscipopt-latest;
             google = super.google.overridePythonAttrs (old: {
               buildInputs = old.buildInputs or [] ++ [self.python.pkgs.setuptools];
@@ -373,7 +360,7 @@
               buildInputs = old.buildInputs or [] ++ [self.python.pkgs.setuptools];
             });
             cvxpy = cvxpy-latest;
-            cosmpy = cosmpy;
+#            cosmpy = cosmpy;
 
             maturin = maturin-latest;
             strictly-typed-pandas = strictly-typed-pandas-latest;
@@ -516,7 +503,7 @@
             mantis-blackbox
             pyscipopt-latest
             maturin-latest
-            cosmpy
+            #cosmpy
             ;
           all =
             pkgs.linkFarmFromDrvs "all"
