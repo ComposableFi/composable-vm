@@ -333,13 +333,9 @@
             editables = super.editables.overridePythonAttrs (old: {
               buildInputs = old.buildInputs or [] ++ [self.python.pkgs.flit-core];
             });
-              dnspython = super.dnspython.overridePythonAttrs (old: {
+            dnspython = super.dnspython.overridePythonAttrs (old: {
               buildInputs = old.buildInputs or [] ++ [self.python.pkgs.hatchling];
             });
-
-
-
-
 
             pyscipopt = pyscipopt-latest;
             google = super.google.overridePythonAttrs (old: {
@@ -360,7 +356,7 @@
               buildInputs = old.buildInputs or [] ++ [self.python.pkgs.setuptools];
             });
             cvxpy = cvxpy-latest;
-#            cosmpy = cosmpy;
+            #            cosmpy = cosmpy;
 
             maturin = maturin-latest;
             strictly-typed-pandas = strictly-typed-pandas-latest;
@@ -435,22 +431,21 @@
             rust-overlay.overlays.default
           ];
         };
-        devenv.shells.default = {
-          env = {
-            OSMOSIS_POOLS = env.OSMOSIS_POOLS;
-            ASTROPORT_POOLS = env.ASTROPORT_POOLS;
-            SKIP_MONEY = env.SKIP_MONEY;
-            LD_LIBRARY_PATH = pkgs.lib.strings.makeLibraryPath [
-              pkgs.stdenv.cc.cc.lib
-              pkgs.zlib
-              pkgs.zlib.dev
-              pkgs.zlib.out
 
-              "${inputs'.scip.packages.scip}/lib"
-            ];
-          };
+        devShells.default = pkgs.mkShell {
+          OSMOSIS_POOLS = env.OSMOSIS_POOLS;
+          ASTROPORT_POOLS = env.ASTROPORT_POOLS;
+          SKIP_MONEY = env.SKIP_MONEY;
+          LD_LIBRARY_PATH = pkgs.lib.strings.makeLibraryPath [
+            pkgs.stdenv.cc.cc.lib
+            pkgs.zlib
+            pkgs.zlib.dev
+            pkgs.zlib.out
 
-          packages =
+            "${inputs'.scip.packages.scip}/lib"
+          ];
+
+          buildInputs =
             [
               pkgs.nix
               pkgs.zlib
@@ -478,8 +473,7 @@
               # pkgs.vscode-extensions.ms-python.vscode-pylance
             ]
             ++ native-deps;
-          devcontainer.enable = false;
-          enterShell = ''
+          shellHook = ''
             if [[ -f ./.env ]]; then
               source ./.env
             fi
@@ -504,6 +498,7 @@
             pyscipopt-latest
             maturin-latest
             #cosmpy
+            
             ;
           all =
             pkgs.linkFarmFromDrvs "all"
