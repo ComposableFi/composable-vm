@@ -68,7 +68,7 @@ cachetools = "^5.3.2"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.4.3"
-# ruff = "0.1.15"
+ruff = "0.1.15"
 
 
 [build-system]
