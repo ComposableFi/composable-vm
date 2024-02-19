@@ -522,32 +522,37 @@
             });
           default = mantis-blackbox;
           test = pkgs.glib.out;
+          fix-py = pkgs.writeShellApplication {
+            name = "fix-py";
+            text = builtins.readFile ./mantis/fix.sh;
+          };
           fix = pkgs.writeShellApplication {
             name = "fix";
+            runtimeInputs = [fix-py];
             text = ''
-              (
-                cd ./mantis
-                nix develop --impure --command poetry lock --no-update
-                nix develop --impure --command poetry install
-                nix develop --impure --command poetry run ruff format .
-                nix develop --impure --command poetry run ruff . --exit-non-zero-on-fix --fix-only --no-unsafe-fixes
+              (                
+                cd mantis  && nix develop --command fix-py
               )
               nix fmt
               cargo fmt
+
             '';
           };
+          check-py = pkgs.writeShellApplication {
+            name = "check-py";
+            text = builtins.readFile ./mantis/check.sh;
+          };          
           ci = pkgs.writeShellApplication {
             name = "nix-build-all";
             runtimeInputs = [
               pkgs.nix
               devour-flake
+              check-py
             ];
             text = ''
               (
-                cd ./mantis
-                nix develop --impure --command poetry run pytest
-                nix develop --impure --command poetry run ruff check . --exit-non-zero-on-fix --fix-only --no-unsafe-fixes
-                nix develop --impure --command poetry check --lock
+                cd mantis
+                nix develop --command check-py 
               )
               nix flake show --all-systems --json --no-write-lock-file
               nix flake lock --no-update-lock-file
