@@ -1,10 +1,11 @@
-from typing import List, Union
+from typing import Union
 from blackbox.cvm_runtime.response_to_get_config import GetConfigResponse as CvmRegistry
 from blackbox.neutron_pools import Model as NeutronPoolsModel
 from blackbox.osmosis_pools import Model as OsmosisPoolsModel
 from blackbox.skip_money import Chain
 from pydantic import BaseModel
-from blackbox.composablefi_networks import Model as NetworksModel, Mainnet
+from blackbox.composablefi_networks import Model as NetworksModel
+
 
 class OsmosisPoolsResponse(BaseModel):
     pools: OsmosisPoolsModel
@@ -27,7 +28,7 @@ class AllData(BaseModel):
     osmosis_pools: Union[OsmosisPoolsModel, None]
     cosmos_chains: CosmosChains
     cvm_registry: CvmRegistry
-    networks : NetworksModel
+    networks: NetworksModel
 
     def to_cvm():
         """_summary_
@@ -37,8 +38,8 @@ class AllData(BaseModel):
         replace with ids in XYK
         generate Transfers for all, find ga for comoss_chain_of each
         normalize all assets to oracle if ALL assets has USD.
-        
+
         Produced CVMed data from raw chain data consumable by simulation
         """
-        
-        pass 
+
+        pass

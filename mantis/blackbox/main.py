@@ -116,7 +116,8 @@ def simulator_router_data(data: CvmAllData, input: Input):
 
 @app.get("/skip_money/chains")
 def skip_money_chains():
-    raise  Exception("For devnet testing to provide hardcoded chains list")
+    raise Exception("For devnet testing to provide hardcoded chains list")
+
 
 @app.get("/simulator/router/dummy")
 def simulator_dummy():
