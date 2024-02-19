@@ -75,7 +75,7 @@ pub enum Prefix {
 pub struct NetworkItem {
     pub network_id: NetworkId,
     /// something which will be receiver on other side
-    /// case of network has XCVM deployed as contract, account address is stored here
+    /// case of network has CVM deployed as contract, account address is stored here
     pub outpost: Option<OutpostId>,
     /// Account encoding type
     pub accounts: Option<Prefix>,

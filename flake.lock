@@ -215,16 +215,16 @@
     "cosmpy-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1691510160,
-        "narHash": "sha256-vpS5gAeTxw5dnOVBnwWRzWDvTdLv3CMZUq1ta0Te1h8=",
+        "lastModified": 1704978398,
+        "narHash": "sha256-wLd+wx3bXEBNdDQInoSSgMJBThQ/ssnx99ouoIc//ps=",
         "owner": "fetchai",
         "repo": "cosmpy",
-        "rev": "663cff06dadf0db84e81473b27b1e98ccf2da1f5",
+        "rev": "14279fc328d28a1fa71bb4c200e3698cbcd8e80e",
         "type": "github"
       },
       "original": {
         "owner": "fetchai",
-        "ref": "v0.9.1",
+        "ref": "v0.9.2",
         "repo": "cosmpy",
         "type": "github"
       }
@@ -320,11 +320,11 @@
     "datamodel-code-generator-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1706205389,
-        "narHash": "sha256-V9QfXlF7WY8JYdk0N/80lDzOdyEve1WY9DKaK9+Sz4c=",
+        "lastModified": 1707847616,
+        "narHash": "sha256-XOaDPcwWpLRDvrTh6WypFXA7ORH4guTpMw3VZ9YMrfs=",
         "owner": "koxudaxi",
         "repo": "datamodel-code-generator",
-        "rev": "acc6bf604b13626f22fc123d72ae08ff0a114155",
+        "rev": "a4a3a429871e1e93dce889f02f765a65dfbffb04",
         "type": "github"
       },
       "original": {
@@ -1516,16 +1516,16 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1702591455,
-        "narHash": "sha256-vK54IZysaxuUOe+abJO0wD40bxqwfZ2aBOhUWS/O/oA=",
+        "lastModified": 1708175019,
+        "narHash": "sha256-B7wY2pNrLc3X9uYRo1LUmVzI6oH6fX8oi+96GdUpayU=",
         "owner": "nix-community",
         "repo": "poetry2nix",
-        "rev": "9d9d434528404a22fb0c8283fea1ea3a7410ff80",
+        "rev": "403d923ea8e2e6cedce3a0f04a9394c4244cb806",
         "type": "github"
       },
       "original": {
         "owner": "nix-community",
-        "ref": "2023.12.1479959",
+        "ref": "master",
         "repo": "poetry2nix",
         "type": "github"
       }

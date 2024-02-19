@@ -50,7 +50,7 @@ pub enum ExecuteMsg {
     /// network.
     BridgeForward(BridgeForwardMsg),
 
-    /// simple permissionless message which produce xcvm program to test routes
+    /// simple permissionless message which produce CVM program to test routes
     Shortcut(ShortcutSubMsg),
 
     /// executed by host as part of memo handling

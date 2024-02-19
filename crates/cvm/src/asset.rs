@@ -9,8 +9,8 @@ use cosmwasm_std::{Uint128, Uint256};
 use num::Zero;
 use serde::{Deserialize, Serialize};
 
-/// Newtype for XCVM assets ID. Must be unique for each asset and must never change.
-/// This ID is an opaque, arbitrary type from the XCVM protocol and no assumption must be made on
+/// Newtype for CVM assets ID. Must be unique for each asset and must never change.
+/// This ID is an opaque, arbitrary type from the CVM protocol and no assumption must be made on
 /// how it is computed.
 #[cfg_attr(
     feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),

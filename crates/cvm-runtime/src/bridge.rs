@@ -2,7 +2,7 @@ use crate::prelude::*;
 
 use crate::{NetworkId, UserOrigin};
 
-/// The Origin that executed the XCVM operation.
+/// The Origin that executed the CVM operation.
 /// Origin was verified to satisfy security semantics for execution.
 #[cfg_attr(
     feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),

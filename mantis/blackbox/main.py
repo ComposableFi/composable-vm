@@ -1,4 +1,6 @@
 from typing import List
+
+import cachetools
 from blackbox.models import (
     AllData,
     CosmosChains,
@@ -12,6 +14,7 @@ from fastapi import FastAPI
 import requests
 from blackbox.cvm_runtime.response_to_get_config import GetConfigResponse
 from blackbox import models
+from blackbox.composablefi_networks import Model as NetworksModel
 from simulation.routers.angeris_cvxpy import cvxpy_to_data
 from simulation.routers import generic_linear
 import uvicorn
@@ -27,8 +30,12 @@ from simulation.routers.data import (
     AllData as CvmAllData,
 )
 from simulation.routers.data import Ctx, read_dummy_data, AllData as CvmAllData
+from shelved_cache import PersistentCache
+from cachetools import TTLCache
 
 app = FastAPI()
+
+cache = PersistentCache(TTLCache, filename="get_remote_data.cache", ttl=120 * 1000, maxsize=2)
 
 
 # 1. return csv data + data schema in 127.0.0.1:8000/docs
@@ -88,7 +95,6 @@ async def status():
 
 # gets all data from all sources
 @app.get("/data/all")
-# @cache(expire=3)
 async def get_data_all() -> AllData:
     result = get_remote_data()
     return result
@@ -116,6 +122,17 @@ async def get_data_routable() -> models.AllData:
     result = get_remote_data()
     return result
 
+
+@app.get("/data/routable/cvm")
+async def get_data_routable() -> models.AllData:
+    result = get_remote_data()
+
+    indexer = 1
+
+    return result
+
+
+@cachetools.cached(cache, lock=None, info=False)
 def get_remote_data() -> AllData:
     cfg = NetworkConfig(
         chain_id=settings.CVM_CHAIN_ID,
@@ -134,17 +151,20 @@ def get_remote_data() -> AllData:
     skip_api = CosmosChains.parse_raw(
         requests.get(settings.skip_money + "v1/info/chains").content
     )
+    networks = requests.get(settings.COMPOSABLEFI_NETWORKS).content
+    networks = NetworksModel.parse_raw(networks)
     osmosis_pools = OsmosisPoolsResponse.parse_raw(
-        requests.get(settings.osmosis_pools).content
+        requests.get(settings.OSMOSIS_POOLS).content
     )
     astroport_pools = NeutronPoolsResponse.parse_raw(
         requests.get(settings.astroport_pools).content
     ).result.data
     result = AllData(
         osmosis_pools=osmosis_pools.pools,
-        cvm_registry= cvm_registry,
-        astroport_pools= astroport_pools,
-        cosmos_chains= skip_api,
+        cvm_registry=cvm_registry,
+        astroport_pools=astroport_pools,
+        cosmos_chains=skip_api,
+        networks = networks,
     )
     return result
 
