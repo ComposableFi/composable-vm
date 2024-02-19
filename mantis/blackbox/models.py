@@ -36,7 +36,7 @@ class AllData(BaseModel):
         return [self.networks.pica.mainnet self.networks.osmosis.mainnet]
     
     
-    def to_cvm()
+    def to_cvm():
         """_summary_
         prodduce non CVMed XYK
         prodcue from CVM REG all IN OUT PAIRS of assets in good format
