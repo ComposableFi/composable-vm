@@ -35,7 +35,9 @@ from cachetools import TTLCache
 
 app = FastAPI()
 
-cache = PersistentCache(TTLCache, filename="get_remote_data.cache", ttl=120 * 1000, maxsize=2)
+cache = PersistentCache(
+    TTLCache, filename="get_remote_data.cache", ttl=120 * 1000, maxsize=2
+)
 
 
 # 1. return csv data + data schema in 127.0.0.1:8000/docs
@@ -164,7 +166,7 @@ def get_remote_data() -> AllData:
         cvm_registry=cvm_registry,
         astroport_pools=astroport_pools,
         cosmos_chains=skip_api,
-        networks = networks,
+        networks=networks,
     )
     return result
 
