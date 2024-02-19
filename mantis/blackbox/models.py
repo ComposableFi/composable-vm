@@ -22,6 +22,9 @@ class NeutronPoolsResponse(BaseModel):
     result: NeutronPoolsResponseData
 
 
+
+
+
 class AllData(BaseModel):
     astroport_pools: Union[NeutronPoolsModel, None]
     osmosis_pools: Union[OsmosisPoolsModel, None]
@@ -30,10 +33,7 @@ class AllData(BaseModel):
     
 
 
-    @property
-    def nets(self) -> List[Mainnet]:
-        return [self.networks.pica.mainnet self.networks.osmosis.mainnet]
-    
+
     
     def to_cvm(self):
         """_summary_
