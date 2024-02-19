@@ -28,15 +28,14 @@ class AllData(BaseModel):
     
     cosmos_chains: CosmosChains
     
-    cvm_registry: CvmRegistry
-    networks : NetworksModel
+
 
     @property
     def nets(self) -> List[Mainnet]:
         return [self.networks.pica.mainnet self.networks.osmosis.mainnet]
     
     
-    def to_cvm():
+    def to_cvm(self):
         """_summary_
         prodduce non CVMed XYK
         prodcue from CVM REG all IN OUT PAIRS of assets in good format
@@ -47,5 +46,9 @@ class AllData(BaseModel):
         
         Produced CVMed data from raw chain data consumable by simulation
         """
+        
+        # for each chain find all transfers
+        for net in self.nets:
+            
         
         pass 
