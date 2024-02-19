@@ -1,6 +1,7 @@
+# given CVM registry and MANTIS offchain registry, and 3rd party indexer/registry data, produce CVM unified view for ease of operations
 
 from typing import List, Union
-from blackbox.cvm_runtime.response_to_get_config import AssetItem, ExchangeItem, GetConfigResponse as CvmRegistry, NetworkAssetItem, NetworkItem, NetworkToNetworkItem
+from blackbox.cvm_runtime.response_to_get_config import AssetItem, ExchangeItem, GetConfigResponse as CvmRegistry, NetworkAssetItem, NetworkItem, NetworkToNetworkItem, ExchangeType3 as OsmosisPool
 from blackbox.neutron_pools import Model as NeutronPoolsModel
 from blackbox.osmosis_pools import Model as OsmosisPoolsModel
 from blackbox.skip_money import Chain
@@ -15,7 +16,11 @@ class ExtendedNetworkItem(NetworkItem):
     pass
 
 class ExtendedExchageItem(ExchangeItem):
-    # fee, weight, etc
+    token_a_amount: int
+    token_b_amount: int
+    weight_a: float
+    weight_b: float
+    fee_per_million : int
     pass
 
 
@@ -30,7 +35,7 @@ class ExtendedCvmRegistry(BaseModel):
     network_to_networks: List[NetworkToNetworkItem]
     networks: List[ExtendedNetworkItem]
     
-    def __init__(self, onchains: CvmRegistry, statics: NetworksModel, indexers_1: list[Chain]):
+    def __init__(self, onchains: CvmRegistry, statics: NetworksModel, indexers_1: list[Chain], indexer_2 : OsmosisPoolsModel):
         super().__init__()
         statics = [statics.pica.mainnet, statics.osmosis.mainnet]
         self.networks = []
@@ -40,8 +45,21 @@ class ExtendedCvmRegistry(BaseModel):
             gas_price = int(indexer.fee_assets[0].gas_price_info.high)
             x = ExtendedNetworkItem(**onchain, chain_id = static.CHAIN_ID, gas_price = gas_price)
             self.networks.append(x)
-
-        self.exchanges = onchains.exchanges # merge with Osmossi pool data
+        
+        self.exchanges = []
+        for onchain in onchains.exchanges:
+            if isinstance(onchain.exchange.exchange_type.root, OsmosisPool):
+                subonchain: OsmosisPool = onchain.exchange.exchange_type.root
+                pool_id = subonchain.osmosis_pool_manager_module_v1_beta1.pool_id
+                indexer = [c for c in indexer_2.root if c.id == pool_id][0]
+                token_a_amount = indexer.token0Amount
+                token_b_amount = indexer.token1Amount
+                weight_a = 1
+                weight_b = 1
+                fee_per_million = indexer.pool_params.swap_fee * (1_000_000 / 100)
+                indexer.scaling_factors
+                x = ExtendedExchageItem(**onchain, liquidity_usd = indexer.liquidityUsd, token_a_amount = token_a_amount, token_b_amount = token_b_amount, weight_a = weight_a, weight_b = weight_b, fee_per_million = fee_per_million)
+                self.exchanges.append(x)
         
         self.assets = onchains.assets
         self.network_assets = onchains.network_assets
