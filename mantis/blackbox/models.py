@@ -22,20 +22,14 @@ class NeutronPoolsResponse(BaseModel):
     result: NeutronPoolsResponseData
 
 
-
-
-
 class AllData(BaseModel):
     astroport_pools: Union[NeutronPoolsModel, None]
     osmosis_pools: Union[OsmosisPoolsModel, None]
-    
     cosmos_chains: CosmosChains
-    
+    cvm_registry: CvmRegistry
+    networks : NetworksModel
 
-
-
-    
-    def to_cvm(self):
+    def to_cvm():
         """_summary_
         prodduce non CVMed XYK
         prodcue from CVM REG all IN OUT PAIRS of assets in good format
@@ -46,9 +40,5 @@ class AllData(BaseModel):
         
         Produced CVMed data from raw chain data consumable by simulation
         """
-        
-        # for each chain find all transfers
-        for net in self.nets:
-            
         
         pass 

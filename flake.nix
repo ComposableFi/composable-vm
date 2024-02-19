@@ -522,18 +522,20 @@
             });
           default = mantis-blackbox;
           test = pkgs.glib.out;
+          fix-py = pkgs.writeShellApplication {
+            name = "fix-py";
+            text = builtins.readFile ./mantis/fix.sh;
+          };
           fix = pkgs.writeShellApplication {
             name = "fix";
+            runtimeInputs = [fix-py];
             text = ''
-              (
-                cd ./mantis
-                nix develop --impure --command poetry lock --no-update
-                nix develop --impure --command poetry install
-                nix develop --impure --command poetry run ruff format .
-                nix develop --impure --command poetry run ruff . --exit-non-zero-on-fix --fix-only --no-unsafe-fixes
+              (                
+                cd mantis  && fix-py
               )
               nix fmt
               cargo fmt
+
             '';
           };
           ci = pkgs.writeShellApplication {

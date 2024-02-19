@@ -76,7 +76,8 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
-blackbox = 'blackbox.api:start'
+blackbox = 'blackbox.main:start'
+dzmitry_solver = 'simulation.routers.test_dzmitry:simulate'
 
 [tool.ruff]
 unsafe-fixes = false
