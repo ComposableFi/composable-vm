@@ -134,7 +134,7 @@ async def get_data_routable() -> raw.AllData:
 @app.get("/data/routable/cvm")
 async def get_data_routable() -> ExtendedCvmRegistry:
     raw_data = get_remote_data()
-    return ExtendedCvmRegistry(
+    return ExtendedCvmRegistry.from_raw(
         raw_data.cvm_registry,
         raw_data.networks,
         raw_data.cosmos_chains,

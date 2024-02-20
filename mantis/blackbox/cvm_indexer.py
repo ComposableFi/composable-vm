@@ -42,26 +42,26 @@ class ExtendedCvmRegistry(BaseModel):
     network_to_networks: List[NetworkToNetworkItem]
     networks: List[ExtendedNetworkItem]
 
-    def __init__(
-        self,
+    @classmethod  
+    def from_raw(
+        cls,
         onchains: CvmRegistry,
         statics: NetworksModel,
         indexers_1: list[Chain],
         indexers_2: OsmosisPoolsModel,
-    ):
-        super().__init__()
+    ):        
         statics = [statics.pica.mainnet, statics.osmosis.mainnet]
-        self.networks = []
+        networks = []
         for onchain in onchains.networks:
-            static = [x for x in statics if x.NETWORK_ID == onchain.network_id][0]
+            static = [x for x in statics if x.NETWORK_ID == onchain.network_id.root][0]
             indexer = [c for c in indexers_1 if c.chain_id == static.CHAIN_ID][0]
             gas_price = int(indexer.fee_assets[0].gas_price_info.high)
             x = ExtendedNetworkItem(
                 **onchain, chain_id=static.CHAIN_ID, gas_price=gas_price
             )
-            self.networks.append(x)
+            networks.append(x)
 
-        self.exchanges = []
+        exchanges = []
         for onchain in onchains.exchanges:
             if isinstance(onchain.exchange.exchange_type.root, OsmosisPool):
                 subonchain: OsmosisPool = onchain.exchange.exchange_type.root
@@ -82,8 +82,15 @@ class ExtendedCvmRegistry(BaseModel):
                     weight_b=weight_b,
                     fee_per_million=fee_per_million,
                 )
-                self.exchanges.append(x)
+                exchanges.append(x)
 
-        self.assets = onchains.assets
-        self.network_assets = onchains.network_assets
-        self.network_to_networks = onchains.network_to_networks
+        assets = onchains.assets
+        network_assets = onchains.network_assets
+        network_to_networks = onchains.network_to_networks
+        return cls(
+            assets=assets,
+            exchanges=exchanges,
+            network_assets=network_assets,
+            network_to_networks=network_to_networks,
+            networks=networks,
+        )
