@@ -1,7 +1,7 @@
 from typing import List
 
 import cachetools
-from mantis.blackbox.raw import (
+from blackbox.raw import (
     AllData,
     CosmosChains,
     NeutronPoolsResponse,
@@ -14,7 +14,7 @@ from cosmpy.aerial.contract import LedgerClient, LedgerContract
 from fastapi import FastAPI
 import requests
 from blackbox.cvm_runtime.response_to_get_config import GetConfigResponse
-from mantis.blackbox import raw
+from blackbox import raw
 from blackbox.composablefi_networks import Model as NetworksModel
 from simulation.routers.angeris_cvxpy import cvxpy_to_data
 from simulation.routers import generic_linear
@@ -134,7 +134,13 @@ async def get_data_routable() -> raw.AllData:
 @app.get("/data/routable/cvm")
 async def get_data_routable() -> ExtendedCvmRegistry:
     raw_data = get_remote_data()
-    return ExtendedCvmRegistry(raw_data.cvm_registry, raw_data.networks, raw_data.cosmos_chains, raw_data.osmosis_pools)    
+    return ExtendedCvmRegistry(
+        raw_data.cvm_registry,
+        raw_data.networks,
+        raw_data.cosmos_chains,
+        raw_data.osmosis_pools,
+    )
+
 
 @cachetools.cached(cache, lock=None, info=False)
 def get_remote_data() -> AllData:
@@ -170,7 +176,7 @@ def get_remote_data() -> AllData:
         cosmos_chains=skip_api,
         networks=networks,
     )
-    
+
     return result
 
 

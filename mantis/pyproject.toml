@@ -54,6 +54,7 @@ methodtools = "0.4.7"
 tqdm = "^4.66.0"
 orjson="3.9.10"
 typeguard = "2.13.3"
+# pydantic-numpy
 
 PySCIPOpt = "4.4.0" # i set it directly to allow override SCIP dep (currently it is goes as binary with this wheel)s
 # on if used only:

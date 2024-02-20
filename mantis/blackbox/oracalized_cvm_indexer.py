@@ -1,14 +1,5 @@
 # given `ExtendedCvmRegistry` and raw `AllData`, and user `Input`, produced oracalized data with assets and venues route level reachable by user
 
-from typing import Union
-from blackbox.cvm_runtime.response_to_get_config import GetConfigResponse as CvmRegistry
-from blackbox.neutron_pools import Model as NeutronPoolsModel
-from blackbox.osmosis_pools import Model as OsmosisPoolsModel
-from blackbox.skip_money import Chain
-from pydantic import BaseModel
-from blackbox.composablefi_networks import Model as NetworksModel
-
-
 
 
 #     def to_cvm():

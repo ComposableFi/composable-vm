@@ -382,7 +382,7 @@
 
         inherit (poetry2nix.lib.mkPoetry2Nix {inherit pkgs;}) mkPoetryApplication mkPoetryPackages mkPoetryEnv overrides;
         env = {
-          OSMOSIS_POOLS = "https://app.osmosis.zone/api/pools?page=1&limit=1000&min_liquidity=500000";
+          OSMOSIS_POOLS = "https://app.osmosis.zone/api/pools?page=1&limit=1000&min_liquidity=50000";
           ASTROPORT_POOLS = "https://app.astroport.fi/api/trpc/pools.getAll?input=%7B%22json%22%3A%7B%22chainId%22%3A%5B%22neutron-1%22%5D%7D%7D";
           SKIP_MONEY_SWAGGER = "https://api-swagger.skip.money/";
           SKIP_MONEY = "https://api.skip.money/";
@@ -424,6 +424,7 @@
           pkgs.ipopt
           pkgs.or-tools
         ];
+        pythonPackages = [pkgs.poetry envShell];
       in {
         _module.args.pkgs = import self.inputs.nixpkgs {
           inherit system;
@@ -524,13 +525,15 @@
           test = pkgs.glib.out;
           fix-py = pkgs.writeShellApplication {
             name = "fix-py";
+            runtimeInputs = pythonPackages;
+
             text = builtins.readFile ./mantis/fix.sh;
           };
           fix = pkgs.writeShellApplication {
             name = "fix";
             runtimeInputs = [fix-py];
             text = ''
-              (                
+              (
                 cd mantis  && nix develop --command fix-py
               )
               nix fmt
@@ -541,7 +544,7 @@
           check-py = pkgs.writeShellApplication {
             name = "check-py";
             text = builtins.readFile ./mantis/check.sh;
-          };          
+          };
           ci = pkgs.writeShellApplication {
             name = "nix-build-all";
             runtimeInputs = [
@@ -552,7 +555,7 @@
             text = ''
               (
                 cd mantis
-                nix develop --command check-py 
+                nix develop --command check-py
               )
               nix flake show --all-systems --json --no-write-lock-file
               nix flake lock --no-update-lock-file

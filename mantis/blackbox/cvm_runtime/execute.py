@@ -25,7 +25,7 @@ class Adr08IbcCallbacks(BaseModel):
 class AssetId(RootModel[str]):
     root: str = Field(
         ...,
-        description="Newtype for XCVM assets ID. Must be unique for each asset and must never change. This ID is an opaque, arbitrary type from the XCVM protocol and no assumption must be made on how it is computed.",
+        description="Newtype for CVM assets ID. Must be unique for each asset and must never change. This ID is an opaque, arbitrary type from the CVM protocol and no assumption must be made on how it is computed.",
     )
 
 
@@ -83,7 +83,7 @@ class Local(BaseModel):
 
 class CallOrigin2(BaseModel):
     """
-    The Origin that executed the XCVM operation. Origin was verified to satisfy security semantics for execution.
+    The Origin that executed the CVM operation. Origin was verified to satisfy security semantics for execution.
     """
 
     model_config = ConfigDict(
@@ -462,7 +462,7 @@ class Remote(BaseModel):
 
 class CallOrigin1(BaseModel):
     """
-    The Origin that executed the XCVM operation. Origin was verified to satisfy security semantics for execution.
+    The Origin that executed the CVM operation. Origin was verified to satisfy security semantics for execution.
     """
 
     model_config = ConfigDict(
@@ -474,7 +474,7 @@ class CallOrigin1(BaseModel):
 class CallOrigin(RootModel[Union[CallOrigin1, CallOrigin2]]):
     root: Union[CallOrigin1, CallOrigin2] = Field(
         ...,
-        description="The Origin that executed the XCVM operation. Origin was verified to satisfy security semantics for execution.",
+        description="The Origin that executed the CVM operation. Origin was verified to satisfy security semantics for execution.",
     )
 
 
@@ -522,6 +522,7 @@ class ExchangeItem(BaseModel):
     allows to execute Exchange instruction
     """
 
+    closed: Optional[conint(ge=0)] = None
     exchange: ExchangeType
     exchange_id: DisplayedForUint128
     network_id: NetworkId
@@ -666,7 +667,7 @@ class ExecuteMsg2(BaseModel):
 
 class ExecuteMsg6(BaseModel):
     """
-    simple permissionless message which produce xcvm program to test routes
+    simple permissionless message which produce CVM program to test routes
     """
 
     model_config = ConfigDict(
@@ -698,6 +699,7 @@ class Ics20Channel(BaseModel):
 
 
 class NetworkToNetworkItem(BaseModel):
+    closed: Optional[conint(ge=0)] = None
     from_network_id: NetworkId
     to_network: OtherNetworkItem = Field(
         ..., description="how to send `to_network_id` chain"
@@ -753,7 +755,7 @@ class NetworkItem(BaseModel):
     network_id: NetworkId
     outpost: Optional[OutpostId] = Field(
         None,
-        description="something which will be receiver on other side case of network has XCVM deployed as contract, account address is stored here",
+        description="something which will be receiver on other side case of network has CVM deployed as contract, account address is stored here",
     )
 
 
@@ -994,7 +996,7 @@ class PacketForProgramForArrayOfInstructionForArrayOfUint8AndXcAddrAndFundsForAm
     )
     salt: str = Field(..., description="The salt associated with the program.")
     user_origin: UserOrigin = Field(
-        ..., description="The user that originated the first XCVM call."
+        ..., description="The user that originated the first CVM call."
     )
 
 

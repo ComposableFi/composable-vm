@@ -29,7 +29,7 @@ class Addr(RootModel[str]):
 class AssetId(RootModel[str]):
     root: str = Field(
         ...,
-        description="Newtype for XCVM assets ID. Must be unique for each asset and must never change. This ID is an opaque, arbitrary type from the XCVM protocol and no assumption must be made on how it is computed.",
+        description="Newtype for CVM assets ID. Must be unique for each asset and must never change. This ID is an opaque, arbitrary type from the CVM protocol and no assumption must be made on how it is computed.",
     )
 
 

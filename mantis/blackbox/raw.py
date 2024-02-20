@@ -29,4 +29,3 @@ class AllData(BaseModel):
     cosmos_chains: CosmosChains
     cvm_registry: CvmRegistry
     networks: NetworksModel
-

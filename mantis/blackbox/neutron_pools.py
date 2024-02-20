@@ -33,12 +33,6 @@ class AstroRewards(BaseModel):
     day: float
 
 
-class ProtocolRewards(BaseModel):
-    apr: int
-    apy: int
-    day: int
-
-
 class TotalRewards(BaseModel):
     apr: float
     apy: float
@@ -68,7 +62,8 @@ class JsonItem(BaseModel):
     dayVolumeUsd: float
     poolLiquidityUsd: float
     poolLiquidity: int
-    rewardTokenSymbol: Optional[str] = None
+    poolStakedLiquidityUsd: float
+    poolStakedLiquidity: int
     config: Optional[Config] = None
     feeRate: List[str]
     poolType: str
@@ -80,9 +75,7 @@ class JsonItem(BaseModel):
     isNew: bool
     isIlliquid: bool
     isDeregistered: bool
-    sortingAssets: List[str]
     astroRewards: AstroRewards
-    protocolRewards: ProtocolRewards
     totalRewards: TotalRewards
     tradingFees: TradingFees
     rewards: List[Reward]

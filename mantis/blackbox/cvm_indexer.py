@@ -47,7 +47,7 @@ class ExtendedCvmRegistry(BaseModel):
         onchains: CvmRegistry,
         statics: NetworksModel,
         indexers_1: list[Chain],
-        indexer_2: OsmosisPoolsModel,
+        indexers_2: OsmosisPoolsModel,
     ):
         super().__init__()
         statics = [statics.pica.mainnet, statics.osmosis.mainnet]
@@ -66,7 +66,7 @@ class ExtendedCvmRegistry(BaseModel):
             if isinstance(onchain.exchange.exchange_type.root, OsmosisPool):
                 subonchain: OsmosisPool = onchain.exchange.exchange_type.root
                 pool_id = subonchain.osmosis_pool_manager_module_v1_beta1.pool_id
-                indexer = [c for c in indexer_2.root if c.id == pool_id][0]
+                indexer = [c for c in indexers_2.root if c.id == pool_id][0]
                 token_a_amount = indexer.token0Amount
                 token_b_amount = indexer.token1Amount
                 weight_a = 1

@@ -25,7 +25,7 @@ class Adr08IbcCallbacks(BaseModel):
 class AssetId(RootModel[str]):
     root: str = Field(
         ...,
-        description="Newtype for XCVM assets ID. Must be unique for each asset and must never change. This ID is an opaque, arbitrary type from the XCVM protocol and no assumption must be made on how it is computed.",
+        description="Newtype for CVM assets ID. Must be unique for each asset and must never change. This ID is an opaque, arbitrary type from the CVM protocol and no assumption must be made on how it is computed.",
     )
 
 
@@ -254,6 +254,7 @@ class ExchangeItem(BaseModel):
     allows to execute Exchange instruction
     """
 
+    closed: Optional[conint(ge=0)] = None
     exchange: ExchangeType
     exchange_id: DisplayedForUint128
     network_id: NetworkId
@@ -314,6 +315,7 @@ class Ics20Channel(BaseModel):
 
 
 class NetworkToNetworkItem(BaseModel):
+    closed: Optional[conint(ge=0)] = None
     from_network_id: NetworkId
     to_network: OtherNetworkItem = Field(
         ..., description="how to send `to_network_id` chain"
@@ -347,7 +349,7 @@ class NetworkItem(BaseModel):
     network_id: NetworkId
     outpost: Optional[OutpostId] = Field(
         None,
-        description="something which will be receiver on other side case of network has XCVM deployed as contract, account address is stored here",
+        description="something which will be receiver on other side case of network has CVM deployed as contract, account address is stored here",
     )
 
 
