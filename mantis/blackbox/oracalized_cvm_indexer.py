@@ -1,7 +1,6 @@
 # given `ExtendedCvmRegistry` and raw `AllData`, and user `Input`, produced oracalized data with assets and venues route level reachable by user
 
 
-
 #     def to_cvm():
 #         """_summary_
 #         prodduce non CVMed XYK
