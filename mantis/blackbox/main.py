@@ -1,19 +1,20 @@
 from typing import List
 
 import cachetools
-from blackbox.models import (
+from mantis.blackbox.raw import (
     AllData,
     CosmosChains,
     NeutronPoolsResponse,
     OsmosisPoolsResponse,
 )
+from cvm_indexer import ExtendedCvmRegistry
 from blackbox.settings import settings
 from cosmpy.aerial.config import NetworkConfig
 from cosmpy.aerial.contract import LedgerClient, LedgerContract
 from fastapi import FastAPI
 import requests
 from blackbox.cvm_runtime.response_to_get_config import GetConfigResponse
-from blackbox import models
+from mantis.blackbox import raw
 from blackbox.composablefi_networks import Model as NetworksModel
 from simulation.routers.angeris_cvxpy import cvxpy_to_data
 from simulation.routers import generic_linear
@@ -125,19 +126,15 @@ def simulator_dummy():
 
 
 @app.get("/data/routable/raw")
-async def get_data_routable() -> models.AllData:
+async def get_data_routable() -> raw.AllData:
     result = get_remote_data()
     return result
 
 
 @app.get("/data/routable/cvm")
-async def get_data_routable() -> models.AllData:
-    result = get_remote_data()
-
-    indexer = 1
-
-    return result
-
+async def get_data_routable() -> ExtendedCvmRegistry:
+    raw_data = get_remote_data()
+    return ExtendedCvmRegistry(raw_data.cvm_registry, raw_data.networks, raw_data.cosmos_chains, raw_data.osmosis_pools)    
 
 @cachetools.cached(cache, lock=None, info=False)
 def get_remote_data() -> AllData:
@@ -166,13 +163,14 @@ def get_remote_data() -> AllData:
     astroport_pools = NeutronPoolsResponse.parse_raw(
         requests.get(settings.astroport_pools).content
     ).result.data
-    result = AllData(
+    result: AllData = AllData(
         osmosis_pools=osmosis_pools.pools,
         cvm_registry=cvm_registry,
         astroport_pools=astroport_pools,
         cosmos_chains=skip_api,
         networks=networks,
     )
+    
     return result
 
 
