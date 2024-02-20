@@ -51,7 +51,7 @@
       "type": "object"
     },
     "AssetId": {
-      "description": "Newtype for XCVM assets ID. Must be unique for each asset and must never change. This ID is an opaque, arbitrary type from the XCVM protocol and no assumption must be made on how it is computed.",
+      "description": "Newtype for CVM assets ID. Must be unique for each asset and must never change. This ID is an opaque, arbitrary type from the CVM protocol and no assumption must be made on how it is computed.",
       "type": "string"
     },
     "AssetItem": {
@@ -199,6 +199,14 @@
         "network_id"
       ],
       "properties": {
+        "closed": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "format": "uint64",
+          "minimum": 0.0
+        },
         "exchange": {
           "$ref": "#/definitions/ExchangeType"
         },
@@ -475,7 +483,7 @@
           "$ref": "#/definitions/NetworkId"
         },
         "outpost": {
-          "description": "something which will be receiver on other side case of network has XCVM deployed as contract, account address is stored here",
+          "description": "something which will be receiver on other side case of network has CVM deployed as contract, account address is stored here",
           "anyOf": [
             {
               "$ref": "#/definitions/OutpostId"
@@ -495,6 +503,14 @@
         "to_network_id"
       ],
       "properties": {
+        "closed": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "format": "uint64",
+          "minimum": 0.0
+        },
         "from_network_id": {
           "$ref": "#/definitions/NetworkId"
         },

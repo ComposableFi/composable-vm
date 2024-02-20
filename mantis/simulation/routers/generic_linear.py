@@ -19,6 +19,11 @@ def solve(
     ctx: Ctx,
     force_eta: list[Union[int, None]] = None,
 ) -> CvxpySolution:
+    if not input.max:
+        raise NotImplementedError(
+            "'max' value on input is not supported to be False yet"
+        )
+
     # initial input assets
 
     current_assets = np.full((all_data.tokens_count), int(0))
@@ -80,7 +85,7 @@ def solve(
 
     # Reserves after trade
     new_reserves = [
-        R + gamma_i * D - L
+        R + gamma_i * D - L  # * `fee out` to add
         for R, gamma_i, D, L in zip(
             reserves, all_data.venues_proportional_reductions, deltas, lambdas
         )
@@ -107,6 +112,7 @@ def solve(
     # Pool constraint (Uniswap v2 like)
     for x in all_data.asset_pairs_xyk:
         i = all_data.get_index_in_all(x)
+
         constraints.append(cp.geo_mean(new_reserves[i]) >= cp.geo_mean(reserves[i]))
 
     # Pool constraint for cross chain transfer transfer (constant sum)

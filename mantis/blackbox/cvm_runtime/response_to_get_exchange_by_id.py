@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-from typing import Union
+from typing import Optional, Union
 
 from pydantic import BaseModel, ConfigDict, Field, RootModel, conint
 
@@ -64,6 +64,7 @@ class ExchangeItem(BaseModel):
     allows to execute Exchange instruction
     """
 
+    closed: Optional[conint(ge=0)] = None
     exchange: ExchangeType
     exchange_id: DisplayedForUint128
     network_id: NetworkId
