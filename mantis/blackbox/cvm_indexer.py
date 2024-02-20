@@ -92,16 +92,19 @@ class ExtendedCvmRegistry(BaseModel):
                 token_b_amount = indexer.token1Amount
                 weight_a = 1
                 weight_b = 1
-                fee_per_million = indexer.pool_params.swap_fee * (1_000_000 / 100)
+                fee_per_million = int(float(indexer.pool_params.swap_fee) * (1_000_000 / 100))
                 indexer.scaling_factors
                 x = ExtendedExchageItem(
-                    **onchain,
                     liquidity_usd=indexer.liquidityUsd,
                     token_a_amount=token_a_amount,
                     token_b_amount=token_b_amount,
                     weight_a=weight_a,
                     weight_b=weight_b,
                     fee_per_million=fee_per_million,
+                    closed = onchain.closed,
+                    exchange = onchain.exchange,
+                    exchange_id = onchain.exchange_id,
+                    network_id = onchain.network_id,
                 )
                 exchanges.append(x)
 
