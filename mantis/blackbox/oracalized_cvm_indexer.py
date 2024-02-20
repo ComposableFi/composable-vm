@@ -1,6 +1,18 @@
 # given `ExtendedCvmRegistry` and raw `AllData`, and user `Input`, produced oracalized data with assets and venues route level reachable by user
-# enrich registry
-# oraclai
+
+
+from blackbox.cvm_indexer import ExtendedCvmRegistry
+from pydantic import BaseModel
+
+class Oracle(BaseModel):
+    def from_usd(cvm: ExtendedCvmRegistry):
+        pass
+    
+    def for_simulation():
+        pass
+    def scale_in():
+        pass
+
 
 #     def to_cvm():
 #         """_summary_

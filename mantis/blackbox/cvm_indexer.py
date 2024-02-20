@@ -21,7 +21,7 @@ class ExtendedNetworkItem(NetworkItem):
     chain_id: str
 
 
-class ExtendedExchageItem(ExchangeItem):
+class ExtendedExchangeItem(ExchangeItem):
     token_a_amount: int
     token_b_amount: int
     weight_a: float
@@ -112,7 +112,7 @@ class ExtendedCvmRegistry(BaseModel):
                         float(indexer.pool_params.swap_fee) * (1_000_000 / 100)
                     ) 
                     indexer.scaling_factors
-                    x = ExtendedExchageItem(
+                    x = ExtendedExchangeItem(
                         liquidity_usd=indexer.liquidityUsd,
                         token_a_amount=token_a_amount,
                         token_b_amount=token_b_amount,
