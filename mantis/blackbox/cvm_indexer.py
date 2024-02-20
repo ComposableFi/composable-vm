@@ -107,8 +107,10 @@ class ExtendedCvmRegistry(BaseModel):
                     weight_a = 1
                     weight_b = 1
                     fee_per_million = int(
+                        float(indexer.taker_fee) * (1_000_000 / 100) 
+                    ) if indexer.taker_fee else int(
                         float(indexer.pool_params.swap_fee) * (1_000_000 / 100)
-                    )
+                    ) 
                     indexer.scaling_factors
                     x = ExtendedExchageItem(
                         liquidity_usd=indexer.liquidityUsd,
