@@ -17,9 +17,8 @@ from blackbox.composablefi_networks import Model as NetworksModel
 
 
 class ExtendedNetworkItem(NetworkItem):
-    gas_price: int
+    gas_price_usd: float
     chain_id: str
-    pass
 
 
 class ExtendedExchageItem(ExchangeItem):
@@ -28,7 +27,6 @@ class ExtendedExchageItem(ExchangeItem):
     weight_a: float
     weight_b: float
     fee_per_million: int
-    pass
 
 
 class ExtendedCvmRegistry(BaseModel):
@@ -53,20 +51,43 @@ class ExtendedCvmRegistry(BaseModel):
         statics = [statics.pica.mainnet, statics.osmosis.mainnet]
         networks = []
         for onchain in onchains.networks:
-            static = [x for x in statics if x.NETWORK_ID == onchain.network_id.root][0]
-            indexer = [c for c in indexers_1 if c.chain_id == static.CHAIN_ID][0]
-            gas_price = int(indexer.fee_assets[0].gas_price_info.high)
-            x = ExtendedNetworkItem(
-                **onchain, chain_id=static.CHAIN_ID, gas_price=gas_price
-            )
-            networks.append(x)
-
+            print("================================")
+            print(onchain)
+            print(statics)
+            static = [x for x in statics if x.NETWORK_ID == onchain.network_id.root]
+            if any(static): # not removed from static routing
+                static = static[0]
+                indexer = [c for c in indexers_1 if c.chain_id == static.CHAIN_ID][0]
+                def indexer_1_gas_to_cvm(indexer):
+                    if any(indexer.fee_assets):
+                        gas = indexer.fee_assets[0].gas_price_info
+                        if gas:
+                            if gas.high:
+                                return float(gas.high)                    
+                            if gas.average:
+                                return float(gas.average)
+                            if gas.low:
+                                return float(gas.low)
+                    return 0.0
+                gas_price_usd = indexer_1_gas_to_cvm(indexer)
+                x = ExtendedNetworkItem(
+                    # onchain
+                    chain_id=static.CHAIN_ID, 
+                    gas_price_usd=gas_price_usd,
+                    accounts = onchain.accounts,
+                    network_id = onchain.network_id,
+                    ibc = onchain.ibc,
+                    outpost = onchain.outpost,
+                )                
+                networks.append(x)
+        
         exchanges = []
         for onchain in onchains.exchanges:
-            if isinstance(onchain.exchange.exchange_type.root, OsmosisPool):
-                subonchain: OsmosisPool = onchain.exchange.exchange_type.root
+            if isinstance(onchain.exchange.root, OsmosisPool):
+                subonchain: OsmosisPool = onchain.exchange.root
                 pool_id = subonchain.osmosis_pool_manager_module_v1_beta1.pool_id
-                indexer = [c for c in indexers_2.root if c.id == pool_id][0]
+                print("pool_id", pool_id)                
+                indexer = [c for c in indexers_2.root if c.id == str(pool_id)][0]
                 token_a_amount = indexer.token0Amount
                 token_b_amount = indexer.token1Amount
                 weight_a = 1

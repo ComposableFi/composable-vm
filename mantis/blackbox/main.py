@@ -137,7 +137,7 @@ async def get_data_routable() -> ExtendedCvmRegistry:
     return ExtendedCvmRegistry.from_raw(
         raw_data.cvm_registry,
         raw_data.networks,
-        raw_data.cosmos_chains,
+        raw_data.cosmos_chains.chains,
         raw_data.osmosis_pools,
     )
 
