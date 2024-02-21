@@ -118,6 +118,10 @@ def solve(
     # Pool constraint for cross chain transfer transfer (constant sum)
     for x in all_data.asset_transfers:
         i = all_data.get_index_in_all(x)
+        # realistically that is depends on side source vs target
+        # source chain can mint any amount up to total issuance
+        # while target chain can back only limited amount escrowed
+        # so on source chain limit is current total issuance not locked on that chain
         constraints.append(cp.sum(new_reserves[i]) >= cp.sum(reserves[i]))
         constraints.append(new_reserves[i] >= 0)
 
@@ -137,9 +141,10 @@ def solve(
             token_b_global = issuance * all_data.global_reservers_of(
                 all_data.venues_tokens[i][1]
             )
-            assert token_a_global > 0
-            assert token_b_global > 0
-            constraints.append(deltas[i] <= etas[i] * [10_000, 10_000])
+            if token_a_global <= ctx.minimal_amount or token_b_global <= ctx.minimal_amount:
+                print("warning:: mantis::simulation::router:: trading with zero liquid amount of token")
+            # constraints.append(deltas[i] <= etas[i] * [token_a_global, token_b_global])
+            constraints.append(cp.multiply(deltas[i],etas[i]) >= deltas[i])
     # Set up and solve problem
     problem = cp.Problem(obj, constraints)
     # success: CLARABEL,
@@ -149,9 +154,13 @@ def solve(
     problem.solve(
         verbose=ctx.debug,
         solver=cp.SCIP,
-        qcp=False,
+        qcp= False,
+        gp = False,
     )
 
+    if problem.status not in ["optimal", "optimal_inaccurate"]:
+        raise Exception(f"Problem status: {problem.status}")
+    
     print(
         f"\033[1;91mTotal amount out: {psi.value[all_data.index_of_token(input.out_token_id)]}\033[0m"
     )
@@ -192,7 +201,10 @@ def route(
         input,
         ctx,
     )
-    forced_etas, _ = parse_trades(ctx, initial_solution)
+    forced_etas, original_trades = parse_trades(ctx, initial_solution)
+    if ctx.debug:
+        print("forced_etas", forced_etas)
+        print("original_trades", original_trades)
     forced_eta_solution = solve(all_data, input, ctx, forced_etas)
     solution = copy.deepcopy(forced_eta_solution)
     return solution

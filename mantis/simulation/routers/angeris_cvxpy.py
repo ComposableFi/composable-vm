@@ -79,7 +79,9 @@ def cvxpy_to_data(
     """
 
     _etas, trades_raw = parse_trades(ctx, result)
-
+    if ctx.debug:
+        print("trades_raw", trades_raw)
+        
     # attach tokens ids to trades
     trades = []
 
@@ -194,7 +196,7 @@ def cvxpy_to_data(
     return next_route(start_coin)
 
 
-def parse_trades(ctx, result):
+def parse_trades(ctx: Ctx, result: CvxpySolution):
     etas = result.eta_values
     deltas = result.delta_values
     lambdas = result.lambda_values
@@ -205,8 +207,7 @@ def parse_trades(ctx, result):
             etas[i] = 0
             deltas[i] = np.zeros(len(deltas[i]))
             lambdas[i] = np.zeros(len(lambdas[i]))
-
-        if (
+        elif (
             np.max(np.abs(deltas[i])) < ctx.minimal_amount
             and np.max(np.abs(lambdas[i])) < ctx.minimal_amount
         ):
@@ -223,7 +224,7 @@ def parse_trades(ctx, result):
             deltas[i] = np.zeros(len(deltas[i]))
             lambdas[i] = np.zeros(len(lambdas[i]))
         trades_raw.append(lambdas[i] - deltas[i])
-    for i in range(result.count):
-        if not etas[i] == 0:
-            etas[i] == None
+    # for i in range(result.count):
+    #     if etas[i] >= 1.0 - ctx.minimal_amount:
+    #         etas[i] = None
     return etas, trades_raw

@@ -7,12 +7,14 @@ from blackbox.raw import (
     NeutronPoolsResponse,
     OsmosisPoolsResponse,
 )
-from cvm_indexer import ExtendedCvmRegistry
+from cvm_indexer import ExtendedCvmRegistry, Oracalizer
 from blackbox.settings import settings
 from cosmpy.aerial.config import NetworkConfig
 from cosmpy.aerial.contract import LedgerClient, LedgerContract
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 import requests
+
+asd
 from blackbox.cvm_runtime.response_to_get_config import GetConfigResponse
 from blackbox import raw
 from blackbox.composablefi_networks import Model as NetworksModel
@@ -28,9 +30,9 @@ from simulation.routers.data import (
     Input,
     new_pair,
     read_dummy_data,
-    AllData as CvmAllData,
+    AllData as SimulationData,
 )
-from simulation.routers.data import Ctx, read_dummy_data, AllData as CvmAllData
+from simulation.routers.data import Ctx, AllData as SimulationData
 from shelved_cache import PersistentCache
 from cachetools import TTLCache
 
@@ -44,13 +46,13 @@ cache = PersistentCache(
 # 1. return csv data + data schema in 127.0.0.1:8000/docs
 # https://github.com/ComposableFi/composable/issues/4434
 @app.get("/data/dummy/everything")
-async def data_dummy_everything() -> CvmAllData:
+async def data_dummy_everything() -> SimulationData:
     data = read_dummy_data("./simulation/routers/data/")
     return data
 
 
 @app.get("/data/dummy/usd_only_routes")
-async def data_dummy_everything() -> CvmAllData:
+async def data_dummy_everything() -> SimulationData:
     return test_generic_linear.create_usd_arbitrage_low_fees_long_path()
 
 
@@ -103,12 +105,34 @@ async def get_data_all() -> AllData:
     return result
 
 
-@app.post("/simulator/router/data")
-def simulator_router_data(data: CvmAllData, input: Input):
+@app.post("/simulator/router/dummy")
+def simulator_router_dummy(data: SimulationData, input: Input):
     """_summary_
     Given data and input, find and return route.
     """
     ctx = Ctx()
+    solution = generic_linear.route(input, data, ctx)
+    route = cvxpy_to_data(input, data, ctx, solution)
+
+    return route
+
+
+@app.get("/simulator/router")
+def simulator_router(input: Input = Depends()):
+    """_summary_
+    Given input, find and return route.
+    """
+    ctx = Ctx()
+    raw_data = get_remote_data()
+    cvm_data = ExtendedCvmRegistry.from_raw(
+        raw_data.cvm_registry,
+        raw_data.networks,
+        raw_data.cosmos_chains.chains,
+        raw_data.osmosis_pools,
+    )
+    oracles = Oracalizer.orcale_from_usd(cvm_data)
+    data = Oracalizer.for_simulation(cvm_data, oracles)
+
     solution = generic_linear.route(input, data, ctx)
     route = cvxpy_to_data(input, data, ctx, solution)
 
@@ -120,7 +144,7 @@ def skip_money_chains():
     raise Exception("For devnet testing to provide hardcoded chains list")
 
 
-@app.get("/simulator/router/dummy")
+@app.get("/simulator/router/random")
 def simulator_dummy():
     return test_generic_linear.test_simulate_all_connected_venues()
 
@@ -140,6 +164,19 @@ async def get_data_routable() -> ExtendedCvmRegistry:
         raw_data.cosmos_chains.chains,
         raw_data.osmosis_pools,
     )
+
+
+@app.get("/data/routable/oracalized_cvm")
+async def get_data_routable_oracalized() -> SimulationData:
+    raw_data = get_remote_data()
+    cvm_data = ExtendedCvmRegistry.from_raw(
+        raw_data.cvm_registry,
+        raw_data.networks,
+        raw_data.cosmos_chains.chains,
+        raw_data.osmosis_pools,
+    )
+    oracles = Oracalizer.orcale_from_usd(cvm_data)
+    return Oracalizer.for_simulation(cvm_data, oracles)
 
 
 @cachetools.cached(cache, lock=None, info=False)

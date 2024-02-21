@@ -7,26 +7,11 @@ from uuid import uuid4
 import copy
 from dataclasses import dataclass
 import functools
-import time
 
 getcontext().prec = 18
 BuyToken = NewType("BuyToken", Decimal)
 SellToken = NewType("SellToken", Decimal)
 Price = NewType("Price", Decimal)
-
-
-def timeit(func: Callable):
-    @functools.wraps(func)
-    def wrapper(*arg, **kwargs):
-        t1 = time.time()
-        res = func(*arg, **kwargs)
-
-        t2 = time.time()
-        # if t2 - t1 > 1e-3:
-        # print(f"Time elapsed in {func.__name__} {t2-t1:.6f}s args: {arg} kwargs: {kwargs}")
-        return res
-
-    return wrapper
 
 
 class OrderType(enum.Enum):
@@ -119,7 +104,6 @@ class Order:
             self.status = OrderStatus.FILLED
         self.check_constraints()
 
-    @timeit
     def check_constraints(self):
         if self.status is OrderStatus.FILLED:
             assert self.amount_out == self.amount_in * self.filled_price
@@ -352,7 +336,6 @@ class Solver:
     def limit_price(self) -> Price:
         return self.target_price
 
-    @timeit
     def f_maximaize(self, order: Order):
         if order.type is OrderType.BUY:
             return (
@@ -366,7 +349,6 @@ class Solver:
             - order.amount_filled
         )
 
-    @timeit
     def solve(self, num_orders=1000) -> Solution:
         original_price = self.orders.compute_optimal_price()
         is_buy = original_price > self.target_price

@@ -189,7 +189,7 @@ def route(
     Nproces=None,  # A parameter used for paralell programing. For now, it seems to be best to use only one threat than paralell programming
 ):
     # If the number of processes is not given, use the number of cpus
-    if Nproces == None:
+    if Nproces is None:
         Nproces = os.cpu_count()
 
     # If max_depth or splits are not lists, convert them to lists

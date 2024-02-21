@@ -38,9 +38,7 @@ def simulate():
     solution_2.print()
     Solution.match_orders(orders, orders.compute_optimal_price()).print()
 
-    order_book = Solution.random(
-        num_orders=300, volume_range=(100, 200), mean=1, std=0.01
-    )
+    Solution.random(num_orders=300, volume_range=(100, 200), mean=1, std=0.01)
 
     tokens = int(1e5)
     solver = Solver(orders, Decimal(1.1), tokens, 1000)

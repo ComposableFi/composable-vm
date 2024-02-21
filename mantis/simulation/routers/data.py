@@ -61,7 +61,7 @@ class AssetTransfers(
     TwoTokenConverter,
     Generic[TId, TAmount],
 ):
-    usd_fee_transfer: TAmount | None = None
+    usd_fee_transfer: float
     """_summary_
         this is positive whole number too
         if it is hard if None, please fail if it is None - for now will be always some
@@ -80,7 +80,7 @@ class AssetTransfers(
     """
 
     # fee per million to transfer of asset itself
-    fee_per_million: int | None = None
+    fee_per_million: int
 
     # do not care
     metadata: str | None = None
@@ -246,7 +246,7 @@ class AllData(BaseModel, Generic[TId, TAmount]):
     asset_pairs_xyk: list[
         AssetPairsXyk[TId, TAmount]
     ] | None = None  #    If we want to set default values, we need to save data structure in default
-    usd_oracles: dict[TId, int] | None = None
+    usd_oracles: dict[TId, float] | None = None
     """_summary_
       asset ids which we consider to be USD equivalents
       value - decimal exponent of token to make 1 USD
@@ -316,7 +316,7 @@ class AllData(BaseModel, Generic[TId, TAmount]):
         in_token = []
         for x in self.venue_fixed_costs_in_usd:
             token_in_usd = self.token_price_in_usd(token)
-            assert token_in_usd != None
+            assert token_in_usd is not None
             in_token.append(math.ceil(x / token_in_usd))
         return in_token
 
@@ -426,13 +426,13 @@ class AllData(BaseModel, Generic[TId, TAmount]):
             numerator = (
                 hit.weight_of_a if pair.in_asset_id == token else hit.weight_of_b
             )
-            denum = hit.weight_of_a + hit.weight_of_b
+            denumerator = hit.weight_of_a + hit.weight_of_b
             top = numerator * usd_volume
             btm = (
                 hit.in_token_amount
                 if pair.in_asset_id == token
                 else hit.out_token_amount
-            ) * denum
+            ) * denumerator
             return top * 1.0 / btm
         else:
             # go over usd_oracles and than pools(breadth first search)

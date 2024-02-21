@@ -479,7 +479,7 @@
               source ./.env
             fi
             (
-              cd mantis
+              cd ./mantis
               poetry install
             )
           '';
@@ -534,7 +534,8 @@
             runtimeInputs = [fix-py];
             text = ''
               (
-                cd mantis  && nix develop --command fix-py
+                cd ./mantis
+                nix develop --command fix-py
               )
               nix fmt
               cargo fmt
@@ -554,7 +555,7 @@
             ];
             text = ''
               (
-                cd mantis
+                cd ./mantis
                 nix develop --command check-py
               )
               nix flake show --all-systems --json --no-write-lock-file
