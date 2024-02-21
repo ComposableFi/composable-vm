@@ -37,7 +37,7 @@ from cachetools import TTLCache
 app = FastAPI()
 
 cache = PersistentCache(
-    TTLCache, filename="get_remote_data.cache", ttl=120 * 1000, maxsize=2
+    TTLCache, filename="get_remote_data.cache", ttl=12 * 1000, maxsize=2
 )
 
 

@@ -1,8 +1,10 @@
 # given CVM registry and MANTIS offchain registry, and 3rd party indexer/registry data, produce CVM unified view for ease of operations
 
-from typing import List
+from typing import List, Optional
+
 from blackbox.cvm_runtime.response_to_get_config import (
     AssetItem,
+    AssetReference7,
     ExchangeItem,
     GetConfigResponse as CvmRegistry,
     NetworkAssetItem,
@@ -21,21 +23,21 @@ class ExtendedNetworkItem(NetworkItem):
     chain_id: str
 
 
-class ExtendedExchageItem(ExchangeItem):
+class ExtendedExchangeItem(ExchangeItem):
     token_a_amount: int
     token_b_amount: int
     weight_a: float
     weight_b: float
     fee_per_million: int
-
-
+    asset_a : AssetItem
+    asset_b : AssetItem
 class ExtendedCvmRegistry(BaseModel):
     """_summary_
     Given on chain and offchain CVM registry data, produce unified view for ease of operations
     """
 
     assets: List[AssetItem]
-    exchanges: List[ExchangeItem]
+    exchanges: List[ExtendedExchangeItem]
     network_assets: List[NetworkAssetItem]
     network_to_networks: List[NetworkToNetworkItem]
     networks: List[ExtendedNetworkItem]
@@ -73,16 +75,21 @@ class ExtendedCvmRegistry(BaseModel):
 
                 gas_price_usd = indexer_1_gas_to_cvm(indexer)
                 x = ExtendedNetworkItem(
-                    # onchain
                     chain_id=static.CHAIN_ID,
                     gas_price_usd=gas_price_usd,
-                    accounts=onchain.accounts,
-                    network_id=onchain.network_id,
-                    ibc=onchain.ibc,
-                    outpost=onchain.outpost,
-                )
+                    **onchain.dict(),
+                    )
                 networks.append(x)
 
+        assets = onchains.assets
+        
+        def find_asset_by_token(token: str) -> Optional[AssetItem] :
+            for asset in assets:
+                local: AssetReference7 = asset.local.root
+                if local.native.denom == token:
+                    return asset
+            return None
+        
         exchanges = []
         for onchain in onchains.exchanges:
             if isinstance(onchain.exchange.root, OsmosisPool):
@@ -93,6 +100,19 @@ class ExtendedCvmRegistry(BaseModel):
                 if any(indexer):
                     indexer = indexer[0]
 
+                    print(indexer)
+                    token_a = indexer.token0 if indexer.token0 else indexer.pool_assets[0].token.denom
+                    token_b = indexer.token1 if indexer.token1 else indexer.pool_assets[1].token.denom
+                    asset_a = find_asset_by_token(token_a)
+                    asset_b = find_asset_by_token(token_b)
+                    
+                    if token_a is None or token_b is None:
+                        print(
+                            "error: mantis::solver::blackbox:: pool has not token denom defined ",
+                            pool_id,
+                        )
+                        continue
+                    
                     # raise Exception(indexer)
                     token_a_amount = (
                         int(indexer.token0Amount)
@@ -107,20 +127,21 @@ class ExtendedCvmRegistry(BaseModel):
                     weight_a = 1
                     weight_b = 1
                     fee_per_million = int(
+                        float(indexer.taker_fee) * (1_000_000 / 100) 
+                    ) if indexer.taker_fee else int(
                         float(indexer.pool_params.swap_fee) * (1_000_000 / 100)
-                    )
+                    ) 
                     indexer.scaling_factors
-                    x = ExtendedExchageItem(
+                    x = ExtendedExchangeItem(
+                        **onchain.dict(),                        
                         liquidity_usd=indexer.liquidityUsd,
                         token_a_amount=token_a_amount,
                         token_b_amount=token_b_amount,
                         weight_a=weight_a,
                         weight_b=weight_b,
                         fee_per_million=fee_per_million,
-                        closed=onchain.closed,
-                        exchange=onchain.exchange,
-                        exchange_id=onchain.exchange_id,
-                        network_id=onchain.network_id,
+                        asset_a = asset_a,
+                        asset_b = asset_b
                     )
                     exchanges.append(x)
                 else:
@@ -129,7 +150,6 @@ class ExtendedCvmRegistry(BaseModel):
                         pool_id,
                     )
 
-        assets = onchains.assets
         network_assets = onchains.network_assets
         network_to_networks = onchains.network_to_networks
         return cls(
@@ -139,3 +159,24 @@ class ExtendedCvmRegistry(BaseModel):
             network_to_networks=network_to_networks,
             networks=networks,
         )
+
+
+class Oracle(BaseModel):
+    # given `ExtendedCvmRegistry` and raw `AllData`, and user `Input`, produced oracalized data with assets and venues route level reachable by user
+    def from_usd(cvm: ExtendedCvmRegistry):
+        """_summary_
+            Builds USD oracle from data.
+        """
+        all_assets = [a.asset_id.root for a in cvm.assets]
+        oracle = [1] * len(all_assets)
+        for asset in all_assets:
+            for exchange in cvm.exchanges:
+                if isinstance(exchange.exchange, OsmosisPool):
+                    pool : OsmosisPool = exchange.exchange          
+        pass
+    
+    def for_simulation():
+        """
+        Makes data exactly as it handled by simulation
+        """
+        pass
