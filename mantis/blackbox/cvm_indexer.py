@@ -1,8 +1,11 @@
 # given CVM registry and MANTIS offchain registry, and 3rd party indexer/registry data, produce CVM unified view for ease of operations
 
 from typing import List
+
+from pyparsing import Optional
 from blackbox.cvm_runtime.response_to_get_config import (
     AssetItem,
+    AssetReference7,
     ExchangeItem,
     GetConfigResponse as CvmRegistry,
     NetworkAssetItem,
@@ -83,6 +86,14 @@ class ExtendedCvmRegistry(BaseModel):
                 )
                 networks.append(x)
 
+        assets = onchains.assets
+        
+        def find_asset_by_token(token: str) -> Optional[AssetItem] :
+            for asset in assets:
+                local: AssetReference7 = asset.local.root
+                    if local
+            return None
+        
         exchanges = []
         for onchain in onchains.exchanges:
             if isinstance(onchain.exchange.root, OsmosisPool):
@@ -131,7 +142,6 @@ class ExtendedCvmRegistry(BaseModel):
                         pool_id,
                     )
 
-        assets = onchains.assets
         network_assets = onchains.network_assets
         network_to_networks = onchains.network_to_networks
         return cls(
@@ -141,3 +151,23 @@ class ExtendedCvmRegistry(BaseModel):
             network_to_networks=network_to_networks,
             networks=networks,
         )
+
+
+class Oracle(BaseModel):
+    # given `ExtendedCvmRegistry` and raw `AllData`, and user `Input`, produced oracalized data with assets and venues route level reachable by user
+    def from_usd(cvm: ExtendedCvmRegistry):
+        """_summary_
+            Builds USD oracle from data.
+        """
+        all_assets = [a.asset_id.root for a in cvm.assets]
+        oracle = [1] * len(all_assets)
+        for asset in all_assets:
+            for exchange in cvm.exchanges if isinstance(exchange.exchange, OsmosisPool):
+                pool : OsmosisPool = exchange.exchange          
+        pass
+    
+    def for_simulation():
+        """
+        Makes data exactly as it handled by simulation
+        """
+        pass
