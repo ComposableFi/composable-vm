@@ -1,39 +1,39 @@
+import os
+import sys
 from typing import List
 
 import cachetools
+import requests
+import uvicorn
+from cachetools import TTLCache
+from cosmpy.aerial.config import NetworkConfig
+from cosmpy.aerial.contract import LedgerClient, LedgerContract
+from cvm_indexer import ExtendedCvmRegistry, Oracalizer
+from fastapi import Depends, FastAPI
+from shelved_cache import PersistentCache
+
+from blackbox import raw
+from blackbox.composablefi_networks import Model as NetworksModel
+from blackbox.cvm_runtime.response_to_get_config import GetConfigResponse
 from blackbox.raw import (
     AllData,
     CosmosChains,
     NeutronPoolsResponse,
     OsmosisPoolsResponse,
 )
-from cvm_indexer import ExtendedCvmRegistry, Oracalizer
 from blackbox.settings import settings
-from cosmpy.aerial.config import NetworkConfig
-from cosmpy.aerial.contract import LedgerClient, LedgerContract
-from fastapi import FastAPI, Depends
-import requests
-
-from blackbox.cvm_runtime.response_to_get_config import GetConfigResponse
-from blackbox import raw
-from blackbox.composablefi_networks import Model as NetworksModel
+from simulation.routers import data, generic_linear, test_generic_linear
 from simulation.routers.angeris_cvxpy import cvxpy_to_data
-from simulation.routers import generic_linear
-import uvicorn
-from simulation.routers import test_generic_linear
-from simulation.routers import data
-import sys
-import os
+from simulation.routers.data import (
+    AllData as SimulationData,
+)
 from simulation.routers.data import (
     AssetPairsXyk,
+    Ctx,
     Input,
     new_pair,
     read_dummy_data,
-    AllData as SimulationData,
 )
-from simulation.routers.data import Ctx, AllData as SimulationData
-from shelved_cache import PersistentCache
-from cachetools import TTLCache
 
 app = FastAPI()
 

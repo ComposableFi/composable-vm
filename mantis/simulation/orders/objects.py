@@ -1,12 +1,13 @@
 from __future__ import annotations
-from decimal import Decimal, getcontext
-import enum
-import random
-from typing import NewType, Callable
-from uuid import uuid4
+
 import copy
-from dataclasses import dataclass
+import enum
 import functools
+import random
+from dataclasses import dataclass
+from decimal import Decimal, getcontext
+from typing import Callable, NewType
+from uuid import uuid4
 
 getcontext().prec = 18
 BuyToken = NewType("BuyToken", Decimal)

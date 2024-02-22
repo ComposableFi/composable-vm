@@ -1,16 +1,18 @@
 """
 Input and output data to any algorithm for routing.
-Connect semantic data model numpy indexed values and back. 
+Connect semantic data model numpy indexed values and back.
 """
 from __future__ import annotations
-from fractions import Fraction
+
 import math
+from enum import Enum
+from fractions import Fraction
+from typing import Generic, TypeVar, Union
+
 import numpy as np
 import pandas as pd
-from enum import Enum
-from typing import TypeVar, Generic, Union
-from pydantic import BaseModel, validator
 from disjoint_set import DisjointSet
+from pydantic import BaseModel, validator
 
 # This is global unique ID for token(asset) or exchange(pool)
 TId = TypeVar("TId", int, str)
@@ -21,12 +23,12 @@ TAmount = TypeVar("TAmount", int, str)
 class Ctx(BaseModel, Generic[TAmount]):
     debug: bool = True
     """_summary_
-     If set to true, solver must output maxima information about solution 
+     If set to true, solver must output maxima information about solution
     """
     integer: bool = True
     """_summary_
      If set too true, solver must solve only integer problems.
-     All inputs to solver are really integers. 
+     All inputs to solver are really integers.
     """
 
     max_reserve_decimals: int = 10
@@ -76,7 +78,7 @@ class AssetTransfers(
 
     amount_of_out_token: TAmount
     """
-      Expected received amount LAMBDA.      
+      Expected received amount LAMBDA.
     """
 
     # fee per million to transfer of asset itself

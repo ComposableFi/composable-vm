@@ -2,26 +2,33 @@
 
 from typing import List, Optional
 
+from pydantic import BaseModel
+
+from blackbox.composablefi_networks import Model as NetworksModel
 from blackbox.cvm_runtime.response_to_get_config import (
     AssetId,
     AssetItem,
     AssetReference7,
     ExchangeItem,
-    GetConfigResponse as CvmRegistry,
     NetworkAssetItem,
     NetworkItem,
     NetworkToNetworkItem,
+)
+from blackbox.cvm_runtime.response_to_get_config import (
     ExchangeType3 as OsmosisPool,
+)
+from blackbox.cvm_runtime.response_to_get_config import (
+    GetConfigResponse as CvmRegistry,
 )
 from blackbox.osmosis_pools import Model as OsmosisPoolsModel
 from blackbox.skip_money import Chain
 from simulation.routers.data import (
     AllData as SimulationData,
+)
+from simulation.routers.data import (
     AssetPairsXyk,
     AssetTransfers,
 )
-from pydantic import BaseModel
-from blackbox.composablefi_networks import Model as NetworksModel
 
 
 class ExtendedNetworkItem(NetworkItem):

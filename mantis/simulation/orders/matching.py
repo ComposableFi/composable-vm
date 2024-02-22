@@ -1,13 +1,14 @@
 from decimal import Decimal, getcontext
+
 from objects import (
+    CFMM,
+    CFMMProfitSolver,
+    CFMMVolumeSolver,
     Order,
     OrderList,
     OrderType,
-    Solver,
     Solution,
-    CFMMVolumeSolver,
-    CFMMProfitSolver,
-    CFMM,
+    Solver,
 )
 
 

@@ -1,9 +1,12 @@
-from collections import defaultdict
 import math
+from collections import defaultdict
 from typing import Union
-from attr import dataclass
+
 import cvxpy as cp
 import numpy as np
+from anytree import Node, RenderTree
+from attr import dataclass
+
 from simulation.routers.data import (
     AllData,
     AssetPairsXyk,
@@ -13,7 +16,6 @@ from simulation.routers.data import (
     Input,
     Spawn,
 )
-from anytree import Node, RenderTree
 
 
 @dataclass
@@ -24,7 +26,7 @@ class CvxpySolution:
     """
 
     lambdas: list[cp.Variable]
-    """ 
+    """
     how much one wants to get from pool i
     """
 

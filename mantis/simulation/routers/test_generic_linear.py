@@ -1,28 +1,28 @@
 # solves using convex optimization
 import math
+
 import numpy as np
+
 from simulation.routers.angeris_cvxpy import cvxpy_to_data
 
 MAX_RESERVE = 1e10
 
+# clarabel cvxpy local mip
+import itertools
+
 from simulation.routers.data import (
+    AllData,
+    AssetPairsXyk,
+    AssetTransfers,
     Ctx,
     Input,
     TId,
     TNetworkId,
-    AssetTransfers,
-    AssetPairsXyk,
-    AllData,
     new_data,
     new_input,
     new_pair,
     new_transfer,
 )
-
-
-# clarabel cvxpy local mip
-import itertools
-
 from simulation.routers.generic_linear import route
 
 

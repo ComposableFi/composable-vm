@@ -5,11 +5,12 @@
 
 import copy
 from typing import Union
-import numpy as np
-import cvxpy as cp
-from simulation.routers.angeris_cvxpy import CvxpySolution, parse_trades
 
-from simulation.routers.data import AllData, Input, Ctx
+import cvxpy as cp
+import numpy as np
+
+from simulation.routers.angeris_cvxpy import CvxpySolution, parse_trades
+from simulation.routers.data import AllData, Ctx, Input
 
 
 # prepares data for solving and outputs raw solution from underlying engine
