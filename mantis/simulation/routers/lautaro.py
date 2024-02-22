@@ -49,7 +49,6 @@ class Edge:
             float(e.fee_per_million) / 1_000_000.0,
             float(e.fee_per_million) / 1_000_000.0,
         ]
-        # self.CF = [usd_oracles[e.in_asset_id]*self.toFloat(e.usd_fee_transfer), usd_oracles[e.out_asset_id]*self.toFloat(e.usd_fee_transfer)]
         self.CF = [0, 0]
 
     def __initFromPairsXyk(
