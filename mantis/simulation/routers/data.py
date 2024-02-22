@@ -8,6 +8,7 @@ import math
 from enum import Enum
 from fractions import Fraction
 from typing import Generic, TypeVar, Union
+from mantis.simulation.routers.oracles import PartialUsdOracle
 
 import numpy as np
 import pandas as pd
@@ -248,7 +249,7 @@ class AllData(BaseModel, Generic[TId, TAmount]):
     asset_pairs_xyk: list[
         AssetPairsXyk[TId, TAmount]
     ] | None = None  #    If we want to set default values, we need to save data structure in default
-    usd_oracles: dict[TId, float] | None = None
+    usd_oracles: dict[TId, float | None]
     """_summary_
       asset ids which we consider to be USD equivalents
       value - decimal exponent of token to make 1 USD
@@ -408,38 +409,9 @@ class AllData(BaseModel, Generic[TId, TAmount]):
     # @property
     # @lru_cache
     def token_price_in_usd(self, token: TId) -> float | None:
-        """_summary_
-        Either uses direct USD price from pool official oracle.
-        Or uses list of USD and tres to find pool for that assets directly with USD.
-        Returns:
-            float | None: Value if found price, None if no price founds
-        """
-        hit = None
-        for pair in self.asset_pairs_xyk:
-            if (
-                pair.in_asset_id == token
-                or pair.out_asset_id == token
-                or pair.pool_value_in_usd
-            ):
-                hit = pair
-                break
-        if hit:
-            usd_volume = hit.pool_value_in_usd
-            numerator = (
-                hit.weight_of_a if pair.in_asset_id == token else hit.weight_of_b
-            )
-            denumerator = hit.weight_of_a + hit.weight_of_b
-            top = numerator * usd_volume
-            btm = (
-                hit.in_token_amount
-                if pair.in_asset_id == token
-                else hit.out_token_amount
-            ) * denumerator
-            return top * 1.0 / btm
-        else:
-            # go over usd_oracles and than pools(breadth first search)
-            return None
-
+        transfers = [(x.in_asset_id, x.out_asset_id) for x in self.asset_transfers]
+        oracles = PartialUsdOracle.route(self.usd_oracles, transfers)
+        return oracles.get(token, None)
 
 # helpers to setup tests data
 
