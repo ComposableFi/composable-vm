@@ -51,7 +51,7 @@ async def data_dummy_everything() -> SimulationData:
 
 
 @app.get("/data/dummy/usd_only_routes")
-async def data_dummy_everything() -> SimulationData:
+async def data_dummy_usd_only_routes() -> SimulationData:
     return test_generic_linear.create_usd_arbitrage_low_fees_long_path()
 
 
@@ -155,7 +155,7 @@ async def get_data_routable() -> raw.AllData:
 
 
 @app.get("/data/routable/cvm")
-async def get_data_routable() -> ExtendedCvmRegistry:
+async def get_data_routable_cvm() -> ExtendedCvmRegistry:
     raw_data = get_remote_data()
     return ExtendedCvmRegistry.from_raw(
         raw_data.cvm_registry,

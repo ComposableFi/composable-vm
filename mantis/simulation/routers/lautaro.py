@@ -24,11 +24,8 @@ class Edge:
     F: list[float]  # fee of each token in the edge
     CF: list[float]  # constant fee of each token in the edge
 
-    def toFloat(self, x):  # Cast to float using 0.0 when it fails
-        try:
-            return float(x)
-        except:
-            return 0.0
+    def toFloatOrZero(self, x):  # Cast to float using 0.0 when it fails
+        return float(x) if x else 0.0
 
     def __init__(
         self,
@@ -61,7 +58,7 @@ class Edge:
         self.U = [tokensIds[e.in_asset_id], tokensIds[e.out_asset_id]]
         self.B = [e.in_token_amount, e.out_token_amount]
         self.W = [e.weight_of_a, e.weight_of_b]
-        self.F = [self.toFloat(e.fee_in), self.toFloat(e.fee_out)]
+        self.F = [self.toFloatOrZero(e.fee_in), self.toFloatOrZero(e.fee_out)]
         self.CF = [0, 0]
 
     def GetAmount(self, Ti, Xi):

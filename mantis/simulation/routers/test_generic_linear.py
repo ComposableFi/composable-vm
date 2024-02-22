@@ -1,15 +1,11 @@
 # solves using convex optimization
+# clarabel cvxpy local mip
+import itertools
 import math
 
 import numpy as np
 
 from simulation.routers.angeris_cvxpy import cvxpy_to_data
-
-MAX_RESERVE = 1e10
-
-# clarabel cvxpy local mip
-import itertools
-
 from simulation.routers.data import (
     AllData,
     AssetPairsXyk,
@@ -24,6 +20,8 @@ from simulation.routers.data import (
     new_transfer,
 )
 from simulation.routers.generic_linear import route
+
+MAX_RESERVE = 1e10
 
 
 # simulate denom paths to and from chains, with center node
@@ -392,4 +390,4 @@ def simulate_all_to_all_connected_chains_topology(input: Input):
 
 
 if __name__ == "__main__":
-    _test_simulate_all_connected_venues()
+    test_simulate_all_connected_venues()

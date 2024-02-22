@@ -1,10 +1,8 @@
 # solves using convex optimization
-import numpy as np
-
-MAX_RESERVE = 1e10
-
 # clarabel cvxpy local mip
 import itertools
+
+import numpy as np
 
 from simulation.routers.data import (
     AllData,

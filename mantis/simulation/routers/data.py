@@ -145,7 +145,7 @@ class AssetPairsXyk(
     metadata: str | None = None
 
     @validator("metadata", pre=True, always=True)
-    def replace_nan_with_None(cls, v):
+    def replace_nan_with_metadata_None(cls, v):
         return None if isinstance(v, float) else v
 
 
