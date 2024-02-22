@@ -52,19 +52,3 @@ def test_output_route_centauri_osmosis():
         next=[exchange.model_dump()],
     )
     SingleInputAssetCvmRoute(next=[spawn], input_amount=1000)
-
-
-# poetry run pytest mantis/simulation/routers/test_data.py
-# read json
-# convert to Xyk with dummy id -> id
-
-
-def test_disjoint_set():
-    from disjoint_set import DisjointSet
-
-    ds = DisjointSet()
-    ds.union(1, 2)
-    ds.union(3, 4)
-    ds.union(5, 1)
-    ds.union(6, 6)
-    assert list(ds.itersets())[0] == {1, 2, 5}
