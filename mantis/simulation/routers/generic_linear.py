@@ -141,10 +141,15 @@ def solve(
             token_b_global = issuance * all_data.global_reservers_of(
                 all_data.venues_tokens[i][1]
             )
-            if token_a_global <= ctx.minimal_amount or token_b_global <= ctx.minimal_amount:
-                print("warning:: mantis::simulation::router:: trading with zero liquid amount of token")
+            if (
+                token_a_global <= ctx.minimal_amount
+                or token_b_global <= ctx.minimal_amount
+            ):
+                print(
+                    "warning:: mantis::simulation::router:: trading with zero liquid amount of token"
+                )
             # constraints.append(deltas[i] <= etas[i] * [token_a_global, token_b_global])
-            constraints.append(cp.multiply(deltas[i],etas[i]) >= deltas[i])
+            constraints.append(cp.multiply(deltas[i], etas[i]) >= deltas[i])
     # Set up and solve problem
     problem = cp.Problem(obj, constraints)
     # success: CLARABEL,
@@ -154,13 +159,13 @@ def solve(
     problem.solve(
         verbose=ctx.debug,
         solver=cp.SCIP,
-        qcp= False,
-        gp = False,
+        qcp=False,
+        gp=False,
     )
 
     if problem.status not in ["optimal", "optimal_inaccurate"]:
         raise Exception(f"Problem status: {problem.status}")
-    
+
     print(
         f"\033[1;91mTotal amount out: {psi.value[all_data.index_of_token(input.out_token_id)]}\033[0m"
     )

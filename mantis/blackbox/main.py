@@ -14,7 +14,6 @@ from cosmpy.aerial.contract import LedgerClient, LedgerContract
 from fastapi import FastAPI, Depends
 import requests
 
-asd
 from blackbox.cvm_runtime.response_to_get_config import GetConfigResponse
 from blackbox import raw
 from blackbox.composablefi_networks import Model as NetworksModel

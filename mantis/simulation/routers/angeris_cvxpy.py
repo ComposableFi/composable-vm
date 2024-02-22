@@ -81,7 +81,7 @@ def cvxpy_to_data(
     _etas, trades_raw = parse_trades(ctx, result)
     if ctx.debug:
         print("trades_raw", trades_raw)
-        
+
     # attach tokens ids to trades
     trades = []
 

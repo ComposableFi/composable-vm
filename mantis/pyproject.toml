@@ -81,5 +81,10 @@ blackbox = 'blackbox.main:start'
 dzmitry_solver = 'simulation.routers.test_dzmitry:simulate'
 
 [tool.ruff]
-unsafe-fixes = false
+unsafe-fixes = true
+respect-gitignore = true
+line-length = 88
+indent-width = 4
+fixable = ["ALL"]
+unfixable = []
 # use Unition and Optional for types, not |
