@@ -1,27 +1,25 @@
 # solves using convex optimization
-import numpy as np
+# clarabel cvxpy local mip
+import itertools
 import time
 
-MAX_RESERVE = 1e10
+import numpy as np
 
+from simulation.routers import lautaro
 from simulation.routers.data import (
+    AllData,
+    AssetPairsXyk,
+    AssetTransfers,
     Input,
     TId,
     TNetworkId,
-    AssetTransfers,
-    AssetPairsXyk,
-    AllData,
     new_data,
     new_input,
     new_pair,
     new_transfer,
 )
 
-
-# clarabel cvxpy local mip
-import itertools
-
-from simulation.routers import lautaro
+MAX_RESERVE = 1e10
 
 
 # simulate denom paths to and from chains, with center node

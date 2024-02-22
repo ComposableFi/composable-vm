@@ -1,16 +1,16 @@
 import copy
-import threading as th
 import os
-# import time
+import threading as th
 
+# import time
 from simulation.routers.data import (
     AllData,
-    Input,
-    TId,
-    Ctx,
-    AssetTransfers,
     AssetPairsXyk,
+    AssetTransfers,
+    Ctx,
+    Input,
     TAmount,
+    TId,
 )
 
 
@@ -24,11 +24,8 @@ class Edge:
     F: list[float]  # fee of each token in the edge
     CF: list[float]  # constant fee of each token in the edge
 
-    def toFloat(self, x):  # Cast to float using 0.0 when it fails
-        try:
-            return float(x)
-        except:
-            return 0.0
+    def toFloatOrZero(self, x):  # Cast to float using 0.0 when it fails
+        return float(x) if x else 0.0
 
     def __init__(
         self,
@@ -61,7 +58,7 @@ class Edge:
         self.U = [tokensIds[e.in_asset_id], tokensIds[e.out_asset_id]]
         self.B = [e.in_token_amount, e.out_token_amount]
         self.W = [e.weight_of_a, e.weight_of_b]
-        self.F = [self.toFloat(e.fee_in), self.toFloat(e.fee_out)]
+        self.F = [self.toFloatOrZero(e.fee_in), self.toFloatOrZero(e.fee_out)]
         self.CF = [0, 0]
 
     def GetAmount(self, Ti, Xi):
@@ -189,7 +186,7 @@ def route(
     Nproces=None,  # A parameter used for paralell programing. For now, it seems to be best to use only one threat than paralell programming
 ):
     # If the number of processes is not given, use the number of cpus
-    if Nproces == None:
+    if Nproces is None:
         Nproces = os.cpu_count()
 
     # If max_depth or splits are not lists, convert them to lists

@@ -1,16 +1,18 @@
 """
 Input and output data to any algorithm for routing.
-Connect semantic data model numpy indexed values and back. 
+Connect semantic data model numpy indexed values and back.
 """
 from __future__ import annotations
-from fractions import Fraction
+
 import math
+from enum import Enum
+from fractions import Fraction
+from typing import Generic, TypeVar, Union
+
 import numpy as np
 import pandas as pd
-from enum import Enum
-from typing import TypeVar, Generic, Union
-from pydantic import BaseModel, validator
 from disjoint_set import DisjointSet
+from pydantic import BaseModel, validator
 
 # This is global unique ID for token(asset) or exchange(pool)
 TId = TypeVar("TId", int, str)
@@ -21,12 +23,12 @@ TAmount = TypeVar("TAmount", int, str)
 class Ctx(BaseModel, Generic[TAmount]):
     debug: bool = True
     """_summary_
-     If set to true, solver must output maxima information about solution 
+     If set to true, solver must output maxima information about solution
     """
     integer: bool = True
     """_summary_
      If set too true, solver must solve only integer problems.
-     All inputs to solver are really integers. 
+     All inputs to solver are really integers.
     """
 
     max_reserve_decimals: int = 10
@@ -61,7 +63,7 @@ class AssetTransfers(
     TwoTokenConverter,
     Generic[TId, TAmount],
 ):
-    usd_fee_transfer: TAmount | None = None
+    usd_fee_transfer: float
     """_summary_
         this is positive whole number too
         if it is hard if None, please fail if it is None - for now will be always some
@@ -76,11 +78,11 @@ class AssetTransfers(
 
     amount_of_out_token: TAmount
     """
-      Expected received amount LAMBDA.      
+      Expected received amount LAMBDA.
     """
 
     # fee per million to transfer of asset itself
-    fee_per_million: int | None = None
+    fee_per_million: int
 
     # do not care
     metadata: str | None = None
@@ -143,7 +145,7 @@ class AssetPairsXyk(
     metadata: str | None = None
 
     @validator("metadata", pre=True, always=True)
-    def replace_nan_with_None(cls, v):
+    def replace_nan_with_metadata_None(cls, v):
         return None if isinstance(v, float) else v
 
 
@@ -246,7 +248,7 @@ class AllData(BaseModel, Generic[TId, TAmount]):
     asset_pairs_xyk: list[
         AssetPairsXyk[TId, TAmount]
     ] | None = None  #    If we want to set default values, we need to save data structure in default
-    usd_oracles: dict[TId, int] | None = None
+    usd_oracles: dict[TId, float] | None = None
     """_summary_
       asset ids which we consider to be USD equivalents
       value - decimal exponent of token to make 1 USD
@@ -316,7 +318,7 @@ class AllData(BaseModel, Generic[TId, TAmount]):
         in_token = []
         for x in self.venue_fixed_costs_in_usd:
             token_in_usd = self.token_price_in_usd(token)
-            assert token_in_usd != None
+            assert token_in_usd is not None
             in_token.append(math.ceil(x / token_in_usd))
         return in_token
 
@@ -426,13 +428,13 @@ class AllData(BaseModel, Generic[TId, TAmount]):
             numerator = (
                 hit.weight_of_a if pair.in_asset_id == token else hit.weight_of_b
             )
-            denum = hit.weight_of_a + hit.weight_of_b
+            denumerator = hit.weight_of_a + hit.weight_of_b
             top = numerator * usd_volume
             btm = (
                 hit.in_token_amount
                 if pair.in_asset_id == token
                 else hit.out_token_amount
-            ) * denum
+            ) * denumerator
             return top * 1.0 / btm
         else:
             # go over usd_oracles and than pools(breadth first search)

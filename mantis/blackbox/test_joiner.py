@@ -9,12 +9,12 @@ from blackbox.cvm_runtime.execute import (
 
 
 def test_bases():
-    asset = AssetItem(
+    AssetItem(
         asset_id=AssetId("42"),
         local=AssetReference(AssetReference1(native=Native(denom="osmo"))),
         network_id=NetworkId("2"),
     )
-    asset = AssetItem(
+    AssetItem(
         asset_id=AssetId("13"),
         local=AssetReference(AssetReference1(native=Native(denom="pica"))),
         network_id=NetworkId("3"),

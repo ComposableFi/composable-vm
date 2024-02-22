@@ -1,29 +1,27 @@
 # solves using convex optimization
+# clarabel cvxpy local mip
+import itertools
 import math
+
 import numpy as np
+
 from simulation.routers.angeris_cvxpy import cvxpy_to_data
-
-MAX_RESERVE = 1e10
-
 from simulation.routers.data import (
+    AllData,
+    AssetPairsXyk,
+    AssetTransfers,
     Ctx,
     Input,
     TId,
     TNetworkId,
-    AssetTransfers,
-    AssetPairsXyk,
-    AllData,
     new_data,
     new_input,
     new_pair,
     new_transfer,
 )
-
-
-# clarabel cvxpy local mip
-import itertools
-
 from simulation.routers.generic_linear import route
+
+MAX_RESERVE = 1e10
 
 
 # simulate denom paths to and from chains, with center node
@@ -261,7 +259,10 @@ def test_arbitrage_loop_of_start_middle_final_assets():
 
 
 def test_simple_symmetric_and_asymmetric_split():
-    s1 = new_pair(1, "A", "B", 0, 0, 1, 1, 200_000, 1_000, 1_000)
+    reserve = 400
+    input = 100
+    assert reserve > input
+    s1 = new_pair(1, "A", "B", 0, 0, 1, 1, 200_000, reserve, reserve)
     s2 = new_pair(
         1,
         "A",
@@ -271,8 +272,8 @@ def test_simple_symmetric_and_asymmetric_split():
         1,
         1,
         200_000,
-        1_000,
-        1_000,
+        reserve,
+        reserve,
     )
     s3 = new_pair(
         1,
@@ -283,8 +284,8 @@ def test_simple_symmetric_and_asymmetric_split():
         1,
         1,
         200_000,
-        1_000,
-        1_000,
+        reserve,
+        reserve,
     )
     s4 = new_pair(
         1,
@@ -295,8 +296,8 @@ def test_simple_symmetric_and_asymmetric_split():
         1,
         1,
         200_000,
-        1_000,
-        1_000,
+        reserve,
+        reserve,
     )
 
     data = new_data([s1, s2, s3, s4], [])
@@ -304,11 +305,13 @@ def test_simple_symmetric_and_asymmetric_split():
     input = new_input("A", "D", 100, 10)
     result = route(input, data)
     solution = cvxpy_to_data(input, data, ctx, result)
+    print("===============================")
+    print(solution)
     assert solution.next[0].next[0].out_asset_id == "D"
     assert solution.next[1].next[0].out_asset_id == "D"
     assert (
         result.received(data.index_of_token("D"))
-        == 90
+        == 79.0
         == (solution.next[0].next[0].out_amount + solution.next[1].next[0].out_amount)
     )
 
@@ -331,7 +334,7 @@ def test_simulate_all_connected_venues():
     print("=============== solving ========================")
     ctx = Ctx()
     result = route(input, data, ctx)
-    solution = cvxpy_to_data(input, data, ctx, result)
+    cvxpy_to_data(input, data, ctx, result)
     print(result)
 
 
@@ -387,4 +390,4 @@ def simulate_all_to_all_connected_chains_topology(input: Input):
 
 
 if __name__ == "__main__":
-    _test_simulate_all_connected_venues()
+    test_simulate_all_connected_venues()
