@@ -149,8 +149,8 @@ def solve(
                 print(
                     "warning:: mantis::simulation::router:: trading with zero liquid amount of token"
                 )
-            # constraints.append(deltas[i] <= etas[i] * [token_a_global, token_b_global])
-            constraints.append(cp.multiply(deltas[i], etas[i]) >= deltas[i])
+            constraints.append(deltas[i] <= etas[i] * [token_a_global, token_b_global])
+            # constraints.append(cp.multiply(deltas[i], etas[i]) >= deltas[i])
     # Set up and solve problem
     problem = cp.Problem(obj, constraints)
     # success: CLARABEL,

@@ -21,6 +21,7 @@ from simulation.routers.data import (
 
 MAX_RESERVE = 1e10
 
+
 # simulate denom paths to and from chains, with center node
 def populate_chain_dict(chains: dict[TNetworkId, list[TId]], center_node: TNetworkId):
     # Add tokens with denom to Center Nod
