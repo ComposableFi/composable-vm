@@ -36,7 +36,28 @@ from simulation.routers.data import (
 )
 from simulation.routers.scaler import scale_in
 
-app = FastAPI()
+
+from fastapi import FastAPI
+from loguru.custom_logging import CustomizeLogger
+from pathlib import Path
+from fastapi import Request
+import logging
+
+logger = logging.getLogger(__name__)
+
+config_path=Path(__file__).with_name("logging_config.json")
+
+def create_app() -> FastAPI:
+    app = FastAPI(title='CustomLogger', debug=False)
+    logger = CustomizeLogger.make_logger(config_path)
+    app.logger = logger
+
+    return app
+
+
+app = create_app()
+
+# app = FastAPI()
 
 cache = PersistentCache(
     TTLCache, filename="get_remote_data.cache", ttl=12 * 1000, maxsize=2

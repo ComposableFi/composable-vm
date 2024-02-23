@@ -6,6 +6,8 @@ authors = []
 packages = [
     { include = "simulation" },
     { include = "blackbox" },
+    { include = "loguru" },
+    { include = "custom_logging.py", from = "loguru" },
     { include = "cvm_runtime", from = "blackbox" },
     { include = "main.py", from = "blackbox" },
 ]
