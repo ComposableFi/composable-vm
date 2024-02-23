@@ -13,7 +13,7 @@ import pandas as pd
 from disjoint_set import DisjointSet
 from pydantic import BaseModel, validator
 
-from mantis.simulation.routers.oracles import SetOracle
+from simulation.routers.oracles import SetOracle
 
 # This is global unique ID for token(asset) or exchange(pool)
 TId = TypeVar("TId", int, str)
@@ -74,12 +74,14 @@ class AssetTransfers(
 
     amount_of_in_token: TAmount
     """
-     Tendered amount of token on chain were it is
+     Tendered amount of token on chain were it is.
+     Must be like escrowed amount.
     """
 
     amount_of_out_token: TAmount
     """
       Expected received amount LAMBDA.
+      Must be like liquid amount of this token minted.
     """
 
     # fee per million to transfer of asset itself
