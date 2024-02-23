@@ -456,7 +456,31 @@ class AllData(BaseModel, Generic[TId, TAmount]):
         transfers = [(x.in_asset_id, x.out_asset_id) for x in self.asset_transfers]
         print(self.usd_oracles)
         oracles = SetOracle.route(self.usd_oracles, transfers)
-        return oracles.get(token, None)
+        if oracles:
+            oracle =  oracles.get(token, None)
+            if oracle:
+                return oracle
+        for pair in self.asset_pairs_xyk:
+            if (
+                pair.in_asset_id == token
+                or pair.out_asset_id == token
+                or pair.pool_value_in_usd
+            ):
+                hit = pair
+                break
+        if hit:
+            usd_volume = hit.pool_value_in_usd
+            numerator = (
+                hit.weight_of_a if pair.in_asset_id == token else hit.weight_of_b
+            )
+            denumerator = hit.weight_of_a + hit.weight_of_b
+            top = numerator * usd_volume
+            btm = (
+                hit.in_token_amount
+                if pair.in_asset_id == token
+                else hit.out_token_amount
+            ) * denumerator
+            return top * 1.0 / btm
 
 # helpers to setup tests data
 

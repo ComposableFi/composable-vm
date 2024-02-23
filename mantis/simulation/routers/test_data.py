@@ -52,7 +52,7 @@ def test_token_price_in_usd_via_oracle():
         20,
         80,
     )
-    data = new_data([pica_usd], [], {1: 1.0, 2: 0.625})
+    data = new_data([pica_usd], [], {1: 1.0, 2: None})
     price = data.token_price_in_usd(2)
     assert price == 0.625
     assert data.all_tokens == [1, 2]
