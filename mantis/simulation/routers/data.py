@@ -249,7 +249,7 @@ class AllData(BaseModel, Generic[TId, TAmount]):
     asset_pairs_xyk: list[
         AssetPairsXyk[TId, TAmount]
     ] | None = None  #    If we want to set default values, we need to save data structure in default
-    usd_oracles: dict[TId, float | None]
+    usd_oracles: dict[TId, float | None] | None = None
     """_summary_
       asset ids which we consider to be USD equivalents
       value - decimal exponent of token to make 1 USD
@@ -375,12 +375,17 @@ class AllData(BaseModel, Generic[TId, TAmount]):
             routable.union(transfer.in_asset_id, transfer.out_asset_id)
         return routable
     
-    def transfer_to_exchange(self, from_asset_id: TId, to_asset_id: TId) -> list[TId]:
+    def transfer_to_exchange(self, from_asset_id: TId) -> list[TId]:
         """
         if can transfer asset to reach exchanges.
         return list of exchanges
         """
+        result = set()
         routable = self.transfers_disjoint_set
+        for exchange in self.asset_pairs_xyk:
+            if routable.connected(from_asset_id, exchange.in_asset_id) or routable.connected(from_asset_id, exchange.out_asset_id):
+                result.add(exchange.pool_id)
+        return list(result)
          
 
     @property
@@ -449,16 +454,18 @@ class AllData(BaseModel, Generic[TId, TAmount]):
         How much 1 amount of token is worth in USD
         """
         transfers = [(x.in_asset_id, x.out_asset_id) for x in self.asset_transfers]
+        print(self.usd_oracles)
         oracles = SetOracle.route(self.usd_oracles, transfers)
         return oracles.get(token, None)
 
 # helpers to setup tests data
 
 
-def new_data(pairs: list[AssetPairsXyk], transfers: list[AssetTransfers]) -> AllData:
+def new_data(pairs: list[AssetPairsXyk], transfers: list[AssetTransfers], usd_oracles = None) -> AllData:
     return AllData(
         asset_pairs_xyk=list[AssetPairsXyk](pairs),
         asset_transfers=list[AssetTransfers](transfers),
+        usd_oracles=usd_oracles,
     )
 
 

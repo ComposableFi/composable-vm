@@ -1,18 +1,27 @@
 # oracles which tell price via connections and possible amounts available to go over venues
-from typing import Union
+import copy
+from typing import TypeVar, Union
 from disjoint_set import DisjointSet
-from simulation.routers.data import TId
+
+TId = TypeVar("TId", int, str)
+TNetworkId = TypeVar("TNetworkId", int, str)
+TAmount = TypeVar("TAmount", int, str)
 
 # given set of data about assets, find very approximate ratio of one asset to other
 class SetOracle:   
    
-   def route(partial_oracles: dict[TId, Union[float, None]], transfers: list[tuple[TId, TId]]):
+   def route(partial_oracles: dict[TId, Union[float, None] | None], transfers: list[tuple[TId, TId]]):
       """
       Very fast one and super sloppy on, 
       considers if there is connection in general,
       same price and all price everywhere.
       No penalty for high fees/long route and non equilibrium.
       """
+      
+      if not partial_oracles:
+         return
+      print(partial_oracles)
+      partial_oracles = copy.deepcopy(partial_oracles)
       ds = DisjointSet()
       for t in transfers:
          ds.union(t[0], t[1])
@@ -21,6 +30,7 @@ class SetOracle:
             for other, value in partial_oracles.items():
                if value and ds.connected(id, other):
                   partial_oracles[id] = value
+      return partial_oracles
    
 def test():
    oracles = {
