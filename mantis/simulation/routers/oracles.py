@@ -1,10 +1,11 @@
-# oracles which tell price via connections
+# oracles which tell price via connections and possible amounts available to go over venues
 from typing import Union
 from disjoint_set import DisjointSet
 from simulation.routers.data import TId
 
 # given set of data about assets, find very approximate ratio of one asset to other
-class PartialUsdOracle:   
+class SetOracle:   
+   
    def route(partial_oracles: dict[TId, Union[float, None]], transfers: list[tuple[TId, TId]]):
       """
       Very fast one and super sloppy on, 
@@ -20,8 +21,7 @@ class PartialUsdOracle:
             for other, value in partial_oracles.items():
                if value and ds.connected(id, other):
                   partial_oracles[id] = value
-            
-                     
+   
 def test():
    oracles = {
       1 : 1.0,
@@ -34,7 +34,7 @@ def test():
       (1, 2),
    ]
    
-   PartialUsdOracle.route(oracles, transfers)
+   SetOracle.route(oracles, transfers)
    assert oracles[2] == 2.0 
    assert oracles[1] == 1.0 
    assert oracles[3] is None 
