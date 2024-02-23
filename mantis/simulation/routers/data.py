@@ -4,7 +4,6 @@ Connect semantic data model numpy indexed values and back.
 """
 from __future__ import annotations
 
-import math
 from enum import Enum
 from fractions import Fraction
 from typing import Generic, TypeVar, Union
@@ -13,6 +12,8 @@ import numpy as np
 import pandas as pd
 from disjoint_set import DisjointSet
 from pydantic import BaseModel, validator
+
+from simulation.routers.oracles import SetOracle
 
 # This is global unique ID for token(asset) or exchange(pool)
 TId = TypeVar("TId", int, str)
@@ -73,12 +74,14 @@ class AssetTransfers(
 
     amount_of_in_token: TAmount
     """
-     Tendered amount of token on chain were it is
+     Tendered amount of token on chain were it is.
+     Must be like escrowed amount.
     """
 
     amount_of_out_token: TAmount
     """
       Expected received amount LAMBDA.
+      Must be like liquid amount of this token minted.
     """
 
     # fee per million to transfer of asset itself
@@ -248,7 +251,7 @@ class AllData(BaseModel, Generic[TId, TAmount]):
     asset_pairs_xyk: list[
         AssetPairsXyk[TId, TAmount]
     ] | None = None  #    If we want to set default values, we need to save data structure in default
-    usd_oracles: dict[TId, float] | None = None
+    usd_oracles: dict[TId, float | None] | None = None
     """_summary_
       asset ids which we consider to be USD equivalents
       value - decimal exponent of token to make 1 USD
@@ -282,7 +285,7 @@ class AllData(BaseModel, Generic[TId, TAmount]):
         for span in ds.itersets():
             if token in span:
                 for token in span:
-                    total_issuance += self.reserves_of(token)
+                    total_issuance += self.total_reserveres_of(token)
                 break
         return total_issuance
 
@@ -313,14 +316,23 @@ class AllData(BaseModel, Generic[TId, TAmount]):
 
     def venue_fixed_costs_in(self, token: TId) -> list[int]:
         """_summary_
-        Converts fixed price of venue in usd to specific token
+        Converts fixed price of all venues to token
         """
-        in_token = []
-        for x in self.venue_fixed_costs_in_usd:
-            token_in_usd = self.token_price_in_usd(token)
-            assert token_in_usd is not None
-            in_token.append(math.ceil(x / token_in_usd))
-        return in_token
+        token_price_in_usd = self.token_price_in_usd(token)
+        if not token_price_in_usd:
+            print(
+                "WARN: mantis::simulation::routers:: token has no price found to compare to fixed costs, so fixed costs would be considered 1 or 0"
+            )
+
+        in_received_token = []
+        for fixed_cost_in_usd in self.venue_fixed_costs_in_usd:
+            if not token_price_in_usd and fixed_cost_in_usd > 0:
+                in_received_token.append(1)
+            elif not token_price_in_usd and fixed_cost_in_usd == 0:
+                in_received_token.append(0)
+            else:
+                in_received_token.append(int(fixed_cost_in_usd / token_price_in_usd))
+        return in_received_token
 
     @property
     def venues_proportional_reductions(self) -> list[Fraction]:
@@ -357,7 +369,42 @@ class AllData(BaseModel, Generic[TId, TAmount]):
             return self.asset_pairs_xyk[index]
         return self.asset_transfers[index - len(self.asset_pairs_xyk)]
 
-    def reserves_of(self, token: TId) -> int:
+    @property
+    def transfers_disjoint_set(self) -> DisjointSet:
+        """
+        Find all assets which can be routed one into other
+        """
+        routable = DisjointSet()
+        for transfer in self.asset_transfers:
+            routable.union(transfer.in_asset_id, transfer.out_asset_id)
+        return routable
+
+    def transfer_to_exchange(self, from_asset_id: TId) -> list[TId]:
+        """
+        if can transfer asset to reach exchanges.
+        return list of exchanges
+        """
+        result = set()
+        routable = self.transfers_disjoint_set
+        for exchange in self.asset_pairs_xyk:
+            if routable.connected(
+                from_asset_id, exchange.in_asset_id
+            ) or routable.connected(from_asset_id, exchange.out_asset_id):
+                result.add(exchange.pool_id)
+        return list(result)
+
+    @property
+    def maximal_reserves(self, token: TId, input: TAmount) -> TAmount:
+        """_summary_
+        Given token find maximal reserve venue it across all venues.
+        """
+
+        pass
+
+    def total_reserveres_of(self, token: TId) -> int:
+        """
+        Approximation of global reserves of token in all venues
+        """
         global_value_locked = 0
         for x in self.asset_pairs_xyk:
             if x.out_asset_id == token:
@@ -409,12 +456,15 @@ class AllData(BaseModel, Generic[TId, TAmount]):
     # @lru_cache
     def token_price_in_usd(self, token: TId) -> float | None:
         """_summary_
-        Either uses direct USD price from pool official oracle.
-        Or uses list of USD and tres to find pool for that assets directly with USD.
-        Returns:
-            float | None: Value if found price, None if no price founds
+        How much 1 amount of token is worth in USD
         """
-        hit = None
+        transfers = [(x.in_asset_id, x.out_asset_id) for x in self.asset_transfers]
+        print(self.usd_oracles)
+        oracles = SetOracle.route(self.usd_oracles, transfers)
+        if oracles:
+            oracle = oracles.get(token, None)
+            if oracle:
+                return oracle
         for pair in self.asset_pairs_xyk:
             if (
                 pair.in_asset_id == token
@@ -436,18 +486,18 @@ class AllData(BaseModel, Generic[TId, TAmount]):
                 else hit.out_token_amount
             ) * denumerator
             return top * 1.0 / btm
-        else:
-            # go over usd_oracles and than pools(breadth first search)
-            return None
 
 
 # helpers to setup tests data
 
 
-def new_data(pairs: list[AssetPairsXyk], transfers: list[AssetTransfers]) -> AllData:
+def new_data(
+    pairs: list[AssetPairsXyk], transfers: list[AssetTransfers], usd_oracles=None
+) -> AllData:
     return AllData(
         asset_pairs_xyk=list[AssetPairsXyk](pairs),
         asset_transfers=list[AssetTransfers](transfers),
+        usd_oracles=usd_oracles,
     )
 
 

@@ -254,7 +254,6 @@ class Oracalizer(BaseModel):
                     all_usds[i] += exchange.b_usd
         result = []
         for id, usd, liquidity in zip(all_assets, all_usds, all_reserves):
-            print("============")
             print(id, usd, liquidity)
             result.append(Oracle(asset_id=id, total_usd=usd, total_liquidity=liquidity))
 
