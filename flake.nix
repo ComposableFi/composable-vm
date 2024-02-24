@@ -445,6 +445,7 @@
 
             "${inputs'.scip.packages.scip}/lib"
           ];
+          BETTER_EXCEPTIONS=1;
 
           buildInputs =
             [

@@ -90,10 +90,6 @@ class AssetTransfers(
     # do not care
     metadata: str | None = None
 
-    @property
-    def price_limit(self):
-        return self.amount_of_in_token / self.amount_of_out_token
-
     @validator("metadata", pre=True, always=True)
     def replace_nan_with_None(cls, v):
         return None if isinstance(v, float) else v
@@ -285,7 +281,7 @@ class AllData(BaseModel, Generic[TId, TAmount]):
         for span in ds.itersets():
             if token in span:
                 for token in span:
-                    total_issuance += self.total_reserveres_of(token)
+                    total_issuance += self.total_reserves_of(token)
                 break
         return total_issuance
 
@@ -353,15 +349,21 @@ class AllData(BaseModel, Generic[TId, TAmount]):
     def all_reserves(self) -> list[np.ndarray[int]]:
         """_summary_
         Produces reserves per asset in next order
-        - xyk
-        - escrow amounts
+        - Balancer/UniV2 pools
+        - Cross chain transfers (escrow amounts and liquidity)
         """
-
         reserves = []
         for x in self.asset_pairs_xyk:
             reserves.append(np.array([x.in_token_amount, x.out_token_amount]))
         for x in self.asset_transfers:
-            reserves.append(np.array([x.amount_of_in_token, x.amount_of_out_token]))
+            reserves.append(
+                np.array(
+                    [
+                        self.maximal_reserves_of(x.in_asset_id),
+                        self.maximal_reserves_of(x.out_asset_id),
+                    ]
+                )
+            )
         return reserves
 
     def venue_by_index(self, index) -> Union[AssetTransfers, AssetPairsXyk]:
@@ -393,15 +395,46 @@ class AllData(BaseModel, Generic[TId, TAmount]):
                 result.add(exchange.pool_id)
         return list(result)
 
-    @property
-    def maximal_reserves(self, token: TId, input: TAmount) -> TAmount:
+    def maximal_reserves_of(self, token: TId) -> TAmount:
         """_summary_
         Given token find maximal reserve venue it across all venues.
+        If case it able to find escrow and liquidity for transfer venue it uses that value.
+        If not, it uses maximal pool for the token.
+        In case of both fails, it sets max numeric value for that.
         """
+        value = 0
+        for x in self.asset_pairs_xyk:
+            if x.in_asset_id == token:
+                value = max(value, value, x.in_token_amount)
+            if x.out_asset_id == token:
+                value = max(value, x.out_token_amount)
+        if value > 0:
+            return value
 
-        pass
+        exchanges = self.transfer_to_exchange(token)
+        for exchange_id in exchanges:
+            for x in self.asset_pairs_xyk:
+                if x.pool_id == exchange_id:
+                    if x.in_asset_id == token and self.transfers_disjoint_set.connected(
+                        x.in_asset_id, token
+                    ):
+                        value = max(value, x.amount_of_in_token)
+                    if (
+                        x.out_asset_id == token
+                        and self.transfers_disjoint_set.connected(x.out_asset_id, token)
+                    ):
+                        value = max(value, x.amount_of_out_token)
+        if value > 0:
+            return value
 
-    def total_reserveres_of(self, token: TId) -> int:
+        for x in self.asset_transfers:
+            if x.in_asset_id == token:
+                value = max(value, x.amount_of_in_token)
+            if x.out_asset_id == token:
+                value = max(value, x.amount_of_out_token)
+        return value
+
+    def total_reserves_of(self, token: TId) -> int:
         """
         Approximation of global reserves of token in all venues
         """
@@ -411,11 +444,8 @@ class AllData(BaseModel, Generic[TId, TAmount]):
                 global_value_locked += x.out_token_amount
             if x.in_asset_id == token:
                 global_value_locked += x.in_token_amount
-        for x in self.asset_transfers:
-            if x.out_asset_id == token:
-                global_value_locked += x.amount_of_out_token
-            if x.in_asset_id == token:
-                global_value_locked += x.amount_of_in_token
+        if global_value_locked > 0:
+            return global_value_locked
         return global_value_locked
 
     @property

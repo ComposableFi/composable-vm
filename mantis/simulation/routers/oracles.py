@@ -14,7 +14,7 @@ class SetOracle:
     def route(
         partial_oracles: dict[TId, Union[float, None] | None],
         transfers: list[tuple[TId, TId]],
-    ):
+    ) -> dict[TId, Union[float, None] | None]:
         """
         Very fast one and super sloppy on,
         considers if there is connection in general,
