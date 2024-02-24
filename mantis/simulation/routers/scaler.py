@@ -34,9 +34,6 @@ def scale_in(base_data: AllData, input: Input, ctx: Ctx) -> tuple[AllData, Input
     for asset_id in oracalized_data.all_tokens:
         oracalized_data.usd_oracles[asset_id] = 1
                         
-    maximal_oracalized_reservers = defaultdict()
-
-    
     # cap all big amounts and remove venues which will not give big amount
     for asset_id in all_asset_ids:
         for i, oracalized_venue in enumerate(oracalized_data.asset_pairs_xyk):
@@ -70,9 +67,8 @@ def scale_in(base_data: AllData, input: Input, ctx: Ctx) -> tuple[AllData, Input
                 if oracalized_reserve < ctx.min_usd_reserve:
                     new_data.asset_pairs_xyk[i].out_token_amount = 0
                                     
-            
-        # ratio = oracalized_input / oracalized_data.maximal_reserves_of(asset_id)
-        # if ratio < ctx.min_input_to_reserve_ratio:
+        for asset_id in all_asset_ids:
+            maximal_reserves_of = new_data.maximal_reserves_of(asset_id)
             
         
     return new_data, new_input

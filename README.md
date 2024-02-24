@@ -35,3 +35,14 @@ https://github.com/ComposableFi/env/
 ---
 tags: "#mev #composable #cvm #mantis #defi #cosmos #cosmwasm #evm #ibc"
 ---
+
+### Math help
+
+Need to model formulas of Order Books, CoWs, Liquid Staking, Transfers(rate limiter+escrow+free liquidity) protocols hope fully as convex functions. For example, Order Book can be modelled as as piecewise linear approximation.
+
+Also model of Cluster search to account for high fees, so that each chain is OR solution, and these chains connected by IR.
+
+Metaheuriscs way to find inner oracles (mix of ML and CS).
+
+Experience on statistics, OR, data science, CS, ML, algebraic geometry, graphs, topology.
+
