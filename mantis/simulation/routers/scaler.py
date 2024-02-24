@@ -39,17 +39,29 @@ def scale_in(base_data: AllData, input: Input, ctx: Ctx) -> tuple[AllData, Input
     
     # cap all big amounts
     for asset_id in all_asset_ids:
-        for i, oracalized_exchange in enumerate(oracalized_data.asset_pairs_xyk):
-            if oracalized_exchange.in_asset_id == asset_id:
-                oracalized_reserve = oracalized_exchange.in_token_amount
+        for i, oracalized_venue in enumerate(oracalized_data.asset_pairs_xyk):
+            if oracalized_venue.in_asset_id == asset_id:
+                oracalized_reserve = oracalized_venue.in_token_amount
                 ratio = oracalized_input / oracalized_reserve
                 if ratio < ctx.min_input_to_reserve_ratio:
                     new_data.asset_pairs_xyk[i].in_token_amount = new_data.asset_pairs_xyk[i].in_token_amount * (ratio /  ctx.min_input_to_reserve_ratio)
-            if oracalized_exchange.out_asset_id == asset_id:
-                oracalized_reserve = oracalized_exchange.out_token_amount
+            if oracalized_venue.out_asset_id == asset_id:
+                oracalized_reserve = oracalized_venue.out_token_amount
                 ratio = oracalized_input / oracalized_reserve
                 if ratio < ctx.min_input_to_reserve_ratio:
                     new_data.asset_pairs_xyk[i].out_token_amount = new_data.asset_pairs_xyk[i].out_token_amount * (ratio /  ctx.min_input_to_reserve_ratio)
+        for i, oracalized_venue in enumerate(oracalized_data.asset_transfers):
+            if oracalized_venue.in_asset_id == asset_id:
+                oracalized_reserve = oracalized_venue.in_token_amount
+                ratio = oracalized_input / oracalized_reserve
+                if ratio < ctx.min_input_to_reserve_ratio:
+                    new_data.asset_transfers[i].in_token_amount = new_data.asset_transfers[i].in_token_amount * (ratio /  ctx.min_input_to_reserve_ratio)
+            if oracalized_venue.out_asset_id == asset_id:
+                oracalized_reserve = oracalized_venue.out_token_amount
+                ratio = oracalized_input / oracalized_reserve
+                if ratio < ctx.min_input_to_reserve_ratio:
+                    new_data.asset_transfers[i].out_token_amount = new_data.asset_transfers[i].out_token_amount * (ratio /  ctx.min_input_to_reserve_ratio)
+        
                                     
                     
         # ratio = oracalized_input / oracalized_data.maximal_reserves_of(asset_id)
