@@ -32,9 +32,9 @@ class Ctx(BaseModel, Generic[TAmount]):
      All inputs to solver are really integers.
     """
 
-    max_reserve_decimals: int = 10
+    max_reserve_decimals: int = 8
     """_summary_
-        If algorithm can not handle big numbers, it can be reduced to power of 10
+        If algorithm can not handle big numbers, it can be reduced to power of it
     """
 
     minimal_amount: float = 0.000001
