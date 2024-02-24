@@ -497,7 +497,6 @@ class AllData(BaseModel, Generic[TId, TAmount]):
         """
         transfers = [(x.in_asset_id, x.out_asset_id) for x in self.asset_transfers]
         oracles = SetOracle.route(self.usd_oracles, transfers)
-        result = 0.1
         if oracles:
             oracle = oracles.get(token, None)
             if oracle:
