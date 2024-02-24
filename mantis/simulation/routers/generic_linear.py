@@ -7,6 +7,7 @@ import copy
 from typing import Union
 
 import cvxpy as cp
+from simulation.routers.scaler import scale_in
 import numpy as np
 
 from simulation.routers.angeris_cvxpy import CvxpySolution, parse_trades
@@ -200,6 +201,8 @@ def route(
     """
     solves and decide if routable
     """
+    if ctx.scale:
+        all_data, input = scale_in(all_data, input, ctx)
     if ctx.debug:
         print("first run")
     initial_solution = solve(
