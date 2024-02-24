@@ -37,6 +37,11 @@ class Ctx(BaseModel, Generic[TAmount]):
         If algorithm can not handle big numbers, it can be reduced to power of it
     """
 
+    min_input_to_reserve_ratio = 0.0001
+    """
+    We consider that cannot get more than 1/this arbitrage
+    """
+
     minimal_amount: float = 0.000001
     """_summary_
     Numerically minimal amount of change goes via venue is accepted, minimal trade.
@@ -72,13 +77,13 @@ class AssetTransfers(
         Fixed costs $q_i$ >= 0s
     """
 
-    amount_of_in_token: TAmount
+    in_token_amount: TAmount
     """
      Tendered amount of token on chain were it is.
      Must be like escrowed amount.
     """
 
-    amount_of_out_token: TAmount
+    out_token_amount: TAmount
     """
       Expected received amount LAMBDA.
       Must be like liquid amount of this token minted.
@@ -418,20 +423,20 @@ class AllData(BaseModel, Generic[TId, TAmount]):
                     if x.in_asset_id == token and self.transfers_disjoint_set.connected(
                         x.in_asset_id, token
                     ):
-                        value = max(value, x.amount_of_in_token)
+                        value = max(value, x.in_token_amount)
                     if (
                         x.out_asset_id == token
                         and self.transfers_disjoint_set.connected(x.out_asset_id, token)
                     ):
-                        value = max(value, x.amount_of_out_token)
+                        value = max(value, x.out_token_amount)
         if value > 0:
             return value
 
         for x in self.asset_transfers:
             if x.in_asset_id == token:
-                value = max(value, x.amount_of_in_token)
+                value = max(value, x.in_token_amount)
             if x.out_asset_id == token:
-                value = max(value, x.amount_of_out_token)
+                value = max(value, x.out_token_amount)
         return value
 
     def total_reserves_of(self, token: TId) -> int:
@@ -573,8 +578,8 @@ def new_transfer(
     in_asset_id,
     out_asset_id,
     usd_fee_transfer,
-    amount_of_in_token,
-    amount_of_out_token,
+    in_token_amount,
+    out_token_amount,
     fee_per_million,
     metadata=None,
 ) -> AssetTransfers:
@@ -582,8 +587,8 @@ def new_transfer(
         in_asset_id=in_asset_id,
         out_asset_id=out_asset_id,
         usd_fee_transfer=usd_fee_transfer,
-        amount_of_in_token=amount_of_in_token,
-        amount_of_out_token=amount_of_out_token,
+        in_token_amount=in_token_amount,
+        out_token_amount=out_token_amount,
         fee_per_million=fee_per_million,
         metadata=metadata,
     )

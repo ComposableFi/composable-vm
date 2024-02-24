@@ -272,8 +272,8 @@ class Oracalizer(BaseModel):
                 AssetTransfers(
                     in_asset_id=transfer.asset_id.root,
                     out_asset_id=transfer.to_asset_id.root,
-                    amount_of_in_token=10**12,
-                    amount_of_out_token=10**12,
+                    in_token_amount=10**12,
+                    out_token_amount=10**12,
                     usd_fee_transfer=0.001,
                     fee_per_million=0,
                 )

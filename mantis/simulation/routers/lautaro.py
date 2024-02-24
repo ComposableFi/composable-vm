@@ -44,7 +44,7 @@ class Edge:
     ):
         self.U = [tokensIds[e.in_asset_id], tokensIds[e.out_asset_id]]
         raise Exception("transfer amounts are not subject to same logic as exchanges")
-        self.B = [e.amount_of_in_token, e.amount_of_out_token]
+        self.B = [e.in_token_amount, e.out_token_amount]
         self.W = [1, 1]
         self.F = [
             float(e.fee_per_million) / 1_000_000.0,
