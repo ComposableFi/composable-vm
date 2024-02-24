@@ -90,10 +90,6 @@ class AssetTransfers(
     # do not care
     metadata: str | None = None
 
-    @property
-    def price_limit(self):
-        return self.amount_of_in_token / self.amount_of_out_token
-
     @validator("metadata", pre=True, always=True)
     def replace_nan_with_None(cls, v):
         return None if isinstance(v, float) else v
@@ -361,6 +357,7 @@ class AllData(BaseModel, Generic[TId, TAmount]):
         for x in self.asset_pairs_xyk:
             reserves.append(np.array([x.in_token_amount, x.out_token_amount]))
         for x in self.asset_transfers:
+            raise Exception("set resrvs heres")
             reserves.append(np.array([x.amount_of_in_token, x.amount_of_out_token]))
         return reserves
 
@@ -397,8 +394,17 @@ class AllData(BaseModel, Generic[TId, TAmount]):
     def maximal_reserves(self, token: TId, input: TAmount) -> TAmount:
         """_summary_
         Given token find maximal reserve venue it across all venues.
+        If case it able to find escrow and liquidity for transfer venue it uses that value.
+        If not, it uses maximal pool for the token.
+        In case of both fails, it sets max numeric value for that.
         """
-
+        for x in self.asset_pairs_xyk:
+            if x.in_asset_id == token:
+                return x.in_token_amount
+            if x.out_asset_id == token:
+                return x.out_token_amount
+        
+        
         pass
 
     def total_reserveres_of(self, token: TId) -> int:
@@ -412,8 +418,10 @@ class AllData(BaseModel, Generic[TId, TAmount]):
             if x.in_asset_id == token:
                 global_value_locked += x.in_token_amount
         for x in self.asset_transfers:
+            raise Exception("set resrvs heres")
             if x.out_asset_id == token:
                 global_value_locked += x.amount_of_out_token
+                
             if x.in_asset_id == token:
                 global_value_locked += x.amount_of_in_token
         return global_value_locked

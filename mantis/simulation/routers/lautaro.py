@@ -43,6 +43,7 @@ class Edge:
         self, e: AssetTransfers, tokensIds: dict[TId, int], usd_oracles: dict[TId, int]
     ):
         self.U = [tokensIds[e.in_asset_id], tokensIds[e.out_asset_id]]
+        raise Exception("transfer amounts are not subject to same logic as exchanges")
         self.B = [e.amount_of_in_token, e.amount_of_out_token]
         self.W = [1, 1]
         self.F = [

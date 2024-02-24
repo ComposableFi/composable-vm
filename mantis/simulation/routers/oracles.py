@@ -14,7 +14,7 @@ class SetOracle:
     def route(
         partial_oracles: dict[TId, Union[float, None] | None],
         transfers: list[tuple[TId, TId]],
-    ):
+    ) -> dict[TId, Union[float, None] | None]:
         """
         Very fast one and super sloppy on,
         considers if there is connection in general,
@@ -35,7 +35,6 @@ class SetOracle:
                     if value and ds.connected(id, other):
                         partial_oracles[id] = value
         return partial_oracles
-
 
 def test():
     oracles = {
