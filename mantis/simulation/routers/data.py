@@ -398,11 +398,14 @@ class AllData(BaseModel, Generic[TId, TAmount]):
         If not, it uses maximal pool for the token.
         In case of both fails, it sets max numeric value for that.
         """
+        max = 0
         for x in self.asset_pairs_xyk:
             if x.in_asset_id == token:
-                return x.in_token_amount
+                max = max(max, x.in_token_amount)
             if x.out_asset_id == token:
-                return x.out_token_amount
+                max = max(x.out_token_amount)
+        
+        
         
         
         pass
