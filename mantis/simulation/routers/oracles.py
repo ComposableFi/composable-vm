@@ -36,6 +36,7 @@ class SetOracle:
                         partial_oracles[id] = value
         return partial_oracles
 
+
 def test():
     oracles = {
         1: 1.0,
