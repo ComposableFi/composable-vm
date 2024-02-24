@@ -70,7 +70,7 @@ def scale_in(base_data: AllData, input: Input, ctx: Ctx) -> tuple[AllData, Input
                 if oracalized_reserve < ctx.min_usd_reserve:
                     new_data.asset_pairs_xyk[i].out_token_amount = 0
                                     
-                    
+            
         # ratio = oracalized_input / oracalized_data.maximal_reserves_of(asset_id)
         # if ratio < ctx.min_input_to_reserve_ratio:
             
@@ -78,8 +78,8 @@ def scale_in(base_data: AllData, input: Input, ctx: Ctx) -> tuple[AllData, Input
     return new_data, new_input
 
 
-def scale_out() -> Output:
+def scale_out(old_data: AllData, old_input : Input, new_data: AllData, new_input: Input, output : Output) -> Output:
     """
     Scales outs
     """
-    pass
+    return output
