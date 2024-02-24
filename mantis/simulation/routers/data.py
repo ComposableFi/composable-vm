@@ -37,14 +37,14 @@ class Ctx(BaseModel, Generic[TAmount]):
         If algorithm can not handle big numbers, it can be reduced to power of it
     """
 
-    min_input_to_reserve_ratio = 0.0001
+    min_input_to_reserve_ratio: float = 0.0001
     """
     We consider that cannot get more than 1/this arbitrage
     """
 
-    min_usd_reserve = 1
+    min_usd_reserve: float = 1
 
-    minimal_amount: float = 0.000001
+    minimal_amount: float = 0.00001
     """_summary_
     Numerically minimal amount of change goes via venue is accepted, minimal trade.
     This is numeric amount, not value amount (oracalized amount) limit.
@@ -496,12 +496,12 @@ class AllData(BaseModel, Generic[TId, TAmount]):
         How much 1 amount of token is worth in USD
         """
         transfers = [(x.in_asset_id, x.out_asset_id) for x in self.asset_transfers]
-        print(self.usd_oracles)
         oracles = SetOracle.route(self.usd_oracles, transfers)
+        result = 0.1
         if oracles:
             oracle = oracles.get(token, None)
             if oracle:
-                return oracle
+                result = oracle
         for pair in self.asset_pairs_xyk:
             if (
                 pair.in_asset_id == token
@@ -522,7 +522,9 @@ class AllData(BaseModel, Generic[TId, TAmount]):
                 if pair.in_asset_id == token
                 else hit.out_token_amount
             ) * denumerator
-            return top * 1.0 / btm
+            result = top * 1.0 / btm
+        assert isinstance(result, float)
+        return result
 
 
 # helpers to setup tests data

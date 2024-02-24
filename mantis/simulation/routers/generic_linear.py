@@ -7,7 +7,6 @@ import copy
 from typing import Union
 
 import cvxpy as cp
-from simulation.routers.scaler import scale_in
 import numpy as np
 
 from simulation.routers.angeris_cvxpy import CvxpySolution, parse_trades
@@ -114,8 +113,12 @@ def solve(
     # Pool constraint (Uniswap v2 like)
     for x in all_data.asset_pairs_xyk:
         i = all_data.get_index_in_all(x)
-
-        constraints.append(cp.geo_mean(new_reserves[i]) >= cp.geo_mean(reserves[i]))
+        if reserves[i][0] == 0 or reserves[i][1] == 0:
+            print("zeros")
+            # constraints.append(deltas[i] == 0)
+            # constraints.append(lambdas[i] == 0)
+        else:
+            constraints.append(cp.geo_mean(new_reserves[i]) >= cp.geo_mean(reserves[i]))
 
     # Pool constraint for cross chain transfer transfer (constant sum)
     for x in all_data.asset_transfers:
@@ -124,8 +127,13 @@ def solve(
         # source chain can mint any amount up to total issuance
         # while target chain can back only limited amount escrowed
         # so on source chain limit is current total issuance not locked on that chain
-        constraints.append(cp.sum(new_reserves[i]) >= cp.sum(reserves[i]))
-        constraints.append(new_reserves[i] >= 0)
+        if reserves[i][0] == 0 or reserves[i][1] == 0:
+            print("zeros")
+            # constraints.append(deltas[i] == 0)
+            # constraints.append(lambdas[i] == 0)
+        else:
+            constraints.append(cp.sum(new_reserves[i]) >= cp.sum(reserves[i]))
+            constraints.append(new_reserves[i] >= 0)
 
     # Enforce deltas depending on pass or not pass variable
 
@@ -201,8 +209,6 @@ def route(
     """
     solves and decide if routable
     """
-    if ctx.scale:
-        all_data, input = scale_in(all_data, input, ctx)
     if ctx.debug:
         print("first run")
     initial_solution = solve(
