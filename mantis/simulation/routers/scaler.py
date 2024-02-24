@@ -7,6 +7,7 @@ def scale_in():
     """
     Scales in data to be used by simulation
     """
+    finally
     pass
 
 
