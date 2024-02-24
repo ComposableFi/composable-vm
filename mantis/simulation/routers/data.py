@@ -41,6 +41,9 @@ class Ctx(BaseModel, Generic[TAmount]):
     """
     We consider that cannot get more than 1/this arbitrage
     """
+    
+    min_usd_reserve = 1
+    
 
     minimal_amount: float = 0.000001
     """_summary_
