@@ -404,11 +404,27 @@ class AllData(BaseModel, Generic[TId, TAmount]):
                 max = max(max, x.in_token_amount)
             if x.out_asset_id == token:
                 max = max(x.out_token_amount)
+        if max > 0:
+            return max
         
+        exchanges = self.transfer_to_exchange(token)
+        for exchange_id in exchanges:        
+            for x in self.asset_pairs_xyk:
+                if x.pool_id == exchange_id:
+                    
+                    if x.in_asset_id == token and self.transfers_disjoint_set.connected(x.in_asset_id, token):
+                        max = max(max, x.amount_of_in_token)
+                    if x.out_asset_id == token and self.transfers_disjoint_set.connected(x.out_asset_id, token):
+                        max = max(x.amount_of_out_token)
+        if max > 0:
+            return max
         
-        
-        
-        pass
+        for x in self.asset_transfers:
+            if x.in_asset_id == token:
+                max = max(max, x.amount_of_in_token)
+            if x.out_asset_id == token:
+                max = max(x.amount_of_out_token)
+        return max
 
     def total_reserveres_of(self, token: TId) -> int:
         """
