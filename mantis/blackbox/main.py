@@ -34,6 +34,7 @@ from simulation.routers.data import (
     new_pair,
     read_dummy_data,
 )
+from simulation.routers.scaler import scale_in
 
 app = FastAPI()
 
@@ -132,8 +133,12 @@ def simulator_router(input: Input = Depends()):
     oracles = Oracalizer.orcale_from_usd(cvm_data)
     data = Oracalizer.for_simulation(cvm_data, oracles)
 
-    solution = generic_linear.route(input, data, ctx)
-    route = cvxpy_to_data(input, data, ctx, solution)
+    input.in_amount = int(input.in_amount)
+    input.out_amount = int(input.out_amount)
+
+    new_data, new_input, ratios = scale_in(data, input, ctx)
+    solution = generic_linear.route(new_input, new_data, ctx)
+    route = cvxpy_to_data(input, data, ctx, solution, ratios)
 
     return route
 

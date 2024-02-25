@@ -68,7 +68,11 @@ class VenueOperation:
 
 
 def cvxpy_to_data(
-    input: Input, data: AllData, ctx: Ctx, result: CvxpySolution
+    input: Input,
+    data: AllData,
+    ctx: Ctx,
+    result: CvxpySolution,
+    ratios=None,
 ) -> Union[Exchange, Spawn]:
     """_summary_
     Converts Angeris CVXPY result to executable route.
@@ -79,7 +83,8 @@ def cvxpy_to_data(
       Find starter node and recurse with minus from input matrix (loops covered).
     Visualize.
     """
-
+    if ratios is None:
+        ratios = {asset_id: 1 for asset_id in data.all_tokens}
     _etas, trades_raw = parse_trades(ctx, result)
     if ctx.debug:
         print("trades_raw", trades_raw)
@@ -94,9 +99,9 @@ def cvxpy_to_data(
                 trades.append(
                     VenueOperation(
                         in_token=token_index_a,
-                        in_amount=-raw_trade[0],
+                        in_amount=-raw_trade[0] * ratios[token_index_a],
                         out_token=token_index_b,
-                        out_amount=raw_trade[1],
+                        out_amount=raw_trade[1] * ratios[token_index_b],
                         venue_index=i,
                     )
                 )
@@ -104,9 +109,9 @@ def cvxpy_to_data(
                 trades.append(
                     VenueOperation(
                         in_token=token_index_b,
-                        in_amount=-raw_trade[1],
+                        in_amount=-raw_trade[1] * ratios[token_index_b],
                         out_token=token_index_a,
-                        out_amount=raw_trade[0],
+                        out_amount=raw_trade[0] * ratios[token_index_a],
                         venue_index=i,
                     )
                 )
@@ -181,7 +186,7 @@ def cvxpy_to_data(
                 in_asset_amount=math.ceil(op.in_amount),
                 out_amount=math.floor(op.out_amount),
                 out_asset_id=op.out_token,
-                pool_id=venue.pool_id,
+                pool_id=str(venue.pool_id),
                 next=subs,
             )
         elif isinstance(venue, AssetTransfers):

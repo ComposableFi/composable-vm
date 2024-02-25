@@ -32,12 +32,19 @@ class Ctx(BaseModel, Generic[TAmount]):
      All inputs to solver are really integers.
     """
 
-    max_reserve_decimals: int = 10
+    max_reserve_decimals: int = 8
     """_summary_
-        If algorithm can not handle big numbers, it can be reduced to power of 10
+        If algorithm can not handle big numbers, it can be reduced to power of it
     """
 
-    minimal_amount: float = 0.000001
+    min_input_to_reserve_ratio: float = 0.0001
+    """
+    We consider that cannot get more than 1/this arbitrage
+    """
+
+    min_usd_reserve: float = 1
+
+    minimal_amount: float = 0.00001
     """_summary_
     Numerically minimal amount of change goes via venue is accepted, minimal trade.
     This is numeric amount, not value amount (oracalized amount) limit.
@@ -72,13 +79,13 @@ class AssetTransfers(
         Fixed costs $q_i$ >= 0s
     """
 
-    amount_of_in_token: TAmount
+    in_token_amount: TAmount
     """
      Tendered amount of token on chain were it is.
      Must be like escrowed amount.
     """
 
-    amount_of_out_token: TAmount
+    out_token_amount: TAmount
     """
       Expected received amount LAMBDA.
       Must be like liquid amount of this token minted.
@@ -418,20 +425,20 @@ class AllData(BaseModel, Generic[TId, TAmount]):
                     if x.in_asset_id == token and self.transfers_disjoint_set.connected(
                         x.in_asset_id, token
                     ):
-                        value = max(value, x.amount_of_in_token)
+                        value = max(value, x.in_token_amount)
                     if (
                         x.out_asset_id == token
                         and self.transfers_disjoint_set.connected(x.out_asset_id, token)
                     ):
-                        value = max(value, x.amount_of_out_token)
+                        value = max(value, x.out_token_amount)
         if value > 0:
             return value
 
         for x in self.asset_transfers:
             if x.in_asset_id == token:
-                value = max(value, x.amount_of_in_token)
+                value = max(value, x.in_token_amount)
             if x.out_asset_id == token:
-                value = max(value, x.amount_of_out_token)
+                value = max(value, x.out_token_amount)
         return value
 
     def total_reserves_of(self, token: TId) -> int:
@@ -489,12 +496,11 @@ class AllData(BaseModel, Generic[TId, TAmount]):
         How much 1 amount of token is worth in USD
         """
         transfers = [(x.in_asset_id, x.out_asset_id) for x in self.asset_transfers]
-        print(self.usd_oracles)
         oracles = SetOracle.route(self.usd_oracles, transfers)
         if oracles:
             oracle = oracles.get(token, None)
             if oracle:
-                return oracle
+                result = oracle
         for pair in self.asset_pairs_xyk:
             if (
                 pair.in_asset_id == token
@@ -515,7 +521,9 @@ class AllData(BaseModel, Generic[TId, TAmount]):
                 if pair.in_asset_id == token
                 else hit.out_token_amount
             ) * denumerator
-            return top * 1.0 / btm
+            result = top * 1.0 / btm
+        assert isinstance(result, float)
+        return result
 
 
 # helpers to setup tests data
@@ -573,8 +581,8 @@ def new_transfer(
     in_asset_id,
     out_asset_id,
     usd_fee_transfer,
-    amount_of_in_token,
-    amount_of_out_token,
+    in_token_amount,
+    out_token_amount,
     fee_per_million,
     metadata=None,
 ) -> AssetTransfers:
@@ -582,8 +590,8 @@ def new_transfer(
         in_asset_id=in_asset_id,
         out_asset_id=out_asset_id,
         usd_fee_transfer=usd_fee_transfer,
-        amount_of_in_token=amount_of_in_token,
-        amount_of_out_token=amount_of_out_token,
+        in_token_amount=in_token_amount,
+        out_token_amount=out_token_amount,
         fee_per_million=fee_per_million,
         metadata=metadata,
     )

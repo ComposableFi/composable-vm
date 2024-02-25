@@ -5,8 +5,8 @@
         "in_asset_id": "CENTAURI/ETHEREUM/USDC",
         "out_asset_id": "ETHEREUM/USDC",
         "usd_fee_transfer": 1000000,
-        "amount_of_in_token": 100000,
-        "amount_of_out_token": 100000,
+        "in_token_amount": 100000,
+        "out_token_amount": 100000,
         "fee_per_million": 0,
         "metadata": null
       },
@@ -14,8 +14,8 @@
         "in_asset_id": "CENTAURI/ETHEREUM/USDC",
         "out_asset_id": "OSMOSIS/CENTAURI/ETHEREUM/USDC",
         "usd_fee_transfer": 1,
-        "amount_of_in_token": 100000,
-        "amount_of_out_token": 100000,
+        "in_token_amount": 100000,
+        "out_token_amount": 100000,
         "fee_per_million": 0,
         "metadata": null
       },
@@ -23,8 +23,8 @@
         "in_asset_id": "OSMOSIS/ETHEREUM/USDC",
         "out_asset_id": "ETHEREUM/USDC",
         "usd_fee_transfer": 1,
-        "amount_of_in_token": 100000,
-        "amount_of_out_token": 100000,
+        "in_token_amount": 100000,
+        "out_token_amount": 100000,
         "fee_per_million": 0,
         "metadata": null
       }
