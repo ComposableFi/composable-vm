@@ -57,7 +57,7 @@ class Edge:
     ):
         self.U = [tokensIds[e.in_asset_id], tokensIds[e.out_asset_id]]
         self.B = [e.in_token_amount, e.out_token_amount]
-        self.W = [e.weight_of_a, e.weight_of_b]
+        self.W = [e.weight_a, e.weight_b]
         self.F = [self.toFloatOrZero(e.fee_in), self.toFloatOrZero(e.fee_out)]
         self.CF = [0, 0]
 

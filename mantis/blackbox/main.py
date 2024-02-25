@@ -1,6 +1,6 @@
 import os
 import sys
-from typing import List
+from typing import List, Union
 
 import cachetools
 import requests
@@ -27,6 +27,8 @@ from simulation.routers import data, generic_linear, test_generic_linear
 from simulation.routers.angeris_cvxpy import cvxpy_to_data
 from simulation.routers.data import (
     AllData as SimulationData,
+    Exchange,
+    Spawn,
 )
 from simulation.routers.data import (
     AssetPairsXyk,
@@ -136,7 +138,6 @@ def simulator_router(input: Input = Depends()):
     """_summary_
     Given input, find and return route.
     """
-    ctx = Ctx()
     raw_data = get_remote_data()
     cvm_data = ExtendedCvmRegistry.from_raw(
         raw_data.cvm_registry,
@@ -144,6 +145,14 @@ def simulator_router(input: Input = Depends()):
         raw_data.cosmos_chains.chains,
         raw_data.osmosis_pools,
     )
+    
+    
+    route = simulate_route(input, cvm_data)
+
+    return route
+
+def simulate_route(input: Input, cvm_data: ExtendedCvmRegistry) -> Union[Exchange, Spawn]:
+    ctx = Ctx()
     oracles = Oracalizer.orcale_from_usd(cvm_data)
     data = Oracalizer.for_simulation(cvm_data, oracles)
 
@@ -153,7 +162,6 @@ def simulator_router(input: Input = Depends()):
     new_data, new_input, ratios = scale_in(data, input, ctx)
     solution = generic_linear.route(new_input, new_data, ctx)
     route = cvxpy_to_data(input, data, ctx, solution, ratios)
-
     return route
 
 

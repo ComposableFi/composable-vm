@@ -50,12 +50,15 @@ def test_token_price_in_usd_via_oracle():
         1,
         1,
         100,
-        20,
-        80,
+        10,
+        90,
     )
-    data = new_data([pica_usd], [], {1: 1.0, 2: None})
-    price = data.token_price_in_usd(2)
-    assert price == 0.625
+    data = new_data([pica_usd], [], {1: None, 2: None})
+    assert data.asset_pairs_xyk[0].a_usd == 50
+    assert data.asset_pairs_xyk[0].b_usd == 50
+    assert data.asset_pairs_xyk[0].value_of_a_in_usd == data.token_price_in_usd(1)
+    assert data.token_price_in_usd(1) == 5
+    assert data.token_price_in_usd(2) == 0.5555555555555556
     assert data.all_tokens == [1, 2]
     assert data.venues_count == 1
     assert data.index_of_token(1) == 0

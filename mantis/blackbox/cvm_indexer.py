@@ -48,26 +48,26 @@ class ExtendedExchangeItem(ExchangeItem):
     curve: str  # orderbook to be approximated
 
     @property
-    def balancer_volume(self):
-        return (self.token_b_amount**self.weight_b) * (
-            self.token_a_amount**self.weight_a
-        )
+    def value_of_a_in_usd(self):
+        """
+        How much 1 of a costs in USD
+        """
+        return self.a_usd / self.token_a_amount
+
+    @property
+    def value_of_b_in_usd(self):
+        """
+        How much 1 of a costs in USD
+        """
+        return self.b_usd / self.token_b_amount
 
     @property
     def a_usd(self):
-        return (
-            self.pool_value_in_usd
-            * self.weighted_a
-            / (self.weighted_a + self.weighted_b)
-        )
+        return self.pool_value_in_usd * self.weight_b / (self.weight_a + self.weight_b)
 
     @property
     def b_usd(self):
-        return (
-            self.pool_value_in_usd
-            * self.weighted_b
-            / (self.weighted_a + self.weighted_b)
-        )
+        return self.pool_value_in_usd * self.weight_a / (self.weight_a + self.weight_b)
 
     @property
     def weighted_a(self):
@@ -76,6 +76,10 @@ class ExtendedExchangeItem(ExchangeItem):
     @property
     def weighted_b(self):
         return self.token_b_amount**self.weight_b
+
+    @property
+    def weighted_volume(self):
+        return self.weighted_a * self.weighted_b
 
 
 class ExtendedCvmRegistry(BaseModel):
@@ -288,8 +292,8 @@ class Oracalizer(BaseModel):
                     out_asset_id=pair.asset_b.asset_id.root,
                     fee_of_in_per_million=pair.fee_per_million,
                     fee_of_out_per_million=pair.fee_per_million,
-                    weight_of_a=pair.weight_a,
-                    weight_of_b=pair.weight_b,
+                    weight_a=pair.weight_a,
+                    weight_b=pair.weight_b,
                     in_token_amount=int(pair.token_a_amount),
                     out_token_amount=int(pair.token_b_amount),
                     pool_value_in_usd=int(pair.pool_value_in_usd),

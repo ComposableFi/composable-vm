@@ -1,5 +1,4 @@
 import math
-from collections import defaultdict
 from typing import Union
 
 import cvxpy as cp
@@ -86,102 +85,121 @@ def cvxpy_to_data(
     """
     if ratios is None:
         ratios = {asset_id: 1 for asset_id in data.all_tokens}
-    _etas, trades_raw = parse_trades(ctx, result)
+
+    _etas, trades_raw = parse_total_traded(ctx, result)
     if ctx.debug:
         logger.info("trades_raw", trades_raw)
 
     # attach tokens ids to trades
-    trades = []
+    total_trades = []
 
     for i, raw_trade in enumerate(trades_raw):
         if np.abs(raw_trade[0]) > 0:
             [token_index_a, token_index_b] = data.venues_tokens[i]
             if raw_trade[0] < 0:
-                trades.append(
+                total_trades.append(
                     VenueOperation(
                         in_token=token_index_a,
-                        in_amount=-raw_trade[0] * ratios[token_index_a],
+                        in_amount=-raw_trade[0] / ratios[token_index_a],
                         out_token=token_index_b,
-                        out_amount=raw_trade[1] * ratios[token_index_b],
+                        out_amount=raw_trade[1] / ratios[token_index_b],
                         venue_index=i,
                     )
                 )
             else:
-                trades.append(
+                total_trades.append(
                     VenueOperation(
                         in_token=token_index_b,
-                        in_amount=-raw_trade[1] * ratios[token_index_b],
+                        in_amount=-raw_trade[1] / ratios[token_index_b],
                         out_token=token_index_a,
-                        out_amount=raw_trade[0] * ratios[token_index_a],
+                        out_amount=raw_trade[0] / ratios[token_index_a],
                         venue_index=i,
                     )
                 )
         else:
-            trades.append(None)
+            total_trades.append(None)
 
-    # balances
-    in_tokens = defaultdict(int)
-    out_tokens = defaultdict(int)
-    for trade in trades:
-        if trade:
-            in_tokens[trade.in_token] += trade.in_amount
-            out_tokens[trade.out_token] += trade.out_amount
+    # # balances
+    # in_tokens = defaultdict(int)
+    # out_tokens = defaultdict(int)
+    # for trade in total_trades:
+    #     if trade:
+    #         in_tokens[trade.in_token] += trade.in_amount
+    #         out_tokens[trade.out_token] += trade.out_amount
+
+    if ctx.debug:
+        print(total_trades)
 
     # add nodes until burn all input from balance
     # node identity is token and amount input used and depth
     # loops naturally expressed in tree and end with burn
-    def next(start_coin):
+    depth = 0
+
+    def next(current, depth, input):
+        print(current)
+        depth += 1
+        if depth > 10:
+            raise Exception("failed to stop ", current)
+
         # handle big amounts first
         from_coin = sorted(
-            [trade for trade in trades if trade and trade.in_token == start_coin.name],
+            [
+                trade
+                for trade in total_trades
+                if trade and trade.in_token == current.name and trade.in_amount > 0 and trade.out_amount > 0
+            ],
             key=lambda x: x.in_amount,
             reverse=True,
         )
+        burn = current.in_amount
+        if burn <= 0:
+            return
+        
+        nodes = []
         for trade in from_coin:
             trade: VenueOperation = trade
-            in_tokens[trade.in_token] -= trade.in_amount
-            if in_tokens[trade.in_token] < 0:
-                continue
-            out_tokens[trade.out_token] -= trade.out_amount
-            next_trade = Node(
-                name=trade.out_token,
-                parent=start_coin,
-                venue=trade,
-            )
-            next(next_trade)
+            traded = min(burn, trade.in_amount)
+            print(trade)
+            print(traded)
 
-    start_venue = VenueOperation(
-        venue_index=-1,
-        in_token=input.in_token_id,
-        in_amount=input.in_amount,
-        out_token=input.out_token_id,
-        out_amount=input.out_amount,
-    )
-    start_coin = Node(name=input.in_token_id, venue=start_venue)
-    next(start_coin)
+            burn -= traded
+            trade.in_amount -= traded            
+            in_amount= traded * trade.out_amount / trade.in_amount
+            if in_amount > 0:
+                print("AMOUNT", in_amount)
+
+                next_trade = Node(
+                    name=trade.out_token,
+                    parent=current,
+                    venue_index = trade.venue_index,
+                    in_amount = in_amount,
+                )
+                nodes.append(next_trade)
+        for next_trade in nodes:
+            next(next_trade, depth, input)
+            
+    start = Node(name=input.in_token_id, in_amount = input.in_amount, venue_index = -1)
+    next(start, depth, input)
 
     if ctx.debug:
-        for pre, _fill, node in RenderTree(start_coin):
+        for pre, _fill, node in RenderTree(start):
             logger.info(
-                "%s via=%s in=%s/%s out=%s/%s"
+                "%s via=%s in=%s/%s"
                 % (
                     pre,
-                    node.venue.venue_index,
-                    node.venue.in_amount,
-                    node.venue.in_token,
-                    node.venue.out_amount,
-                    node.venue.out_token,
+                    node.venue_index,
+                    node.in_amount,
+                    node.name,
                 )
             )
-
+    raise Exception("not implemented")
     def next_route(parent_node):
         subs = []
         if parent_node.children:
             for child in parent_node.children:
                 sub = next_route(child)
                 subs.append(sub)
-        op: VenueOperation = parent_node.venue
-        venue = data.venue_by_index(parent_node.venue.venue_index)
+        venue = data.venue_by_index(parent_node.venue_index)
         if isinstance(venue, AssetPairsXyk):
             return Exchange(
                 in_asset_amount=math.ceil(op.in_amount),
@@ -204,7 +222,7 @@ def cvxpy_to_data(
     return next_route(start_coin)
 
 
-def parse_trades(ctx: Ctx, result: CvxpySolution):
+def parse_total_traded(ctx: Ctx, result: CvxpySolution):
     etas = result.eta_values
     deltas = result.delta_values
     lambdas = result.lambda_values

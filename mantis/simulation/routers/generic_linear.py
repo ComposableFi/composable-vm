@@ -10,7 +10,7 @@ import cvxpy as cp
 import numpy as np
 from loguru import logger
 
-from simulation.routers.angeris_cvxpy import CvxpySolution, parse_trades
+from simulation.routers.angeris_cvxpy import CvxpySolution, parse_total_traded
 from simulation.routers.data import AllData, Ctx, Input
 
 
@@ -108,16 +108,17 @@ def solve(
 
     for eta_i in etas:
         constraints.append(eta_i >= 0)
-        if ctx.integer:
-            constraints.append(eta_i <= 1)
+        # if ctx.integer:
+        #     constraints.append(eta_i <= 1)
 
     # Pool constraint (Uniswap v2 like)
     for x in all_data.asset_pairs_xyk:
         i = all_data.get_index_in_all(x)
-        if reserves[i][0] == 0 or reserves[i][1] == 0:
-            print("zeros")
-            # constraints.append(deltas[i] == 0)
-            # constraints.append(lambdas[i] == 0)
+        if reserves[i][0] <= ctx.minimal_amount or reserves[i][1] <= ctx.minimal_amount:
+            constraints.append(deltas[i] == 0)
+            constraints.append(lambdas[i] == 0)
+            reserves[i][0] = 0
+            reserves[i][1] = 0
         else:
             constraints.append(cp.geo_mean(new_reserves[i]) >= cp.geo_mean(reserves[i]))
 
@@ -128,10 +129,11 @@ def solve(
         # source chain can mint any amount up to total issuance
         # while target chain can back only limited amount escrowed
         # so on source chain limit is current total issuance not locked on that chain
-        if reserves[i][0] == 0 or reserves[i][1] == 0:
-            print("zeros")
-            # constraints.append(deltas[i] == 0)
-            # constraints.append(lambdas[i] == 0)
+        if reserves[i][0] <= ctx.minimal_amount or reserves[i][1] <= ctx.minimal_amount:
+            constraints.append(deltas[i] == 0)
+            constraints.append(lambdas[i] == 0)
+            reserves[i][0] = 0
+            reserves[i][1] = 0
         else:
             constraints.append(cp.sum(new_reserves[i]) >= cp.sum(reserves[i]))
             constraints.append(new_reserves[i] >= 0)
@@ -144,6 +146,12 @@ def solve(
             if force_eta[i] == 0:
                 constraints.append(deltas[i] == 0)
                 constraints.append(lambdas[i] == 0)
+        elif (
+            reserves[i][0] <= ctx.minimal_amount or reserves[i][1] <= ctx.minimal_amount
+        ):
+            constraints.append(etas[i] == 0)
+            constraints.append(deltas[i] == 0)
+            constraints.append(lambdas[i] == 0)
         else:
             issuance = 1
             token_a_global = issuance * all_data.global_reservers_of(
@@ -159,6 +167,7 @@ def solve(
                 logger.info(
                     "warning:: mantis::simulation::router:: trading with zero liquid amount of token"
                 )
+            # cap by oracle - minus minimal lenght path without slippage
             constraints.append(deltas[i] <= etas[i] * [token_a_global, token_b_global])
             # constraints.append(cp.multiply(deltas[i], etas[i]) >= deltas[i])
     # Set up and solve problem
@@ -217,7 +226,7 @@ def route(
         input,
         ctx,
     )
-    forced_etas, original_trades = parse_trades(ctx, initial_solution)
+    forced_etas, original_trades = parse_total_traded(ctx, initial_solution)
     if ctx.debug:
         logger.info("forced_etas", forced_etas)
         logger.info("original_trades", original_trades)
