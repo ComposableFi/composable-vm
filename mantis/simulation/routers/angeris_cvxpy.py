@@ -72,7 +72,7 @@ def cvxpy_to_data(
     data: AllData,
     ctx: Ctx,
     result: CvxpySolution,
-    ratios = None,
+    ratios=None,
 ) -> Union[Exchange, Spawn]:
     """_summary_
     Converts Angeris CVXPY result to executable route.
@@ -84,7 +84,7 @@ def cvxpy_to_data(
     Visualize.
     """
     if ratios is None:
-        ratios = { asset_id : 1 for asset_id in data.all_tokens}
+        ratios = {asset_id: 1 for asset_id in data.all_tokens}
     _etas, trades_raw = parse_trades(ctx, result)
     if ctx.debug:
         print("trades_raw", trades_raw)
