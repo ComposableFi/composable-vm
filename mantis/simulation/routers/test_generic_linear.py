@@ -2,7 +2,6 @@
 # clarabel cvxpy local mip
 import itertools
 import math
-import sys
 
 import numpy as np
 from loguru import logger
@@ -22,9 +21,6 @@ from simulation.routers.data import (
     new_transfer,
 )
 from simulation.routers.generic_linear import route
-
-logger.remove()
-logger.add(sys.stderr, colorize=True, format="<green>{time}</green> <level>{message}</level>")
 
 MAX_RESERVE = 1e10
 

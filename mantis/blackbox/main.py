@@ -37,10 +37,6 @@ from simulation.routers.data import (
 )
 from simulation.routers.scaler import scale_in
 
-logger.remove()
-logger.add(sys.stderr, colorize=True, format="<green>{time}</green> <level>{message}</level>")
-
-
 """"
 logger = logging.getLogger(__name__)
 

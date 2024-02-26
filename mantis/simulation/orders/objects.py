@@ -4,17 +4,12 @@ import copy
 import enum
 import functools
 import random
-import sys
 from dataclasses import dataclass
 from decimal import Decimal, getcontext
 from typing import Callable, NewType
 from uuid import uuid4
 
 from loguru import logger
-
-logger.remove()
-logger.add(sys.stderr, colorize=True, format="<green>{time}</green> <level>{message}</level>")
-
 
 getcontext().prec = 18
 BuyToken = NewType("BuyToken", Decimal)

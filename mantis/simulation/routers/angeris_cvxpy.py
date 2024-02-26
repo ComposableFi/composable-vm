@@ -1,5 +1,4 @@
 import math
-import sys
 from collections import defaultdict
 from typing import Union
 
@@ -19,8 +18,6 @@ from simulation.routers.data import (
     Spawn,
 )
 
-logger.remove()
-logger.add(sys.stderr, colorize=True, format="<green>{time}</green> <level>{message}</level>")
 
 @dataclass
 class CvxpySolution:

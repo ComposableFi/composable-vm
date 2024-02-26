@@ -1,7 +1,6 @@
 # solves using convex optimization
 # clarabel cvxpy local mip
 import itertools
-import sys
 import time
 
 import numpy as np
@@ -20,9 +19,6 @@ from simulation.routers.data import (
     new_pair,
     new_transfer,
 )
-
-logger.remove()
-logger.add(sys.stderr, colorize=True, format="<green>{time}</green> <level>{message}</level>")
 
 MAX_RESERVE = 1e10
 

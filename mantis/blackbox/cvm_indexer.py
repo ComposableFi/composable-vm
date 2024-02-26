@@ -1,5 +1,4 @@
 # given CVM registry and MANTIS offchain registry, and 3rd party indexer/registry data, produce CVM unified view for ease of operations
-import sys
 from typing import List, Optional
 
 from loguru import logger
@@ -31,8 +30,6 @@ from simulation.routers.data import (
     AssetTransfers,
 )
 
-logger.remove()
-logger.add(sys.stderr, colorize=True, format="<green>{time}</green> <level>{message}</level>")
 
 class ExtendedNetworkItem(NetworkItem):
     gas_price_usd: float

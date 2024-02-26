@@ -1,4 +1,3 @@
-import sys
 from decimal import Decimal, getcontext
 
 from loguru import logger
@@ -13,8 +12,6 @@ from objects import (
     Solver,
 )
 
-logger.remove()
-logger.add(sys.stderr, colorize=True, format="<green>{time}</green> <level>{message}</level>")
 
 def simulate():
     getcontext().prec = 30
