@@ -20,6 +20,7 @@ from simulation.routers.data import (
     new_transfer,
 )
 from simulation.routers.generic_linear import route
+from custom_logging import logger
 
 MAX_RESERVE = 1e10
 
@@ -305,8 +306,8 @@ def test_simple_symmetric_and_asymmetric_split():
     input = new_input("A", "D", 100, 10)
     result = route(input, data)
     solution = cvxpy_to_data(input, data, ctx, result)
-    print("===============================")
-    print(solution)
+    logger.info("===============================")
+    logger.info(solution)
     assert solution.next[0].next[0].out_asset_id == "D"
     assert solution.next[1].next[0].out_asset_id == "D"
     assert (
@@ -321,7 +322,7 @@ def _test_big_numeric_range():
     pair = new_pair(1, 1, 2, 0, 0, 1, 10, 1000, 10_000_000_000, 1_000_000_000)
     data = new_data([pair], [])
     result = route(input, data)
-    print(result)
+    logger.info(result)
 
 
 def test_simulate_all_connected_venues():
@@ -329,13 +330,13 @@ def test_simulate_all_connected_venues():
     input = new_input("WETH", "ATOM", 2000, 1)
     CENTER_NODE, chains = simulate_all_to_all_connected_chains_topology(input)
     data = simulate_all_connected_venues(CENTER_NODE, chains)
-    print(data)
+    logger.info(data)
 
-    print("=============== solving ========================")
+    logger.info("=============== solving ========================")
     ctx = Ctx()
     result = route(input, data, ctx)
     cvxpy_to_data(input, data, ctx, result)
-    print(result)
+    logger.info(result)
 
 
 def simulate_all_connected_venues(CENTER_NODE, chains) -> AllData:

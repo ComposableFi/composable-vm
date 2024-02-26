@@ -8,6 +8,7 @@ from dataclasses import dataclass
 from decimal import Decimal, getcontext
 from typing import Callable, NewType
 from uuid import uuid4
+from custom_logging import logger
 
 getcontext().prec = 18
 BuyToken = NewType("BuyToken", Decimal)
@@ -240,11 +241,11 @@ class OrderList:
 
     def print(self):
         for order in self.buy():
-            print(order)
-        print("-" * 10)
+            logger.info(order)
+        logger.info("-" * 10)
         for order in self.sell():
-            print(order)
-        print("-" * 10)
+            logger.info(order)
+        logger.info("-" * 10)
 
 
 class Solution:
@@ -315,14 +316,14 @@ class Solution:
         return cls([Order.random(*args, **kwargs) for _ in range(num_orders)])
 
     def print(self):
-        print("#" * 20 + " Start Solution " + "#" * 20)
+        logger.info("#" * 20 + " Start Solution " + "#" * 20)
         self.orders.print()
 
-        print(
+        logger.info(
             f"\033[1mMatched Price {self.matched_price:.4f} \tSell volume {self.sell_volume:.4f}\tBuy volume {self.buy_volume:.4f}\033[0m"
         )
-        print("#" * 20 + " End Solution " + "#" * 20)
-        print()
+        logger.info("#" * 20 + " End Solution " + "#" * 20)
+        logger.info()
 
 
 @dataclass

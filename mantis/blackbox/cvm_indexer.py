@@ -29,7 +29,7 @@ from simulation.routers.data import (
     AssetPairsXyk,
     AssetTransfers,
 )
-
+from custom_logging import logger
 
 class ExtendedNetworkItem(NetworkItem):
     gas_price_usd: float
@@ -156,7 +156,7 @@ class ExtendedCvmRegistry(BaseModel):
                     asset_b = find_asset_by_token(token_b)
 
                     if token_a is None or token_b is None:
-                        print(
+                        logger.info(
                             "error: mantis::solver::blackbox:: pool has not token denom defined ",
                             pool_id,
                         )
@@ -197,7 +197,7 @@ class ExtendedCvmRegistry(BaseModel):
                     )
                     exchanges.append(x)
                 else:
-                    print(
+                    logger.info(
                         "error: mantis::solver::blackbox:: no pool indexer info found for ",
                         pool_id,
                     )
@@ -254,7 +254,8 @@ class Oracalizer(BaseModel):
                     all_usds[i] += exchange.b_usd
         result = []
         for id, usd, liquidity in zip(all_assets, all_usds, all_reserves):
-            print(id, usd, liquidity)
+
+            logger.info(id, usd, liquidity)
             result.append(Oracle(asset_id=id, total_usd=usd, total_liquidity=liquidity))
 
         return result

@@ -11,6 +11,7 @@ from objects import (
     Solver,
 )
 
+from custom_logging import logger
 
 def simulate():
     getcontext().prec = 30
@@ -58,10 +59,10 @@ def simulate():
     p_ob = profit_solver.solve()
     ob.print()
 
-    print(
+    logger.info(
         f"Volume  of volume solver: {v_ob.match_volume:.2f} and Profit solver: {p_ob.match_volume:.2f}"
     )
-    print(
+    logger.info(
         f"PROFIT volume_solver: {volume_solver.profit(volume_solver.order):.2f} profit_solver: {profit_solver.profit(profit_solver.order):.2f}"
     )
 

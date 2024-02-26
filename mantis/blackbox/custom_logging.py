@@ -6,6 +6,7 @@ from pathlib import Path
 from loguru import logger
 import json
 
+config_path=Path(__file__).with_name("logging_config.json")
 
 class InterceptHandler(logging.Handler):
     loglevel_mapping = {
@@ -38,9 +39,9 @@ class InterceptHandler(logging.Handler):
 class CustomizeLogger:
 
     @classmethod
-    def make_logger(cls,config_path: Path):
+    def make_logger(cls):
 
-        config = cls.load_logging_config(config_path)
+        config = cls.load_logging_config()
         logging_config = config.get('logger')
 
         logger = cls.customize_logging(
@@ -91,8 +92,10 @@ class CustomizeLogger:
 
 
     @classmethod
-    def load_logging_config(cls, config_path):
+    def load_logging_config(cls):
         config = None
         with open(config_path) as config_file:
             config = json.load(config_file)
         return config
+
+logger = CustomizeLogger.make_logger()

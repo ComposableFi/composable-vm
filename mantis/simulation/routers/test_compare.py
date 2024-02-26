@@ -18,6 +18,7 @@ from simulation.routers.data import (
     new_pair,
     new_transfer,
 )
+from custom_logging import logger
 
 MAX_RESERVE = 1e10
 
@@ -53,7 +54,7 @@ def _test_simulate_all_connected_venues(routers):
     # print(all_data.index_of_token("WETH"))
     # print(all_data.index_of_token("ATOM"))
 
-    print("=============== solving ========================")
+    logger.info("=============== solving ========================")
 
     results = []
     values = {}
@@ -64,7 +65,7 @@ def _test_simulate_all_connected_venues(routers):
         results.append(f"{name} result: {result} in time: {end - start}")
         values[name] = (result, end - start)
     for result in results:
-        print(result)
+        logger.info(result)
     return values
 
 

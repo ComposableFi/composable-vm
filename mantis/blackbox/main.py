@@ -36,20 +36,27 @@ from simulation.routers.data import (
 )
 from simulation.routers.scaler import scale_in
 
-
-from fastapi import FastAPI
-from loguru.custom_logging import CustomizeLogger
+from custom_logging import CustomizeLogger
 from pathlib import Path
 from fastapi import Request
 import logging
 
+# from log_manager import lg
+# from loguru import logger as lg
+# lg.remove()
+
+# lg.add("/home/legion/Documents/ComposableFi/cvm/sys_debug.log", colorize=True, format="<green>{time}</green> <level>{message}</level>")
+
+
+
 logger = logging.getLogger(__name__)
 
-config_path=Path(__file__).with_name("logging_config.json")
+# config_path=Path(__file__).with_name("logging_config.json")
+# lg = CustomizeLogger.make_logger(config_path)
 
 def create_app() -> FastAPI:
     app = FastAPI(title='CustomLogger', debug=False)
-    logger = CustomizeLogger.make_logger(config_path)
+    logger = CustomizeLogger.make_logger()
     app.logger = logger
 
     return app
@@ -243,8 +250,8 @@ def get_remote_data() -> AllData:
 
 
 def start():
-    print(sys.path)
-    print(os.environ)
+    logger.info(sys.path)
+    logger.info(os.environ)
     data.Input(in_token_id=42, out_token_id=42, in_amount=42, out_amount=42, max=True)
     uvicorn.run(
         "main:app",
