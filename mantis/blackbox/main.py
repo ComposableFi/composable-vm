@@ -10,6 +10,7 @@ from cosmpy.aerial.config import NetworkConfig
 from cosmpy.aerial.contract import LedgerClient, LedgerContract
 from cvm_indexer import ExtendedCvmRegistry, Oracalizer
 from fastapi import Depends, FastAPI
+from loguru import logger
 from shelved_cache import PersistentCache
 
 from blackbox import raw
@@ -36,6 +37,19 @@ from simulation.routers.data import (
 )
 from simulation.routers.scaler import scale_in
 
+""""
+logger = logging.getLogger(__name__)
+
+def create_app() -> FastAPI:
+    app = FastAPI(title="CustomLogger", debug=False)
+    logger = CustomizeLogger.make_logger()
+    app.logger = logger
+
+    return app
+
+
+app = create_app()
+"""
 app = FastAPI()
 
 cache = PersistentCache(
@@ -222,8 +236,8 @@ def get_remote_data() -> AllData:
 
 
 def start():
-    print(sys.path)
-    print(os.environ)
+    logger.info(sys.path)
+    logger.info(os.environ)
     data.Input(in_token_id=42, out_token_id=42, in_amount=42, out_amount=42, max=True)
     uvicorn.run(
         "main:app",

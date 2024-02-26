@@ -3,6 +3,7 @@
 import itertools
 
 import numpy as np
+from loguru import logger
 
 from simulation.routers.data import (
     AllData,
@@ -44,7 +45,7 @@ def test_single_chain_single_cffm_route_full_symmetry_exist():
     pair = new_pair(1, 1, 2, 0, 0, 1, 1, 100, 1_000_000, 1_000_000)
     data = new_data([pair], [])
     result = route(input, data)
-    print(result)
+    logger.info(result)
 
 
 def _test_big_numeric_range():
@@ -52,23 +53,23 @@ def _test_big_numeric_range():
     pair = new_pair(1, 1, 2, 0, 0, 1, 10, 1000, 10_000_000_000, 1_000_000_000)
     data = new_data([pair], [])
     result = route(input, data)
-    print(result)
+    logger.info(result)
 
 
 def _test_simulate_all_connected_venues():
     input = new_input("WETH", "ATOM", 2000, 1)
     CENTER_NODE, chains = simulate_all_to_all_connected_chains_topology(input)
-    print(chains)
+    logger.info(chains)
 
     all_data = simulate_all_connected_venue(CENTER_NODE, chains)
-    print(all_data)
-    print(all_data.all_tokens)
-    print(all_data.index_of_token("WETH"))
-    print(all_data.index_of_token("ATOM"))
+    logger.info(all_data)
+    logger.info(all_data.all_tokens)
+    logger.info(all_data.index_of_token("WETH"))
+    logger.info(all_data.index_of_token("ATOM"))
 
-    print("=============== solving ========================")
+    logger.info("=============== solving ========================")
     result = route(input, all_data, splits=1000, max_depth=5)
-    print(result)
+    logger.info(result)
 
 
 def simulate_all_connected_venue(CENTER_NODE, chains) -> AllData:

@@ -4,6 +4,7 @@ import itertools
 import time
 
 import numpy as np
+from loguru import logger
 
 from simulation.routers import lautaro
 from simulation.routers.data import (
@@ -53,7 +54,7 @@ def _test_simulate_all_connected_venues(routers):
     # print(all_data.index_of_token("WETH"))
     # print(all_data.index_of_token("ATOM"))
 
-    print("=============== solving ========================")
+    logger.info("=============== solving ========================")
 
     results = []
     values = {}
@@ -64,7 +65,7 @@ def _test_simulate_all_connected_venues(routers):
         results.append(f"{name} result: {result} in time: {end - start}")
         values[name] = (result, end - start)
     for result in results:
-        print(result)
+        logger.info(result)
     return values
 
 

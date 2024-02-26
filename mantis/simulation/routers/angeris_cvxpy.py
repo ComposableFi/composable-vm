@@ -6,6 +6,7 @@ import cvxpy as cp
 import numpy as np
 from anytree import Node, RenderTree
 from attr import dataclass
+from loguru import logger
 
 from simulation.routers.data import (
     AllData,
@@ -87,7 +88,7 @@ def cvxpy_to_data(
         ratios = {asset_id: 1 for asset_id in data.all_tokens}
     _etas, trades_raw = parse_trades(ctx, result)
     if ctx.debug:
-        print("trades_raw", trades_raw)
+        logger.info("trades_raw", trades_raw)
 
     # attach tokens ids to trades
     trades = []
@@ -161,7 +162,7 @@ def cvxpy_to_data(
 
     if ctx.debug:
         for pre, _fill, node in RenderTree(start_coin):
-            print(
+            logger.info(
                 "%s via=%s in=%s/%s out=%s/%s"
                 % (
                     pre,

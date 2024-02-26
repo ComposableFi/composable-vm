@@ -8,6 +8,7 @@ from typing import Union
 
 import cvxpy as cp
 import numpy as np
+from loguru import logger
 
 from simulation.routers.angeris_cvxpy import CvxpySolution, parse_trades
 from simulation.routers.data import AllData, Ctx, Input
@@ -155,7 +156,7 @@ def solve(
                 token_a_global <= ctx.minimal_amount
                 or token_b_global <= ctx.minimal_amount
             ):
-                print(
+                logger.info(
                     "warning:: mantis::simulation::router:: trading with zero liquid amount of token"
                 )
             constraints.append(deltas[i] <= etas[i] * [token_a_global, token_b_global])
@@ -176,12 +177,12 @@ def solve(
     if problem.status not in ["optimal", "optimal_inaccurate"]:
         raise Exception(f"Problem status: {problem.status}")
 
-    print(
+    logger.info(
         f"\033[1;91mTotal amount out: {psi.value[all_data.index_of_token(input.out_token_id)]}\033[0m"
     )
 
     for i in range(all_data.venues_count):
-        print(
+        logger.info(
             f"Market {all_data.assets_for_venue(i)} {all_data.all_reserves[i][0]}<->{all_data.all_reserves[i][1]}, delta: {deltas[i].value}, lambda: {lambdas[i].value}, eta: {etas[i].value}",
         )
 
@@ -210,7 +211,7 @@ def route(
     solves and decide if routable
     """
     if ctx.debug:
-        print("first run")
+        logger.info("first run")
     initial_solution = solve(
         all_data,
         input,
@@ -218,8 +219,8 @@ def route(
     )
     forced_etas, original_trades = parse_trades(ctx, initial_solution)
     if ctx.debug:
-        print("forced_etas", forced_etas)
-        print("original_trades", original_trades)
+        logger.info("forced_etas", forced_etas)
+        logger.info("original_trades", original_trades)
     forced_eta_solution = solve(all_data, input, ctx, forced_etas)
     solution = copy.deepcopy(forced_eta_solution)
     return solution
