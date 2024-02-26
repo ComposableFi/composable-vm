@@ -1,4 +1,3 @@
-import logging
 import os
 import sys
 from typing import List
@@ -9,9 +8,9 @@ import uvicorn
 from cachetools import TTLCache
 from cosmpy.aerial.config import NetworkConfig
 from cosmpy.aerial.contract import LedgerClient, LedgerContract
-from custom_logging import CustomizeLogger
 from cvm_indexer import ExtendedCvmRegistry, Oracalizer
 from fastapi import Depends, FastAPI
+from loguru import logger
 from shelved_cache import PersistentCache
 
 from blackbox import raw
@@ -38,18 +37,12 @@ from simulation.routers.data import (
 )
 from simulation.routers.scaler import scale_in
 
-# from log_manager import lg
-# from loguru import logger as lg
-# lg.remove()
-
-# lg.add("/home/legion/Documents/ComposableFi/cvm/sys_debug.log", colorize=True, format="<green>{time}</green> <level>{message}</level>")
+logger.remove()
+logger.add(sys.stderr, colorize=True, format="<green>{time}</green> <level>{message}</level>")
 
 
-
+""""
 logger = logging.getLogger(__name__)
-
-# config_path=Path(__file__).with_name("logging_config.json")
-# lg = CustomizeLogger.make_logger(config_path)
 
 def create_app() -> FastAPI:
     app = FastAPI(title="CustomLogger", debug=False)
@@ -60,8 +53,8 @@ def create_app() -> FastAPI:
 
 
 app = create_app()
-
-# app = FastAPI()
+"""
+app = FastAPI()
 
 cache = PersistentCache(
     TTLCache, filename="get_remote_data.cache", ttl=12 * 1000, maxsize=2

@@ -99,4 +99,4 @@ class CustomizeLogger:
             config = json.load(config_file)
         return config
 
-logger = CustomizeLogger.make_logger()
+logg = CustomizeLogger.make_logger()

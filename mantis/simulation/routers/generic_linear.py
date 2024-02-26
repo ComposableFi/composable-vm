@@ -4,15 +4,18 @@
 # Is generic as possible, can be slow
 
 import copy
+import sys
 from typing import Union
 
 import cvxpy as cp
 import numpy as np
-from custom_logging import logger
+from loguru import logger
 
 from simulation.routers.angeris_cvxpy import CvxpySolution, parse_trades
 from simulation.routers.data import AllData, Ctx, Input
 
+logger.remove()
+logger.add(sys.stderr, colorize=True, format="<green>{time}</green> <level>{message}</level>")
 
 # prepares data for solving and outputs raw solution from underlying engine
 def solve(

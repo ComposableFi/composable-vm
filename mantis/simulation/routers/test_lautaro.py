@@ -1,9 +1,10 @@
 # solves using convex optimization
 # clarabel cvxpy local mip
 import itertools
+import sys
 
 import numpy as np
-from custom_logging import logger
+from loguru import logger
 
 from simulation.routers.data import (
     AllData,
@@ -19,6 +20,8 @@ from simulation.routers.data import (
 )
 from simulation.routers.lautaro import route
 
+logger.remove()
+logger.add(sys.stderr, colorize=True, format="<green>{time}</green> <level>{message}</level>")
 
 # simulate denom paths to and from chains, with center node
 def populate_chain_dict(chains: dict[TNetworkId, list[TId]], center_node: TNetworkId):

@@ -1,6 +1,7 @@
+import sys
 from decimal import Decimal, getcontext
 
-from custom_logging import logger
+from loguru import logger
 from objects import (
     CFMM,
     CFMMProfitSolver,
@@ -12,6 +13,8 @@ from objects import (
     Solver,
 )
 
+logger.remove()
+logger.add(sys.stderr, colorize=True, format="<green>{time}</green> <level>{message}</level>")
 
 def simulate():
     getcontext().prec = 30
