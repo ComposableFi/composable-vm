@@ -2,6 +2,7 @@
 
 from typing import List, Optional
 
+from custom_logging import logger
 from pydantic import BaseModel
 
 from blackbox.composablefi_networks import Model as NetworksModel
@@ -29,7 +30,7 @@ from simulation.routers.data import (
     AssetPairsXyk,
     AssetTransfers,
 )
-from custom_logging import logger
+
 
 class ExtendedNetworkItem(NetworkItem):
     gas_price_usd: float

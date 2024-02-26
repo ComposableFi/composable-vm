@@ -1,3 +1,4 @@
+import logging
 import os
 import sys
 from typing import List
@@ -8,6 +9,7 @@ import uvicorn
 from cachetools import TTLCache
 from cosmpy.aerial.config import NetworkConfig
 from cosmpy.aerial.contract import LedgerClient, LedgerContract
+from custom_logging import CustomizeLogger
 from cvm_indexer import ExtendedCvmRegistry, Oracalizer
 from fastapi import Depends, FastAPI
 from shelved_cache import PersistentCache
@@ -36,11 +38,6 @@ from simulation.routers.data import (
 )
 from simulation.routers.scaler import scale_in
 
-from custom_logging import CustomizeLogger
-from pathlib import Path
-from fastapi import Request
-import logging
-
 # from log_manager import lg
 # from loguru import logger as lg
 # lg.remove()
@@ -55,7 +52,7 @@ logger = logging.getLogger(__name__)
 # lg = CustomizeLogger.make_logger(config_path)
 
 def create_app() -> FastAPI:
-    app = FastAPI(title='CustomLogger', debug=False)
+    app = FastAPI(title="CustomLogger", debug=False)
     logger = CustomizeLogger.make_logger()
     app.logger = logger
 

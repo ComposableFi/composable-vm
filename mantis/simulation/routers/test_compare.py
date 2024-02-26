@@ -4,6 +4,7 @@ import itertools
 import time
 
 import numpy as np
+from custom_logging import logger
 
 from simulation.routers import lautaro
 from simulation.routers.data import (
@@ -18,7 +19,6 @@ from simulation.routers.data import (
     new_pair,
     new_transfer,
 )
-from custom_logging import logger
 
 MAX_RESERVE = 1e10
 

@@ -6,6 +6,7 @@ import cvxpy as cp
 import numpy as np
 from anytree import Node, RenderTree
 from attr import dataclass
+from custom_logging import logger
 
 from simulation.routers.data import (
     AllData,
@@ -17,7 +18,6 @@ from simulation.routers.data import (
     Spawn,
 )
 
-from custom_logging import logger
 
 @dataclass
 class CvxpySolution:

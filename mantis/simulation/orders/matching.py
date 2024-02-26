@@ -1,5 +1,6 @@
 from decimal import Decimal, getcontext
 
+from custom_logging import logger
 from objects import (
     CFMM,
     CFMMProfitSolver,
@@ -11,7 +12,6 @@ from objects import (
     Solver,
 )
 
-from custom_logging import logger
 
 def simulate():
     getcontext().prec = 30

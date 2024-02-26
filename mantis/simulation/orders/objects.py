@@ -8,6 +8,7 @@ from dataclasses import dataclass
 from decimal import Decimal, getcontext
 from typing import Callable, NewType
 from uuid import uuid4
+
 from custom_logging import logger
 
 getcontext().prec = 18
