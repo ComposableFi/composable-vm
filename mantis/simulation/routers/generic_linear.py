@@ -37,7 +37,8 @@ def solve(
     else:
         logger.info("Using optimization: continuous optimization")
 
-    milp = lambda x: int(x) if mi else x
+    # using this need second round scale in to fit integer solution
+    # milp = lambda x: int(x) if mi else x
 
     # initial input assets
 
