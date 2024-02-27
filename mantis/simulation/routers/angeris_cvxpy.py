@@ -193,7 +193,6 @@ def cvxpy_to_data(
                     node.name,
                 )
             )
-    raise Exception("not implemented")
     def next_route(parent_node):
         subs = []
         if parent_node.children:
@@ -223,7 +222,7 @@ def cvxpy_to_data(
     return next_route(start_coin)
 
 
-def parse_total_traded(ctx: Ctx, result: CvxpySolution):
+def parse_total_traded(ctx: Ctx, result: CvxpySolution) -> tuple[any, list]:
     etas = result.eta_values
     deltas = result.delta_values
     lambdas = result.lambda_values
@@ -235,8 +234,8 @@ def parse_total_traded(ctx: Ctx, result: CvxpySolution):
             deltas[i] = np.zeros(len(deltas[i]))
             lambdas[i] = np.zeros(len(lambdas[i]))
         elif (
-            np.max(np.abs(deltas[i])) < ctx.minimal_amount
-            and np.max(np.abs(lambdas[i])) < ctx.minimal_amount
+            np.max(np.abs(deltas[i])) < ctx.minimal_tradeable_number
+            and np.max(np.abs(lambdas[i])) < ctx.minimal_tradeable_number
         ):
             etas[i] = 0
             deltas[i] = np.zeros(len(deltas[i]))
@@ -246,7 +245,7 @@ def parse_total_traded(ctx: Ctx, result: CvxpySolution):
     trades_raw = []
     for i in range(result.count):
         raw_trade = lambdas[i] - deltas[i]
-        if np.max(np.abs(raw_trade)) < ctx.minimal_amount:
+        if np.max(np.abs(raw_trade)) < ctx.minimal_tradeable_number:
             etas[i] = 0
             deltas[i] = np.zeros(len(deltas[i]))
             lambdas[i] = np.zeros(len(lambdas[i]))

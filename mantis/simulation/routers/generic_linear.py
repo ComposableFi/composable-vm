@@ -3,7 +3,9 @@
 # Uses decision variables to decide if to do Transfer to tap pool or not.
 # Is generic as possible, can be slow
 
+from collections import defaultdict
 import copy
+import math
 from typing import Union
 
 import cvxpy as cp
@@ -219,6 +221,7 @@ def route(
     """
     solves and decide if routable
     """
+        
     if ctx.debug:
         logger.info("first run")
     initial_solution = solve(
@@ -227,6 +230,18 @@ def route(
         ctx,
     )
     forced_etas, original_trades = parse_total_traded(ctx, initial_solution)
+    
+    input_price_in_usd = input.in_amount * all_data.token_price_in_usd(input.in_token_id)
+    for i, trade in enumerate(original_trades):
+        if trade[0] > 0 or trade[1] > 0:
+            venue = all_data.venue_by_index(i)
+            oracalized_a = np.abs(trade[0]) * all_data.token_price_in_usd(venue.in_asset_id)        
+            oracalized_b = np.abs(trade[1]) * all_data.token_price_in_usd(venue.out_asset_id)   
+                 
+            logger.warning(f"trade={trade}, a_usd={oracalized_a}, b_usd={oracalized_b}")
+            if oracalized_a <  input_price_in_usd / ctx.maximal_split_count or oracalized_b <  input_price_in_usd / ctx.maximal_split_count:
+                raise Exception(trade)
+    raise Exception("asd")
     if ctx.debug:
         logger.info("forced_etas", forced_etas)
         logger.info("original_trades", original_trades)

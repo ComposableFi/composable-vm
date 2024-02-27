@@ -50,10 +50,22 @@ class Ctx(BaseModel, Generic[TAmount]):
     This is numeric amount, not value amount (oracalized amount) limit.
     Must be equal or larger than solver tolerance.
     """
+    
+    minimal_tradeable_number: float = 0.000001
+    """
+    Not a value, but just physical number to eliminate from trade
+    """
 
+    
     mi_for_venue_count: int = 0
     """
     If venue count is small, can try MI solution because MI are slow in general
+    """
+
+    maximal_split_count: int = 100
+    """_summary_
+    Do not split trade more than to these parts.
+    Up to possible oracle error (do not set it less than expected oracle mistake multiplier)
     """
 
     @property

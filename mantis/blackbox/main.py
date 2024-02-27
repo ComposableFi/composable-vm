@@ -158,9 +158,9 @@ def simulate_route(input: Input, cvm_data: ExtendedCvmRegistry) -> Union[Exchang
     input.in_amount = int(input.in_amount)
     input.out_amount = int(input.out_amount)
 
-    new_data, new_input, ratios = scale_in(data, input, ctx)
+    new_data, new_input, scale = scale_in(data, input, ctx)
     solution = generic_linear.route(new_input, new_data, ctx)
-    route = cvxpy_to_data(input, data, ctx, solution, ratios)
+    route = cvxpy_to_data(input, data, ctx, solution, scale)
     return route
 
 
