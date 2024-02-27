@@ -52,6 +52,8 @@ class CvxpySolution:
 
     @property
     def count(self):
+        assert len(self.deltas) == len(self.lambdas)
+        assert len(self.deltas) == len(self.eta_values)
         return len(self.deltas)
 
     def received(self, global_index) -> float:

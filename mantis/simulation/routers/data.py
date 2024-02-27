@@ -57,7 +57,7 @@ class Ctx(BaseModel, Generic[TAmount]):
     """
 
     
-    mi_for_venue_count: int = 0
+    mi_for_venue_count: int = 10
     """
     If venue count is small, can try MI solution because MI are slow in general
     """
@@ -426,7 +426,7 @@ class AllData(BaseModel, Generic[TId, TAmount]):
     def venue_by_index(self, index) -> Union[AssetTransfers, AssetPairsXyk]:
         if index < len(self.asset_pairs_xyk):
             return self.asset_pairs_xyk[index]
-        return self.asset_transfers[index - len(self.asset_pairs_xyk)]
+        return self.asset_transfers[index - len(self.asset_transfers)]
 
     @property
     def transfers_disjoint_set(self) -> DisjointSet:
@@ -520,6 +520,13 @@ class AllData(BaseModel, Generic[TId, TAmount]):
         for x in self.asset_transfers:
             venues.append([x.in_asset_id, x.out_asset_id])
         return venues
+    
+    @property
+    def venues(self) -> list[Union[AssetPairsXyk, AssetTransfers]]:
+        all = []
+        all.extend(self.asset_pairs_xyk)
+        all.extend(self.asset_transfers)
+        return all
 
     def venue(self, i: int):
         reserves = self.all_reserves
@@ -541,6 +548,7 @@ class AllData(BaseModel, Generic[TId, TAmount]):
         In solver local matrix row count
         """
         return len(self.asset_pairs_xyk) + len(self.asset_transfers)
+
 
     # @property
     # @lru_cache
