@@ -103,7 +103,9 @@ def cvxpy_to_data(
     #         in_tokens[trade.in_token] += trade.in_amount
     #         out_tokens[trade.out_token] += trade.out_amount
 
-    logger.info(total_trades)
+    for trade in total_trades:
+        if trade:
+            logger.info(f"trade {trade}") 
 
 
     # add nodes until burn all input from balance
@@ -111,7 +113,7 @@ def cvxpy_to_data(
     # loops naturally expressed in tree and end with burn
     depth = 0
 
-    def next(current, depth):
+    def snapshots_to_route(current, depth):
 
         # handle big amounts first
         snapshots_to_trade = sorted(
@@ -128,17 +130,13 @@ def cvxpy_to_data(
         depth += 1
         if depth > 10:
             for snapshot in snapshots_to_trade:
-                logger.warning(f"snapshot {snapshot}")
-            raise Exception("Too deep")
-
-
-        remaining_in_amount = current.in_amount
-        nodes = []
+                logger.error(f"snapshot {snapshot}")
+            return
         for snapshot in snapshots_to_trade:
-            if remaining_in_amount <= 0 or snapshot.out_amount <=0 or snapshot.out_amount<=0:
+            if current.in_amount <= 0 or snapshot.out_amount <=0 or snapshot.out_amount<=0:
                 continue            
-            traded_in_amount = min(remaining_in_amount, snapshot.in_amount)
-            print("==========================", remaining_in_amount)
+            traded_in_amount = min(current.in_amount, snapshot.in_amount)
+            print("==========================", current.in_amount)
             if traded_in_amount <= 0:
                 continue
             
@@ -151,27 +149,22 @@ def cvxpy_to_data(
                 continue
             else:
                 logger.info(f"expected_out_amount {expected_out_amount} <= snapshot.out_amount {snapshot.out_amount}")
-            
             snapshot.out_amount -= expected_out_amount
             snapshot.in_amount -= traded_in_amount            
-            remaining_in_amount -= traded_in_amount
+            current.in_amount -= traded_in_amount
             
-            print("==========================", remaining_in_amount)
+            print("==========================", current.in_amount)
             print("==========================", traded_in_amount)
             next_trade = Node(name = f"venue={snapshot.venue_index}", in_amount = expected_out_amount, venue_index = snapshot.venue_index, in_asset_id = snapshot.out_asset_id, parent = current)
             logger.info(f"next_trade {next_trade}")
-            nodes.append(next_trade)
+            snapshots_to_route(next_trade, depth)                
+    start = Node(name= f"venue={-1}", in_amount = input.in_amount, venue_index = -1, in_asset_id = input.in_token_id)
+    snapshots_to_route(start, depth)
 
-        for next_trade in nodes:
-            next(next_trade, depth)
+    for pre, _fill, node in RenderTree(start):
+        logger.debug(f"{pre} in={node.in_amount:_}/{node.in_asset_id} via={node.venue_index}")
             
-    
-    route_start = Node(name= f"venue={-1}", in_amount = input.in_amount, venue_index = -1, in_asset_id = input.in_token_id)
-    next(route_start, depth)
-
-    for pre, _fill, node in RenderTree(route_start):
-        logger.debug(f"{pre} in={int(node.in_amount):_}/{node.in_asset_id} via={node.venue_index}")
-            
+    raise Exception(start)
     def next_route(parent_node):
         subs = []
         if parent_node.children:
@@ -198,7 +191,7 @@ def cvxpy_to_data(
         else:
             raise Exception("Unknown venue type")
 
-    return next_route(route_start)
+    return next_route(start_coin)
 
 def into_venue_snapshots(data, ratios, trades_raw) -> list[VenuesSnapshot]:
     total_trades = []

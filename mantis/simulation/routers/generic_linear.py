@@ -3,9 +3,7 @@
 # Uses decision variables to decide if to do Transfer to tap pool or not.
 # Is generic as possible, can be slow
 
-from collections import defaultdict
 import copy
-import math
 from typing import Union
 
 import cvxpy as cp
@@ -65,7 +63,6 @@ def solve(
         A.append(A_i)
 
     # Build variables
-
 
     # tendered (given) amount of reserves
     deltas = [cp.Variable(A_i.shape[1], integer=mi) for A_i in A]
@@ -229,7 +226,7 @@ def route(
     """
     solves and decide if routable
     """
-        
+
     if ctx.debug:
         logger.info("first run")
     initial_solution = solve(
@@ -238,40 +235,52 @@ def route(
         ctx,
     )
     forced_etas, original_trades = parse_total_traded(ctx, initial_solution)
+    if all([eta == 0 for eta in forced_etas]):
+        raise Exception("all etas are zero, so you cannot trade at all")
     
-    assert len(original_trades) == all_data.venues_count
-    assert len(original_trades) == len(forced_etas)
     # let eliminated small splits
-    input_price_in_usd = input.in_amount * all_data.token_price_in_usd(input.in_token_id)
+    input_price_in_usd = input.in_amount * all_data.token_price_in_usd(
+        input.in_token_id
+    )
     oracalized_trades = []
     for i, trade in enumerate(original_trades):
         if trade[0] > 0 or trade[1] > 0:
-            print("===============")
-            print(i)
-            print(all_data.venues_count)
             venue = all_data.venue_by_index(i)
-            oracalized_a = np.abs(trade[0]) * all_data.token_price_in_usd(venue.in_asset_id)        
-            oracalized_b = np.abs(trade[1]) * all_data.token_price_in_usd(venue.out_asset_id)                    
-            if oracalized_a <  input_price_in_usd / ctx.maximal_split_count or oracalized_b <  input_price_in_usd / ctx.maximal_split_count:
+            oracalized_a = np.abs(trade[0]) * all_data.token_price_in_usd(
+                venue.in_asset_id
+            )
+            oracalized_b = np.abs(trade[1]) * all_data.token_price_in_usd(
+                venue.out_asset_id
+            )
+            if (
+                oracalized_a < input_price_in_usd / ctx.maximal_split_count
+                or oracalized_b < input_price_in_usd / ctx.maximal_split_count
+            ):
                 oracalized_trades.append([0, 0])
-                logger.warning(f"trade={trade}, a_usd={oracalized_a}, b_usd={oracalized_b}, i={i}, forced_eta={len(forced_etas)}, len={len(original_trades)}")
-            
+                logger.warning(
+                    f"ZEROING TRADE trade={trade}, a_usd={oracalized_a}, b_usd={oracalized_b}, i={i}, forced_eta={len(forced_etas)}, len={len(original_trades)}"
+                )
+
                 forced_etas[i] = 0.0
-                trade[0] = 0.0                
+                trade[0] = 0.0
                 trade[1] = 0.0
             else:
                 oracalized_trades.append([oracalized_a, oracalized_b])
-                logger.info(f"trade={trade}, a_usd={oracalized_a}, b_usd={oracalized_b}")
+                logger.info(
+                    f"trade={trade}, a_usd={oracalized_a}, b_usd={oracalized_b}"
+                )
         else:
             oracalized_trades.append([0, 0])
-    
+
     logger.info(f"trades={list(zip(original_trades, oracalized_trades))}")
     # eliminate disproportional trades
-    oracalized_trades = sorted((e,i) for i,e in enumerate(oracalized_trades))
-                              
+    oracalized_trades = sorted((e, i) for i, e in enumerate(oracalized_trades))
+
     logger.info("forced_etas", forced_etas)
     for i, venue in enumerate(all_data.venues):
-        logger.info(f"in_asset_id={venue.in_asset_id},out_asset_id={venue.out_asset_id}, go_no_go={forced_etas[i]}")
+        logger.info(
+            f"in_asset_id={venue.in_asset_id},out_asset_id={venue.out_asset_id}, go_no_go={forced_etas[i]}"
+        )
     logger.debug("original_trades", original_trades)
     forced_eta_solution = solve(all_data, input, ctx, forced_etas)
     solution = copy.deepcopy(forced_eta_solution)

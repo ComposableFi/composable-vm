@@ -12,10 +12,13 @@ def oracalize_data(base_data: AllData, input: Input, ctx: Ctx) -> tuple[AllData,
     assert base_data is not None
     oracalized_data = copy.deepcopy(base_data)
     oracalized_input = copy.deepcopy(input)
+    assert input.in_amount > 0
     oracalized_input.in_amount = input.in_amount * base_data.token_price_in_usd(
         input.in_token_id
     )
-    assert oracalized_input.in_amount > ctx.minimal_amount
+    
+    if oracalized_input.in_amount < ctx.min_input_in_usd :
+        raise Exception(f"minimal amount is {ctx.minimal_amount} and you have {oracalized_input.in_amount} for {input.in_token_id}")
 
     # make all exchanges to be oracalized
     for i, exchange in enumerate(base_data.asset_pairs_xyk):

@@ -27,13 +27,13 @@ from simulation.routers import data, generic_linear, test_generic_linear
 from simulation.routers.angeris_cvxpy import cvxpy_to_data
 from simulation.routers.data import (
     AllData as SimulationData,
-    Exchange,
-    Spawn,
 )
 from simulation.routers.data import (
     AssetPairsXyk,
     Ctx,
+    Exchange,
     Input,
+    Spawn,
     new_pair,
     read_dummy_data,
 )
@@ -145,18 +145,24 @@ def simulator_router(input: Input = Depends()):
         raw_data.cosmos_chains.chains,
         raw_data.osmosis_pools,
     )
-    
+
     route = simulate_route(input, cvm_data)
 
     return route
 
-def simulate_route(input: Input, cvm_data: ExtendedCvmRegistry) -> Union[Exchange, Spawn]:
+
+def simulate_route(
+    input: Input, cvm_data: ExtendedCvmRegistry
+) -> Union[Exchange, Spawn]:
     ctx = Ctx()
     oracles = Oracalizer.orcale_from_usd(cvm_data)
     data = Oracalizer.for_simulation(cvm_data, oracles)
 
     input.in_amount = int(input.in_amount)
     input.out_amount = int(input.out_amount)
+    
+    if input.in_amount >= ctx.max_trade * data.maximal_reserves_of(input.in_token_id):
+        raise Exception(f"you are trading on market limit with {input.in_amount} for {data.maximal_reserves_of(input.in_token_id)}")
 
     new_data, new_input, scale = scale_in(data, input, ctx)
     solution = generic_linear.route(new_input, new_data, ctx)

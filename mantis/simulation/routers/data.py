@@ -8,6 +8,7 @@ from enum import Enum
 from fractions import Fraction
 from typing import Generic, TypeVar, Union
 
+from loguru import logger
 import numpy as np
 import pandas as pd
 from disjoint_set import DisjointSet
@@ -31,6 +32,11 @@ class Ctx(BaseModel, Generic[TAmount]):
      If set too true, solver must solve only integer problems.
      All inputs to solver are really integers.
     """
+    
+    max_trade: float = 0.1
+    """
+    Do not trade if you will skew market
+    """
 
     max_reserve_decimals: int = 4
     """_summary_
@@ -44,7 +50,9 @@ class Ctx(BaseModel, Generic[TAmount]):
 
     min_usd_reserve: float = 1
 
-    minimal_amount: float = 0.0001
+    min_input_in_usd:float = 0.0001
+
+    minimal_amount: float = 0.00001
     """_summary_
     Numerically minimal amount of change goes via venue is accepted, minimal trade.
     This is numeric amount, not value amount (oracalized amount) limit.
@@ -57,7 +65,7 @@ class Ctx(BaseModel, Generic[TAmount]):
     """
 
     
-    mi_for_venue_count: int = 10
+    mi_for_venue_count: int = 1
     """
     If venue count is small, can try MI solution because MI are slow in general
     """
@@ -249,11 +257,13 @@ class Exchange(BaseModel, Generic[TId, TAmount]):
     none means all (DELTA)
     """
 
-    out_amount: TAmount
+    out_asset_amount: TAmount
     """_summary_
     Means expected minimal amount.
     """
 
+    in_asset_id: TId
+    
     out_asset_id: TId
 
     pool_id: TId
@@ -417,7 +427,7 @@ class AllData(BaseModel, Generic[TId, TAmount]):
                 np.array(
                     [
                         self.maximal_reserves_of(x.in_asset_id),
-                        self.maximal_reserves_of(x.out_asset_id),
+                                self.maximal_reserves_of(x.out_asset_id),
                     ]
                 )
             )
@@ -468,7 +478,7 @@ class AllData(BaseModel, Generic[TId, TAmount]):
         if value > 0:
             return value
 
-        exchanges = self.transfer_to_exchange(asset_id)
+        exchanges = self.transfer_to_exchange(asset_id)     
         for exchange_id in exchanges:
             for venue in self.asset_pairs_xyk:
                 if venue.pool_id == exchange_id:
@@ -480,6 +490,8 @@ class AllData(BaseModel, Generic[TId, TAmount]):
                         venue.out_asset_id, asset_id
                     ):
                         value = max(value, venue.out_token_amount)
+                    else:
+                        raise Exception(f"asset {asset_id} not connected to {venue}")
         if value > 0:
             return value
 
@@ -491,7 +503,8 @@ class AllData(BaseModel, Generic[TId, TAmount]):
         if value > 0:
             return value
 
-        # print("WARN: has no reserves ", asset_id)
+        if value ==0:
+            logger.error(f"asset reservers not found {asset_id}")
         return 0
 
     def total_reserves_of(self, token: TId) -> int:
@@ -562,22 +575,29 @@ class AllData(BaseModel, Generic[TId, TAmount]):
             oracles = {}
         transfers = [(x.in_asset_id, x.out_asset_id) for x in self.asset_transfers]
 
+        connections = self.transfers_disjoint_set
         for asset_id in self.all_tokens:
-            if asset_id not in oracles or oracles[asset_id] is None:
+            if asset_id not in oracles or oracles[asset_id] is None or oracles[asset_id] == 0:
                 for pair in self.asset_pairs_xyk:
                     if pair.pool_value_in_usd:
-                        if pair.in_asset_id == asset_id:
-                            oracles[asset_id] = pair.value_of_a_in_usd
+                        if connections.connected(pair.in_asset_id, asset_id):
+                            assert pair.value_of_a_in_usd > 0
+                            oracles[asset_id] = pair.value_of_a_in_usd                            
                             break
-                        if pair.out_asset_id == asset_id:
+                        if connections.connected(pair.out_asset_id, asset_id):
+                            assert pair.value_of_b_in_usd > 0
                             oracles[asset_id] = pair.value_of_b_in_usd
                             break
+        if oracles[token] > 0:
+                return oracles[token]
+
 
         oracles = route_set(oracles, transfers)
         if oracles:
             oracle = oracles.get(token, None)
-            if oracle:
+            if oracle > 0:
                 return oracle
+ 
 
         for pair in self.asset_pairs_xyk:
             if pair.pool_value_in_usd:
@@ -585,9 +605,8 @@ class AllData(BaseModel, Generic[TId, TAmount]):
                     return pair.value_of_a_in_usd
                 if pair.out_asset_id == token:
                     return pair.value_of_b_in_usd
-        print("ERROR: oracle not found for token ", token)
+        logger.warning(f"oracle not found for token {token}, which means there is no connection of token to USD")
         return 0
-
 
 # helpers to setup tests data
 

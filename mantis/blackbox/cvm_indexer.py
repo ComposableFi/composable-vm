@@ -257,8 +257,8 @@ class Oracalizer(BaseModel):
                     all_reserves[i] += exchange.token_b_amount
                     all_usds[i] += exchange.b_usd
         result = []
-    
-        for id, usd, liquidity in zip(all_assets, all_usds, all_reserves):            
+
+        for id, usd, liquidity in zip(all_assets, all_usds, all_reserves):
             logger.info(f"{id} {usd} {liquidity}")
             result.append(Oracle(asset_id=id, total_usd=usd, total_liquidity=liquidity))
         return result
@@ -276,9 +276,9 @@ class Oracalizer(BaseModel):
                 AssetTransfers(
                     in_asset_id=transfer.asset_id.root,
                     out_asset_id=transfer.to_asset_id.root,
-                    in_token_amount=10**12,
-                    out_token_amount=10**12,
-                    usd_fee_transfer=0.001,
+                    in_token_amount=-1,
+                    out_token_amount=-1,
+                    usd_fee_transfer=0,
                     fee_per_million=0,
                 )
             )
