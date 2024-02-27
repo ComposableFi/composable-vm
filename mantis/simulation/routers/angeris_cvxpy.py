@@ -61,11 +61,14 @@ class CvxpySolution:
 
 
 @dataclass
-class VenueOperation:
+class VenuesSnapshot:
+    """_summary_
+    The total amount which goes in/out each venue 
+    """
     venue_index: int
-    in_token: any
+    in_asset_id: any
     in_amount: int
-    out_token: any
+    out_asset_id: any
     out_amount: any
 
 
@@ -89,37 +92,8 @@ def cvxpy_to_data(
         ratios = {asset_id: 1 for asset_id in data.all_tokens}
 
     _etas, trades_raw = parse_total_traded(ctx, result)
-    if ctx.debug:
-        logger.info("trades_raw", trades_raw)
 
-    # attach tokens ids to trades
-    total_trades = []
-
-    for i, raw_trade in enumerate(trades_raw):
-        if np.abs(raw_trade[0]) > 0:
-            [token_index_a, token_index_b] = data.venues_tokens[i]
-            if raw_trade[0] < 0:
-                total_trades.append(
-                    VenueOperation(
-                        in_token=token_index_a,
-                        in_amount=-raw_trade[0] / ratios[token_index_a],
-                        out_token=token_index_b,
-                        out_amount=raw_trade[1] / ratios[token_index_b],
-                        venue_index=i,
-                    )
-                )
-            else:
-                total_trades.append(
-                    VenueOperation(
-                        in_token=token_index_b,
-                        in_amount=-raw_trade[1] / ratios[token_index_b],
-                        out_token=token_index_a,
-                        out_amount=raw_trade[0] / ratios[token_index_a],
-                        venue_index=i,
-                    )
-                )
-        else:
-            total_trades.append(None)
+    total_trades = into_venue_snapshots(data, ratios, trades_raw)
 
     # # balances
     # in_tokens = defaultdict(int)
@@ -129,72 +103,75 @@ def cvxpy_to_data(
     #         in_tokens[trade.in_token] += trade.in_amount
     #         out_tokens[trade.out_token] += trade.out_amount
 
-    if ctx.debug:
-        print(total_trades)
-    raise Exception(total_trades)
+    logger.info(total_trades)
+
 
     # add nodes until burn all input from balance
     # node identity is token and amount input used and depth
     # loops naturally expressed in tree and end with burn
     depth = 0
 
-    def next(current, depth, input):
-        print(current)
-        depth += 1
-        if depth > 10:
-            raise Exception("failed to stop ", current)
+    def next(current, depth):
 
         # handle big amounts first
-        from_coin = sorted(
+        snapshots_to_trade = sorted(
             [
                 trade
                 for trade in total_trades
-                if trade and trade.in_token == current.name and trade.in_amount > 0 and trade.out_amount > 0
+                if trade and trade.in_asset_id == current.in_asset_id and trade.in_amount > 0 and trade.out_amount > 0
             ],
             key=lambda x: x.in_amount,
             reverse=True,
         )
-        burn = current.in_amount
-        if burn <= 0:
+        if not any(snapshots_to_trade):
             return
+        depth += 1
+        if depth > 10:
+            for snapshot in snapshots_to_trade:
+                logger.warning(f"snapshot {snapshot}")
+            raise Exception("Too deep")
 
+
+        remaining_in_amount = current.in_amount
         nodes = []
-        for trade in from_coin:
-            trade: VenueOperation = trade
-            traded = min(burn, trade.in_amount)
-            print(trade)
-            print(traded)
-
-            burn -= traded
-            trade.in_amount -= traded            
-            in_amount= traded * trade.out_amount / trade.in_amount
-            if in_amount > 0:
-                print("AMOUNT", in_amount)
-
-                next_trade = Node(
-                    name=trade.out_token,
-                    parent=current,
-                    venue_index = trade.venue_index,
-                    in_amount = in_amount,
-                )
-                nodes.append(next_trade)
-        for next_trade in nodes:
-            next(next_trade, depth, input)
+        for snapshot in snapshots_to_trade:
+            if remaining_in_amount <= 0 or snapshot.out_amount <=0 or snapshot.out_amount<=0:
+                continue            
+            traded_in_amount = min(remaining_in_amount, snapshot.in_amount)
+            print("==========================", remaining_in_amount)
+            if traded_in_amount <= 0:
+                continue
             
-    start = Node(name=input.in_token_id, in_amount = input.in_amount, venue_index = -1)
-    next(start, depth, input)
+            expected_out_amount = traded_in_amount * snapshot.out_amount / snapshot.in_amount
+            if expected_out_amount <= 0:
+                continue
+            
+            if snapshot.out_amount < expected_out_amount:
+                logger.warning(f"expected_out_amount {expected_out_amount} > snapshot.out_amount {snapshot.out_amount}")
+                continue
+            else:
+                logger.info(f"expected_out_amount {expected_out_amount} <= snapshot.out_amount {snapshot.out_amount}")
+            
+            snapshot.out_amount -= expected_out_amount
+            snapshot.in_amount -= traded_in_amount            
+            remaining_in_amount -= traded_in_amount
+            
+            print("==========================", remaining_in_amount)
+            print("==========================", traded_in_amount)
+            next_trade = Node(name = f"venue={snapshot.venue_index}", in_amount = expected_out_amount, venue_index = snapshot.venue_index, in_asset_id = snapshot.out_asset_id, parent = current)
+            logger.info(f"next_trade {next_trade}")
+            nodes.append(next_trade)
 
-    if ctx.debug:
-        for pre, _fill, node in RenderTree(start):
-            logger.info(
-                "%s via=%s in=%s/%s"
-                % (
-                    pre,
-                    node.venue_index,
-                    node.in_amount,
-                    node.name,
-                )
-            )
+        for next_trade in nodes:
+            next(next_trade, depth)
+            
+    
+    route_start = Node(name= f"venue={-1}", in_amount = input.in_amount, venue_index = -1, in_asset_id = input.in_token_id)
+    next(route_start, depth)
+
+    for pre, _fill, node in RenderTree(route_start):
+        logger.debug(f"{pre} in={int(node.in_amount):_}/{node.in_asset_id} via={node.venue_index}")
+            
     def next_route(parent_node):
         subs = []
         if parent_node.children:
@@ -221,7 +198,37 @@ def cvxpy_to_data(
         else:
             raise Exception("Unknown venue type")
 
-    return next_route(start_coin)
+    return next_route(route_start)
+
+def into_venue_snapshots(data, ratios, trades_raw) -> list[VenuesSnapshot]:
+    total_trades = []
+
+    for i, raw_trade in enumerate(trades_raw):
+        if np.abs(raw_trade[0]) > 0:
+            [token_index_a, token_index_b] = data.venues_tokens[i]
+            if raw_trade[0] < 0:
+                total_trades.append(
+                    VenuesSnapshot(
+                        in_asset_id=token_index_a,
+                        in_amount=-raw_trade[0] / ratios[token_index_a],
+                        out_asset_id=token_index_b,
+                        out_amount=raw_trade[1] / ratios[token_index_b],
+                        venue_index=i,
+                    )
+                )
+            else:
+                total_trades.append(
+                    VenuesSnapshot(
+                        in_asset_id=token_index_b,
+                        in_amount=-raw_trade[1] / ratios[token_index_b],
+                        out_asset_id=token_index_a,
+                        out_amount=raw_trade[0] / ratios[token_index_a],
+                        venue_index=i,
+                    )
+                )
+        else:
+            total_trades.append(None)
+    return total_trades
 
 
 def parse_total_traded(ctx: Ctx, result: CvxpySolution) -> tuple[any, list]:
