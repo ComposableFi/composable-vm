@@ -146,7 +146,6 @@ def simulator_router(input: Input = Depends()):
         raw_data.osmosis_pools,
     )
     
-    
     route = simulate_route(input, cvm_data)
 
     return route

@@ -129,6 +129,7 @@ def cvxpy_to_data(
 
     if ctx.debug:
         print(total_trades)
+    raise Exception(total_trades)
 
     # add nodes until burn all input from balance
     # node identity is token and amount input used and depth
@@ -154,7 +155,7 @@ def cvxpy_to_data(
         burn = current.in_amount
         if burn <= 0:
             return
-        
+
         nodes = []
         for trade in from_coin:
             trade: VenueOperation = trade

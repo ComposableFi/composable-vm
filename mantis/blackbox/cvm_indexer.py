@@ -257,11 +257,10 @@ class Oracalizer(BaseModel):
                     all_reserves[i] += exchange.token_b_amount
                     all_usds[i] += exchange.b_usd
         result = []
-        for id, usd, liquidity in zip(all_assets, all_usds, all_reserves):
-
-            logger.info(id, usd, liquidity)
+    
+        for id, usd, liquidity in zip(all_assets, all_usds, all_reserves):            
+            logger.info(f"{id} {usd} {liquidity}")
             result.append(Oracle(asset_id=id, total_usd=usd, total_liquidity=liquidity))
-
         return result
 
     def for_simulation(
