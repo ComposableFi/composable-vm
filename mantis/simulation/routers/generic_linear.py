@@ -243,7 +243,7 @@ def route(
         ctx,
     )
     forced_etas, original_trades = parse_total_traded(ctx, initial_solution)
-    raise Exception(original_trades)
+
     # let eliminated small splits
     input_price_in_usd = input.in_amount * all_data.token_price_in_usd(
         input.in_token_id

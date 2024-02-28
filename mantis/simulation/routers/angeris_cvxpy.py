@@ -76,7 +76,7 @@ def cvxpy_to_data(
     input: Input,
     data: AllData,
     ctx: Ctx,
-    result: CvxpySolution,
+    raw_solution: CvxpySolution,
     ratios=None,
 ) -> Union[Exchange, Spawn]:
     """_summary_
@@ -88,10 +88,16 @@ def cvxpy_to_data(
       Find starter node and recurse with minus from input matrix (loops covered).
     Visualize.
     """
+    
+    index_of_input = data.index_of_token(input.in_token_id)
+    solution_input = -raw_solution.psi[index_of_input].value
+    if solution_input < input.in_amount:
+        raise Exception(f"input {input.in_amount} > solution_input {solution_input}")
+    
     if ratios is None:
         ratios = {asset_id: 1 for asset_id in data.all_tokens}
 
-    _etas, trades_raw = parse_total_traded(ctx, result)
+    _etas, trades_raw = parse_total_traded(ctx, raw_solution)
 
     total_trades = into_venue_snapshots(data, ratios, trades_raw)
 
@@ -164,7 +170,6 @@ def cvxpy_to_data(
     for pre, _fill, node in RenderTree(start):
         logger.debug(f"{pre} in={node.in_amount:_}/{node.in_asset_id} via={node.venue_index}")
             
-    raise Exception(start)
     def next_route(parent_node):
         subs = []
         if parent_node.children:

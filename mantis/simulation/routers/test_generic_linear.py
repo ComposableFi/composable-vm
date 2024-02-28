@@ -1,5 +1,4 @@
-# solves using convex optimization
-# clarabel cvxpy local mip
+# Solves using OR optimization
 import itertools
 import math
 
