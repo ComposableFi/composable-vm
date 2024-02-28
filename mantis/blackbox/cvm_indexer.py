@@ -23,6 +23,7 @@ from blackbox.cvm_runtime.response_to_get_config import (
 from blackbox.osmosis_pools import Model as OsmosisPoolsModel
 from blackbox.skip_money import Chain
 from simulation.routers.data import (
+    MINIMAL_TRANSACTION_USD_COST_DEFAULT,
     AllData as SimulationData,
 )
 from simulation.routers.data import (
@@ -278,7 +279,7 @@ class Oracalizer(BaseModel):
                     out_asset_id=transfer.to_asset_id.root,
                     in_token_amount=-1,
                     out_token_amount=-1,
-                    usd_fee_transfer=0,
+                    venue_fixed_costs_in_usd=0.01,
                     fee_per_million=0,
                 )
             )
@@ -296,6 +297,7 @@ class Oracalizer(BaseModel):
                     in_token_amount=int(pair.token_a_amount),
                     out_token_amount=int(pair.token_b_amount),
                     pool_value_in_usd=int(pair.pool_value_in_usd),
+                    venue_fixed_costs_in_usd = MINIMAL_TRANSACTION_USD_COST_DEFAULT,
                     closed=None,
                 )
             )

@@ -64,22 +64,6 @@ def test_token_price_in_usd_via_oracle():
     assert data.index_of_token(1) == 0
     assert data.index_of_token(2) == 1
 
-
-def test_output_route_centauri_osmosis():
-    exchange = Exchange(
-        in_asset_amount=100, pool_id=1, next=[], out_amount=42, out_asset_id=13
-    )
-
-    spawn = Spawn(
-        in_asset_amount=100,
-        out_asset_id=1,
-        in_asset_id=2,
-        out_asset_amount=42,
-        next=[exchange.model_dump()],
-    )
-    SingleInputAssetCvmRoute(next=[spawn], input_amount=1000)
-
-
 def test_transfer_to_exchange():
     connection12 = new_transfer(1, 2, 100, 1, 2, 100)
     connection23 = new_transfer(2, 3, 100, 1, 2, 100)

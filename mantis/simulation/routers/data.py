@@ -12,7 +12,7 @@ from loguru import logger
 import numpy as np
 import pandas as pd
 from disjoint_set import DisjointSet
-from pydantic import BaseModel, validator
+from pydantic import BaseModel, validator, model_validator
 
 from simulation.routers.oracles import route_set
 
@@ -21,6 +21,11 @@ TId = TypeVar("TId", int, str)
 TNetworkId = TypeVar("TNetworkId", int, str)
 TAmount = TypeVar("TAmount", int, str)
 
+MINIMAL_TRANSACTION_USD_COST_DEFAULT: float = 0.00001
+"""_summary_
+Each venue eats some USD for transaction.
+So we just cut noise.
+"""
 
 class Ctx(BaseModel, Generic[TAmount]):
     debug: bool = True
@@ -51,7 +56,7 @@ class Ctx(BaseModel, Generic[TAmount]):
     min_usd_reserve: float = 1
 
     min_input_in_usd:float = 0.0001
-
+    minimal_trading_probability : float = 0.000001
     minimal_amount: float = 0.00001
     """_summary_
     Numerically minimal amount of change goes via venue is accepted, minimal trade.
@@ -59,7 +64,7 @@ class Ctx(BaseModel, Generic[TAmount]):
     Must be equal or larger than solver tolerance.
     """
     
-    minimal_tradeable_number: float = 0.000001
+    minimal_tradeable_number: float = 0.00000001
     """
     Not a value, but just physical number to eliminate from trade
     """
@@ -69,8 +74,10 @@ class Ctx(BaseModel, Generic[TAmount]):
     """
     If venue count is small, can try MI solution because MI are slow in general
     """
+    
+    min_usd_venue_amount: float = 0.0000000001
 
-    maximal_split_count: int = 100
+    maximal_split_count: int = 10_0000
     """_summary_
     Do not split trade more than to these parts.
     Up to possible oracle error (do not set it less than expected oracle mistake multiplier)
@@ -95,7 +102,7 @@ class AssetTransfers(
     TwoTokenConverter,
     Generic[TId, TAmount],
 ):
-    usd_fee_transfer: float
+    venue_fixed_costs_in_usd: float
     """_summary_
         this is positive whole number too
         if it is hard if None, please fail if it is None - for now will be always some
@@ -149,6 +156,7 @@ class AssetPairsXyk(
     weight_b: int
     # if it is hard if None, please fail if it is None - for now will be always some
     pool_value_in_usd: TAmount | None = None
+    venue_fixed_costs_in_usd: float = 0.00001
 
     @validator("pool_value_in_usd", pre=True, always=True)
     def replace_nan_with_None(cls, v):
@@ -268,6 +276,14 @@ class Exchange(BaseModel, Generic[TId, TAmount]):
 
     pool_id: TId
     next: list[Union[Exchange, Spawn]]
+    
+    @model_validator(mode='after')
+    def after(self) -> 'Exchange':
+        assert self.out_asset_amount > 0
+        assert self.in_asset_amount > 0
+        assert self.in_asset_id != self.out_asset_id
+        return self
+        
 
 
 class SingleInputAssetCvmRoute(BaseModel):
@@ -332,7 +348,7 @@ class AllData(BaseModel, Generic[TId, TAmount]):
             tokens.append(x.out_asset_id)
         return list(set(tokens))
 
-    def global_reservers_of(self, token: TId) -> TAmount:
+    def global_reservers_of(self, asset_id: TId) -> TAmount:
         """_summary_
         Goes over transfers path and finds all pools with same token which server estimate of total issuance
         """
@@ -346,9 +362,9 @@ class AllData(BaseModel, Generic[TId, TAmount]):
             ds.union(transfer.out_asset_id, transfer.in_asset_id)
         total_issuance = 0
         for span in ds.itersets():
-            if token in span:
-                for token in span:
-                    total_issuance += self.total_reserves_of(token)
+            if asset_id in span:
+                for asset_id in span:
+                    total_issuance += self.total_reserves_of(asset_id)
                 break
         return total_issuance
 
@@ -372,29 +388,29 @@ class AllData(BaseModel, Generic[TId, TAmount]):
         """
         costs = []
         for x in self.asset_pairs_xyk:
-            costs.append(0.0)
+            costs.append(x.venue_fixed_costs_in_usd)
         for x in self.asset_transfers:
-            costs.append(x.usd_fee_transfer)
+            costs.append(x.venue_fixed_costs_in_usd)
         return costs
 
-    def venue_fixed_costs_in(self, token: TId) -> list[int]:
+    def venue_fixed_costs_in(self, token: TId) -> list[float]:
         """_summary_
         Converts fixed price of all venues to token
         """
         token_price_in_usd = self.token_price_in_usd(token)
         if not token_price_in_usd:
-            print(
+            raise Exception(
                 "WARN: mantis::simulation::routers:: token has no price found to compare to fixed costs, so fixed costs would be considered 1 or 0"
             )
 
         in_received_token = []
         for fixed_cost_in_usd in self.venue_fixed_costs_in_usd:
             if not token_price_in_usd and fixed_cost_in_usd > 0:
-                in_received_token.append(1)
+                in_received_token.append(0.000001)
             elif not token_price_in_usd and fixed_cost_in_usd == 0:
                 in_received_token.append(0)
             else:
-                in_received_token.append(int(fixed_cost_in_usd / token_price_in_usd))
+                in_received_token.append(fixed_cost_in_usd / token_price_in_usd)
         return in_received_token
 
     @property
@@ -504,7 +520,7 @@ class AllData(BaseModel, Generic[TId, TAmount]):
             return value
 
         if value ==0:
-            logger.error(f"asset reservers not found {asset_id}")
+            logger.trace(f"asset reservers not found {asset_id}")
         return 0
 
     def total_reserves_of(self, token: TId) -> int:
@@ -605,7 +621,7 @@ class AllData(BaseModel, Generic[TId, TAmount]):
                     return pair.value_of_a_in_usd
                 if pair.out_asset_id == token:
                     return pair.value_of_b_in_usd
-        logger.warning(f"oracle not found for token {token}, which means there is no connection of token to USD")
+        logger.debug(f"oracle not found for token {token}, which means there is no connection of token to USD")
         return 0
 
 # helpers to setup tests data
@@ -642,6 +658,7 @@ def new_pair(
     pool_value_in_usd,
     in_token_amount,
     out_token_amount,
+    venue_fixed_costs_in_usd: float = 0.00001,
     metadata=None,
 ) -> AssetPairsXyk:
     return AssetPairsXyk(
@@ -655,6 +672,7 @@ def new_pair(
         pool_value_in_usd=pool_value_in_usd,
         in_token_amount=in_token_amount,
         out_token_amount=out_token_amount,
+        venue_fixed_costs_in_usd = venue_fixed_costs_in_usd,
         metadata=metadata,
     )
 
@@ -662,7 +680,7 @@ def new_pair(
 def new_transfer(
     in_asset_id,
     out_asset_id,
-    usd_fee_transfer,
+    venue_fixed_costs_in_usd,
     in_token_amount,
     out_token_amount,
     fee_per_million,
@@ -671,39 +689,13 @@ def new_transfer(
     return AssetTransfers(
         in_asset_id=in_asset_id,
         out_asset_id=out_asset_id,
-        usd_fee_transfer=usd_fee_transfer,
+        venue_fixed_costs_in_usd=venue_fixed_costs_in_usd,
         in_token_amount=in_token_amount,
         out_token_amount=out_token_amount,
         fee_per_million=fee_per_million,
         metadata=metadata,
     )
 
-
-class AssetPairsXyk1(BaseModel):
-    # set key
-    pool_id: int
-    in_asset_id: int
-    out_asset_id: int
-
-    # assumed that all all CFMM take fee from pair token in proportion
-    fee_of_in_per_million: int
-    fee_of_out_per_million: int
-    # in reality fee can be flat or in other tokens, but not for now
-
-    weight_a: int
-    weight_b: int
-    # if it is hard if None, please fail if it is None - for now will be always some
-    pool_value_in_usd: int | None = None
-
-    @validator("pool_value_in_usd", pre=True, always=True)
-    def replace_nan_with_None(cls, v):
-        return v if v == v else None
-
-    # total amounts in reserves R
-    in_token_amount: int
-    out_token_amount: int
-
-    metadata: str | None = None
 
 
 def read_dummy_data(TEST_DATA_DIR: str = "./") -> AllData:

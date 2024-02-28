@@ -40,8 +40,9 @@ def solve(
 
     # initial input assets
 
+    index_of_input_token = all_data.index_of_token(input.in_token_id)
     current_assets = np.full((all_data.tokens_count), int(0))
-    current_assets[all_data.index_of_token(input.in_token_id)] = input.in_amount
+    current_assets[index_of_input_token] = input.in_amount
 
     reserves = all_data.all_reserves
 
@@ -104,6 +105,7 @@ def solve(
     # Trading function constraints
     constraints = [
         psi + current_assets >= 0,
+        psi[index_of_input_token] <= -0.8 * input.in_amount, # so sometimes it finds near zero solution because of fee by spending zero - useless 
     ]
 
     # input to venue can be only positive
@@ -161,10 +163,10 @@ def solve(
             constraints.append(lambdas[i] == 0)
         else:
             issuance = 1
-            token_a_global = issuance * all_data.global_reservers_of(
+            token_a_global = issuance * all_data.maximal_reserves_of(
                 all_data.venues_tokens[i][0]
             )
-            token_b_global = issuance * all_data.global_reservers_of(
+            token_b_global = issuance * all_data.maximal_reserves_of(
                 all_data.venues_tokens[i][1]
             )
             if (
@@ -194,13 +196,19 @@ def solve(
         raise Exception(f"Problem status: {problem.status}")
 
     logger.info(
-        f"\033[1;91mTotal amount out: {psi.value[all_data.index_of_token(input.out_token_id)]}\033[0m"
+        f"\033[1;91m TOTAL_IN={psi.value[all_data.index_of_token(input.in_token_id)]} -> TOTAL_AMOUNT_OUT: {psi.value[all_data.index_of_token(input.out_token_id)]}\033[0m"
     )
 
     for i in range(all_data.venues_count):
-        logger.info(
-            f"Market {all_data.assets_for_venue(i)} {all_data.all_reserves[i][0]}<->{all_data.all_reserves[i][1]}, delta: {deltas[i].value}, lambda: {lambdas[i].value}, eta: {etas[i].value}",
-        )
+        if etas[i].value > 0:
+            
+            logger.info(
+                f"VENUE={i}, {all_data.assets_for_venue(i)} {all_data.all_reserves[i][0]}<->{all_data.all_reserves[i][1]}, delta: {deltas[i].value}, lambda: {lambdas[i].value}, eta: {etas[i].value}",
+            )
+        else:
+            logger.debug(
+                f"VENUE={i}, {all_data.assets_for_venue(i)} {all_data.all_reserves[i][0]}<->{all_data.all_reserves[i][1]}, delta: {deltas[i].value}, lambda: {lambdas[i].value}, eta: {etas[i].value}",
+            )
 
     return CvxpySolution(
         deltas=deltas,
@@ -235,16 +243,16 @@ def route(
         ctx,
     )
     forced_etas, original_trades = parse_total_traded(ctx, initial_solution)
-    if all([eta == 0 for eta in forced_etas]):
-        raise Exception("all etas are zero, so you cannot trade at all")
-    
+    raise Exception(original_trades)
     # let eliminated small splits
     input_price_in_usd = input.in_amount * all_data.token_price_in_usd(
         input.in_token_id
     )
+    
     oracalized_trades = []
+    logger.debug(f"input={input.in_amount}, input_price_in_usd={input_price_in_usd}")
     for i, trade in enumerate(original_trades):
-        if trade[0] > 0 or trade[1] > 0:
+        if np.abs(trade[0]) > 0 or np.abs(trade[1]) > 0:
             venue = all_data.venue_by_index(i)
             oracalized_a = np.abs(trade[0]) * all_data.token_price_in_usd(
                 venue.in_asset_id
@@ -253,12 +261,12 @@ def route(
                 venue.out_asset_id
             )
             if (
-                oracalized_a < input_price_in_usd / ctx.maximal_split_count
-                or oracalized_b < input_price_in_usd / ctx.maximal_split_count
+                oracalized_a < ctx.min_usd_venue_amount
+                and oracalized_b <  ctx.min_usd_venue_amount
             ):
                 oracalized_trades.append([0, 0])
                 logger.warning(
-                    f"ZEROING TRADE trade={trade}, a_usd={oracalized_a}, b_usd={oracalized_b}, i={i}, forced_eta={len(forced_etas)}, len={len(original_trades)}"
+                    f"ZEROING TRADE venue={i} trade={trade}, oracalized_a={oracalized_a}, oracalized_b={oracalized_b}, i={i}"
                 )
 
                 forced_etas[i] = 0.0
@@ -267,14 +275,18 @@ def route(
             else:
                 oracalized_trades.append([oracalized_a, oracalized_b])
                 logger.info(
-                    f"trade={trade}, a_usd={oracalized_a}, b_usd={oracalized_b}"
+                    f"RETAINING TRADE venue={i} trade={trade}, oracalized_a={oracalized_a}, oracalized_b={oracalized_b}, i={i}"
                 )
         else:
             oracalized_trades.append([0, 0])
+            logger.info(
+                f"ZEROING TRADE venue={i} trade={trade}, oracalized_a={0}, oracalized_b={0}, i={i}"
+            )            
 
+    ensure_eta(forced_etas)
     logger.info(f"trades={list(zip(original_trades, oracalized_trades))}")
-    # eliminate disproportional trades
-    oracalized_trades = sorted((e, i) for i, e in enumerate(oracalized_trades))
+    
+    # we cannot just cut here 90% of most trades or other most, as final target can be in remaining 10%
 
     logger.info("forced_etas", forced_etas)
     for i, venue in enumerate(all_data.venues):
@@ -285,3 +297,7 @@ def route(
     forced_eta_solution = solve(all_data, input, ctx, forced_etas)
     solution = copy.deepcopy(forced_eta_solution)
     return solution
+
+def ensure_eta(forced_etas):
+    if all([eta == 0 for eta in forced_etas]):
+        raise Exception("all etas are zero, so you cannot trade at all")

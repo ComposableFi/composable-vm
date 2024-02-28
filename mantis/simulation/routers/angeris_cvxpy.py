@@ -231,7 +231,8 @@ def parse_total_traded(ctx: Ctx, result: CvxpySolution) -> tuple[any, list]:
 
     # clean up near zero trades
     for i in range(result.count):
-        if etas[i] < ctx.minimal_amount:
+        if etas[i] < ctx.minimal_trading_probability:
+            logger.error(f"ETA 0 venue={i} deltas={deltas[i]} lambdas={lambdas[i]}")
             etas[i] = 0
             deltas[i] = np.zeros(len(deltas[i]))
             lambdas[i] = np.zeros(len(lambdas[i]))
@@ -239,6 +240,7 @@ def parse_total_traded(ctx: Ctx, result: CvxpySolution) -> tuple[any, list]:
             np.max(np.abs(deltas[i])) < ctx.minimal_tradeable_number
             and np.max(np.abs(lambdas[i])) < ctx.minimal_tradeable_number
         ):
+            logger.error(f"DELTA LAMBDA 0 venue={i}")
             etas[i] = 0
             deltas[i] = np.zeros(len(deltas[i]))
             lambdas[i] = np.zeros(len(lambdas[i]))
@@ -247,7 +249,10 @@ def parse_total_traded(ctx: Ctx, result: CvxpySolution) -> tuple[any, list]:
     trades_raw = []
     for i in range(result.count):
         raw_trade = lambdas[i] - deltas[i]
+        logger.error(f"i={i}, l={lambdas[i]},d={deltas[i]}")
         if np.max(np.abs(raw_trade)) < ctx.minimal_tradeable_number:
+            
+            logger.error(f"TRADE 0 venue={i}")         
             etas[i] = 0
             deltas[i] = np.zeros(len(deltas[i]))
             lambdas[i] = np.zeros(len(lambdas[i]))

@@ -64,13 +64,9 @@ def scale_in(
     new_input = copy.deepcopy(input)
 
     oracalized_data, oracalized_input = oracalize_data(base_data, input, ctx)
-
+    
     all_asset_ids = base_data.all_tokens
-
-    input_token_price = base_data.token_price_in_usd(input.in_token_id)
-    input_token_amount = input.in_amount
-    input_token_price * input_token_amount
-
+    
     # cap all big amounts and remove venues which will not give big amount
     for asset_id in all_asset_ids:
         for i, oracalized_venue in enumerate(oracalized_data.asset_pairs_xyk):
@@ -136,7 +132,6 @@ def scale_in(
         if maximal_reserve > ctx.max_reserve:
             ratio = ctx.max_reserve / maximal_reserve
             ratios[asset_id] = ratio
-            print(ratios[asset_id])
             for venue in new_data.asset_pairs_xyk:
                 if venue.in_asset_id == asset_id:
                     venue.in_token_amount = venue.in_token_amount * ratio
