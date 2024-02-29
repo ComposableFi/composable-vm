@@ -27,7 +27,7 @@ def cvxpy_to_data(
     ctx: Ctx,
     raw_solution: CvxpySolution,
     ratios=None,
-) -> Union[Exchange, Spawn]:
+) -> SingleInputAssetCvmRoute:
     """_summary_
     Converts Angeris CVXPY result to executable route.
     Receives solution along with all data and context.
@@ -53,7 +53,6 @@ def cvxpy_to_data(
     _etas, trades_raw = parse_total_traded(ctx, raw_solution)
 
     total_trades = into_venue_snapshots(data, ratios, trades_raw)
-
     # # balances
     # in_tokens = defaultdict(int)
     # out_tokens = defaultdict(int)
@@ -125,7 +124,7 @@ def cvxpy_to_data(
         in_amount=-1,
         venue_index=-1,
         in_asset_id=-1,
-        out_amount=input.in_amount,
+        out_amount=input.in_amount / ratios[input.in_token_id],
         out_asset_id=input.in_token_id,
     )
     snapshots_to_route(start, depth)
@@ -154,8 +153,8 @@ def cvxpy_to_data(
             venue = data.venue_by_index(current_snapshot.venue_index)
             in_asset_id= str(current_snapshot.in_asset_id)
             out_asset_id = str(current_snapshot.out_asset_id)
-            in_asset_amount=int(math.floor(current_snapshot.in_amount))
-            out_asset_amount=int(math.floor(current_snapshot.out_amount))
+            in_asset_amount=int(math.floor(current_snapshot.frozen.in_amount))
+            out_asset_amount=int(math.floor(current_snapshot.frozen.out_amount))
             if isinstance(venue, AssetPairsXyk):
                 return Exchange(
                     in_asset_id = in_asset_id,

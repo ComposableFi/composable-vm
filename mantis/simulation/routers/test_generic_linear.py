@@ -1,8 +1,9 @@
 # Solves using OR optimization
 import itertools
 import math
-from mantis.simulation.routers.scaler import scale_in
+from mantis.simulation.routers.scaler import ToSmallUsdValueOfInput, scale_in
 
+import pytest
 import numpy as np
 from loguru import logger
 
@@ -305,14 +306,19 @@ def test_simple_symmetric_and_asymmetric_split():
 
 def test_big_numeric_range():
     input = new_input(1, 2, 100, 50)
-    pair = new_pair(1, 1, 2, 0, 0, 1, 10, 1000, 10_000_000_000, 1_000_000_000)
+    pair = new_pair(1, 1, 2, 0, 0, 1, 10, 1_000, 10_000_000_000, 1_000_000_000)
     data = new_data([pair], [])
     ctx = Ctx()
+    with pytest.raises(ToSmallUsdValueOfInput):        
+        scaled_data, scaled_input, ratios = scale_in(data, input, ctx)
+    pair = new_pair(1, 1, 2, 0, 0, 1, 10, 1_000_000_000, 10_000_000_000, 1_000_000_000)
+    data = new_data([pair], [])    
     scaled_data, scaled_input, ratios = scale_in(data, input, ctx)
-    assert ratios[0] == 1
-    assert ratios[1] == 1
-    result = route(scaled_data, scaled_input)
-    logger.info(result)
+    assert ratios[1] == 0.010000000000000002
+    assert ratios[2] == 0.01
+    solution = route(scaled_input, scaled_data)
+    result = cvxpy_to_data(scaled_input, scaled_data, ctx, solution, ratios)
+    print(result)
 
 
 def test_simulate_all_connected_venues():

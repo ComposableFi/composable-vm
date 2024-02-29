@@ -4,6 +4,8 @@ import copy
 
 from simulation.routers.data import AllData, Ctx, Input
 
+class ToSmallUsdValueOfInput(Exception):
+    pass
 
 def oracalize_data(base_data: AllData, input: Input, ctx: Ctx) -> tuple[AllData, Input]:
     """
@@ -16,7 +18,7 @@ def oracalize_data(base_data: AllData, input: Input, ctx: Ctx) -> tuple[AllData,
     oracalized_input.in_amount = input.in_amount * base_data.token_price_in_usd(input.in_token_id)
 
     if oracalized_input.in_amount < ctx.min_input_in_usd:
-        raise Exception(
+        raise ToSmallUsdValueOfInput(
             f"minimal amount is {ctx.minimal_amount} and you have {oracalized_input.in_amount} for {input.in_token_id}"
         )
 
