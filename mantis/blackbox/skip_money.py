@@ -20,9 +20,7 @@ class Affiliate(BaseModel):
     """
 
     address: Optional[str] = Field(None, description="Address to which to pay the fee")
-    basis_points_fee: Optional[str] = Field(
-        None, description="Bps fee to pay to the affiliate"
-    )
+    basis_points_fee: Optional[str] = Field(None, description="Bps fee to pay to the affiliate")
 
 
 class ApiError(BaseModel):
@@ -32,20 +30,12 @@ class ApiError(BaseModel):
 class Asset(BaseModel):
     chain_id: Optional[str] = Field(None, description="Chain-id of the asset")
     coingecko_id: Optional[str] = Field(None, description="Coingecko id of the asset")
-    decimals: Optional[float] = Field(
-        None, description="Number of decimals used for amounts of the asset"
-    )
+    decimals: Optional[float] = Field(None, description="Number of decimals used for amounts of the asset")
     denom: Optional[str] = Field(None, description="Denom of the asset")
     description: Optional[str] = Field(None, description="Description of the asset")
-    is_cw20: Optional[bool] = Field(
-        None, description="Indicates whether asset is a CW20 token"
-    )
-    is_evm: Optional[bool] = Field(
-        None, description="Indicates whether asset is an EVM token"
-    )
-    logo_uri: Optional[str] = Field(
-        None, description="URI pointing to an image of the logo of the asset"
-    )
+    is_cw20: Optional[bool] = Field(None, description="Indicates whether asset is a CW20 token")
+    is_evm: Optional[bool] = Field(None, description="Indicates whether asset is an EVM token")
+    logo_uri: Optional[str] = Field(None, description="URI pointing to an image of the logo of the asset")
     name: Optional[str] = Field(None, description="Name of the asset")
     origin_chain_id: Optional[str] = Field(
         None,
@@ -59,9 +49,7 @@ class Asset(BaseModel):
         None,
         description="Recommended symbol of the asset used to differentiate between bridged assets with the same symbol, e.g. USDC.axl for Axelar USDC and USDC.grv for Gravity USDC",
     )
-    symbol: Optional[str] = Field(
-        None, description="Symbol of the asset, e.g. ATOM for uatom"
-    )
+    symbol: Optional[str] = Field(None, description="Symbol of the asset, e.g. ATOM for uatom")
     token_contract: Optional[str] = Field(
         None,
         description="Address of the contract for the asset, e.g. if it is a CW20 or ERC20 token",
@@ -105,9 +93,7 @@ class AxelarTransferType(Enum):
 
     """
 
-    AXELAR_TRANSFER_CONTRACT_CALL_WITH_TOKEN = (
-        "AXELAR_TRANSFER_CONTRACT_CALL_WITH_TOKEN"
-    )
+    AXELAR_TRANSFER_CONTRACT_CALL_WITH_TOKEN = "AXELAR_TRANSFER_CONTRACT_CALL_WITH_TOKEN"
     AXELAR_TRANSFER_SEND_TOKEN = "AXELAR_TRANSFER_SEND_TOKEN"
 
 
@@ -147,15 +133,11 @@ class ContractCallWithTokenErrorType(Enum):
 
     """
 
-    CONTRACT_CALL_WITH_TOKEN_EXECUTION_ERROR = (
-        "CONTRACT_CALL_WITH_TOKEN_EXECUTION_ERROR"
-    )
+    CONTRACT_CALL_WITH_TOKEN_EXECUTION_ERROR = "CONTRACT_CALL_WITH_TOKEN_EXECUTION_ERROR"
 
 
 class CosmWasmContractMsg(BaseModel):
-    contract_address: Optional[str] = Field(
-        None, description="Address of the contract to execute the message on"
-    )
+    contract_address: Optional[str] = Field(None, description="Address of the contract to execute the message on")
     msg: Optional[str] = Field(None, description="JSON string of the message")
 
 
@@ -170,9 +152,7 @@ class Erc20Approval(BaseModel):
 
     amount: Optional[str] = Field(None, description="Amount of the approval")
     spender: Optional[str] = Field(None, description="Address of the spender")
-    token_contract: Optional[str] = Field(
-        None, description="Address of the ERC20 token contract"
-    )
+    token_contract: Optional[str] = Field(None, description="Address of the ERC20 token contract")
 
 
 class Reason1(Enum):
@@ -196,16 +176,12 @@ class EvmTx(BaseModel):
     A transaction on an EVM chain
     """
 
-    chain_id: Optional[str] = Field(
-        None, description="Chain-id of the chain that the transaction is intended for"
-    )
+    chain_id: Optional[str] = Field(None, description="Chain-id of the chain that the transaction is intended for")
     data: Optional[str] = Field(None, description="Data of the transaction")
     required_erc20_approvals: Optional[List[Erc20Approval]] = Field(
         None, description="ERC20 approvals required for the transaction"
     )
-    to: Optional[str] = Field(
-        None, description="Address of the recipient of the transaction"
-    )
+    to: Optional[str] = Field(None, description="Address of the recipient of the transaction")
     value: Optional[str] = Field(None, description="Amount of the transaction")
 
 
@@ -277,15 +253,9 @@ class PacketErrorType(Enum):
 
 
 class PacketTransaction(BaseModel):
-    chain_id: Optional[str] = Field(
-        None, description="Chain ID the packet event occurs on"
-    )
-    explorer_link: Optional[str] = Field(
-        None, description="Link to the transaction on block explorer"
-    )
-    tx_hash: Optional[str] = Field(
-        None, description="Hash of the transaction the packet event occurred in"
-    )
+    chain_id: Optional[str] = Field(None, description="Chain ID the packet event occurs on")
+    explorer_link: Optional[str] = Field(None, description="Link to the transaction on block explorer")
+    tx_hash: Optional[str] = Field(None, description="Hash of the transaction the packet event occurred in")
 
 
 class PostHandler(RootModel[Union[CosmWasmContractMsgWrapper, AutopilotMsgWrapper]]):
@@ -350,9 +320,7 @@ class SwapOperation(BaseModel):
 
     denom_in: Optional[str] = Field(None, description="Input denom of the swap")
     denom_out: Optional[str] = Field(None, description="Output denom of the swap")
-    pool: Optional[str] = Field(
-        None, description="Identifier of the pool to use for the swap"
-    )
+    pool: Optional[str] = Field(None, description="Identifier of the pool to use for the swap")
 
 
 class SwapVenue(BaseModel):
@@ -388,25 +356,15 @@ class Transfer(BaseModel):
     A cross-chain transfer
     """
 
-    chain_id: Optional[str] = Field(
-        None, description="Chain-id on which the transfer is initiated"
-    )
-    channel: Optional[str] = Field(
-        None, description="Channel to use to initiate the transfer"
-    )
-    dest_denom: Optional[str] = Field(
-        None, description="Denom of the destionation asset of the transfer"
-    )
+    chain_id: Optional[str] = Field(None, description="Chain-id on which the transfer is initiated")
+    channel: Optional[str] = Field(None, description="Channel to use to initiate the transfer")
+    dest_denom: Optional[str] = Field(None, description="Denom of the destionation asset of the transfer")
     pfm_enabled: Optional[bool] = Field(
         None,
         description="Whether pfm is enabled on the chain where the transfer is initiated",
     )
-    port: Optional[str] = Field(
-        None, description="Port to use to initiate the transfer"
-    )
-    supports_memo: Optional[bool] = Field(
-        None, description="Whether the transfer chain supports a memo"
-    )
+    port: Optional[str] = Field(None, description="Port to use to initiate the transfer")
+    supports_memo: Optional[bool] = Field(None, description="Whether the transfer chain supports a memo")
     fee_amount: Optional[str] = Field(
         None,
         description="Amount of the fee asset to be paid as the transfer fee if applicable.",
@@ -415,9 +373,7 @@ class Transfer(BaseModel):
         None,
         description="Amount of the fee asset to be paid as the transfer fee if applicable, converted to USD value",
     )
-    fee_asset: Optional[Asset] = Field(
-        None, description="Asset to be paid as the transfer fee if applicable."
-    )
+    fee_asset: Optional[Asset] = Field(None, description="Asset to be paid as the transfer fee if applicable.")
     bridge_id: Optional[BridgeType] = None
 
 
@@ -443,9 +399,7 @@ class TransferAssetRelease(BaseModel):
         None,
         description="The chain ID of the chain that the transfer asset is released on.",
     )
-    denom: Optional[str] = Field(
-        None, description="The denom of the asset that is released."
-    )
+    denom: Optional[str] = Field(None, description="The denom of the asset that is released.")
 
 
 class TransferWrapper(BaseModel):
@@ -463,60 +417,34 @@ class BlockingTransferState(Enum):
 
 
 class RecommendationRequest(BaseModel):
-    source_asset_denom: Optional[str] = Field(
-        None, description="Denom of the source asset"
-    )
-    source_asset_chain_id: Optional[str] = Field(
-        None, description="Chain-id of the source asset"
-    )
-    dest_chain_id: Optional[str] = Field(
-        None, description="Chain-id of the recommended destination asset"
-    )
-    reason: Optional[Reason] = Field(
-        None, description="Reason for recommendation (optional)"
-    )
+    source_asset_denom: Optional[str] = Field(None, description="Denom of the source asset")
+    source_asset_chain_id: Optional[str] = Field(None, description="Chain-id of the source asset")
+    dest_chain_id: Optional[str] = Field(None, description="Chain-id of the recommended destination asset")
+    reason: Optional[Reason] = Field(None, description="Reason for recommendation (optional)")
 
 
 class CosmosModuleSupport(BaseModel):
-    authz: Optional[bool] = Field(
-        None, description="Whether the authz module is supported"
-    )
-    feegrant: Optional[bool] = Field(
-        None, description="Whether the feegrant module is supported"
-    )
+    authz: Optional[bool] = Field(None, description="Whether the authz module is supported")
+    feegrant: Optional[bool] = Field(None, description="Whether the feegrant module is supported")
 
 
 class IbcCapabilities(BaseModel):
-    cosmos_pfm: Optional[bool] = Field(
-        None, description="Whether the packet forwarding middleware module is supported"
-    )
-    cosmos_ibc_hooks: Optional[bool] = Field(
-        None, description="Whether the ibc hooks module is supported"
-    )
-    cosmos_memo: Optional[bool] = Field(
-        None, description="Whether the chain supports IBC memos"
-    )
-    cosmos_autopilot: Optional[bool] = Field(
-        None, description="Whether the autopilot module is supported"
-    )
+    cosmos_pfm: Optional[bool] = Field(None, description="Whether the packet forwarding middleware module is supported")
+    cosmos_ibc_hooks: Optional[bool] = Field(None, description="Whether the ibc hooks module is supported")
+    cosmos_memo: Optional[bool] = Field(None, description="Whether the chain supports IBC memos")
+    cosmos_autopilot: Optional[bool] = Field(None, description="Whether the autopilot module is supported")
 
 
 class AssetBetweenChains(BaseModel):
     asset_on_source: Optional[Asset] = None
     asset_on_dest: Optional[Asset] = None
-    txs_required: Optional[int] = Field(
-        None, description="Number of transactions required to transfer the asset"
-    )
-    bridges: Optional[List[BridgeType]] = Field(
-        None, description="Bridges that are used to transfer the asset"
-    )
+    txs_required: Optional[int] = Field(None, description="Number of transactions required to transfer the asset")
+    bridges: Optional[List[BridgeType]] = Field(None, description="Bridges that are used to transfer the asset")
 
 
 class AssetRecommendation(BaseModel):
     asset: Optional[Asset] = Field(None, description="Asset that is recommended")
-    reason: Optional[Reason] = Field(
-        None, description="Reason for recommending the asset"
-    )
+    reason: Optional[Reason] = Field(None, description="Reason for recommending the asset")
 
 
 class AxelarTransfer(BaseModel):
@@ -538,9 +466,7 @@ class AxelarTransfer(BaseModel):
         None,
         description="Canonical chain-id of the source chain of the bridge transaction",
     )
-    is_testnet: Optional[bool] = Field(
-        None, description="Whether the source and destination chains are both testnets"
-    )
+    is_testnet: Optional[bool] = Field(None, description="Whether the source and destination chains are both testnets")
     should_unwrap: Optional[bool] = Field(
         None,
         description="Whether to unwrap the asset at the destination chain (from ERC-20 to native)",
@@ -597,34 +523,20 @@ class CCTPTransferWrapper(BaseModel):
 class Bridge(BaseModel):
     id: Optional[BridgeType] = None
     name: Optional[str] = Field(None, description="Name of the bridge")
-    logo_uri: Optional[str] = Field(
-        None, description="URI pointing to an image of the logo of the bridge"
-    )
+    logo_uri: Optional[str] = Field(None, description="URI pointing to an image of the logo of the bridge")
 
 
 class Chain(BaseModel):
     chain_name: Optional[str] = Field(None, description="Name of the chain")
     chain_id: Optional[str] = Field(None, description="Chain-id of the chain")
-    pfm_enabled: Optional[bool] = Field(
-        None, description="Whether the PFM module is enabled on the chain"
-    )
-    cosmos_module_support: Optional[CosmosModuleSupport] = Field(
-        None, description="Supported cosmos modules"
-    )
-    supports_memo: Optional[bool] = Field(
-        None, description="Whether the chain supports IBC memos"
-    )
+    pfm_enabled: Optional[bool] = Field(None, description="Whether the PFM module is enabled on the chain")
+    cosmos_module_support: Optional[CosmosModuleSupport] = Field(None, description="Supported cosmos modules")
+    supports_memo: Optional[bool] = Field(None, description="Whether the chain supports IBC memos")
     logo_uri: Optional[str] = Field(None, description="chain logo URI")
     bech32_prefix: Optional[str] = Field(None, description="Bech32 prefix of the chain")
-    fee_assets: Optional[List[FeeAsset]] = Field(
-        None, description="Fee assets of the chain"
-    )
-    chain_type: Optional[str] = Field(
-        None, description='Type of chain, e.g. "cosmos" or "evm"'
-    )
-    ibc_capabilities: Optional[IbcCapabilities] = Field(
-        None, description="IBC capabilities of the chain"
-    )
+    fee_assets: Optional[List[FeeAsset]] = Field(None, description="Fee assets of the chain")
+    chain_type: Optional[str] = Field(None, description='Type of chain, e.g. "cosmos" or "evm"')
+    ibc_capabilities: Optional[IbcCapabilities] = Field(None, description="IBC capabilities of the chain")
 
 
 class ContractCallWithTokenError(BaseModel):
@@ -643,9 +555,7 @@ class ContractCallWithTokenTxs(BaseModel):
 
 class Error(BaseModel):
     code: Optional[GRPCStatusCode] = Field(None, description="Error code")
-    details: Optional[List[ErrorDetail]] = Field(
-        None, description="Additional error details"
-    )
+    details: Optional[List[ErrorDetail]] = Field(None, description="Additional error details")
     message: Optional[str] = Field(None, description="Error message")
 
 
@@ -683,12 +593,8 @@ class SwapExactCoinIn(BaseModel):
     """
 
     swap_amount_in: Optional[str] = Field(None, description="Amount to swap in")
-    swap_operations: Optional[List[SwapOperation]] = Field(
-        None, description="Operations required to execute the swap"
-    )
-    swap_venue: Optional[SwapVenue] = Field(
-        None, description="Swap venue that this swap should execute on"
-    )
+    swap_operations: Optional[List[SwapOperation]] = Field(None, description="Operations required to execute the swap")
+    swap_venue: Optional[SwapVenue] = Field(None, description="Swap venue that this swap should execute on")
     price_impact_percent: Optional[str] = Field(
         None,
         description='Price impact of the estimated swap, if present.  Measured in percentage e.g. "0.5" is .5%',
@@ -700,15 +606,9 @@ class SwapExactCoinOut(BaseModel):
     Specification of a swap with an exact amount out
     """
 
-    swap_amount_out: Optional[str] = Field(
-        None, description="Amount to get out of the swap"
-    )
-    swap_operations: Optional[List[SwapOperation]] = Field(
-        None, description="Operations required to execute the swap"
-    )
-    swap_venue: Optional[SwapVenue] = Field(
-        None, description="Swap venue that this swap should execute on"
-    )
+    swap_amount_out: Optional[str] = Field(None, description="Amount to get out of the swap")
+    swap_operations: Optional[List[SwapOperation]] = Field(None, description="Operations required to execute the swap")
+    swap_venue: Optional[SwapVenue] = Field(None, description="Swap venue that this swap should execute on")
     price_impact_percent: Optional[str] = Field(
         None,
         description='Price impact of the estimated swap, if present.  Measured in percentage e.g. "0.5" is .5%',
@@ -736,15 +636,9 @@ class NextBlockingTransfer(BaseModel):
 
 
 class AxelarTransfer1(BaseModel):
-    axelar_scan_link: Optional[str] = Field(
-        None, description="Link to the transaction on the Axelar Scan explorer"
-    )
-    dst_chain_id: Optional[str] = Field(
-        None, description="Chain ID of the destination chain"
-    )
-    src_chain_id: Optional[str] = Field(
-        None, description="Chain ID of the source chain"
-    )
+    axelar_scan_link: Optional[str] = Field(None, description="Link to the transaction on the Axelar Scan explorer")
+    dst_chain_id: Optional[str] = Field(None, description="Chain ID of the destination chain")
+    src_chain_id: Optional[str] = Field(None, description="Chain ID of the source chain")
     state: Optional[AxelarTransferState] = None
     txs: Optional[Union[ContractCallWithTokenTxs, SendTokenTxs]] = None
     type: Optional[AxelarTransferType] = None
@@ -755,12 +649,8 @@ class AxelarTransferInfo(BaseModel):
 
 
 class CctpTransfer(BaseModel):
-    dst_chain_id: Optional[str] = Field(
-        None, description="Chain ID of the destination chain"
-    )
-    src_chain_id: Optional[str] = Field(
-        None, description="Chain ID of the source chain"
-    )
+    dst_chain_id: Optional[str] = Field(None, description="Chain ID of the destination chain")
+    src_chain_id: Optional[str] = Field(None, description="Chain ID of the source chain")
     state: Optional[CCTPTransferState] = None
     txs: Optional[CCTPTransferTxs] = None
 
@@ -798,13 +688,9 @@ class SwapWrapper(BaseModel):
 
 
 class TransferInfo(BaseModel):
-    dst_chain_id: Optional[str] = Field(
-        None, description="Chain ID of the destination chain"
-    )
+    dst_chain_id: Optional[str] = Field(None, description="Chain ID of the destination chain")
     packet_txs: Optional[Packet] = None
-    src_chain_id: Optional[str] = Field(
-        None, description="Chain ID of the source chain"
-    )
+    src_chain_id: Optional[str] = Field(None, description="Chain ID of the source chain")
     state: Optional[TransferState] = None
 
 
@@ -833,37 +719,23 @@ class Operation(
 
 
 class RouteResponse(BaseModel):
-    amount_in: Optional[str] = Field(
-        None, description="Amount of source asset to be transferred or swapped"
-    )
-    amount_out: Optional[str] = Field(
-        None, description="Amount of destination asset out"
-    )
+    amount_in: Optional[str] = Field(None, description="Amount of source asset to be transferred or swapped")
+    amount_out: Optional[str] = Field(None, description="Amount of destination asset out")
     chain_ids: Optional[List[str]] = Field(
         None,
         description="Chain-ids of all chains of the transfer or swap, in order of usage by operations in the route",
     )
-    dest_asset_chain_id: Optional[str] = Field(
-        None, description="Chain-id of the destination asset"
-    )
-    dest_asset_denom: Optional[str] = Field(
-        None, description="Denom of the destination asset"
-    )
-    does_swap: Optional[bool] = Field(
-        None, description="Whether this route performs a swap"
-    )
+    dest_asset_chain_id: Optional[str] = Field(None, description="Chain-id of the destination asset")
+    dest_asset_denom: Optional[str] = Field(None, description="Denom of the destination asset")
+    does_swap: Optional[bool] = Field(None, description="Whether this route performs a swap")
     estimated_amount_out: Optional[str] = Field(
         None, description="Amount of destination asset out, if a swap is performed"
     )
     operations: Optional[List[Operation]] = Field(
         None, description="Array of operations required to perform the transfer or swap"
     )
-    source_asset_chain_id: Optional[str] = Field(
-        None, description="Chain-id of the source asset"
-    )
-    source_asset_denom: Optional[str] = Field(
-        None, description="Denom of the source asset"
-    )
+    source_asset_chain_id: Optional[str] = Field(None, description="Chain-id of the source asset")
+    source_asset_denom: Optional[str] = Field(None, description="Denom of the source asset")
     swap_venue: Optional[SwapVenue] = Field(
         None,
         description="Swap venue on which the swap is performed, if a swap is performed",
@@ -872,9 +744,7 @@ class RouteResponse(BaseModel):
         None,
         description="Number of transactions required to perform the transfer or swap",
     )
-    usd_amount_in: Optional[str] = Field(
-        None, description="Amount of the source denom, converted to USD value"
-    )
+    usd_amount_in: Optional[str] = Field(None, description="Amount of the source denom, converted to USD value")
     usd_amount_out: Optional[str] = Field(
         None,
         description="Amount of the destination denom expected to be received, converted to USD value",
@@ -889,9 +759,7 @@ class RouteResponse(BaseModel):
     )
 
 
-class TransferEvent(
-    RootModel[Union[IBCTransferInfo, AxelarTransferInfo, CCTPTransferInfo]]
-):
+class TransferEvent(RootModel[Union[IBCTransferInfo, AxelarTransferInfo, CCTPTransferInfo]]):
     root: Union[IBCTransferInfo, AxelarTransferInfo, CCTPTransferInfo]
 
 

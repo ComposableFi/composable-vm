@@ -71,9 +71,7 @@ class PrefixedDenom(BaseModel):
     A type that contains the base denomination for ICS20 and the source tracing information path.
     """
 
-    base_denom: str = Field(
-        ..., description="Base denomination of the relayed fungible token."
-    )
+    base_denom: str = Field(..., description="Base denomination of the relayed fungible token.")
     trace_path: str = Field(
         ...,
         description="A series of `{port-id}/{channel-id}`s for tracing the source of the token.",
@@ -102,9 +100,7 @@ class AssetItem(BaseModel):
         description="if asset was bridged, it would have way to identify bridge/source/channel",
     )
     local: AssetReference
-    network_id: NetworkId = Field(
-        ..., description="network id on which this asset id can be used locally"
-    )
+    network_id: NetworkId = Field(..., description="network id on which this asset id can be used locally")
 
 
 class GetAssetResponse(BaseModel):

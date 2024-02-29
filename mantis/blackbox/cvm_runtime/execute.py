@@ -187,9 +187,7 @@ class ExecutePacketICS20Msg(BaseModel):
     packet_data_hex: List[conint(ge=0)]
 
 
-class FundsForDisplayedForUint128(
-    RootModel[List[List[Union[AssetId, DisplayedForUint128]]]]
-):
+class FundsForDisplayedForUint128(RootModel[List[List[Union[AssetId, DisplayedForUint128]]]]):
     """
     a set of assets with non zero balances
     """
@@ -205,9 +203,7 @@ class IbcEndpoint(BaseModel):
 
 
 class IbcIcs20Sender(Enum):
-    CosmosStargateIbcApplicationsTransferV1MsgTransfer = (
-        "CosmosStargateIbcApplicationsTransferV1MsgTransfer"
-    )
+    CosmosStargateIbcApplicationsTransferV1MsgTransfer = "CosmosStargateIbcApplicationsTransferV1MsgTransfer"
     CosmWasmStd1_3 = "CosmWasmStd1_3"
 
 
@@ -238,9 +234,7 @@ class OsmosisIbcHooks(BaseModel):
 class CosmWasm(BaseModel):
     admin: Addr = Field(..., description="admin of everything")
     contract: Addr
-    executor_code_id: conint(ge=0) = Field(
-        ..., description="CVM executor contract code"
-    )
+    executor_code_id: conint(ge=0) = Field(..., description="CVM executor contract code")
 
 
 class OutpostId1(BaseModel):
@@ -299,9 +293,7 @@ class PrefixedDenom(BaseModel):
     A type that contains the base denomination for ICS20 and the source tracing information path.
     """
 
-    base_denom: str = Field(
-        ..., description="Base denomination of the relayed fungible token."
-    )
+    base_denom: str = Field(..., description="Base denomination of the relayed fungible token.")
     trace_path: str = Field(
         ...,
         description="A series of `{port-id}/{channel-id}`s for tracing the source of the token.",
@@ -423,9 +415,7 @@ class Amount(BaseModel):
     See https://en.wikipedia.org/wiki/Linear_equation#Slope%E2%80%93intercept_form_or_Gradient-intercept_form
     """
 
-    intercept: Optional[DisplayedForUint128] = Field(
-        None, description="absolute amount, optional, default is 0"
-    )
+    intercept: Optional[DisplayedForUint128] = Field(None, description="absolute amount, optional, default is 0")
     slope: Optional[DisplayedForUint64] = Field(
         None,
         description="part of `MAX_PARTS` from remaining after intercept subtraction, optional, default is 0",
@@ -487,9 +477,7 @@ class ChannelInfo(BaseModel):
         ...,
         description="the connection this exists on (you can use to query client/consensus info)",
     )
-    counterparty_endpoint: IbcEndpoint = Field(
-        ..., description="the remote channel/port we connect to"
-    )
+    counterparty_endpoint: IbcEndpoint = Field(..., description="the remote channel/port we connect to")
     id: ChannelId = Field(..., description="id of this channel")
 
 
@@ -511,9 +499,7 @@ class DestinationForXcAddr2(BaseModel):
     account: XcAddr
 
 
-class DestinationForXcAddr(
-    RootModel[Union[DestinationForXcAddr1, DestinationForXcAddr2]]
-):
+class DestinationForXcAddr(RootModel[Union[DestinationForXcAddr1, DestinationForXcAddr2]]):
     root: Union[DestinationForXcAddr1, DestinationForXcAddr2]
 
 
@@ -553,9 +539,7 @@ class FundsForAmount(RootModel[List[List[Union[AssetId, Amount]]]]):
     a set of assets with non zero balances
     """
 
-    root: List[List[Union[AssetId, Amount]]] = Field(
-        ..., description="a set of assets with non zero balances"
-    )
+    root: List[List[Union[AssetId, Amount]]] = Field(..., description="a set of assets with non zero balances")
 
 
 class Ics20Features(BaseModel):
@@ -565,9 +549,7 @@ class Ics20Features(BaseModel):
 
     ibc_callbacks: Optional[Adr08IbcCallbacks] = None
     pfm: Optional[PFM] = None
-    wasm_hooks: Optional[OsmosisIbcHooks] = Field(
-        None, description="if it is exists, chain has that enabled"
-    )
+    wasm_hooks: Optional[OsmosisIbcHooks] = Field(None, description="if it is exists, chain has that enabled")
 
 
 class Transfer(BaseModel):
@@ -624,12 +606,8 @@ class InstructionForArrayOfUint8AndXcAddrAndFundsForAmount4(BaseModel):
 
 
 class OtherNetworkItem(BaseModel):
-    counterparty_timeout: RelativeTimeout = Field(
-        ..., description="default timeout to use for direct send"
-    )
-    ics27_channel: Optional[ChannelInfo] = Field(
-        None, description="if there is ICS27 IBC channel opened"
-    )
+    counterparty_timeout: RelativeTimeout = Field(..., description="default timeout to use for direct send")
+    ics27_channel: Optional[ChannelInfo] = Field(None, description="if there is ICS27 IBC channel opened")
     ics_20: Optional[IcsPair] = None
     use_shortcut: Optional[bool] = Field(
         None,
@@ -693,17 +671,13 @@ class ConfigSubMsg5(BaseModel):
 
 class Ics20Channel(BaseModel):
     features: Optional[Ics20Features] = None
-    sender: IbcIcs20Sender = Field(
-        ..., description="specific per chain way to send IBC ICS 20 assets"
-    )
+    sender: IbcIcs20Sender = Field(..., description="specific per chain way to send IBC ICS 20 assets")
 
 
 class NetworkToNetworkItem(BaseModel):
     closed: Optional[conint(ge=0)] = None
     from_network_id: NetworkId
-    to_network: OtherNetworkItem = Field(
-        ..., description="how to send `to_network_id` chain"
-    )
+    to_network: OtherNetworkItem = Field(..., description="how to send `to_network_id` chain")
     to_network_id: NetworkId
 
 
@@ -714,9 +688,7 @@ class AssetItem(BaseModel):
         description="if asset was bridged, it would have way to identify bridge/source/channel",
     )
     local: AssetReference
-    network_id: NetworkId = Field(
-        ..., description="network id on which this asset id can be used locally"
-    )
+    network_id: NetworkId = Field(..., description="network id on which this asset id can be used locally")
 
 
 class ConfigSubMsg2(BaseModel):
@@ -790,9 +762,7 @@ class ExecuteMsg3(BaseModel):
 
 class ExecuteProgramPrivileged(BaseModel):
     call_origin: CallOrigin = Field(..., description="The origin of the call.")
-    execute_program: ExecuteProgramMsgForFundsForDisplayedForUint128 = Field(
-        ..., description="Program to execute."
-    )
+    execute_program: ExecuteProgramMsgForFundsForDisplayedForUint128 = Field(..., description="Program to execute.")
 
 
 class ExecuteMsg4(BaseModel):
@@ -909,8 +879,8 @@ class ExecuteProgramMsgForFundsForDisplayedForUint128(BaseModel):
         ...,
         description="Assets to fund the CVM executor instance. The executor is funded prior to execution. If None, 100% of received funds go to executor.",
     )
-    program: ProgramForArrayOfInstructionForArrayOfUint8AndXcAddrAndFundsForAmount = (
-        Field(..., description="The program.")
+    program: ProgramForArrayOfInstructionForArrayOfUint8AndXcAddrAndFundsForAmount = Field(
+        ..., description="The program."
     )
     salt: Optional[str] = Field(
         None,
@@ -928,8 +898,8 @@ class ExecuteProgramMsgForNullableFundsForDisplayedForUint128(BaseModel):
         None,
         description="Assets to fund the CVM executor instance. The executor is funded prior to execution. If None, 100% of received funds go to executor.",
     )
-    program: ProgramForArrayOfInstructionForArrayOfUint8AndXcAddrAndFundsForAmount = (
-        Field(..., description="The program.")
+    program: ProgramForArrayOfInstructionForArrayOfUint8AndXcAddrAndFundsForAmount = Field(
+        ..., description="The program."
     )
     salt: Optional[str] = Field(
         None,
@@ -982,22 +952,14 @@ class InstructionForArrayOfUint8AndXcAddrAndFundsForAmount(
     )
 
 
-class PacketForProgramForArrayOfInstructionForArrayOfUint8AndXcAddrAndFundsForAmount(
-    BaseModel
-):
-    assets: FundsForDisplayedForUint128 = Field(
-        ..., description="The assets that were attached to the program."
-    )
-    executor: str = Field(
-        ..., description="The executor that was the origin of this packet."
-    )
-    program: ProgramForArrayOfInstructionForArrayOfUint8AndXcAddrAndFundsForAmount = (
-        Field(..., description="The protobuf encoded program.")
+class PacketForProgramForArrayOfInstructionForArrayOfUint8AndXcAddrAndFundsForAmount(BaseModel):
+    assets: FundsForDisplayedForUint128 = Field(..., description="The assets that were attached to the program.")
+    executor: str = Field(..., description="The executor that was the origin of this packet.")
+    program: ProgramForArrayOfInstructionForArrayOfUint8AndXcAddrAndFundsForAmount = Field(
+        ..., description="The protobuf encoded program."
     )
     salt: str = Field(..., description="The salt associated with the program.")
-    user_origin: UserOrigin = Field(
-        ..., description="The user that originated the first CVM call."
-    )
+    user_origin: UserOrigin = Field(..., description="The user that originated the first CVM call.")
 
 
 class ProgramForArrayOfInstructionForArrayOfUint8AndXcAddrAndFundsForAmount(BaseModel):

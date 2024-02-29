@@ -2,9 +2,6 @@
 from pathlib import Path
 
 from mantis.simulation.routers.data import (
-    Exchange,
-    SingleInputAssetCvmRoute,
-    Spawn,
     new_data,
     new_pair,
     new_transfer,
@@ -50,31 +47,19 @@ def test_token_price_in_usd_via_oracle():
         1,
         1,
         100,
-        20,
-        80,
+        10,
+        90,
     )
-    data = new_data([pica_usd], [], {1: 1.0, 2: None})
-    price = data.token_price_in_usd(2)
-    assert price == 0.625
+    data = new_data([pica_usd], [], {1: None, 2: None})
+    assert data.asset_pairs_xyk[0].a_usd == 50
+    assert data.asset_pairs_xyk[0].b_usd == 50
+    assert data.asset_pairs_xyk[0].value_of_a_in_usd == data.token_price_in_usd(1)
+    assert data.token_price_in_usd(1) == 5
+    assert data.token_price_in_usd(2) == 0.5555555555555556
     assert data.all_tokens == [1, 2]
     assert data.venues_count == 1
     assert data.index_of_token(1) == 0
     assert data.index_of_token(2) == 1
-
-
-def test_output_route_centauri_osmosis():
-    exchange = Exchange(
-        in_asset_amount=100, pool_id=1, next=[], out_amount=42, out_asset_id=13
-    )
-
-    spawn = Spawn(
-        in_asset_amount=100,
-        out_asset_id=1,
-        in_asset_id=2,
-        out_asset_amount=42,
-        next=[exchange.model_dump()],
-    )
-    SingleInputAssetCvmRoute(next=[spawn], input_amount=1000)
 
 
 def test_transfer_to_exchange():
@@ -84,9 +69,7 @@ def test_transfer_to_exchange():
     pair34 = new_pair(1, 3, 2, 0, 0, 1, 1, 100, 20, 80)
     pair12 = new_pair(2, 1, 2, 0, 0, 1, 1, 100, 500, 80)
     pair43 = new_pair(3, 4, 3, 0, 0, 1, 1, 100, 500, 80)
-    data = new_data(
-        [pair12, pair34, pair43], [connection12, connection23, connection45]
-    )
+    data = new_data([pair12, pair34, pair43], [connection12, connection23, connection45])
 
     route1 = data.transfer_to_exchange(1)
     route2 = data.transfer_to_exchange(2)

@@ -59,9 +59,7 @@ def simulate():
     p_ob = profit_solver.solve()
     ob.print()
 
-    logger.info(
-        f"Volume  of volume solver: {v_ob.match_volume:.2f} and Profit solver: {p_ob.match_volume:.2f}"
-    )
+    logger.info(f"Volume  of volume solver: {v_ob.match_volume:.2f} and Profit solver: {p_ob.match_volume:.2f}")
     logger.info(
         f"PROFIT volume_solver: {volume_solver.profit(volume_solver.order):.2f} profit_solver: {profit_solver.profit(profit_solver.order):.2f}"
     )

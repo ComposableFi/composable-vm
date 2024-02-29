@@ -11,14 +11,21 @@ from typing import Generic, TypeVar, Union
 import numpy as np
 import pandas as pd
 from disjoint_set import DisjointSet
-from pydantic import BaseModel, validator
+from loguru import logger
+from pydantic import BaseModel, model_validator, validator
 
-from simulation.routers.oracles import SetOracle
+from simulation.routers.oracles import merge_by_connection_from_existing
 
 # This is global unique ID for token(asset) or exchange(pool)
 TId = TypeVar("TId", int, str)
 TNetworkId = TypeVar("TNetworkId", int, str)
 TAmount = TypeVar("TAmount", int, str)
+
+MINIMAL_TRANSACTION_USD_COST_DEFAULT: float = 0.00001
+"""_summary_
+Each venue eats some USD for transaction.
+So we just cut noise.
+"""
 
 
 class Ctx(BaseModel, Generic[TAmount]):
@@ -32,7 +39,12 @@ class Ctx(BaseModel, Generic[TAmount]):
      All inputs to solver are really integers.
     """
 
-    max_reserve_decimals: int = 8
+    max_trade: float = 0.1
+    """
+    Do not trade if you will skew market
+    """
+
+    max_reserve_decimals: int = 4
     """_summary_
         If algorithm can not handle big numbers, it can be reduced to power of it
     """
@@ -44,6 +56,8 @@ class Ctx(BaseModel, Generic[TAmount]):
 
     min_usd_reserve: float = 1
 
+    min_input_in_usd: float = 0.0001
+    minimal_trading_probability: float = 0.000001
     minimal_amount: float = 0.00001
     """_summary_
     Numerically minimal amount of change goes via venue is accepted, minimal trade.
@@ -51,9 +65,41 @@ class Ctx(BaseModel, Generic[TAmount]):
     Must be equal or larger than solver tolerance.
     """
 
-    mi_for_venue_count: int = 5
+    minimal_tradeable_number: float = 0.00000001
+    """
+    Not a value, but just physical number to eliminate from trade
+    """
+
+    mi_for_venue_count: int = 0
     """
     If venue count is small, can try MI solution because MI are slow in general
+    """
+
+    min_usd_venue_amount: float = 0.0000000001
+
+    maximal_split_count: int = 10_0000
+    """_summary_
+    Do not split trade more than to these parts.
+    Up to possible oracle error (do not set it less than expected oracle mistake multiplier)
+    """
+
+    input_consumed_ratio: float = 0.9
+
+    max_hops_usd: float = 0
+    """
+    total amount to pay for transfers fees
+    reduces desire of router to spawn
+    we just measure it as loss of funds
+    """
+
+    depth_of_route: int = 3
+    """_summary_
+    Avoid too deep routes.
+    """
+
+    max_venues_usd: int = 5
+    """
+    Prevents arbitrage but allows for simpler routes if set small.
     """
 
     @property
@@ -65,13 +111,17 @@ class TwoTokenConverter:
     in_asset_id: TId
     out_asset_id: TId
 
+    def zero(self):
+        self.in_token_amount = 0
+        self.out_token_amount = 0
+
 
 class AssetTransfers(
     BaseModel,
     TwoTokenConverter,
     Generic[TId, TAmount],
 ):
-    usd_fee_transfer: float
+    venue_fixed_costs_in_usd: float
     """_summary_
         this is positive whole number too
         if it is hard if None, please fail if it is None - for now will be always some
@@ -121,10 +171,11 @@ class AssetPairsXyk(
     fee_of_out_per_million: int
     # in reality fee can be flat or in other tokens, but not for now
 
-    weight_of_a: int
-    weight_of_b: int
+    weight_a: int
+    weight_b: int
     # if it is hard if None, please fail if it is None - for now will be always some
     pool_value_in_usd: TAmount | None = None
+    venue_fixed_costs_in_usd: float = 0.00001
 
     @validator("pool_value_in_usd", pre=True, always=True)
     def replace_nan_with_None(cls, v):
@@ -133,6 +184,40 @@ class AssetPairsXyk(
     # total amounts in reserves R
     in_token_amount: TAmount
     out_token_amount: TAmount
+
+    @property
+    def value_of_a_in_usd(self):
+        """
+        How much 1 of a costs in USD
+        """
+        return self.a_usd / self.in_token_amount
+
+    @property
+    def value_of_b_in_usd(self):
+        """
+        How much 1 of a costs in USD
+        """
+        return self.b_usd / self.out_token_amount
+
+    @property
+    def a_usd(self):
+        return self.pool_value_in_usd * self.weight_b / (self.weight_a + self.weight_b)
+
+    @property
+    def b_usd(self):
+        return self.pool_value_in_usd * self.weight_a / (self.weight_a + self.weight_b)
+
+    @property
+    def weighted_a(self):
+        return self.in_token_amount**self.weight_a
+
+    @property
+    def weighted_b(self):
+        return self.out_token_amount**self.weight_b
+
+    @property
+    def weighted_volume(self):
+        return self.weighted_a * self.weighted_b
 
     @property
     def fee_in(self) -> float:
@@ -199,15 +284,24 @@ class Exchange(BaseModel, Generic[TId, TAmount]):
     none means all (DELTA)
     """
 
-    out_amount: TAmount
+    out_asset_amount: TAmount
     """_summary_
     Means expected minimal amount.
     """
+
+    in_asset_id: TId
 
     out_asset_id: TId
 
     pool_id: TId
     next: list[Union[Exchange, Spawn]]
+
+    @model_validator(mode="after")
+    def after(self) -> "Exchange":
+        # assert self.out_asset_amount > 0
+        # assert self.in_asset_amount > 0
+        assert self.in_asset_id != self.out_asset_id
+        return self
 
 
 class SingleInputAssetCvmRoute(BaseModel):
@@ -215,7 +309,7 @@ class SingleInputAssetCvmRoute(BaseModel):
     always starts with Input asset_id
     """
 
-    input_amount: int
+    in_amount: int
     next: list[Union[Exchange, Spawn]]
 
 
@@ -260,6 +354,9 @@ class AllData(BaseModel, Generic[TId, TAmount]):
       value - decimal exponent of token to make 1 USD
     """
 
+    def model_post_init(self, __context) -> None:
+        self.__merge_oracles()
+
     @property
     # @cache
     def all_tokens(self) -> list[TId]:
@@ -272,7 +369,7 @@ class AllData(BaseModel, Generic[TId, TAmount]):
             tokens.append(x.out_asset_id)
         return list(set(tokens))
 
-    def global_reservers_of(self, token: TId) -> TAmount:
+    def global_reservers_of(self, asset_id: TId) -> TAmount:
         """_summary_
         Goes over transfers path and finds all pools with same token which server estimate of total issuance
         """
@@ -286,9 +383,9 @@ class AllData(BaseModel, Generic[TId, TAmount]):
             ds.union(transfer.out_asset_id, transfer.in_asset_id)
         total_issuance = 0
         for span in ds.itersets():
-            if token in span:
-                for token in span:
-                    total_issuance += self.total_reserves_of(token)
+            if asset_id in span:
+                for asset_id in span:
+                    total_issuance += self.total_reserves_of(asset_id)
                 break
         return total_issuance
 
@@ -312,29 +409,29 @@ class AllData(BaseModel, Generic[TId, TAmount]):
         """
         costs = []
         for x in self.asset_pairs_xyk:
-            costs.append(0.0)
+            costs.append(x.venue_fixed_costs_in_usd)
         for x in self.asset_transfers:
-            costs.append(x.usd_fee_transfer)
+            costs.append(x.venue_fixed_costs_in_usd)
         return costs
 
-    def venue_fixed_costs_in(self, token: TId) -> list[int]:
+    def venue_fixed_costs_in(self, token: TId) -> list[float]:
         """_summary_
         Converts fixed price of all venues to token
         """
         token_price_in_usd = self.token_price_in_usd(token)
         if not token_price_in_usd:
-            print(
+            raise Exception(
                 "WARN: mantis::simulation::routers:: token has no price found to compare to fixed costs, so fixed costs would be considered 1 or 0"
             )
 
         in_received_token = []
         for fixed_cost_in_usd in self.venue_fixed_costs_in_usd:
             if not token_price_in_usd and fixed_cost_in_usd > 0:
-                in_received_token.append(1)
+                in_received_token.append(0.000001)
             elif not token_price_in_usd and fixed_cost_in_usd == 0:
                 in_received_token.append(0)
             else:
-                in_received_token.append(int(fixed_cost_in_usd / token_price_in_usd))
+                in_received_token.append(fixed_cost_in_usd / token_price_in_usd)
         return in_received_token
 
     @property
@@ -396,13 +493,13 @@ class AllData(BaseModel, Generic[TId, TAmount]):
         result = set()
         routable = self.transfers_disjoint_set
         for exchange in self.asset_pairs_xyk:
-            if routable.connected(
-                from_asset_id, exchange.in_asset_id
-            ) or routable.connected(from_asset_id, exchange.out_asset_id):
+            if routable.connected(from_asset_id, exchange.in_asset_id) or routable.connected(
+                from_asset_id, exchange.out_asset_id
+            ):
                 result.add(exchange.pool_id)
         return list(result)
 
-    def maximal_reserves_of(self, token: TId) -> TAmount:
+    def maximal_reserves_of(self, asset_id: TId) -> TAmount:
         """_summary_
         Given token find maximal reserve venue it across all venues.
         If case it able to find escrow and liquidity for transfer venue it uses that value.
@@ -410,36 +507,38 @@ class AllData(BaseModel, Generic[TId, TAmount]):
         In case of both fails, it sets max numeric value for that.
         """
         value = 0
-        for x in self.asset_pairs_xyk:
-            if x.in_asset_id == token:
-                value = max(value, value, x.in_token_amount)
-            if x.out_asset_id == token:
-                value = max(value, x.out_token_amount)
+        for venue in self.asset_pairs_xyk:
+            if venue.in_asset_id == asset_id:
+                value = max(value, value, venue.in_token_amount)
+            if venue.out_asset_id == asset_id:
+                value = max(value, venue.out_token_amount)
         if value > 0:
             return value
 
-        exchanges = self.transfer_to_exchange(token)
+        exchanges = self.transfer_to_exchange(asset_id)
         for exchange_id in exchanges:
-            for x in self.asset_pairs_xyk:
-                if x.pool_id == exchange_id:
-                    if x.in_asset_id == token and self.transfers_disjoint_set.connected(
-                        x.in_asset_id, token
-                    ):
-                        value = max(value, x.in_token_amount)
-                    if (
-                        x.out_asset_id == token
-                        and self.transfers_disjoint_set.connected(x.out_asset_id, token)
-                    ):
-                        value = max(value, x.out_token_amount)
+            for venue in self.asset_pairs_xyk:
+                if venue.pool_id == exchange_id:
+                    if self.transfers_disjoint_set.connected(venue.in_asset_id, asset_id):
+                        value = max(value, venue.in_token_amount)
+                    elif self.transfers_disjoint_set.connected(venue.out_asset_id, asset_id):
+                        value = max(value, venue.out_token_amount)
+                    else:
+                        raise Exception(f"asset {asset_id} not connected to {venue}")
         if value > 0:
             return value
 
-        for x in self.asset_transfers:
-            if x.in_asset_id == token:
-                value = max(value, x.in_token_amount)
-            if x.out_asset_id == token:
-                value = max(value, x.out_token_amount)
-        return value
+        for venue in self.asset_transfers:
+            if venue.in_asset_id == asset_id:
+                value = max(value, venue.in_token_amount)
+            if venue.out_asset_id == asset_id:
+                value = max(value, venue.out_token_amount)
+        if value > 0:
+            return value
+
+        if value == 0:
+            logger.trace(f"asset reservers not found {asset_id}")
+        return 0
 
     def total_reserves_of(self, token: TId) -> int:
         """
@@ -468,6 +567,13 @@ class AllData(BaseModel, Generic[TId, TAmount]):
             venues.append([x.in_asset_id, x.out_asset_id])
         return venues
 
+    @property
+    def venues(self) -> list[Union[AssetPairsXyk, AssetTransfers]]:
+        all = []
+        all.extend(self.asset_pairs_xyk)
+        all.extend(self.asset_transfers)
+        return all
+
     def venue(self, i: int):
         reserves = self.all_reserves
         venues = self.venues_tokens
@@ -489,49 +595,57 @@ class AllData(BaseModel, Generic[TId, TAmount]):
         """
         return len(self.asset_pairs_xyk) + len(self.asset_transfers)
 
+    def __merge_oracles(self):
+        """_summary_
+        Given original USD oracle and pools, merge them to one dictionary
+        """
+        oracles = {}
+        if self.usd_oracles and any(self.usd_oracles):
+            for key, value in self.usd_oracles.items():
+                if value and value > 0:
+                    oracles[key] = value
+
+        transfers = [(x.in_asset_id, x.out_asset_id) for x in self.asset_transfers]
+        oracles = merge_by_connection_from_existing(oracles, transfers)
+        # merge with pool oracles
+
+        transfers = self.transfers_disjoint_set
+        for other_asset_id in self.all_tokens:
+            if other_asset_id not in oracles or oracles[other_asset_id] is None or oracles[other_asset_id] == 0:
+                for pair in self.asset_pairs_xyk:
+                    if pair.pool_value_in_usd:
+                        if transfers.connected(pair.in_asset_id, other_asset_id):
+                            assert pair.value_of_a_in_usd > 0
+                            oracles[other_asset_id] = pair.value_of_a_in_usd
+                            break
+                        if transfers.connected(pair.out_asset_id, other_asset_id):
+                            assert pair.value_of_b_in_usd > 0
+                            oracles[other_asset_id] = pair.value_of_b_in_usd
+                            break
+        self.usd_oracles = oracles
+
     # @property
     # @lru_cache
-    def token_price_in_usd(self, token: TId) -> float | None:
+    def token_price_in_usd(self, asset_id: TId) -> float | None:
         """_summary_
         How much 1 amount of token is worth in USD
         """
-        transfers = [(x.in_asset_id, x.out_asset_id) for x in self.asset_transfers]
-        oracles = SetOracle.route(self.usd_oracles, transfers)
-        if oracles:
-            oracle = oracles.get(token, None)
-            if oracle:
-                result = oracle
-        for pair in self.asset_pairs_xyk:
-            if (
-                pair.in_asset_id == token
-                or pair.out_asset_id == token
-                or pair.pool_value_in_usd
-            ):
-                hit = pair
-                break
-        if hit:
-            usd_volume = hit.pool_value_in_usd
-            numerator = (
-                hit.weight_of_a if pair.in_asset_id == token else hit.weight_of_b
-            )
-            denumerator = hit.weight_of_a + hit.weight_of_b
-            top = numerator * usd_volume
-            btm = (
-                hit.in_token_amount
-                if pair.in_asset_id == token
-                else hit.out_token_amount
-            ) * denumerator
-            result = top * 1.0 / btm
-        assert isinstance(result, float)
-        return result
+
+        if self.usd_oracles.get(asset_id, None):
+            return self.usd_oracles[asset_id]
+        else:
+            logger.error(f"oracle not found for token {asset_id}, which means there is no connection of token to USD")
+            return 0
+
+    @model_validator(mode="after")
+    def after(self):
+        assert len(self.asset_pairs_xyk) + len(self.asset_transfers) == self.venues_count
 
 
 # helpers to setup tests data
 
 
-def new_data(
-    pairs: list[AssetPairsXyk], transfers: list[AssetTransfers], usd_oracles=None
-) -> AllData:
+def new_data(pairs: list[AssetPairsXyk], transfers: list[AssetTransfers], usd_oracles=None) -> AllData:
     return AllData(
         asset_pairs_xyk=list[AssetPairsXyk](pairs),
         asset_transfers=list[AssetTransfers](transfers),
@@ -555,11 +669,12 @@ def new_pair(
     out_asset_id,
     fee_of_in_per_million,
     fee_of_out_per_million,
-    weight_of_a,
-    weight_of_b,
+    weight_a,
+    weight_b,
     pool_value_in_usd,
     in_token_amount,
     out_token_amount,
+    venue_fixed_costs_in_usd: float = 0.00001,
     metadata=None,
 ) -> AssetPairsXyk:
     return AssetPairsXyk(
@@ -568,11 +683,12 @@ def new_pair(
         out_asset_id=out_asset_id,
         fee_of_in_per_million=fee_of_in_per_million,
         fee_of_out_per_million=fee_of_out_per_million,
-        weight_of_a=weight_of_a,
-        weight_of_b=weight_of_b,
+        weight_a=weight_a,
+        weight_b=weight_b,
         pool_value_in_usd=pool_value_in_usd,
         in_token_amount=in_token_amount,
         out_token_amount=out_token_amount,
+        venue_fixed_costs_in_usd=venue_fixed_costs_in_usd,
         metadata=metadata,
     )
 
@@ -580,7 +696,7 @@ def new_pair(
 def new_transfer(
     in_asset_id,
     out_asset_id,
-    usd_fee_transfer,
+    venue_fixed_costs_in_usd,
     in_token_amount,
     out_token_amount,
     fee_per_million,
@@ -589,7 +705,7 @@ def new_transfer(
     return AssetTransfers(
         in_asset_id=in_asset_id,
         out_asset_id=out_asset_id,
-        usd_fee_transfer=usd_fee_transfer,
+        venue_fixed_costs_in_usd=venue_fixed_costs_in_usd,
         in_token_amount=in_token_amount,
         out_token_amount=out_token_amount,
         fee_per_million=fee_per_million,
@@ -597,42 +713,12 @@ def new_transfer(
     )
 
 
-class AssetPairsXyk1(BaseModel):
-    # set key
-    pool_id: int
-    in_asset_id: int
-    out_asset_id: int
-
-    # assumed that all all CFMM take fee from pair token in proportion
-    fee_of_in_per_million: int
-    fee_of_out_per_million: int
-    # in reality fee can be flat or in other tokens, but not for now
-
-    weight_of_a: int
-    weight_of_b: int
-    # if it is hard if None, please fail if it is None - for now will be always some
-    pool_value_in_usd: int | None = None
-
-    @validator("pool_value_in_usd", pre=True, always=True)
-    def replace_nan_with_None(cls, v):
-        return v if v == v else None
-
-    # total amounts in reserves R
-    in_token_amount: int
-    out_token_amount: int
-
-    metadata: str | None = None
-
-
 def read_dummy_data(TEST_DATA_DIR: str = "./") -> AllData:
     pairs = pd.read_csv(TEST_DATA_DIR + "assets_pairs_xyk.csv")
     return AllData(
         asset_pairs_xyk=[AssetPairsXyk(**row) for _index, row in pairs.iterrows()],
         asset_transfers=[
-            AssetTransfers(**row)
-            for _index, row in pd.read_csv(
-                TEST_DATA_DIR + "assets_transfers.csv"
-            ).iterrows()
+            AssetTransfers(**row) for _index, row in pd.read_csv(TEST_DATA_DIR + "assets_transfers.csv").iterrows()
         ],
     )
 

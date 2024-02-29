@@ -1,9 +1,9 @@
-# solves using convex optimization
-# clarabel cvxpy local mip
+# Solves using OR optimization
 import itertools
 import math
 
 import numpy as np
+import pytest
 from loguru import logger
 
 from simulation.routers.angeris_cvxpy import cvxpy_to_data
@@ -21,6 +21,7 @@ from simulation.routers.data import (
     new_transfer,
 )
 from simulation.routers.generic_linear import route
+from simulation.routers.scaler import ToSmallUsdValueOfInput, scale_in
 
 MAX_RESERVE = 1e10
 
@@ -38,11 +39,7 @@ def populate_chain_dict(chains: dict[TNetworkId, list[TId]], center_node: TNetwo
     # Simulate IBC transfer through Composable Cosmos
     for chain, tokens in chains.items():
         if chain != center_node:
-            chains[chain].extend(
-                f"{center_node}/{token}"
-                for token in chains[center_node]
-                if f"{chain}/" not in token
-            )
+            chains[chain].extend(f"{center_node}/{token}" for token in chains[center_node] if f"{chain}/" not in token)
 
 
 def test_single_chain_single_cffm_route_full_symmetry_exist():
@@ -55,9 +52,7 @@ def test_single_chain_single_cffm_route_full_symmetry_exist():
 
 
 def test_usd_arbitrage_low_fees_short_path():
-    t1 = new_transfer(
-        "CENTAURI/ETHEREUM/USDC", "ETHEREUM/USDC", 10, 100_000, 100_000, 0
-    )
+    t1 = new_transfer("CENTAURI/ETHEREUM/USDC", "ETHEREUM/USDC", 10, 100_000, 100_000, 0)
     t2 = new_transfer(
         "CENTAURI/ETHEREUM/USDC",
         "OSMOSIS/CENTAURI/ETHEREUM/USDC",
@@ -68,9 +63,7 @@ def test_usd_arbitrage_low_fees_short_path():
     )
     t3 = new_transfer("OSMOSIS/ETHEREUM/USDC", "ETHEREUM/USDC", 1, 100_000, 100_000, 0)
 
-    s1 = new_pair(
-        1, "ETHEREUM/USDC", "ETHEREUM/USDT", 0, 0, 1, 1, 200_000, 10_000, 10_000
-    )
+    s1 = new_pair(1, "ETHEREUM/USDC", "ETHEREUM/USDT", 0, 0, 1, 1, 200_000, 10_000, 10_000)
     s2 = new_pair(
         1,
         "OSMOSIS/ETHEREUM/USDC",
@@ -120,9 +113,7 @@ def test_usd_arbitrage_low_fees_short_path():
 
 def create_usd_arbitrage_low_fees_long_path():
     # here we shutdown direct Centauri <-> Ethereum route, and force Centauri -> Osmosis -> Ethereum
-    t1 = new_transfer(
-        "CENTAURI/ETHEREUM/USDC", "ETHEREUM/USDC", 1_000_000, 100_000, 100_000, 0
-    )
+    t1 = new_transfer("CENTAURI/ETHEREUM/USDC", "ETHEREUM/USDC", 1_000_000, 100_000, 100_000, 0)
     t2 = new_transfer(
         "CENTAURI/ETHEREUM/USDC",
         "OSMOSIS/CENTAURI/ETHEREUM/USDC",
@@ -133,9 +124,7 @@ def create_usd_arbitrage_low_fees_long_path():
     )
     t3 = new_transfer("OSMOSIS/ETHEREUM/USDC", "ETHEREUM/USDC", 1, 100_000, 100_000, 0)
 
-    s1 = new_pair(
-        1, "ETHEREUM/USDC", "ETHEREUM/USDT", 0, 0, 1, 1, 200_000, 10_000, 10_000
-    )
+    s1 = new_pair(1, "ETHEREUM/USDC", "ETHEREUM/USDT", 0, 0, 1, 1, 200_000, 10_000, 10_000)
     s2 = new_pair(
         1,
         "OSMOSIS/ETHEREUM/USDC",
@@ -252,11 +241,7 @@ def test_arbitrage_loop_of_start_middle_final_assets():
     solution = cvxpy_to_data(input, data, ctx, result)
     assert solution.next[0].next[0].out_asset_id == "D"
     assert solution.next[1].next[0].out_asset_id == "D"
-    assert (
-        result.received(data.index_of_token("D"))
-        == 90
-        == (solution.next[0].next[0].out_amount + solution.next[1].next[0].out_amount)
-    )
+    assert 90 == (solution.next[0].next[0].out_asset_amount + solution.next[1].next[0].out_asset_amount)
 
 
 def test_simple_symmetric_and_asymmetric_split():
@@ -310,19 +295,25 @@ def test_simple_symmetric_and_asymmetric_split():
     logger.info(solution)
     assert solution.next[0].next[0].out_asset_id == "D"
     assert solution.next[1].next[0].out_asset_id == "D"
-    assert (
-        result.received(data.index_of_token("D"))
-        == 79.0
-        == (solution.next[0].next[0].out_amount + solution.next[1].next[0].out_amount)
-    )
+    assert 79.0 == (solution.next[0].next[0].out_asset_amount + solution.next[1].next[0].out_asset_amount)
 
 
-def _test_big_numeric_range():
+def test_big_numeric_range():
     input = new_input(1, 2, 100, 50)
-    pair = new_pair(1, 1, 2, 0, 0, 1, 10, 1000, 10_000_000_000, 1_000_000_000)
+    pair = new_pair(1, 1, 2, 0, 0, 1, 10, 1_000, 10_000_000_000, 1_000_000_000)
     data = new_data([pair], [])
-    result = route(input, data)
-    logger.info(result)
+    ctx = Ctx()
+    with pytest.raises(ToSmallUsdValueOfInput):
+        scaled_data, scaled_input, ratios = scale_in(data, input, ctx)
+    pair = new_pair(1, 1, 2, 0, 0, 1, 10, 1_000_000_000, 10_000_000_000, 1_000_000_000)
+    data = new_data([pair], [])
+    scaled_data, scaled_input, ratios = scale_in(data, input, ctx)
+    assert ratios[1] == 0.010000000000000002
+    assert ratios[2] == 0.01
+    solution = route(scaled_input, scaled_data)
+    result = cvxpy_to_data(scaled_input, scaled_data, ctx, solution, ratios)
+    assert result.next[0].in_asset_amount == 100
+    assert result.next[0].out_asset_amount == 99
 
 
 def test_simulate_all_connected_venues():
@@ -331,12 +322,24 @@ def test_simulate_all_connected_venues():
     CENTER_NODE, chains = simulate_all_to_all_connected_chains_topology(input)
     data = simulate_all_connected_venues(CENTER_NODE, chains)
     logger.info(data)
-
+    oracles = {asset_id: 1 for asset_id in data.all_tokens}
+    data.usd_oracles = oracles
     logger.info("=============== solving ========================")
     ctx = Ctx()
-    result = route(input, data, ctx)
-    cvxpy_to_data(input, data, ctx, result)
-    logger.info(result)
+    solution = route(input, data, ctx)
+    result = cvxpy_to_data(input, data, ctx, solution)
+
+    queue = result.next
+    sum = 0
+    for next in queue:
+        if not next.next or len(next.next) == 0:
+            assert next.out_asset_id == input.out_token_id
+            sum += next.out_asset_amount
+        else:
+            queue.extend(next.next)
+    assert sum >= 1900
+    assert sum > input.out_amount
+    logger.info(sum)
 
 
 def simulate_all_connected_venues(CENTER_NODE, chains) -> AllData:

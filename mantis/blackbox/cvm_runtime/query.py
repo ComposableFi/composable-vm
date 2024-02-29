@@ -138,6 +138,4 @@ class QueryMsg4(BaseModel):
 
 
 class QueryMsg(RootModel[Union[QueryMsg1, QueryMsg2, QueryMsg3, QueryMsg4, QueryMsg5]]):
-    root: Union[QueryMsg1, QueryMsg2, QueryMsg3, QueryMsg4, QueryMsg5] = Field(
-        ..., title="QueryMsg"
-    )
+    root: Union[QueryMsg1, QueryMsg2, QueryMsg3, QueryMsg4, QueryMsg5] = Field(..., title="QueryMsg")

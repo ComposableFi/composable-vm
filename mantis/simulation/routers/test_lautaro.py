@@ -33,11 +33,7 @@ def populate_chain_dict(chains: dict[TNetworkId, list[TId]], center_node: TNetwo
     # Simulate IBC transfer through Composable Cosmos
     for chain, tokens in chains.items():
         if chain != center_node:
-            chains[chain].extend(
-                f"{center_node}/{token}"
-                for token in chains[center_node]
-                if f"{chain}/" not in token
-            )
+            chains[chain].extend(f"{center_node}/{token}" for token in chains[center_node] if f"{chain}/" not in token)
 
 
 def test_single_chain_single_cffm_route_full_symmetry_exist():

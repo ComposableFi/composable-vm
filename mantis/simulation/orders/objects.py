@@ -226,9 +226,7 @@ class OrderList:
         matched = self.is_acceptable_price(price)
         return min(matched.buy().token1_sum(price), matched.sell().token1_sum(price))
 
-    def resolve_predominant(
-        self, predominant_orders: OrderList, other_orders: OrderList, price: Price
-    ):
+    def resolve_predominant(self, predominant_orders: OrderList, other_orders: OrderList, price: Price):
         filled = Decimal(0)
         for order in other_orders:
             order.fill(order.amount_in, price)
@@ -341,25 +339,14 @@ class Solver:
 
     def f_maximaize(self, order: Order):
         if order.type is OrderType.BUY:
-            return (
-                self.buy_token
-                - order.amount_filled
-                + (self.sell_token + order.amount_out) * self.target_price
-            )
-        return (
-            (self.buy_token + order.amount_out) / self.target_price
-            + self.sell_token
-            - order.amount_filled
-        )
+            return self.buy_token - order.amount_filled + (self.sell_token + order.amount_out) * self.target_price
+        return (self.buy_token + order.amount_out) / self.target_price + self.sell_token - order.amount_filled
 
     def solve(self, num_orders=1000) -> Solution:
         original_price = self.orders.compute_optimal_price()
         is_buy = original_price > self.target_price
         original_token_amount = self.buy_token if is_buy else self.sell_token
-        orders = [
-            self.order_for(i * original_token_amount / num_orders, is_buy)
-            for i in range(0, num_orders + 1)
-        ]
+        orders = [self.order_for(i * original_token_amount / num_orders, is_buy) for i in range(0, num_orders + 1)]
         max_value = 0
         max_solution: Solution = None
         for order in orders:
@@ -392,9 +379,7 @@ class Solver:
 class CFMMSolver(Solver):
     cfmm: CFMM
 
-    def __init__(
-        self, ob: Solution, cfmm: CFMM, buy_token: BuyToken, sell_token: SellToken
-    ):
+    def __init__(self, ob: Solution, cfmm: CFMM, buy_token: BuyToken, sell_token: SellToken):
         self.cfmm = cfmm
         self.orders = ob
         self.buy_token = buy_token
@@ -472,9 +457,7 @@ class CFMM:
         return amount_out
 
     def swap(self, Delta: BuyToken | SellToken, in_reserve, out_reserve):
-        return out_reserve - in_reserve * out_reserve / (
-            in_reserve + self.gamma * Delta
-        )
+        return out_reserve - in_reserve * out_reserve / (in_reserve + self.gamma * Delta)
 
     @property
     def price(self):
