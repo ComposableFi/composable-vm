@@ -318,7 +318,8 @@ def test_big_numeric_range():
     assert ratios[2] == 0.01
     solution = route(scaled_input, scaled_data)
     result = cvxpy_to_data(scaled_input, scaled_data, ctx, solution, ratios)
-    print(result)
+    assert result.next[0].in_asset_amount == 100
+    assert result.next[0].out_asset_amount == 99
 
 
 def test_simulate_all_connected_venues():
