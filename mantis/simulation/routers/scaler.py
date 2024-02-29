@@ -51,9 +51,6 @@ def scale_in(base_data: AllData, input: Input, ctx: Ctx) -> tuple[AllData, Input
     """
     Scales in data to be used by simulation
     """
-
-    base_data.merge_oracles()
-
     assert base_data.token_price_in_usd(input.in_token_id) > 0
     
     # so we set all transfers amount to some estimate
@@ -152,4 +149,5 @@ def scale_in(base_data: AllData, input: Input, ctx: Ctx) -> tuple[AllData, Input
         # but scale up until max_reserve
 
         # here we can clean up small venues, numerically small
+    
     return new_data, new_input, ratios

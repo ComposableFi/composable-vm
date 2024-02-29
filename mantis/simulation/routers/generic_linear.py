@@ -249,7 +249,6 @@ def route(
                 logger.info(
                     f"RETAINING TRADE venue={i} trade={trade}, oracalized_in={oracalized_in}/{venue.in_asset_id} for {all_data.token_price_in_usd(venue.in_asset_id)}, oracalized_out={oracalized_out}/{venue.out_asset_id} for {all_data.token_price_in_usd(venue.out_asset_id)}"
                 )
-                raise Exception("not implemented")
         else:
             oracalized_trades.append([0, 0])
             logger.info(f"ZEROING TRADE venue={i} trade={trade}, oracalized_a={0}, oracalized_b={0}, i={i}")

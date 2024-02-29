@@ -39,6 +39,10 @@ def cvxpy_to_data(
 
     index_of_input = data.index_of_token(input.in_token_id)
     index_of_output = data.index_of_token(input.out_token_id)
+    
+    if not ratios or len(ratios) == 0:
+        ratios = {asset_id: 1 for asset_id in data.all_tokens}
+    
     solution_output = raw_solution.psi[index_of_output].value / ratios[input.out_token_id]
     solution_input = -raw_solution.psi[index_of_input].value / ratios[input.in_token_id]
     if ratios is None:

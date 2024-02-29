@@ -353,7 +353,10 @@ class AllData(BaseModel, Generic[TId, TAmount]):
       asset ids which we consider to be USD equivalents
       value - decimal exponent of token to make 1 USD
     """
-
+    
+    def model_post_init(self, __context) -> None:
+        self.__merge_oracles()
+    
     @property
     # @cache
     def all_tokens(self) -> list[TId]:
@@ -592,7 +595,7 @@ class AllData(BaseModel, Generic[TId, TAmount]):
         """
         return len(self.asset_pairs_xyk) + len(self.asset_transfers)
 
-    def merge_oracles(self):
+    def __merge_oracles(self):
         """_summary_
         Given original USD oracle and pools, merge them to one dictionary
         """
