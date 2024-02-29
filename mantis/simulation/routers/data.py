@@ -70,7 +70,7 @@ class Ctx(BaseModel, Generic[TAmount]):
     Not a value, but just physical number to eliminate from trade
     """
 
-    mi_for_venue_count: int = 1
+    mi_for_venue_count: int = 0
     """
     If venue count is small, can try MI solution because MI are slow in general
     """
@@ -83,6 +83,17 @@ class Ctx(BaseModel, Generic[TAmount]):
     Up to possible oracle error (do not set it less than expected oracle mistake multiplier)
     """
 
+
+    depth_of_route : int = 10
+    """_summary_
+    Avoid too deep routes.
+    """
+    
+    max_venues_usd : int = 5
+    """
+    Prevents arbitrage but allows for simpler routes if set small.
+    """
+    
     @property
     def max_reserve(self):
         return 10**self.max_reserve_decimals

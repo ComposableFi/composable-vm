@@ -59,9 +59,6 @@ class CvxpySolution:
     def received(self, global_index) -> float:
         return self.psi.value[global_index]
     
-    
-    
-
 class VenuesSnapshot(NodeMixin):
     """_summary_
     The total amount which goes in/out each venue

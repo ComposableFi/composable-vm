@@ -20,8 +20,6 @@ from simulation.routers.data import (
     Spawn,
 )
 
-
-
 def cvxpy_to_data(
     input: Input,
     data: AllData,
@@ -80,7 +78,7 @@ def cvxpy_to_data(
             [
                 trade
                 for trade in total_trades
-                if trade and trade.in_asset_id == current.in_asset_id and trade.in_amount > 0 and trade.out_amount > 0
+                if trade and trade.in_asset_id == current.out_asset_id and trade.in_amount > 0 and trade.out_amount > 0
             ],
             key=lambda x: x.in_amount,
             reverse=True,
@@ -89,10 +87,10 @@ def cvxpy_to_data(
             return
         depth += 1
         if depth > 10:
-            for snapshot in from_big_to_small:
-                logger.error(f"snapshot {snapshot}")
-            return
+            raise Exception("depth of route limit reached")
         for snapshot in from_big_to_small:
+            logger.debug()
+                logger.error(f"snapshot {snapshot}")
             if current.in_amount <= 0 or snapshot.out_amount <= 0 or snapshot.out_amount <= 0:
                 continue
             traded_in_amount = min(current.in_amount, snapshot.in_amount)
@@ -134,7 +132,7 @@ def cvxpy_to_data(
 
     for pre, _fill, node in RenderTree(start):
         logger.debug(f"{pre} in={node.in_amount:_}/{node.in_asset_id} via={node.venue_index}")
-
+    raise Exception(trades_raw)
     def next_route(parent_node: VenuesSnapshot):
         subs = []
         if parent_node.children:
