@@ -299,9 +299,8 @@ class Exchange(BaseModel, Generic[TId, TAmount]):
 class SingleInputAssetCvmRoute(BaseModel):
     """
     always starts with Input asset_id
-    """
-
-    input_amount: int
+    """    
+    in_amount: int
     next: list[Union[Exchange, Spawn]]
 
 

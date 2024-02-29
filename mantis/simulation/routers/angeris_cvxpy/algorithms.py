@@ -17,6 +17,7 @@ from simulation.routers.data import (
     Ctx,
     Exchange,
     Input,
+    SingleInputAssetCvmRoute,
     Spawn,
 )
 
@@ -132,30 +133,42 @@ def cvxpy_to_data(
     for pre, _fill, node in RenderTree(start):
         logger.debug(f"{pre} {node}")
 
-    def next_route(parent_node: VenuesSnapshot):
-        subs = []
-        if parent_node.children:
-            for child in parent_node.children:
-                sub = next_route(child)
-                subs.append(sub)
-        venue = data.venue_by_index(parent_node.venue_index)
-        if isinstance(venue, AssetPairsXyk):
-            return Exchange(
-                in_asset_amount=math.ceil(parent_node.in_amount),
-                out_asset_amount=math.floor(parent_node.out_amount),
-                out_asset_id=parent_node.out_asset_id,
-                in_asset_id=parent_node.in_asset_id,
-                pool_id=str(venue.pool_id),
+    def next_route(current_snapshot: VenuesSnapshot):                
+        if current_snapshot.name == "input":
+            subs = []
+            if current_snapshot.children:                
+                for child in current_snapshot.children:
+                    sub = next_route(child)
+                    subs.append(sub)
+                    
+            return SingleInputAssetCvmRoute(
+                in_amount = current_snapshot.out_amount,
                 next=subs,
-            )
-        elif isinstance(venue, AssetTransfers):
-            return Spawn(
-                in_asset_id=parent_node.in_asset_id,
-                in_asset_amount=math.ceil(parent_node.in_amount),
-                out_asset_id=parent_node.out_asset_id,
-                out_asset_amount=math.floor(parent_node.out_amount),
-                next=subs,
-            )
+            )    
+        elif current_snapshot.name == "venue":
+            subs = []
+            if current_snapshot.children:                
+                for child in current_snapshot.children:
+                    sub = next_route(child)
+                    subs.append(sub)        
+            venue = data.venue_by_index(current_snapshot.venue_index)
+            if isinstance(venue, AssetPairsXyk):
+                return Exchange(
+                    in_asset_id=current_snapshot.in_asset_id,
+                    in_asset_amount=math.ceil(current_snapshot.in_amount),
+                    out_asset_amount=math.floor(current_snapshot.out_amount),
+                    out_asset_id=current_snapshot.out_asset_id,
+                    pool_id=str(venue.pool_id),
+                    next=subs,
+                )
+            elif isinstance(venue, AssetTransfers):
+                return Spawn(
+                    in_asset_id=current_snapshot.in_asset_id,
+                    in_asset_amount=math.ceil(current_snapshot.in_amount),
+                    out_asset_id=current_snapshot.out_asset_id,
+                    out_asset_amount=math.floor(current_snapshot.out_amount),
+                    next=subs,
+                )
         else:
             raise Exception("Unknown venue type")
 
