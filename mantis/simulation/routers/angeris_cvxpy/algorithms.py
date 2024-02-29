@@ -1,13 +1,9 @@
 # CVXPY Angeris helper algorithm which more or less independnt of exact implementation
 
 import math
-from typing import Union
 
-import cvxpy as cp
-from .data import CvxpySolution, VenuesSnapshot
 import numpy as np
-from anytree import Node, NodeMixin, RenderTree
-from attr import dataclass
+from anytree import RenderTree
 from loguru import logger
 
 from simulation.routers.data import (
@@ -20,6 +16,9 @@ from simulation.routers.data import (
     SingleInputAssetCvmRoute,
     Spawn,
 )
+
+from .data import CvxpySolution, VenuesSnapshot
+
 
 def cvxpy_to_data(
     input: Input,
@@ -67,13 +66,13 @@ def cvxpy_to_data(
 
     depth = 0
 
-    def snapshots_to_route(current : VenuesSnapshot, depth, input: Input, ctx: Ctx):
+    def snapshots_to_route(current: VenuesSnapshot, depth, input: Input, ctx: Ctx):
         """_summary_
-            Add nodes until burn all input from snapshots.
-            
-            If depth is more than some level or amount is close to received, and asset in current is received,
-            stop iterating.                    
-        """        
+        Add nodes until burn all input from snapshots.
+
+        If depth is more than some level or amount is close to received, and asset in current is received,
+        stop iterating.
+        """
         depth += 1
         from_big_to_small = sorted(
             [
@@ -84,11 +83,15 @@ def cvxpy_to_data(
             key=lambda x: x.in_amount,
             reverse=True,
         )
-        if depth > 3:
-            logger.error("depth of route limit reached")
-            if 
+
+        if sum([trade.out_amount for trade in total_trades if trade and trade.out_asset_id == input.out_token_id]) <= 0:
             return
-        
+        if depth > ctx.depth_of_route:
+            logger.trace("depth of route limit reached")
+            if input.out_token_id == current.out_asset_id:
+                logger.trace("ended because of depth")
+                return
+
         if any(from_big_to_small):
             if current.out_amount <= 0:
                 raise Exception("must not get to here but stop one iteration earlier")
@@ -97,31 +100,32 @@ def cvxpy_to_data(
                 if snapshot.out_amount <= 0 or snapshot.in_amount <= 0:
                     continue
                 traded_in_amount = min(current.out_amount, snapshot.in_amount)
-                if traded_in_amount <= 0:                    
-                    logger.error(f"cannot trade nothing for in={current} via={snapshot} ")
+                if traded_in_amount <= 0:
+                    logger.warning(f"cannot trade nothing for in={current} via={snapshot} ")
                     continue
-                
-                received_out_amount = min(snapshot.out_amount, traded_in_amount * snapshot.out_amount / snapshot.in_amount)
+
+                received_out_amount = min(
+                    snapshot.out_amount, traded_in_amount * snapshot.out_amount / snapshot.in_amount
+                )
                 if received_out_amount <= 0:
                     continue
 
-                logger.info(f"expected_out_amount {received_out_amount}; traded in amount = {traded_in_amount} ")
+                logger.debug(f"expected_out_amount {received_out_amount}; traded in amount = {traded_in_amount} ")
                 snapshot.out_amount -= received_out_amount
                 snapshot.in_amount -= traded_in_amount
                 current.out_amount -= traded_in_amount
 
                 next_trade = VenuesSnapshot(
-                    name=f"venue",
+                    name="venue",
                     in_amount=traded_in_amount,
-                    out_amount= received_out_amount,                    
+                    out_amount=received_out_amount,
                     venue_index=snapshot.venue_index,
-                    
                     in_asset_id=snapshot.in_asset_id,
-                    out_asset_id= snapshot.out_asset_id,
+                    out_asset_id=snapshot.out_asset_id,
                     parent=current,
                 )
                 logger.info(f"next_trade {next_trade}")
-                snapshots_to_route(next_trade, depth)
+                snapshots_to_route(next_trade, depth, input, ctx)
 
     start = VenuesSnapshot(
         name="input",
@@ -131,38 +135,38 @@ def cvxpy_to_data(
         out_amount=input.in_amount / ratios[input.in_token_id],
         out_asset_id=input.in_token_id,
     )
-    snapshots_to_route(start, depth)
+    snapshots_to_route(start, depth, input, ctx)
 
     for pre, _fill, node in RenderTree(start):
         logger.debug(f"{pre} {node}")
 
-    def next_route(current_snapshot: VenuesSnapshot):                
+    def next_route(current_snapshot: VenuesSnapshot):
         if current_snapshot.name == "input":
             subs = []
-            if current_snapshot.children:                
+            if current_snapshot.children:
                 for child in current_snapshot.children:
                     sub = next_route(child)
                     subs.append(sub)
-                    
+
             return SingleInputAssetCvmRoute(
-                in_amount = current_snapshot.out_amount,
+                in_amount=current_snapshot.out_amount,
                 next=subs,
-            )    
+            )
         elif current_snapshot.name == "venue":
             subs = []
-            if current_snapshot.children:                
+            if current_snapshot.children:
                 for child in current_snapshot.children:
                     sub = next_route(child)
-                    subs.append(sub)        
+                    subs.append(sub)
             venue = data.venue_by_index(current_snapshot.venue_index)
-            in_asset_id= str(current_snapshot.in_asset_id)
+            in_asset_id = str(current_snapshot.in_asset_id)
             out_asset_id = str(current_snapshot.out_asset_id)
-            in_asset_amount=int(math.floor(current_snapshot.frozen.in_amount))
-            out_asset_amount=int(math.floor(current_snapshot.frozen.out_amount))
+            in_asset_amount = int(math.floor(current_snapshot.frozen.in_amount))
+            out_asset_amount = int(math.floor(current_snapshot.frozen.out_amount))
             if isinstance(venue, AssetPairsXyk):
                 return Exchange(
-                    in_asset_id = in_asset_id,
-                    out_asset_id=out_asset_id,                    
+                    in_asset_id=in_asset_id,
+                    out_asset_id=out_asset_id,
                     in_asset_amount=in_asset_amount,
                     out_asset_amount=out_asset_amount,
                     pool_id=str(venue.pool_id),
@@ -171,9 +175,9 @@ def cvxpy_to_data(
             elif isinstance(venue, AssetTransfers):
                 return Spawn(
                     in_asset_id=in_asset_id,
-                    out_asset_id=out_asset_id,                    
+                    out_asset_id=out_asset_id,
                     in_asset_amount=in_asset_amount,
-                    out_asset_amount=out_asset_amount,                
+                    out_asset_amount=out_asset_amount,
                     next=subs,
                 )
         else:

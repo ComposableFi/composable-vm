@@ -4,8 +4,10 @@ import copy
 
 from simulation.routers.data import AllData, Ctx, Input
 
+
 class ToSmallUsdValueOfInput(Exception):
     pass
+
 
 def oracalize_data(base_data: AllData, input: Input, ctx: Ctx) -> tuple[AllData, Input]:
     """

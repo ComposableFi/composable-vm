@@ -1,21 +1,8 @@
-import math
-from typing import Union
 
 import cvxpy as cp
 import numpy as np
-from anytree import Node, NodeMixin, RenderTree
+from anytree import NodeMixin
 from attr import dataclass
-from loguru import logger
-
-from simulation.routers.data import (
-    AllData,
-    AssetPairsXyk,
-    AssetTransfers,
-    Ctx,
-    Exchange,
-    Input,
-    Spawn,
-)
 
 
 @dataclass
@@ -58,12 +45,14 @@ class CvxpySolution:
 
     def received(self, global_index) -> float:
         return self.psi.value[global_index]
-    
-    
+
+
 @dataclass
 class Frozen:
     in_amount: int
     out_amount: int
+
+
 class VenuesSnapshot(NodeMixin):
     """_summary_
     The total amount which goes in/out each venue
@@ -74,11 +63,11 @@ class VenuesSnapshot(NodeMixin):
     in_amount: int
     out_asset_id: any
     out_amount: any
-    frozen : Frozen
+    frozen: Frozen
     """
     Once set, must not be changed as it what route tells
     """
-    
+
     def __init__(
         self,
         name,
@@ -97,9 +86,9 @@ class VenuesSnapshot(NodeMixin):
         self.out_asset_id = out_asset_id
         self.out_amount = out_amount
         self.parent = parent
-        self.frozen = Frozen(in_amount = in_amount, out_amount = out_amount)
+        self.frozen = Frozen(in_amount=in_amount, out_amount=out_amount)
         if children:
             self.children = children
-            
+
     def __repr__(self):
         return f"{self.name} {self.venue_index} {self.frozen.in_amount}/{self.in_asset_id} {self.frozen.out_amount}/{self.out_asset_id} {len(self.children)}"

@@ -1,2 +1,2 @@
-from .data import *
 from .algorithms import *
+from .data import *

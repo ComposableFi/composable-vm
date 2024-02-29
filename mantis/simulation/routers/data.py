@@ -83,17 +83,23 @@ class Ctx(BaseModel, Generic[TAmount]):
     Up to possible oracle error (do not set it less than expected oracle mistake multiplier)
     """
 
+    max_hops_usd: float = 0
+    """
+    total amount to pay for transfers fees
+    reduces desire of router to spawn
+    we just measure it as loss of funds
+    """
 
-    depth_of_route : int = 10
+    depth_of_route: int = 3
     """_summary_
     Avoid too deep routes.
     """
-    
-    max_venues_usd : int = 5
+
+    max_venues_usd: int = 5
     """
     Prevents arbitrage but allows for simpler routes if set small.
     """
-    
+
     @property
     def max_reserve(self):
         return 10**self.max_reserve_decimals
@@ -299,7 +305,8 @@ class Exchange(BaseModel, Generic[TId, TAmount]):
 class SingleInputAssetCvmRoute(BaseModel):
     """
     always starts with Input asset_id
-    """    
+    """
+
     in_amount: int
     next: list[Union[Exchange, Spawn]]
 
@@ -624,11 +631,12 @@ class AllData(BaseModel, Generic[TId, TAmount]):
                     return pair.value_of_b_in_usd
         logger.debug(f"oracle not found for token {token}, which means there is no connection of token to USD")
         return 0
-    
+
     @model_validator(mode="after")
     def after(self):
         assert len(self.asset_pairs_xyk) + len(self.asset_transfers) == self.venues_count
-        
+
+
 # helpers to setup tests data
 
 

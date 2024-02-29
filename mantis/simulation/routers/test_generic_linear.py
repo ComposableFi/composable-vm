@@ -1,12 +1,12 @@
 # Solves using OR optimization
 import itertools
 import math
-from mantis.simulation.routers.scaler import ToSmallUsdValueOfInput, scale_in
 
-import pytest
 import numpy as np
+import pytest
 from loguru import logger
 
+from mantis.simulation.routers.scaler import ToSmallUsdValueOfInput, scale_in
 from simulation.routers.angeris_cvxpy import cvxpy_to_data
 from simulation.routers.data import (
     AllData,
@@ -241,10 +241,7 @@ def test_arbitrage_loop_of_start_middle_final_assets():
     solution = cvxpy_to_data(input, data, ctx, result)
     assert solution.next[0].next[0].out_asset_id == "D"
     assert solution.next[1].next[0].out_asset_id == "D"
-    assert (
-        90
-        == (solution.next[0].next[0].out_asset_amount + solution.next[1].next[0].out_asset_amount)
-    )
+    assert 90 == (solution.next[0].next[0].out_asset_amount + solution.next[1].next[0].out_asset_amount)
 
 
 def test_simple_symmetric_and_asymmetric_split():
@@ -298,10 +295,7 @@ def test_simple_symmetric_and_asymmetric_split():
     logger.info(solution)
     assert solution.next[0].next[0].out_asset_id == "D"
     assert solution.next[1].next[0].out_asset_id == "D"
-    assert (
-        79.0
-        == (solution.next[0].next[0].out_asset_amount + solution.next[1].next[0].out_asset_amount)
-    )
+    assert 79.0 == (solution.next[0].next[0].out_asset_amount + solution.next[1].next[0].out_asset_amount)
 
 
 def test_big_numeric_range():
@@ -309,10 +303,10 @@ def test_big_numeric_range():
     pair = new_pair(1, 1, 2, 0, 0, 1, 10, 1_000, 10_000_000_000, 1_000_000_000)
     data = new_data([pair], [])
     ctx = Ctx()
-    with pytest.raises(ToSmallUsdValueOfInput):        
+    with pytest.raises(ToSmallUsdValueOfInput):
         scaled_data, scaled_input, ratios = scale_in(data, input, ctx)
     pair = new_pair(1, 1, 2, 0, 0, 1, 10, 1_000_000_000, 10_000_000_000, 1_000_000_000)
-    data = new_data([pair], [])    
+    data = new_data([pair], [])
     scaled_data, scaled_input, ratios = scale_in(data, input, ctx)
     assert ratios[1] == 0.010000000000000002
     assert ratios[2] == 0.01
@@ -328,13 +322,24 @@ def test_simulate_all_connected_venues():
     CENTER_NODE, chains = simulate_all_to_all_connected_chains_topology(input)
     data = simulate_all_connected_venues(CENTER_NODE, chains)
     logger.info(data)
-    oracles = {asset_id : 1 for asset_id in data.all_tokens}
-    data.usd_oracles  = oracles
+    oracles = {asset_id: 1 for asset_id in data.all_tokens}
+    data.usd_oracles = oracles
     logger.info("=============== solving ========================")
     ctx = Ctx()
-    result = route(input, data, ctx)
-    cvxpy_to_data(input, data, ctx, result)
-    logger.info(result)
+    solution = route(input, data, ctx)
+    result = cvxpy_to_data(input, data, ctx, solution)
+
+    queue = result.next
+    sum = 0
+    for next in queue:
+        if not next.next or len(next.next) == 0:
+            assert next.out_asset_id == input.out_token_id
+            sum += next.out_asset_amount
+        else:
+            queue.extend(next.next)
+    assert sum >= 1900
+    assert sum > input.out_amount
+    logger.info(sum)
 
 
 def simulate_all_connected_venues(CENTER_NODE, chains) -> AllData:
