@@ -4,9 +4,7 @@ from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     OSMOSIS_POOLS: str | None = Field(alias="OSMOSIS_POOLS", default=None)
-    CVM_COSMOS_GRPC: str | None = Field(
-        alias="CVM_COSMOS_GRPC", default="http://grpc.osmosis.zone:9090"
-    )
+    CVM_COSMOS_GRPC: str | None = Field(alias="CVM_COSMOS_GRPC", default="http://grpc.osmosis.zone:9090")
     CVM_CHAIN_ID: str | None = Field(alias="CVM_CHAIN_ID", default="osmosis-1")
     COMPOSABLEFI_NETWORKS: str | None = Field(
         alias="COMPOSABLEFI_NETWORKS",

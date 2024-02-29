@@ -39,9 +39,7 @@ class Edge:
         else:
             self.__initFromPairsXyk(e, tokensIds, usd_oracles)
 
-    def __initFromTransfers(
-        self, e: AssetTransfers, tokensIds: dict[TId, int], usd_oracles: dict[TId, int]
-    ):
+    def __initFromTransfers(self, e: AssetTransfers, tokensIds: dict[TId, int], usd_oracles: dict[TId, int]):
         self.U = [tokensIds[e.in_asset_id], tokensIds[e.out_asset_id]]
         raise Exception("transfer amounts are not subject to same logic as exchanges")
         self.B = [e.in_token_amount, e.out_token_amount]
@@ -52,9 +50,7 @@ class Edge:
         ]
         self.CF = [0, 0]
 
-    def __initFromPairsXyk(
-        self, e: AssetPairsXyk, tokensIds: dict[TId, int], usd_oracles: dict[TId, int]
-    ):
+    def __initFromPairsXyk(self, e: AssetPairsXyk, tokensIds: dict[TId, int], usd_oracles: dict[TId, int]):
         self.U = [tokensIds[e.in_asset_id], tokensIds[e.out_asset_id]]
         self.B = [e.in_token_amount, e.out_token_amount]
         self.W = [e.weight_a, e.weight_b]
@@ -67,9 +63,7 @@ class Edge:
         if Ti == self.U[1]:
             i, o = 1, 0
         Xi = (Xi - self.CF[i]) * (1 - self.F[i])
-        return self.B[o] * (
-            1 - (self.B[i] / (self.B[i] + Xi)) ** (self.W[i] / self.W[o])
-        )
+        return self.B[o] * (1 - (self.B[i] / (self.B[i] + Xi)) ** (self.W[i] / self.W[o]))
 
     def DoChange(self, Ti, Xi):
         # Actually do the change of the amount of the tokens
@@ -77,9 +71,7 @@ class Edge:
         if Ti == self.U[1]:
             i, o = 1, 0
         Xi = (Xi - self.CF[i]) * (1 - self.F[i])
-        result = self.B[o] * (
-            1 - (self.B[i] / (self.B[i] + Xi)) ** (self.W[i] / self.W[o])
-        )
+        result = self.B[o] * (1 - (self.B[i] / (self.B[i] + Xi)) ** (self.W[i] / self.W[o]))
         self.B[i] += Xi
         self.B[o] -= result
         return result
@@ -233,9 +225,7 @@ def route(
 
     # For each max_depth and splits
     for max_depth_i, splits_i in zip(max_depth, splits):
-        for split in range(
-            splits_i
-        ):  # The split variable is not used but left for clarity
+        for split in range(splits_i):  # The split variable is not used but left for clarity
             # Reset the dist and previous edge of each node for each length of the path
             for i in range(((max(max_depth) + 1) * n)):
                 state.dist[i] = (None, 0)
@@ -250,14 +240,9 @@ def route(
             # Process each legth of the path
             for step in range(max_depth_i):
                 #    start = time.time()
-                if (
-                    Nproces > 1
-                ):  # If the number of processes is greater than 1, use the threads
+                if Nproces > 1:  # If the number of processes is greater than 1, use the threads
                     state.j = step
-                    threads = [
-                        th.Thread(target=Range, args=(e0[i], e1[i], state))
-                        for i in range(Nproces)
-                    ]
+                    threads = [th.Thread(target=Range, args=(e0[i], e1[i], state)) for i in range(Nproces)]
                     for t in threads:
                         t.start()
                     for t in threads:
@@ -268,7 +253,9 @@ def route(
                             if state.dist[step * state.n + u][1] == 0:
                                 continue
                             v = e.GetOther(u)
-                            if state.revision:  # If the revision is active, use the same edge if it has been used before
+                            if (
+                                state.revision
+                            ):  # If the revision is active, use the same edge if it has been used before
                                 ee = copy.deepcopy(e)
                                 vv = u
                                 # Go back in the path to check if the edge has been used before
@@ -276,9 +263,7 @@ def route(
                                     pad = state.dist[jj * state.n + vv][0]
                                     vv = edges[pad].GetOther(vv)
                                     if pad == ei:
-                                        ee.DoChange(
-                                            vv, state.dist[(jj - 1) * state.n + vv][1]
-                                        )
+                                        ee.DoChange(vv, state.dist[(jj - 1) * state.n + vv][1])
                             else:
                                 ee = e  # If the revision is not active, use the edge
                             # Get the amount of the other token
@@ -290,9 +275,7 @@ def route(
             # Get the optimal path
             for j in range(1, max_depth_i + 1):
                 if state.dist[j * n + u_end] and (
-                    state.depth == 0
-                    or state.dist[j * n + u_end][1]
-                    > state.dist[state.depth * n + u_end][1]
+                    state.depth == 0 or state.dist[j * n + u_end][1] > state.dist[state.depth * n + u_end][1]
                 ):
                     state.depth = j
 

@@ -54,9 +54,7 @@ app = create_app()
 """
 app = FastAPI()
 
-cache = PersistentCache(
-    TTLCache, filename="get_remote_data.cache", ttl=12 * 1000, maxsize=2
-)
+cache = PersistentCache(TTLCache, filename="get_remote_data.cache", ttl=12 * 1000, maxsize=2)
 
 
 # 1. return csv data + data schema in 127.0.0.1:8000/docs
@@ -151,18 +149,18 @@ def simulator_router(input: Input = Depends()):
     return route
 
 
-def simulate_route(
-    input: Input, cvm_data: ExtendedCvmRegistry
-) -> Union[Exchange, Spawn]:
+def simulate_route(input: Input, cvm_data: ExtendedCvmRegistry) -> Union[Exchange, Spawn]:
     ctx = Ctx()
     oracles = Oracalizer.orcale_from_usd(cvm_data)
     data = Oracalizer.for_simulation(cvm_data, oracles)
 
     input.in_amount = int(input.in_amount)
     input.out_amount = int(input.out_amount)
-    
+
     if input.in_amount >= ctx.max_trade * data.maximal_reserves_of(input.in_token_id):
-        raise Exception(f"you are trading on market limit with {input.in_amount} for {data.maximal_reserves_of(input.in_token_id)}")
+        raise Exception(
+            f"you are trading on market limit with {input.in_amount} for {data.maximal_reserves_of(input.in_token_id)}"
+        )
 
     new_data, new_input, scale = scale_in(data, input, ctx)
     solution = generic_linear.route(new_input, new_data, ctx)
@@ -220,23 +218,15 @@ def get_remote_data() -> AllData:
         staking_denomination=settings.CVM_CHAIN_FEE,
     )
     client = LedgerClient(cfg)
-    cvm_contract = LedgerContract(
-        path=None, client=client, address=settings.cvm_address
-    )
+    cvm_contract = LedgerContract(path=None, client=client, address=settings.cvm_address)
 
     cvm_registry_response = cvm_contract.query({"get_config": {}})
     cvm_registry = GetConfigResponse.parse_obj(cvm_registry_response)
-    skip_api = CosmosChains.parse_raw(
-        requests.get(settings.skip_money + "v1/info/chains").content
-    )
+    skip_api = CosmosChains.parse_raw(requests.get(settings.skip_money + "v1/info/chains").content)
     networks = requests.get(settings.COMPOSABLEFI_NETWORKS).content
     networks = NetworksModel.parse_raw(networks)
-    osmosis_pools = OsmosisPoolsResponse.parse_raw(
-        requests.get(settings.OSMOSIS_POOLS).content
-    )
-    astroport_pools = NeutronPoolsResponse.parse_raw(
-        requests.get(settings.astroport_pools).content
-    ).result.data
+    osmosis_pools = OsmosisPoolsResponse.parse_raw(requests.get(settings.OSMOSIS_POOLS).content)
+    astroport_pools = NeutronPoolsResponse.parse_raw(requests.get(settings.astroport_pools).content).result.data
     result: AllData = AllData(
         osmosis_pools=osmosis_pools.pools,
         cvm_registry=cvm_registry,

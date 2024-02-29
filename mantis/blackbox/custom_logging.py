@@ -51,13 +51,9 @@ class CustomizeLogger:
         return logger
 
     @classmethod
-    def customize_logging(
-        cls, filepath: Path, level: str, rotation: str, retention: str, format: str
-    ):
+    def customize_logging(cls, filepath: Path, level: str, rotation: str, retention: str, format: str):
         logger.remove()
-        logger.add(
-            sys.stdout, enqueue=True, backtrace=True, level=level.upper(), format=format
-        )
+        logger.add(sys.stdout, enqueue=True, backtrace=True, level=level.upper(), format=format)
         logger.add(
             str(filepath),
             rotation=rotation,

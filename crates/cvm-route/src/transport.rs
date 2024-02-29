@@ -16,8 +16,8 @@ pub struct NetworkToNetworkItem {
     /// how to send `to_network_id` chain
     pub to_network: OtherNetworkItem,
 
-    // if was set, means that cannot transfer via this venue 
-    pub closed : Option<u64>,    
+    // if was set, means that cannot transfer via this venue
+    pub closed: Option<u64>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]

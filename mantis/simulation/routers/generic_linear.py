@@ -22,14 +22,9 @@ def solve(
     force_eta: list[Union[int, None]] = None,
 ) -> CvxpySolution:
     if not input.max:
-        raise NotImplementedError(
-            "'max' value on input is not supported to be False yet"
-        )
+        raise NotImplementedError("'max' value on input is not supported to be False yet")
 
-    mi = (
-        force_eta is not None
-        and len([eta for eta in force_eta if not eta == 0]) <= ctx.mi_for_venue_count
-    )
+    mi = force_eta is not None and len([eta for eta in force_eta if not eta == 0]) <= ctx.mi_for_venue_count
     if mi:
         logger.info("Using optimization: mixed integer")
     else:
@@ -79,9 +74,7 @@ def solve(
     )
 
     # network trade vector - net amount received over all venues(transfers/exchanges)
-    psi = cp.sum(
-        [A_i @ (LAMBDA - DELTA) for A_i, DELTA, LAMBDA in zip(A, deltas, lambdas)]
-    )
+    psi = cp.sum([A_i @ (LAMBDA - DELTA) for A_i, DELTA, LAMBDA in zip(A, deltas, lambdas)])
 
     assert len(A) == all_data.venues_count
     assert len(reserves) == all_data.venues_count
@@ -97,15 +90,14 @@ def solve(
     # Reserves after trade
     new_reserves = [
         R + gamma_i * D - L  # * `fee out` to add
-        for R, gamma_i, D, L in zip(
-            reserves, all_data.venues_proportional_reductions, deltas, lambdas
-        )
+        for R, gamma_i, D, L in zip(reserves, all_data.venues_proportional_reductions, deltas, lambdas)
     ]
 
     # Trading function constraints
     constraints = [
         psi + current_assets >= 0,
-        psi[index_of_input_token] <= -0.8 * input.in_amount, # so sometimes it finds near zero solution because of fee by spending zero - useless 
+        psi[index_of_input_token]
+        <= -0.8 * input.in_amount,  # so sometimes it finds near zero solution because of fee by spending zero - useless
     ]
 
     # input to venue can be only positive
@@ -155,27 +147,16 @@ def solve(
             if force_eta[i] == 0:
                 constraints.append(deltas[i] == 0)
                 constraints.append(lambdas[i] == 0)
-        elif (
-            reserves[i][0] <= ctx.minimal_amount or reserves[i][1] <= ctx.minimal_amount
-        ):
+        elif reserves[i][0] <= ctx.minimal_amount or reserves[i][1] <= ctx.minimal_amount:
             constraints.append(etas[i] == 0)
             constraints.append(deltas[i] == 0)
             constraints.append(lambdas[i] == 0)
         else:
             issuance = 1
-            token_a_global = issuance * all_data.maximal_reserves_of(
-                all_data.venues_tokens[i][0]
-            )
-            token_b_global = issuance * all_data.maximal_reserves_of(
-                all_data.venues_tokens[i][1]
-            )
-            if (
-                token_a_global <= ctx.minimal_amount
-                or token_b_global <= ctx.minimal_amount
-            ):
-                logger.info(
-                    "warning:: mantis::simulation::router:: trading with zero liquid amount of token"
-                )
+            token_a_global = issuance * all_data.maximal_reserves_of(all_data.venues_tokens[i][0])
+            token_b_global = issuance * all_data.maximal_reserves_of(all_data.venues_tokens[i][1])
+            if token_a_global <= ctx.minimal_amount or token_b_global <= ctx.minimal_amount:
+                logger.info("warning:: mantis::simulation::router:: trading with zero liquid amount of token")
             # cap by oracle - minus minimal lenght path without slippage
             constraints.append(deltas[i] <= etas[i] * [token_a_global, token_b_global])
             # constraints.append(cp.multiply(deltas[i], etas[i]) >= deltas[i])
@@ -201,7 +182,6 @@ def solve(
 
     for i in range(all_data.venues_count):
         if etas[i].value > 0:
-            
             logger.info(
                 f"VENUE={i}, {all_data.assets_for_venue(i)} {all_data.all_reserves[i][0]}<->{all_data.all_reserves[i][1]}, delta: {deltas[i].value}, lambda: {lambdas[i].value}, eta: {etas[i].value}",
             )
@@ -245,25 +225,16 @@ def route(
     forced_etas, original_trades = parse_total_traded(ctx, initial_solution)
 
     # let eliminated small splits
-    input_price_in_usd = input.in_amount * all_data.token_price_in_usd(
-        input.in_token_id
-    )
-    
+    input_price_in_usd = input.in_amount * all_data.token_price_in_usd(input.in_token_id)
+
     oracalized_trades = []
     logger.debug(f"input={input.in_amount}, input_price_in_usd={input_price_in_usd}")
     for i, trade in enumerate(original_trades):
         if np.abs(trade[0]) > 0 or np.abs(trade[1]) > 0:
             venue = all_data.venue_by_index(i)
-            oracalized_a = np.abs(trade[0]) * all_data.token_price_in_usd(
-                venue.in_asset_id
-            )
-            oracalized_b = np.abs(trade[1]) * all_data.token_price_in_usd(
-                venue.out_asset_id
-            )
-            if (
-                oracalized_a < ctx.min_usd_venue_amount
-                and oracalized_b <  ctx.min_usd_venue_amount
-            ):
+            oracalized_a = np.abs(trade[0]) * all_data.token_price_in_usd(venue.in_asset_id)
+            oracalized_b = np.abs(trade[1]) * all_data.token_price_in_usd(venue.out_asset_id)
+            if oracalized_a < ctx.min_usd_venue_amount and oracalized_b < ctx.min_usd_venue_amount:
                 oracalized_trades.append([0, 0])
                 logger.warning(
                     f"ZEROING TRADE venue={i} trade={trade}, oracalized_a={oracalized_a}, oracalized_b={oracalized_b}, i={i}"
@@ -279,24 +250,21 @@ def route(
                 )
         else:
             oracalized_trades.append([0, 0])
-            logger.info(
-                f"ZEROING TRADE venue={i} trade={trade}, oracalized_a={0}, oracalized_b={0}, i={i}"
-            )            
+            logger.info(f"ZEROING TRADE venue={i} trade={trade}, oracalized_a={0}, oracalized_b={0}, i={i}")
 
     ensure_eta(forced_etas)
     logger.info(f"trades={list(zip(original_trades, oracalized_trades))}")
-    
+
     # we cannot just cut here 90% of most trades or other most, as final target can be in remaining 10%
 
     logger.info("forced_etas", forced_etas)
     for i, venue in enumerate(all_data.venues):
-        logger.info(
-            f"in_asset_id={venue.in_asset_id},out_asset_id={venue.out_asset_id}, go_no_go={forced_etas[i]}"
-        )
+        logger.info(f"in_asset_id={venue.in_asset_id},out_asset_id={venue.out_asset_id}, go_no_go={forced_etas[i]}")
     logger.debug("original_trades", original_trades)
     forced_eta_solution = solve(all_data, input, ctx, forced_etas)
     solution = copy.deepcopy(forced_eta_solution)
     return solution
+
 
 def ensure_eta(forced_etas):
     if all([eta == 0 for eta in forced_etas]):

@@ -37,11 +37,7 @@ def populate_chain_dict(chains: dict[TNetworkId, list[TId]], center_node: TNetwo
     # Simulate IBC transfer through Composable Cosmos
     for chain, tokens in chains.items():
         if chain != center_node:
-            chains[chain].extend(
-                f"{center_node}/{token}"
-                for token in chains[center_node]
-                if f"{chain}/" not in token
-            )
+            chains[chain].extend(f"{center_node}/{token}" for token in chains[center_node] if f"{chain}/" not in token)
 
 
 def test_single_chain_single_cffm_route_full_symmetry_exist():
@@ -54,9 +50,7 @@ def test_single_chain_single_cffm_route_full_symmetry_exist():
 
 
 def test_usd_arbitrage_low_fees_short_path():
-    t1 = new_transfer(
-        "CENTAURI/ETHEREUM/USDC", "ETHEREUM/USDC", 10, 100_000, 100_000, 0
-    )
+    t1 = new_transfer("CENTAURI/ETHEREUM/USDC", "ETHEREUM/USDC", 10, 100_000, 100_000, 0)
     t2 = new_transfer(
         "CENTAURI/ETHEREUM/USDC",
         "OSMOSIS/CENTAURI/ETHEREUM/USDC",
@@ -67,9 +61,7 @@ def test_usd_arbitrage_low_fees_short_path():
     )
     t3 = new_transfer("OSMOSIS/ETHEREUM/USDC", "ETHEREUM/USDC", 1, 100_000, 100_000, 0)
 
-    s1 = new_pair(
-        1, "ETHEREUM/USDC", "ETHEREUM/USDT", 0, 0, 1, 1, 200_000, 10_000, 10_000
-    )
+    s1 = new_pair(1, "ETHEREUM/USDC", "ETHEREUM/USDT", 0, 0, 1, 1, 200_000, 10_000, 10_000)
     s2 = new_pair(
         1,
         "OSMOSIS/ETHEREUM/USDC",
@@ -119,9 +111,7 @@ def test_usd_arbitrage_low_fees_short_path():
 
 def create_usd_arbitrage_low_fees_long_path():
     # here we shutdown direct Centauri <-> Ethereum route, and force Centauri -> Osmosis -> Ethereum
-    t1 = new_transfer(
-        "CENTAURI/ETHEREUM/USDC", "ETHEREUM/USDC", 1_000_000, 100_000, 100_000, 0
-    )
+    t1 = new_transfer("CENTAURI/ETHEREUM/USDC", "ETHEREUM/USDC", 1_000_000, 100_000, 100_000, 0)
     t2 = new_transfer(
         "CENTAURI/ETHEREUM/USDC",
         "OSMOSIS/CENTAURI/ETHEREUM/USDC",
@@ -132,9 +122,7 @@ def create_usd_arbitrage_low_fees_long_path():
     )
     t3 = new_transfer("OSMOSIS/ETHEREUM/USDC", "ETHEREUM/USDC", 1, 100_000, 100_000, 0)
 
-    s1 = new_pair(
-        1, "ETHEREUM/USDC", "ETHEREUM/USDT", 0, 0, 1, 1, 200_000, 10_000, 10_000
-    )
+    s1 = new_pair(1, "ETHEREUM/USDC", "ETHEREUM/USDT", 0, 0, 1, 1, 200_000, 10_000, 10_000)
     s2 = new_pair(
         1,
         "OSMOSIS/ETHEREUM/USDC",
@@ -254,10 +242,7 @@ def test_arbitrage_loop_of_start_middle_final_assets():
     assert (
         result.received(data.index_of_token("D"))
         == 90
-        == (
-            solution.next[0].next[0].out_asset_amount
-            + solution.next[1].next[0].out_asset_amount
-        )
+        == (solution.next[0].next[0].out_asset_amount + solution.next[1].next[0].out_asset_amount)
     )
 
 
@@ -315,10 +300,7 @@ def test_simple_symmetric_and_asymmetric_split():
     assert (
         result.received(data.index_of_token("D"))
         == 79.0
-        == (
-            solution.next[0].next[0].out_asset_amount
-            + solution.next[1].next[0].out_asset_amount
-        )
+        == (solution.next[0].next[0].out_asset_amount + solution.next[1].next[0].out_asset_amount)
     )
 
 

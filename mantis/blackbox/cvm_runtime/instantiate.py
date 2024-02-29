@@ -21,12 +21,8 @@ class NetworkId(RootModel[conint(ge=0)]):
 
 
 class HereItem(BaseModel):
-    admin: Addr = Field(
-        ..., description="The admin which is allowed to update the bridge list."
-    )
-    network_id: NetworkId = Field(
-        ..., description="Network ID of this network where contract is deployed"
-    )
+    admin: Addr = Field(..., description="The admin which is allowed to update the bridge list.")
+    network_id: NetworkId = Field(..., description="Network ID of this network where contract is deployed")
 
 
 class InstantiateMsg(HereItem):

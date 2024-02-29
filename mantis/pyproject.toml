@@ -85,7 +85,7 @@ dzmitry_solver = 'simulation.routers.test_dzmitry:simulate'
 [tool.ruff]
 unsafe-fixes = true
 respect-gitignore = true
-line-length = 88
+line-length = 120
 indent-width = 4
 
 [tool.ruff.lint]

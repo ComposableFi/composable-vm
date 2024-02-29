@@ -3,7 +3,7 @@ from typing import Union
 
 import cvxpy as cp
 import numpy as np
-from anytree import Node, RenderTree
+from anytree import Node, NodeMixin, RenderTree
 from attr import dataclass
 from loguru import logger
 
@@ -60,16 +60,37 @@ class CvxpySolution:
         return self.psi.value[global_index]
 
 
-@dataclass
-class VenuesSnapshot:
+class VenuesSnapshot(NodeMixin):
     """_summary_
-    The total amount which goes in/out each venue 
+    The total amount which goes in/out each venue
     """
+
     venue_index: int
     in_asset_id: any
     in_amount: int
     out_asset_id: any
     out_amount: any
+
+    def __init__(
+        self,
+        name,
+        venue_index,
+        in_asset_id,
+        in_amount,
+        out_asset_id,
+        out_amount,
+        parent=None,
+        children=None,
+    ):
+        self.name = name
+        self.venue_index = venue_index
+        self.in_asset_id = in_asset_id
+        self.in_amount = in_amount
+        self.out_asset_id = out_asset_id
+        self.out_amount = out_amount
+        self.parent = parent
+        if children:
+            self.children = children
 
 
 def cvxpy_to_data(
@@ -88,12 +109,16 @@ def cvxpy_to_data(
       Find starter node and recurse with minus from input matrix (loops covered).
     Visualize.
     """
-    
+
     index_of_input = data.index_of_token(input.in_token_id)
+    index_of_output = data.index_of_token(input.out_token_id)
+    solution_output = raw_solution.psi[index_of_output].value
     solution_input = -raw_solution.psi[index_of_input].value
     if solution_input < input.in_amount:
         raise Exception(f"input {input.in_amount} > solution_input {solution_input}")
-    
+    if solution_output < input.out_amount:
+        raise Exception(f"output {input.out_amount} > solution_output {solution_output}")
+
     if ratios is None:
         ratios = {asset_id: 1 for asset_id in data.all_tokens}
 
@@ -111,18 +136,18 @@ def cvxpy_to_data(
 
     for trade in total_trades:
         if trade:
-            logger.info(f"trade {trade}") 
+            logger.info(f"trade {trade}")
 
-
-    # add nodes until burn all input from balance
-    # node identity is token and amount input used and depth
-    # loops naturally expressed in tree and end with burn
     depth = 0
 
     def snapshots_to_route(current, depth):
-
-        # handle big amounts first
-        snapshots_to_trade = sorted(
+        """_summary_
+            Add nodes until burn all input from snapshots.
+            
+            If depth is more than some level or amount is close to received, and asset in current is received,
+            stop iterating.                    
+        """        
+        from_big_to_small = sorted(
             [
                 trade
                 for trade in total_trades
@@ -131,46 +156,57 @@ def cvxpy_to_data(
             key=lambda x: x.in_amount,
             reverse=True,
         )
-        if not any(snapshots_to_trade):
+        if not any(from_big_to_small):
             return
         depth += 1
         if depth > 10:
-            for snapshot in snapshots_to_trade:
+            for snapshot in from_big_to_small:
                 logger.error(f"snapshot {snapshot}")
             return
-        for snapshot in snapshots_to_trade:
-            if current.in_amount <= 0 or snapshot.out_amount <=0 or snapshot.out_amount<=0:
-                continue            
+        for snapshot in from_big_to_small:
+            if current.in_amount <= 0 or snapshot.out_amount <= 0 or snapshot.out_amount <= 0:
+                continue
             traded_in_amount = min(current.in_amount, snapshot.in_amount)
-            print("==========================", current.in_amount)
             if traded_in_amount <= 0:
                 continue
-            
+
             expected_out_amount = traded_in_amount * snapshot.out_amount / snapshot.in_amount
             if expected_out_amount <= 0:
                 continue
-            
+
             if snapshot.out_amount < expected_out_amount:
                 logger.warning(f"expected_out_amount {expected_out_amount} > snapshot.out_amount {snapshot.out_amount}")
                 continue
             else:
                 logger.info(f"expected_out_amount {expected_out_amount} <= snapshot.out_amount {snapshot.out_amount}")
             snapshot.out_amount -= expected_out_amount
-            snapshot.in_amount -= traded_in_amount            
+            snapshot.in_amount -= traded_in_amount
             current.in_amount -= traded_in_amount
-            
-            print("==========================", current.in_amount)
-            print("==========================", traded_in_amount)
-            next_trade = Node(name = f"venue={snapshot.venue_index}", in_amount = expected_out_amount, venue_index = snapshot.venue_index, in_asset_id = snapshot.out_asset_id, parent = current)
+
+            next_trade = Node(
+                name=f"venue={snapshot.venue_index}",
+                in_amount=expected_out_amount,
+                venue_index=snapshot.venue_index,
+                in_asset_id=snapshot.out_asset_id,
+                parent=current,
+            )
             logger.info(f"next_trade {next_trade}")
-            snapshots_to_route(next_trade, depth)                
-    start = Node(name= f"venue={-1}", in_amount = input.in_amount, venue_index = -1, in_asset_id = input.in_token_id)
+            snapshots_to_route(next_trade, depth)
+
+    start = VenuesSnapshot(
+        name="input",
+        in_amount=-1,
+        venue_index=-1,
+        in_asset_id=-1,
+        out_amount=input.in_amount,
+        out_asset_id=input.in_token_id,
+    )
     snapshots_to_route(start, depth)
 
     for pre, _fill, node in RenderTree(start):
         logger.debug(f"{pre} in={node.in_amount:_}/{node.in_asset_id} via={node.venue_index}")
-            
-    def next_route(parent_node):
+
+    def next_route(parent_node: VenuesSnapshot):
         subs = []
         if parent_node.children:
             for child in parent_node.children:
@@ -179,26 +215,31 @@ def cvxpy_to_data(
         venue = data.venue_by_index(parent_node.venue_index)
         if isinstance(venue, AssetPairsXyk):
             return Exchange(
-                in_asset_amount=math.ceil(op.in_amount),
-                out_amount=math.floor(op.out_amount),
-                out_asset_id=op.out_token,
+                in_asset_amount=math.ceil(parent_node.in_amount),
+                out_asset_amount=math.floor(parent_node.out_amount),
+                out_asset_id=parent_node.out_asset_id,
+                in_asset_id=parent_node.in_asset_id,
                 pool_id=str(venue.pool_id),
                 next=subs,
             )
         elif isinstance(venue, AssetTransfers):
             return Spawn(
-                in_asset_id=op.in_token,
-                in_asset_amount=math.ceil(op.in_amount),
-                out_asset_id=op.out_token,
-                out_amount=math.floor(op.out_amount),
+                in_asset_id=parent_node.in_asset_id,
+                in_asset_amount=math.ceil(parent_node.in_amount),
+                out_asset_id=parent_node.out_asset_id,
+                out_asset_amount=math.floor(parent_node.out_amount),
                 next=subs,
             )
         else:
             raise Exception("Unknown venue type")
 
-    return next_route(start_coin)
+    return next_route(start)
+
 
 def into_venue_snapshots(data, ratios, trades_raw) -> list[VenuesSnapshot]:
+    """_summary_
+    Converts CVXPY Angeris solutions to something more usable for final route conversion with original scaling
+    """
     total_trades = []
 
     for i, raw_trade in enumerate(trades_raw):
@@ -207,6 +248,7 @@ def into_venue_snapshots(data, ratios, trades_raw) -> list[VenuesSnapshot]:
             if raw_trade[0] < 0:
                 total_trades.append(
                     VenuesSnapshot(
+                        name="any",
                         in_asset_id=token_index_a,
                         in_amount=-raw_trade[0] / ratios[token_index_a],
                         out_asset_id=token_index_b,
@@ -217,6 +259,7 @@ def into_venue_snapshots(data, ratios, trades_raw) -> list[VenuesSnapshot]:
             else:
                 total_trades.append(
                     VenuesSnapshot(
+                        name="any",
                         in_asset_id=token_index_b,
                         in_amount=-raw_trade[1] / ratios[token_index_b],
                         out_asset_id=token_index_a,
@@ -226,6 +269,43 @@ def into_venue_snapshots(data, ratios, trades_raw) -> list[VenuesSnapshot]:
                 )
         else:
             total_trades.append(None)
+
+    # def simulate_route(parent_result, parent_venue):
+    #     """
+    #     Using models of protocols goes over them and generates final true output
+    #     """
+    #     if parent_venue.children:
+    #         subs = []
+    #         for child in parent_venue.children:
+    #             venue = data.venue_by_index(child.venue_index)
+    #             next_parent = (
+    #                 Exchange(
+    #                     in_asset_amount=math.ceil(child.in_amount),
+    #                     out_asset_id=child.in_asset_id,
+    #                     in_asset_id=parent_result.out_asset_id,
+    #                     out_asset_amount=int(sum([x.in_amount for x in child.children])),
+    #                     pool_id=str(venue.pool_id),
+    #                     next=subs,
+    #                 )
+    #                 if isinstance(venue, AssetPairsXyk)
+    #                 else Spawn(
+    #                     in_asset_amount=math.ceil(child.in_amount),
+    #                     out_asset_id=child.in_asset_id,
+    #                     in_asset_id=parent_result.out_asset_id,
+    #                     out_asset_amount = int(sum([x.in_amount for x in child.children])),
+    #                     next=subs,
+    #                 )
+    #             )
+    #             sub = simulate_route(next_parent, child)
+    #             subs.append(sub)
+    #         parent_result.next = subs
+    #     return parent_result
+
+    # parent = SingleInputAssetCvmRoute(
+    #     out_asset_id=input.in_token_id, out_asset_amount=input.in_amount, next=[]
+    # )
+    # return simulate_route(parent, route_start)
+
     return total_trades
 
 
@@ -256,8 +336,7 @@ def parse_total_traded(ctx: Ctx, result: CvxpySolution) -> tuple[any, list]:
         raw_trade = lambdas[i] - deltas[i]
         logger.error(f"i={i}, l={lambdas[i]},d={deltas[i]}")
         if np.max(np.abs(raw_trade)) < ctx.minimal_tradeable_number:
-            
-            logger.error(f"TRADE 0 venue={i}")         
+            logger.error(f"TRADE 0 venue={i}")
             etas[i] = 0
             deltas[i] = np.zeros(len(deltas[i]))
             lambdas[i] = np.zeros(len(lambdas[i]))

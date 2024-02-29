@@ -27,9 +27,7 @@ class ChannelId(RootModel[str]):
 
 
 class IbcIcs20Sender(Enum):
-    CosmosStargateIbcApplicationsTransferV1MsgTransfer = (
-        "CosmosStargateIbcApplicationsTransferV1MsgTransfer"
-    )
+    CosmosStargateIbcApplicationsTransferV1MsgTransfer = "CosmosStargateIbcApplicationsTransferV1MsgTransfer"
     CosmWasmStd1_3 = "CosmWasmStd1_3"
 
 
@@ -43,9 +41,7 @@ class NetworkId(RootModel[conint(ge=0)]):
 class CosmWasm(BaseModel):
     admin: Addr = Field(..., description="admin of everything")
     contract: Addr
-    executor_code_id: conint(ge=0) = Field(
-        ..., description="CVM executor contract code"
-    )
+    executor_code_id: conint(ge=0) = Field(..., description="CVM executor contract code")
 
 
 class OutpostId3(BaseModel):
@@ -96,9 +92,7 @@ class IbcIcs20ProgramRoute(BaseModel):
     ibc_ics_20_sender: IbcIcs20Sender
     local_native_denom: str
     on_remote_asset: AssetId
-    to_outpost: OutpostId = Field(
-        ..., description="the contract address of the gateway to send to assets"
-    )
+    to_outpost: OutpostId = Field(..., description="the contract address of the gateway to send to assets")
 
 
 class GetIbcIcs20RouteResponse(BaseModel):

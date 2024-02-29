@@ -2,9 +2,6 @@
 from pathlib import Path
 
 from mantis.simulation.routers.data import (
-    Exchange,
-    SingleInputAssetCvmRoute,
-    Spawn,
     new_data,
     new_pair,
     new_transfer,
@@ -64,6 +61,7 @@ def test_token_price_in_usd_via_oracle():
     assert data.index_of_token(1) == 0
     assert data.index_of_token(2) == 1
 
+
 def test_transfer_to_exchange():
     connection12 = new_transfer(1, 2, 100, 1, 2, 100)
     connection23 = new_transfer(2, 3, 100, 1, 2, 100)
@@ -71,9 +69,7 @@ def test_transfer_to_exchange():
     pair34 = new_pair(1, 3, 2, 0, 0, 1, 1, 100, 20, 80)
     pair12 = new_pair(2, 1, 2, 0, 0, 1, 1, 100, 500, 80)
     pair43 = new_pair(3, 4, 3, 0, 0, 1, 1, 100, 500, 80)
-    data = new_data(
-        [pair12, pair34, pair43], [connection12, connection23, connection45]
-    )
+    data = new_data([pair12, pair34, pair43], [connection12, connection23, connection45])
 
     route1 = data.transfer_to_exchange(1)
     route2 = data.transfer_to_exchange(2)

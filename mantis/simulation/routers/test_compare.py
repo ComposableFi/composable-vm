@@ -36,11 +36,7 @@ def populate_chain_dict(chains: dict[TNetworkId, list[TId]], center_node: TNetwo
     # Simulate IBC transfer through Composable Cosmos
     for chain, tokens in chains.items():
         if chain != center_node:
-            chains[chain].extend(
-                f"{center_node}/{token}"
-                for token in chains[center_node]
-                if f"{chain}/" not in token
-            )
+            chains[chain].extend(f"{center_node}/{token}" for token in chains[center_node] if f"{chain}/" not in token)
 
 
 def _test_simulate_all_connected_venues(routers):
@@ -129,17 +125,15 @@ if __name__ == "__main__":
             for depth in [3, 5, 10, 15]
         }
 
-        routes[
-            f"Lautaro 1 process, depth {[3,5,10,20]} and 1000 splits without revision"
-        ] = lautaro.BuildRoute(
+        routes[f"Lautaro 1 process, depth {[3,5,10,20]} and 1000 splits without revision"] = lautaro.BuildRoute(
             [3, 5, 10, 20], [100, 300, 300, 300], revision=False, Nproces=1
         )
-        routes[
-            f"Lautaro 1 process, depth {[5,10]} and 1000 splits without revision"
-        ] = lautaro.BuildRoute([5, 10], [500, 500], revision=False, Nproces=1)
-        routes[
-            f"Lautaro 1 process, depth {[3,5,10]} and 1000 splits without revision"
-        ] = lautaro.BuildRoute([3, 5, 10], [100, 400, 500], revision=False, Nproces=1)
+        routes[f"Lautaro 1 process, depth {[5,10]} and 1000 splits without revision"] = lautaro.BuildRoute(
+            [5, 10], [500, 500], revision=False, Nproces=1
+        )
+        routes[f"Lautaro 1 process, depth {[3,5,10]} and 1000 splits without revision"] = lautaro.BuildRoute(
+            [3, 5, 10], [100, 400, 500], revision=False, Nproces=1
+        )
 
         routes.update(
             {
