@@ -24,4 +24,4 @@ def test_output_route_centauri_osmosis():
         out_asset_amount=42,
         next=[exchange.model_dump()],
     )
-    SingleInputAssetCvmRoute(next=[spawn], input_amount=1000)
+    SingleInputAssetCvmRoute(next=[spawn], in_amount=1000)

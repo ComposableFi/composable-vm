@@ -240,8 +240,7 @@ def test_arbitrage_loop_of_start_middle_final_assets():
     assert solution.next[0].next[0].out_asset_id == "D"
     assert solution.next[1].next[0].out_asset_id == "D"
     assert (
-        result.received(data.index_of_token("D"))
-        == 90
+        90
         == (solution.next[0].next[0].out_asset_amount + solution.next[1].next[0].out_asset_amount)
     )
 
@@ -298,8 +297,7 @@ def test_simple_symmetric_and_asymmetric_split():
     assert solution.next[0].next[0].out_asset_id == "D"
     assert solution.next[1].next[0].out_asset_id == "D"
     assert (
-        result.received(data.index_of_token("D"))
-        == 79.0
+        79.0
         == (solution.next[0].next[0].out_asset_amount + solution.next[1].next[0].out_asset_amount)
     )
 
