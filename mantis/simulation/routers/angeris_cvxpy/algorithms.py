@@ -67,7 +67,7 @@ def cvxpy_to_data(
 
     depth = 0
 
-    def snapshots_to_route(current : VenuesSnapshot, depth):
+    def snapshots_to_route(current : VenuesSnapshot, depth, input: Input, ctx: Ctx):
         """_summary_
             Add nodes until burn all input from snapshots.
             
@@ -75,8 +75,6 @@ def cvxpy_to_data(
             stop iterating.                    
         """        
         depth += 1
-        if depth > 10:
-            raise Exception("depth of route limit reached")
         from_big_to_small = sorted(
             [
                 trade
@@ -86,17 +84,23 @@ def cvxpy_to_data(
             key=lambda x: x.in_amount,
             reverse=True,
         )
+        if depth > 3:
+            logger.error("depth of route limit reached")
+            if 
+            return
+        
         if any(from_big_to_small):
             if current.out_amount <= 0:
                 raise Exception("must not get to here but stop one iteration earlier")
             for snapshot in from_big_to_small:
                 logger.debug(f"snapshot will={snapshot};depth={depth}")
-                if snapshot.out_amount <= 0 or snapshot.out_amount <= 0:
+                if snapshot.out_amount <= 0 or snapshot.in_amount <= 0:
                     continue
                 traded_in_amount = min(current.out_amount, snapshot.in_amount)
-                if traded_in_amount <= 0:
-                    raise Exception(f"cannot trade nothing for in={current} via={snapshot}")
-
+                if traded_in_amount <= 0:                    
+                    logger.error(f"cannot trade nothing for in={current} via={snapshot} ")
+                    continue
+                
                 received_out_amount = min(snapshot.out_amount, traded_in_amount * snapshot.out_amount / snapshot.in_amount)
                 if received_out_amount <= 0:
                     continue
