@@ -9,8 +9,8 @@ TNetworkId = TypeVar("TNetworkId", int, str)
 TAmount = TypeVar("TAmount", int, str)
 
 
-def route_set(
-    partial_oracles: dict[TId, Union[float, None] | None],
+def merge_by_connection_from_existing(
+    oracles: dict[TId, Union[float, None] | None],
     transfers: list[tuple[TId, TId]],
 ) -> dict[TId, Union[float, None] | None]:
     """
@@ -21,24 +21,24 @@ def route_set(
     No penalty for high fees/long route and non equilibrium.
     """
 
-    if not partial_oracles:
-        return
-    partial_oracles = copy.deepcopy(partial_oracles)
+    if not oracles or len(oracles) == 0:
+        oracles = {}
+    oracles = copy.deepcopy(oracles)
     ds = DisjointSet()
     all_asset_ids = set()
     for t in transfers:
         ds.union(t[0], t[1])
         all_asset_ids.add(t[0])
         all_asset_ids.add(t[1])
-    for asset_id in partial_oracles.keys():
+    for asset_id in oracles.keys():
         all_asset_ids.add(asset_id)
     for asset_id in all_asset_ids:
-        if asset_id not in partial_oracles or partial_oracles[asset_id] is None:
-            for other_id, value in partial_oracles.items():
-                if value and ds.connected(asset_id, other_id):
-                    partial_oracles[asset_id] = value
+        if asset_id not in oracles or oracles[asset_id] is None or oracles[asset_id] == 0:
+            for other_id, value in oracles.items():
+                if value and ds.connected(asset_id, other_id) and value > 0:
+                    oracles[asset_id] = value
                     break
-    return partial_oracles
+    return oracles
 
 
 def test():
@@ -53,7 +53,7 @@ def test():
         (1, 2),
     ]
 
-    route_set(oracles, transfers)
+    merge_by_connection_from_existing(oracles, transfers)
     assert oracles[2] == 2.0
     assert oracles[1] == 1.0
     assert oracles[3] is None

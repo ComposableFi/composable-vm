@@ -39,15 +39,17 @@ def cvxpy_to_data(
 
     index_of_input = data.index_of_token(input.in_token_id)
     index_of_output = data.index_of_token(input.out_token_id)
-    solution_output = raw_solution.psi[index_of_output].value
-    solution_input = -raw_solution.psi[index_of_input].value
-    if solution_input < input.in_amount:
-        raise Exception(f"input {input.in_amount} > solution_input {solution_input}")
-    if solution_output < input.out_amount:
-        raise Exception(f"output {input.out_amount} > solution_output {solution_output}")
-
+    solution_output = raw_solution.psi[index_of_output].value / ratios[input.out_token_id]
+    solution_input = -raw_solution.psi[index_of_input].value / ratios[input.in_token_id]
     if ratios is None:
         ratios = {asset_id: 1 for asset_id in data.all_tokens}
+
+    out_amount = input.out_amount
+    in_amount = input.in_amount
+    if solution_input < in_amount * ctx.input_consumed_ratio:
+        raise Exception(f"input {in_amount} > solution_input {solution_input}")
+    if solution_output < out_amount:
+        raise Exception(f"output {out_amount} > solution_output {solution_output}")
 
     _etas, trades_raw = parse_total_traded(ctx, raw_solution)
 
@@ -132,7 +134,7 @@ def cvxpy_to_data(
         in_amount=-1,
         venue_index=-1,
         in_asset_id=-1,
-        out_amount=input.in_amount / ratios[input.in_token_id],
+        out_amount= solution_input,
         out_asset_id=input.in_token_id,
     )
     snapshots_to_route(start, depth, input, ctx)

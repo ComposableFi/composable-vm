@@ -8,7 +8,7 @@ import uvicorn
 from cachetools import TTLCache
 from cosmpy.aerial.config import NetworkConfig
 from cosmpy.aerial.contract import LedgerClient, LedgerContract
-from cvm_indexer import ExtendedCvmRegistry, Oracalizer
+from cvm_indexer import ExtendedCvmRegistry, for_simulation
 from fastapi import Depends, FastAPI
 from loguru import logger
 from shelved_cache import PersistentCache
@@ -151,8 +151,7 @@ def simulator_router(input: Input = Depends()):
 
 def simulate_route(input: Input, cvm_data: ExtendedCvmRegistry) -> Union[Exchange, Spawn]:
     ctx = Ctx()
-    oracles = Oracalizer.orcale_from_usd(cvm_data)
-    data = Oracalizer.for_simulation(cvm_data, oracles)
+    data = for_simulation(cvm_data, {})
 
     input.in_amount = int(input.in_amount)
     input.out_amount = int(input.out_amount)
@@ -204,8 +203,7 @@ async def get_data_routable_oracalized() -> SimulationData:
         raw_data.cosmos_chains.chains,
         raw_data.osmosis_pools,
     )
-    oracles = Oracalizer.orcale_from_usd(cvm_data)
-    return Oracalizer.for_simulation(cvm_data, oracles)
+    return for_simulation(cvm_data, {})
 
 
 @cachetools.cached(cache, lock=None, info=False)

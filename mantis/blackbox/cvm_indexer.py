@@ -204,88 +204,45 @@ class ExtendedCvmRegistry(BaseModel):
         )
 
 
-class Oracle(BaseModel):
-    """_summary_
-    Tells some approximate situation on market
+def for_simulation(cvm_registry: ExtendedCvmRegistry, usd_oracles) -> SimulationData:
     """
-
-    asset_id: AssetId
-    total_usd: float
-    total_liquidity: float
-
-    @property
-    def usd_per_amount(self):
-        return self.total_usd / self.total_liquidity if self.total_liquidity > 0 else 0.0
-
-
-class Oracalizer(BaseModel):
+    Makes data exactly as it handled by simulation
+    Optional can use some oracle values from outside
     """
-    given `ExtendedCvmRegistry` and raw `AllData`, and user `Input`, produced oracalized data with assets and venues route level reachable by user
-    """
-
-    per_asset: List[Oracle]
-
-    @classmethod
-    def orcale_from_usd(cls, cvm: ExtendedCvmRegistry) -> List[Oracle]:
-        """_summary_
-        Builds USD oracle from data.
-        """
-        all_assets = [a.asset_id for a in cvm.assets]
-        all_reserves = [0.0] * len(all_assets)
-        all_usds = [0.0] * len(all_assets)
-        for i, asset_id in enumerate(all_assets):
-            for exchange in cvm.exchanges:
-                if exchange.asset_a.asset_id == asset_id:
-                    all_reserves[i] += exchange.token_a_amount
-                    all_usds[i] += exchange.a_usd
-                if exchange.asset_b.asset_id == asset_id:
-                    all_reserves[i] += exchange.token_b_amount
-                    all_usds[i] += exchange.b_usd
-        result = []
-
-        for id, usd, liquidity in zip(all_assets, all_usds, all_reserves):
-            logger.info(f"{id} {usd} {liquidity}")
-            result.append(Oracle(asset_id=id, total_usd=usd, total_liquidity=liquidity))
-        return result
-
-    def for_simulation(cvm_registry: ExtendedCvmRegistry, usd_oracles: List[Oracle]) -> SimulationData:
-        """
-        Makes data exactly as it handled by simulation
-        """
-        usd_oracles = {a.asset_id.root: a.usd_per_amount for a in usd_oracles}
-        asset_transfers = []
-        for transfer in cvm_registry.network_assets:
-            asset_transfers.append(
-                AssetTransfers(
-                    in_asset_id=transfer.asset_id.root,
-                    out_asset_id=transfer.to_asset_id.root,
-                    in_token_amount=-1,
-                    out_token_amount=-1,
-                    venue_fixed_costs_in_usd=0.01,
-                    fee_per_million=0,
-                )
+    usd_oracles = {a.asset_id.root: a.usd_per_amount for a in usd_oracles}
+    asset_transfers = []
+    for transfer in cvm_registry.network_assets:
+        asset_transfers.append(
+            AssetTransfers(
+                in_asset_id=transfer.asset_id.root,
+                out_asset_id=transfer.to_asset_id.root,
+                in_token_amount=-1,
+                out_token_amount=-1,
+                venue_fixed_costs_in_usd=0.01,
+                fee_per_million=0,
             )
-        asset_pairs_xyk = []
-        for pair in cvm_registry.exchanges:
-            asset_pairs_xyk.append(
-                AssetPairsXyk(
-                    pool_id=int(pair.exchange_id.root),
-                    in_asset_id=pair.asset_a.asset_id.root,
-                    out_asset_id=pair.asset_b.asset_id.root,
-                    fee_of_in_per_million=pair.fee_per_million,
-                    fee_of_out_per_million=pair.fee_per_million,
-                    weight_a=pair.weight_a,
-                    weight_b=pair.weight_b,
-                    in_token_amount=int(pair.token_a_amount),
-                    out_token_amount=int(pair.token_b_amount),
-                    pool_value_in_usd=int(pair.pool_value_in_usd),
-                    venue_fixed_costs_in_usd=MINIMAL_TRANSACTION_USD_COST_DEFAULT,
-                    closed=None,
-                )
-            )
-
-        return SimulationData(
-            asset_pairs_xyk=asset_pairs_xyk,
-            asset_transfers=asset_transfers,
-            usd_oracles=usd_oracles,
         )
+    asset_pairs_xyk = []
+    for pair in cvm_registry.exchanges:
+        asset_pairs_xyk.append(
+            AssetPairsXyk(
+                pool_id=int(pair.exchange_id.root),
+                in_asset_id=pair.asset_a.asset_id.root,
+                out_asset_id=pair.asset_b.asset_id.root,
+                fee_of_in_per_million=pair.fee_per_million,
+                fee_of_out_per_million=pair.fee_per_million,
+                weight_a=pair.weight_a,
+                weight_b=pair.weight_b,
+                in_token_amount=int(pair.token_a_amount),
+                out_token_amount=int(pair.token_b_amount),
+                pool_value_in_usd=int(pair.pool_value_in_usd),
+                venue_fixed_costs_in_usd=MINIMAL_TRANSACTION_USD_COST_DEFAULT,
+                closed=None,
+            )
+        )
+
+    return SimulationData(
+        asset_pairs_xyk=asset_pairs_xyk,
+        asset_transfers=asset_transfers,
+        usd_oracles=usd_oracles,
+    )

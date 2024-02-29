@@ -232,22 +232,24 @@ def route(
     for i, trade in enumerate(original_trades):
         if np.abs(trade[0]) > 0 or np.abs(trade[1]) > 0:
             venue = all_data.venue_by_index(i)
-            oracalized_a = np.abs(trade[0]) * all_data.token_price_in_usd(venue.in_asset_id)
-            oracalized_b = np.abs(trade[1]) * all_data.token_price_in_usd(venue.out_asset_id)
-            if oracalized_a < ctx.min_usd_venue_amount and oracalized_b < ctx.min_usd_venue_amount:
+            oracalized_in = np.abs(trade[0]) * all_data.token_price_in_usd(venue.in_asset_id)
+            oracalized_out = np.abs(trade[1]) * all_data.token_price_in_usd(venue.out_asset_id)
+            
+            if oracalized_in < ctx.min_usd_venue_amount and oracalized_out < ctx.min_usd_venue_amount:
                 oracalized_trades.append([0, 0])
                 logger.warning(
-                    f"ZEROING TRADE venue={i} trade={trade}, oracalized_a={oracalized_a}, oracalized_b={oracalized_b}, i={i}"
+                    f"ZEROING TRADE venue={i} trade={trade}, oracalized_a={oracalized_in}, oracalized_b={oracalized_out}, i={i}"
                 )
 
                 forced_etas[i] = 0.0
                 trade[0] = 0.0
                 trade[1] = 0.0
             else:
-                oracalized_trades.append([oracalized_a, oracalized_b])
+                oracalized_trades.append([oracalized_in, oracalized_out])
                 logger.info(
-                    f"RETAINING TRADE venue={i} trade={trade}, oracalized_a={oracalized_a}, oracalized_b={oracalized_b}, i={i}"
+                    f"RETAINING TRADE venue={i} trade={trade}, oracalized_in={oracalized_in}/{venue.in_asset_id} for {all_data.token_price_in_usd(venue.in_asset_id)}, oracalized_out={oracalized_out}/{venue.out_asset_id} for {all_data.token_price_in_usd(venue.out_asset_id)}"
                 )
+                raise Exception("not implemented")
         else:
             oracalized_trades.append([0, 0])
             logger.info(f"ZEROING TRADE venue={i} trade={trade}, oracalized_a={0}, oracalized_b={0}, i={i}")

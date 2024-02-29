@@ -14,7 +14,7 @@ from disjoint_set import DisjointSet
 from loguru import logger
 from pydantic import BaseModel, model_validator, validator
 
-from simulation.routers.oracles import route_set
+from simulation.routers.oracles import merge_by_connection_from_existing
 
 # This is global unique ID for token(asset) or exchange(pool)
 TId = TypeVar("TId", int, str)
@@ -82,6 +82,8 @@ class Ctx(BaseModel, Generic[TAmount]):
     Do not split trade more than to these parts.
     Up to possible oracle error (do not set it less than expected oracle mistake multiplier)
     """
+
+    input_consumed_ratio : float = 0.9
 
     max_hops_usd: float = 0
     """
@@ -590,47 +592,48 @@ class AllData(BaseModel, Generic[TId, TAmount]):
         """
         return len(self.asset_pairs_xyk) + len(self.asset_transfers)
 
+    def merge_oracles(self):
+        """_summary_
+        Given original USD oracle and pools, merge them to one dictionary
+        """
+        oracles = {}
+        if self.usd_oracles and any(self.usd_oracles):
+            for key, value in self.usd_oracles.items():
+                if value and value > 0:
+                    oracles[key] = value
+                             
+        transfers = [(x.in_asset_id, x.out_asset_id) for x in self.asset_transfers]
+        oracles = merge_by_connection_from_existing(oracles, transfers)
+        # merge with pool oracles
+        
+        transfers = self.transfers_disjoint_set
+        for other_asset_id in self.all_tokens:
+            if other_asset_id not in oracles or oracles[other_asset_id] is None or oracles[other_asset_id] == 0:
+                for pair in self.asset_pairs_xyk:
+                    if pair.pool_value_in_usd:
+                        if transfers.connected(pair.in_asset_id, other_asset_id):
+                            assert pair.value_of_a_in_usd > 0
+                            oracles[other_asset_id] = pair.value_of_a_in_usd
+                            break
+                        if transfers.connected(pair.out_asset_id, other_asset_id):
+                            assert pair.value_of_b_in_usd > 0
+                            oracles[other_asset_id] = pair.value_of_b_in_usd
+                            break
+        self.usd_oracles = oracles
+        
+
     # @property
     # @lru_cache
-    def token_price_in_usd(self, token: TId) -> float | None:
+    def token_price_in_usd(self, asset_id: TId) -> float | None:
         """_summary_
         How much 1 amount of token is worth in USD
         """
-        oracles = self.usd_oracles
-        if not oracles:
-            oracles = {}
-        transfers = [(x.in_asset_id, x.out_asset_id) for x in self.asset_transfers]
 
-        connections = self.transfers_disjoint_set
-        for asset_id in self.all_tokens:
-            if asset_id not in oracles or oracles[asset_id] is None or oracles[asset_id] == 0:
-                for pair in self.asset_pairs_xyk:
-                    if pair.pool_value_in_usd:
-                        if connections.connected(pair.in_asset_id, asset_id):
-                            assert pair.value_of_a_in_usd > 0
-                            oracles[asset_id] = pair.value_of_a_in_usd
-                            break
-                        if connections.connected(pair.out_asset_id, asset_id):
-                            assert pair.value_of_b_in_usd > 0
-                            oracles[asset_id] = pair.value_of_b_in_usd
-                            break
-        if oracles[token] > 0:
-            return oracles[token]
-
-        oracles = route_set(oracles, transfers)
-        if oracles:
-            oracle = oracles.get(token, None)
-            if oracle > 0:
-                return oracle
-
-        for pair in self.asset_pairs_xyk:
-            if pair.pool_value_in_usd:
-                if pair.in_asset_id == token:
-                    return pair.value_of_a_in_usd
-                if pair.out_asset_id == token:
-                    return pair.value_of_b_in_usd
-        logger.debug(f"oracle not found for token {token}, which means there is no connection of token to USD")
-        return 0
+        if self.usd_oracles.get(asset_id, None):
+            return self.usd_oracles[asset_id]
+        else:
+            logger.error(f"oracle not found for token {asset_id}, which means there is no connection of token to USD")
+            return 0
 
     @model_validator(mode="after")
     def after(self):

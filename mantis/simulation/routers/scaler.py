@@ -40,11 +40,10 @@ def oracalize_data(base_data: AllData, input: Input, ctx: Ctx) -> tuple[AllData,
         oracalized_data.asset_transfers[i].out_token_amount = transfer.out_token_amount * base_data.token_price_in_usd(
             transfer.out_asset_id
         )
-    if oracalized_data.usd_oracles is None:
-        oracalized_data.usd_oracles = {}
+    
+    oracalized_data.usd_oracles = {}
     for asset_id in oracalized_data.all_tokens:
         oracalized_data.usd_oracles[asset_id] = 1
-
     return oracalized_data, oracalized_input
 
 
@@ -53,16 +52,19 @@ def scale_in(base_data: AllData, input: Input, ctx: Ctx) -> tuple[AllData, Input
     Scales in data to be used by simulation
     """
 
+    base_data.merge_oracles()
+
+    assert base_data.token_price_in_usd(input.in_token_id) > 0
+    
     # so we set all transfers amount to some estimate
     for transfer in base_data.asset_transfers:
         transfer.in_token_amount = base_data.maximal_reserves_of(transfer.in_asset_id)
         transfer.out_token_amount = base_data.maximal_reserves_of(transfer.out_asset_id)
 
+    oracalized_data, oracalized_input = oracalize_data(base_data, input, ctx)
     new_data = copy.deepcopy(base_data)
     new_input = copy.deepcopy(input)
-
-    oracalized_data, oracalized_input = oracalize_data(base_data, input, ctx)
-
+    
     all_asset_ids = base_data.all_tokens
 
     # cap all big amounts and remove venues which will not give big amount

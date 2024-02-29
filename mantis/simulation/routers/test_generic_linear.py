@@ -6,7 +6,7 @@ import numpy as np
 import pytest
 from loguru import logger
 
-from mantis.simulation.routers.scaler import ToSmallUsdValueOfInput, scale_in
+from simulation.routers.scaler import ToSmallUsdValueOfInput, scale_in
 from simulation.routers.angeris_cvxpy import cvxpy_to_data
 from simulation.routers.data import (
     AllData,
