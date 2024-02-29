@@ -152,21 +152,25 @@ def cvxpy_to_data(
                     sub = next_route(child)
                     subs.append(sub)        
             venue = data.venue_by_index(current_snapshot.venue_index)
+            in_asset_id= str(current_snapshot.in_asset_id)
+            out_asset_id = str(current_snapshot.out_asset_id)
+            in_asset_amount=int(math.floor(current_snapshot.in_amount))
+            out_asset_amount=int(math.floor(current_snapshot.out_amount))
             if isinstance(venue, AssetPairsXyk):
                 return Exchange(
-                    in_asset_id=current_snapshot.in_asset_id,
-                    in_asset_amount=math.ceil(current_snapshot.in_amount),
-                    out_asset_amount=math.floor(current_snapshot.out_amount),
-                    out_asset_id=current_snapshot.out_asset_id,
+                    in_asset_id = in_asset_id,
+                    out_asset_id=out_asset_id,                    
+                    in_asset_amount=in_asset_amount,
+                    out_asset_amount=out_asset_amount,
                     pool_id=str(venue.pool_id),
                     next=subs,
                 )
             elif isinstance(venue, AssetTransfers):
                 return Spawn(
-                    in_asset_id=current_snapshot.in_asset_id,
-                    in_asset_amount=math.ceil(current_snapshot.in_amount),
-                    out_asset_id=current_snapshot.out_asset_id,
-                    out_asset_amount=math.floor(current_snapshot.out_amount),
+                    in_asset_id=in_asset_id,
+                    out_asset_id=out_asset_id,                    
+                    in_asset_amount=in_asset_amount,
+                    out_asset_amount=out_asset_amount,                
                     next=subs,
                 )
         else:
