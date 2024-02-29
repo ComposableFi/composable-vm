@@ -461,7 +461,7 @@ class AllData(BaseModel, Generic[TId, TAmount]):
     def venue_by_index(self, index) -> Union[AssetTransfers, AssetPairsXyk]:
         if index < len(self.asset_pairs_xyk):
             return self.asset_pairs_xyk[index]
-        return self.asset_transfers[index - len(self.asset_transfers)]
+        return self.asset_transfers[index - len(self.asset_pairs_xyk)]
 
     @property
     def transfers_disjoint_set(self) -> DisjointSet:
@@ -625,8 +625,11 @@ class AllData(BaseModel, Generic[TId, TAmount]):
                     return pair.value_of_b_in_usd
         logger.debug(f"oracle not found for token {token}, which means there is no connection of token to USD")
         return 0
-
-
+    
+    @model_validator(mode="after")
+    def after(self):
+        assert len(self.asset_pairs_xyk) + len(self.asset_transfers) == self.venues_count
+        
 # helpers to setup tests data
 
 
