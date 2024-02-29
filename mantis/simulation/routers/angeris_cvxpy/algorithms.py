@@ -96,7 +96,7 @@ def cvxpy_to_data(
                     continue
                 traded_in_amount = min(current.out_amount, snapshot.in_amount)
                 if traded_in_amount <= 0:
-                    raise Exception("cannot trade nothing")
+                    raise Exception(f"cannot trade nothing for in={current} via={snapshot}")
 
                 received_out_amount = min(snapshot.out_amount, traded_in_amount * snapshot.out_amount / snapshot.in_amount)
                 if received_out_amount <= 0:

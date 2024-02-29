@@ -1,6 +1,7 @@
 # Solves using OR optimization
 import itertools
 import math
+from mantis.simulation.routers.scaler import scale_in
 
 import numpy as np
 from loguru import logger
@@ -302,11 +303,15 @@ def test_simple_symmetric_and_asymmetric_split():
     )
 
 
-def _test_big_numeric_range():
+def test_big_numeric_range():
     input = new_input(1, 2, 100, 50)
     pair = new_pair(1, 1, 2, 0, 0, 1, 10, 1000, 10_000_000_000, 1_000_000_000)
     data = new_data([pair], [])
-    result = route(input, data)
+    ctx = Ctx()
+    scaled_data, scaled_input, ratios = scale_in(data, input, ctx)
+    assert ratios[0] == 1
+    assert ratios[1] == 1
+    result = route(scaled_data, scaled_input)
     logger.info(result)
 
 
@@ -316,7 +321,8 @@ def test_simulate_all_connected_venues():
     CENTER_NODE, chains = simulate_all_to_all_connected_chains_topology(input)
     data = simulate_all_connected_venues(CENTER_NODE, chains)
     logger.info(data)
-
+    oracles = {asset_id : 1 for asset_id in data.all_tokens}
+    data.usd_oracles  = oracles
     logger.info("=============== solving ========================")
     ctx = Ctx()
     result = route(input, data, ctx)

@@ -590,7 +590,6 @@ class AllData(BaseModel, Generic[TId, TAmount]):
         How much 1 amount of token is worth in USD
         """
         oracles = self.usd_oracles
-        # raise Exception(self.usd_oracles)
         if not oracles:
             oracles = {}
         transfers = [(x.in_asset_id, x.out_asset_id) for x in self.asset_transfers]
