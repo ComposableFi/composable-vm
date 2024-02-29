@@ -1,4 +1,3 @@
-
 import cvxpy as cp
 import numpy as np
 from anytree import NodeMixin
