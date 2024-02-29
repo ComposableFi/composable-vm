@@ -96,6 +96,7 @@ def solve(
     # Trading function constraints
     constraints = [
         psi + current_assets >= 0,
+        psi[index_of_input_token] >= -input.in_amount,
         psi[index_of_input_token]
         <= -0.8 * input.in_amount,  # so sometimes it finds near zero solution because of fee by spending zero - useless
     ]
