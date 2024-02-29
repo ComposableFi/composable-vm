@@ -217,7 +217,7 @@ def for_simulation(cvm_registry: ExtendedCvmRegistry, usd_oracles) -> Simulation
                 out_asset_id=transfer.to_asset_id.root,
                 in_token_amount=-1,
                 out_token_amount=-1,
-                venue_fixed_costs_in_usd=0.01,
+                venue_fixed_costs_in_usd=0.001,
                 fee_per_million=0,
             )
         )

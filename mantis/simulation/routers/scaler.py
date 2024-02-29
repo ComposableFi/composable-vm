@@ -149,5 +149,6 @@ def scale_in(base_data: AllData, input: Input, ctx: Ctx) -> tuple[AllData, Input
         # but scale up until max_reserve
 
         # here we can clean up small venues, numerically small
-
+    for key, value in new_data.usd_oracles.items():
+        new_data.usd_oracles[key] = value / ratios[key]
     return new_data, new_input, ratios

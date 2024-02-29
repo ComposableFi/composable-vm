@@ -65,7 +65,7 @@ class Ctx(BaseModel, Generic[TAmount]):
     Must be equal or larger than solver tolerance.
     """
 
-    minimal_tradeable_number: float = 0.00000001
+    minimal_tradeable_number: float = 1e-15
     """
     Not a value, but just physical number to eliminate from trade
     """
