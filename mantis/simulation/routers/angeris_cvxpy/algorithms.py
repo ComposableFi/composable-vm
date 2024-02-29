@@ -67,13 +67,16 @@ def cvxpy_to_data(
 
     depth = 0
 
-    def snapshots_to_route(current, depth):
+    def snapshots_to_route(current : VenuesSnapshot, depth):
         """_summary_
             Add nodes until burn all input from snapshots.
             
             If depth is more than some level or amount is close to received, and asset in current is received,
             stop iterating.                    
         """        
+        depth += 1
+        if depth > 10:
+            raise Exception("depth of route limit reached")
         from_big_to_small = sorted(
             [
                 trade
@@ -83,42 +86,38 @@ def cvxpy_to_data(
             key=lambda x: x.in_amount,
             reverse=True,
         )
-        if not any(from_big_to_small):
-            return
-        depth += 1
-        if depth > 10:
-            raise Exception("depth of route limit reached")
-        for snapshot in from_big_to_small:
-            logger.debug()
-                logger.error(f"snapshot {snapshot}")
-            if current.in_amount <= 0 or snapshot.out_amount <= 0 or snapshot.out_amount <= 0:
-                continue
-            traded_in_amount = min(current.in_amount, snapshot.in_amount)
-            if traded_in_amount <= 0:
-                continue
+        if any(from_big_to_small):
+            if current.out_amount <= 0:
+                raise Exception("must not get to here but stop one iteration earlier")
+            for snapshot in from_big_to_small:
+                logger.debug(f"snapshot={snapshot};depth={depth}")
+                if snapshot.out_amount <= 0 or snapshot.out_amount <= 0:
+                    continue
+                traded_in_amount = min(current.out_amount, snapshot.in_amount)
+                if traded_in_amount <= 0:
+                    raise Exception("cannot trade nothing")
 
-            expected_out_amount = traded_in_amount * snapshot.out_amount / snapshot.in_amount
-            if expected_out_amount <= 0:
-                continue
+                received_out_amount = min(snapshot.out_amount, traded_in_amount * snapshot.out_amount / snapshot.in_amount)
+                if received_out_amount <= 0:
+                    continue
 
-            if snapshot.out_amount < expected_out_amount:
-                logger.warning(f"expected_out_amount {expected_out_amount} > snapshot.out_amount {snapshot.out_amount}")
-                continue
-            else:
-                logger.info(f"expected_out_amount {expected_out_amount} <= snapshot.out_amount {snapshot.out_amount}")
-            snapshot.out_amount -= expected_out_amount
-            snapshot.in_amount -= traded_in_amount
-            current.in_amount -= traded_in_amount
+                logger.info(f"expected_out_amount {received_out_amount}; traded in amount = {traded_in_amount} ")
+                snapshot.out_amount -= received_out_amount
+                snapshot.in_amount -= traded_in_amount
+                current.out_amount -= traded_in_amount
 
-            next_trade = Node(
-                name=f"venue={snapshot.venue_index}",
-                in_amount=expected_out_amount,
-                venue_index=snapshot.venue_index,
-                in_asset_id=snapshot.out_asset_id,
-                parent=current,
-            )
-            logger.info(f"next_trade {next_trade}")
-            snapshots_to_route(next_trade, depth)
+                next_trade = VenuesSnapshot(
+                    name=f"venue",
+                    in_amount=traded_in_amount,
+                    out_amount= received_out_amount,                    
+                    venue_index=snapshot.venue_index,
+                    
+                    in_asset_id=snapshot.in_asset_id,
+                    out_asset_id= snapshot.out_asset_id,
+                    parent=current,
+                )
+                logger.info(f"next_trade {next_trade}")
+                snapshots_to_route(next_trade, depth)
 
     start = VenuesSnapshot(
         name="input",
@@ -131,8 +130,8 @@ def cvxpy_to_data(
     snapshots_to_route(start, depth)
 
     for pre, _fill, node in RenderTree(start):
-        logger.debug(f"{pre} in={node.in_amount:_}/{node.in_asset_id} via={node.venue_index}")
-    raise Exception(trades_raw)
+        logger.debug(f"{pre} {node}")
+
     def next_route(parent_node: VenuesSnapshot):
         subs = []
         if parent_node.children:

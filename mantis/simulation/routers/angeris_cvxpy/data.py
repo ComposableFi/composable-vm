@@ -90,3 +90,6 @@ class VenuesSnapshot(NodeMixin):
         self.parent = parent
         if children:
             self.children = children
+            
+    def __repr__(self):
+        return f"{self.name} {self.venue_index} {self.in_amount}/{self.in_asset_id} {self.out_amount}/{self.out_asset_id} {len(self.children)}"
