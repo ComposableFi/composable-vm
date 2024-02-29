@@ -91,7 +91,7 @@ def cvxpy_to_data(
             if current.out_amount <= 0:
                 raise Exception("must not get to here but stop one iteration earlier")
             for snapshot in from_big_to_small:
-                logger.debug(f"snapshot={snapshot};depth={depth}")
+                logger.debug(f"snapshot will={snapshot};depth={depth}")
                 if snapshot.out_amount <= 0 or snapshot.out_amount <= 0:
                     continue
                 traded_in_amount = min(current.out_amount, snapshot.in_amount)
