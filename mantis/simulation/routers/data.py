@@ -83,7 +83,7 @@ class Ctx(BaseModel, Generic[TAmount]):
     Up to possible oracle error (do not set it less than expected oracle mistake multiplier)
     """
 
-    input_consumed_ratio : float = 0.9
+    input_consumed_ratio: float = 0.9
 
     max_hops_usd: float = 0
     """
@@ -353,10 +353,10 @@ class AllData(BaseModel, Generic[TId, TAmount]):
       asset ids which we consider to be USD equivalents
       value - decimal exponent of token to make 1 USD
     """
-    
+
     def model_post_init(self, __context) -> None:
         self.__merge_oracles()
-    
+
     @property
     # @cache
     def all_tokens(self) -> list[TId]:
@@ -604,11 +604,11 @@ class AllData(BaseModel, Generic[TId, TAmount]):
             for key, value in self.usd_oracles.items():
                 if value and value > 0:
                     oracles[key] = value
-                             
+
         transfers = [(x.in_asset_id, x.out_asset_id) for x in self.asset_transfers]
         oracles = merge_by_connection_from_existing(oracles, transfers)
         # merge with pool oracles
-        
+
         transfers = self.transfers_disjoint_set
         for other_asset_id in self.all_tokens:
             if other_asset_id not in oracles or oracles[other_asset_id] is None or oracles[other_asset_id] == 0:
@@ -623,7 +623,6 @@ class AllData(BaseModel, Generic[TId, TAmount]):
                             oracles[other_asset_id] = pair.value_of_b_in_usd
                             break
         self.usd_oracles = oracles
-        
 
     # @property
     # @lru_cache

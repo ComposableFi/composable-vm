@@ -234,7 +234,7 @@ def route(
             venue = all_data.venue_by_index(i)
             oracalized_in = np.abs(trade[0]) * all_data.token_price_in_usd(venue.in_asset_id)
             oracalized_out = np.abs(trade[1]) * all_data.token_price_in_usd(venue.out_asset_id)
-            
+
             if oracalized_in < ctx.min_usd_venue_amount and oracalized_out < ctx.min_usd_venue_amount:
                 oracalized_trades.append([0, 0])
                 logger.warning(

@@ -6,7 +6,6 @@ from pydantic import BaseModel
 
 from blackbox.composablefi_networks import Model as NetworksModel
 from blackbox.cvm_runtime.response_to_get_config import (
-    AssetId,
     AssetItem,
     AssetReference7,
     ExchangeItem,

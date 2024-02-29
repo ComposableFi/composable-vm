@@ -6,7 +6,6 @@ import numpy as np
 import pytest
 from loguru import logger
 
-from simulation.routers.scaler import ToSmallUsdValueOfInput, scale_in
 from simulation.routers.angeris_cvxpy import cvxpy_to_data
 from simulation.routers.data import (
     AllData,
@@ -22,6 +21,7 @@ from simulation.routers.data import (
     new_transfer,
 )
 from simulation.routers.generic_linear import route
+from simulation.routers.scaler import ToSmallUsdValueOfInput, scale_in
 
 MAX_RESERVE = 1e10
 
