@@ -10,6 +10,7 @@ from typing import Generic, TypeVar, Union
 
 import numpy as np
 import pandas as pd
+from anytree import NodeMixin
 from disjoint_set import DisjointSet
 from loguru import logger
 from pydantic import BaseModel, model_validator, validator
@@ -21,7 +22,12 @@ TId = TypeVar("TId", int, str)
 TNetworkId = TypeVar("TNetworkId", int, str)
 TAmount = TypeVar("TAmount", int, str)
 
-MINIMAL_TRANSACTION_USD_COST_DEFAULT: float = 0.00001
+MINIMAL_FEE_PER_MILLION_DEFAULT = 100
+"""
+we do not consider venues without fees at all - realistic
+"""
+
+MINIMAL_TRANSACTION_USD_COST_DEFAULT: float = 0.000001
 """_summary_
 Each venue eats some USD for transaction.
 So we just cut noise.
@@ -33,7 +39,7 @@ class Ctx(BaseModel, Generic[TAmount]):
     """_summary_
      If set to true, solver must output maxima information about solution
     """
-    integer: bool = True
+    integer: bool = False
     """_summary_
      If set too true, solver must solve only integer problems.
      All inputs to solver are really integers.
@@ -55,19 +61,22 @@ class Ctx(BaseModel, Generic[TAmount]):
     """
 
     min_usd_reserve: float = 1
-
-    min_input_in_usd: float = 0.0001
+    min_input_in_usd: float = 0.00001
     minimal_trading_probability: float = 0.000001
-    minimal_amount: float = 0.00001
+    """
+    ETA
+    """
+    minimal_venued_amount: float = 0.000000001
     """_summary_
     Numerically minimal amount of change goes via venue is accepted, minimal trade.
     This is numeric amount, not value amount (oracalized amount) limit.
     Must be equal or larger than solver tolerance.
     """
 
-    minimal_tradeable_number: float = 1e-15
+    minimal_tradeable_number: float = 1e-8
     """
-    Not a value, but just physical number to eliminate from trade
+    Not a value, but just physical number to eliminate from trade.
+    If and only if both input and output are so small.
     """
 
     mi_for_venue_count: int = 0
@@ -83,6 +92,13 @@ class Ctx(BaseModel, Generic[TAmount]):
     Up to possible oracle error (do not set it less than expected oracle mistake multiplier)
     """
 
+    maximal_oracle_mistake_factor: int = 100
+    """
+    In both sides
+    """
+
+    maximal_trading_mistake_factor: int = 100
+
     input_consumed_ratio: float = 0.9
 
     max_hops_usd: float = 0
@@ -92,14 +108,19 @@ class Ctx(BaseModel, Generic[TAmount]):
     we just measure it as loss of funds
     """
 
+    maximal_venues_count: int = 1000
+    """
+    Prevents arbitrage but allows for simpler routes if set small.
+    """
+
     depth_of_route: int = 3
     """_summary_
     Avoid too deep routes.
     """
 
-    max_venues_usd: int = 5
+    sequential: bool = False
     """
-    Prevents arbitrage but allows for simpler routes if set small.
+    Wether run all tasks in single thread
     """
 
     @property
@@ -147,6 +168,16 @@ class AssetTransfers(
     # do not care
     metadata: str | None = None
 
+    def trade(self, asset_id, amount):
+        amount = (1 - self.fee_per_million / 1e6) * amount
+        if asset_id == self.in_asset_id:
+            self.in_token_amount += amount
+            self.out_token_amount -= amount
+        else:
+            self.in_token_amount -= amount
+            self.out_token_amount += amount
+        return amount
+
     @validator("metadata", pre=True, always=True)
     def replace_nan_with_None(cls, v):
         return None if isinstance(v, float) else v
@@ -180,6 +211,23 @@ class AssetPairsXyk(
     @validator("pool_value_in_usd", pre=True, always=True)
     def replace_nan_with_None(cls, v):
         return v if v == v else None
+
+    def trade(self, asset_id, amount):
+        amount = (1 - self.fee_of_in_per_million / 1e6) * amount
+        if asset_id == self.in_asset_id:
+            result = self.out_token_amount * (1 - self.in_token_amount / (self.in_token_amount + amount)) ** (
+                self.weight_a / self.weight_b
+            )
+            self.out_token_amount -= result
+            self.in_token_amount += amount
+            return result
+        else:
+            result = self.in_token_amount * (1 - self.out_token_amount / (self.out_token_amount + amount)) ** (
+                self.weight_b / self.weight_a
+            )
+            self.in_token_amount -= result
+            self.out_token_amount += amount
+            return result
 
     # total amounts in reserves R
     in_token_amount: TAmount
@@ -240,11 +288,14 @@ class AssetPairsXyk(
         return None if isinstance(v, float) else v
 
 
-# this is what user asks for
 class Input(
     BaseModel,
     Generic[TId, TAmount],
 ):
+    """
+    this is what user asks for
+    """
+
     # natural set key is ordered pair (in_token_id, out_token_id)
     in_token_id: TId
     out_token_id: TId
@@ -258,8 +309,20 @@ class Input(
     max: bool
 
 
+class Trade(Generic[TId, TAmount]):
+    out_asset_amount: TAmount
+    """
+    Amount to be used out of trade.
+    Meaning man vary depending on context (it can be minimal value or exact)
+    """
+    out_asset_id: TId
+    """_summary_
+    Asset expected to be used out of trade.
+    """
+
+
 # @dataclass
-class Spawn(BaseModel, Generic[TId, TAmount]):
+class Spawn(BaseModel, Trade):
     """
     cross chain transfer assets
     """
@@ -271,27 +334,17 @@ class Spawn(BaseModel, Generic[TId, TAmount]):
     amount to take with transfer
     (delta)
     """
-    out_asset_amount: TAmount | None = None
-
-    out_asset_id: TId | None = None
     next: list[Union[Exchange, Spawn]]
 
 
 # @dataclass
-class Exchange(BaseModel, Generic[TId, TAmount]):
+class Exchange(BaseModel, Trade):
     in_asset_amount: TAmount
     """
     none means all (DELTA)
     """
 
-    out_asset_amount: TAmount
-    """_summary_
-    Means expected minimal amount.
-    """
-
     in_asset_id: TId
-
-    out_asset_id: TId
 
     pool_id: TId
     next: list[Union[Exchange, Spawn]]
@@ -304,16 +357,48 @@ class Exchange(BaseModel, Generic[TId, TAmount]):
         return self
 
 
-class SingleInputAssetCvmRoute(BaseModel):
+class SingleInputAssetCvmRoute(BaseModel, Trade):
     """
     always starts with Input asset_id
     """
 
-    in_amount: int
     next: list[Union[Exchange, Spawn]]
 
 
 SingleInputAssetCvmRoute.model_rebuild()
+
+
+class RouteTree(NodeMixin):
+    trade: Union[SingleInputAssetCvmRoute | Exchange | Spawn]
+
+    def __init__(
+        self,
+        name,
+        trade,
+        parent=None,
+        children=None,
+    ):
+        self.name = name
+        self.parent = parent
+        self.trade = trade
+        if children:
+            self.children = children
+
+    def ends(self, out_asset_id):
+        if len(self.children) > 0:
+            for child in self.children:
+                child.ends(out_asset_id)
+
+        if len(self.children) == 0:
+            if self.trade.out_asset_id != out_asset_id:
+                logger.error(f"expected {out_asset_id} got {self.trade.out_asset_id}")
+                if self.parent:
+                    self.parent.remove(self)
+
+    def lower(self):
+        if len(self.children) > 0:
+            self.trade.next = [child.lower() for child in self.children]
+        return self.trade
 
 
 class SolutionType(Enum):

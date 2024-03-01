@@ -1,6 +1,6 @@
 import os
 import sys
-from typing import List, Union
+from typing import List
 
 import cachetools
 import requests
@@ -31,9 +31,8 @@ from simulation.routers.data import (
 from simulation.routers.data import (
     AssetPairsXyk,
     Ctx,
-    Exchange,
     Input,
-    Spawn,
+    SingleInputAssetCvmRoute,
     new_pair,
     read_dummy_data,
 )
@@ -132,7 +131,7 @@ def simulator_router_dummy(data: SimulationData, input: Input):
 
 
 @app.get("/simulator/router")
-def simulator_router(input: Input = Depends()):
+def simulator_router(input: Input = Depends()) -> list[SingleInputAssetCvmRoute]:
     """_summary_
     Given input, find and return route.
     """
@@ -144,27 +143,28 @@ def simulator_router(input: Input = Depends()):
         raw_data.osmosis_pools,
     )
 
-    route = simulate_route(input, cvm_data)
+    route = solve(input, cvm_data)
 
     return route
 
 
-def simulate_route(input: Input, cvm_data: ExtendedCvmRegistry) -> Union[Exchange, Spawn]:
+def solve(original_input: Input, cvm_data: ExtendedCvmRegistry) -> list[SingleInputAssetCvmRoute]:
     ctx = Ctx()
-    data = for_simulation(cvm_data, {})
+    original_data = for_simulation(cvm_data, {})
 
-    input.in_amount = int(input.in_amount)
-    input.out_amount = int(input.out_amount)
+    original_input.in_amount = int(original_input.in_amount)
+    original_input.out_amount = int(original_input.out_amount)
 
-    if input.in_amount >= ctx.max_trade * data.maximal_reserves_of(input.in_token_id):
+    if original_input.in_amount >= ctx.max_trade * original_data.maximal_reserves_of(original_input.in_token_id):
         raise Exception(
-            f"you are trading on market limit with {input.in_amount} for {data.maximal_reserves_of(input.in_token_id)}"
+            f"you are trading on market limit with {original_input.in_amount} for {original_data.maximal_reserves_of(original_input.in_token_id)}"
         )
 
-    new_data, new_input, scale = scale_in(data, input, ctx)
-    solution = generic_linear.route(new_input, new_data, ctx)
-    route = cvxpy_to_data(input, data, ctx, solution, scale)
-    return route
+    scaled_data, scaled_input, scale = scale_in(original_data, original_input, ctx)
+    solutions = generic_linear.route(scaled_input, scaled_data, ctx)
+    routes = cvxpy_to_data(original_input, original_data, ctx, solutions, scale)
+    routes = [route.lower() for route in routes]
+    return routes
 
 
 @app.get("/skip_money/chains")
