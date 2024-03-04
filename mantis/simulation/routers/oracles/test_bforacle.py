@@ -18,7 +18,7 @@ from simulation.routers.data import (
     new_pair,
     new_transfer,
 )
-from simulation.routers.lautaro import route
+from simulation.routers.oracles.bforacle import route
 
 
 # simulate denom paths to and from chains, with center node

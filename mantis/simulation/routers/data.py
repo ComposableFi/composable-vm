@@ -15,7 +15,7 @@ from disjoint_set import DisjointSet
 from loguru import logger
 from pydantic import BaseModel, model_validator, validator
 
-from simulation.routers.oracles import merge_by_connection_from_existing
+from mantis.simulation.routers.oracles.usdoracle import merge_by_connection_from_existing
 
 # This is global unique ID for token(asset) or exchange(pool)
 TId = TypeVar("TId", int, str)
