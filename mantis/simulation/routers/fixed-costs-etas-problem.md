@@ -1,135 +1,152 @@
-# Fixed costs (`eta`) problem
+# Constant fees handling in optimal assets heteregoneus routing
 
-Devised [Optimal Routing for Constant Function Market Makers](https://arxiv.org/abs/2204.05238) approach to find optimal routing to (swap) assets.
+User side of problem described well in Composble Foundation documents about intents.
 
-`5 Fixed transaction costs` introduced ETA variable which is not easy to solve around and proposed that it can decide go/no go variable (boolean, 0 or 1) to decide to tap into pool or not.
+Solution side with based on operational research(OR) described in `Optimal Routing for Constant Function Market Makers`.
 
-For us it is important decision as we need to decide to bridge token or not for solutions.
+Let make layman clarification of section 5 of that paper on solving with constant fees
 
-When problem solved using linear algebra, that leads to high compute costs, and because of limits of hardware numbers to infeasibility.
+## Constant fees constraints
 
-Several way to solver problem were identified:
+```python
+objective = maximize(received_amount - trade_decision * constant_fee)
+constraint(venue_amount <= trade_decision * maximal_possible_trade)
+trade_decision[i] in [0,1]
+M = len(trade_decision)
+```
 
-1. ETA as integer, and solver engine will handle that. Using big parallel machines and quad precision engines can help with that.
-2. ETA to be non integer. In this case solver engine will zero eta for venues it wants. Pick limited set of transfers(and pools behind) using venues with zero eta, and repeat 1.
-3. Model problem as non linear explicitly, by multiplying several variables in constraints.
-4. After getting ETAs telling what solver engine wants to go, have heuristic to 
-1. 
-1. 
-1. 
+Logically if `trade_decision` is `0` for some venue, it does not penalizes objective nor allowed to be traded over.
 
+If it it is equal `1`, than trade up to maximal possible trade is allowed and full constant fees penalized.
 
+## So what is the problem?
 
-    psi = cp.sum(
-        [
-            A_i @ (LAMBDA - DELTA)
-            for A_i, DELTA, LAMBDA in zip(mapping_matrices, deltas, lambdas)
-        ]
-    )
+Let setup real world scenario here.
 
-    # Creating the objective
-    objective = cp.Maximize(
-        psi[all_tokens.index(obj_token)]
-        - cp.sum([eta[i] * all_tx_cost[i] for i in range(len(all_cfmms))])
-    )
+Constant fees for transfers can differ by $10^5$ magnitude. 
 
-    # Creating constraints
-    constraints = [psi + current_assets >= 0]
+Numeric values for reservers, tendered and received can vary from $10^3$ to $10^{24}$ in one problem definion. 
 
-def solve_with_known_eta(
-    """In this function we solve the optimal routing problem with known eta values. These values are either 0 or 1.
-    How we approach this is by not including any CFMMs into the constraints that have an
-    eta value equal to 0. This way, we can solve the problem with CVXPY and not run into numerical issues.
-   
-    # Forcing delta and lambda to be 0 if eta is 0
-    for i, cfmm in enumerate(all_cfmms):
-        if eta[i] == 0:
-            constraints.append(deltas[i] == 0)
-            constraints.append(lambdas[i] == 0)
-        else:
-            constraints.append(deltas[i] <= MAX_RESERVE)
+Solving OR in integers nor in real numbers is not possible with such numbers.
 
 
+## So what we do?
 
-> Rafa Serrano:
-I may had the name wrong the name is not MILP it is MINLP it is always non linear... Unless its all IBC transfers, in that case the problem is LP. 
-The problem is detected as MI as long as some of the variables are declared as either binary or integer in cvxpy, binary=True integer=True
-The idea is having two runs, one being normal convex (very fast inaccurate) other run with filtered pools mixed integer (slow and accurate) 
+We scale all numbers to range of $10^{-4}$ to $10^4$. Scaling procedure is not trivial and may intorduce some error into numbers.
 
-So the approach is, we need to discriminate some pools in the first calculation, we do it by assigning the weight of the trade done by each pool by the ETA value in the first pass. We then encounter which 20 first pools are the most contributing to the routing. And we rerun the algorithm now with eta being an integer variable. So the meaning of eta is different when the problem is "normal" or "mixed integer". Maybe rewriting the whole thing twice could have been more comprensible
+Than we solve with scaled real numbers.
 
-> Rafa Serrano:
-One note, when we say MI we are referring only to eta, not deltas and gammas (inputs and outputs of pools) that would be completely infeasible thing to do. As there would not be any way to do any of the convex optimization tricks
+Could we scale to $1$ and $10^5$ to solve in integers right away? Not in practice if we want to solve fast again many venues, which works only for real numbers.
 
-> dzmitry lahoda:
-Nice in general. May  could be good next time. For now I will go without ETA + route simulator.
+## Lets solve for real.
 
-> dzmitry lahoda:
-ETA has issues with scaling to, do not want to solver it now.
+For great variety to simple cases things works as intended.
 
-> dzmitry lahoda:
-Also I think of next. As soon as problem is NLP, I can multiply variables. If I can multiply 2 variables, I can make ETA to be 2 variables and put these around 0 and around 1. So can solve ETA without MI overall. I can be fully wrong so.
+But for some important production cases things go wild.
 
-> Rafa Serrano:
-I did try this approach, but I think that the solvers don't take kindly that you are trying to cheat math
+- `trade_decision` is set `1` trading tiny amounts
+- `trade_decision` is set to `0` even trading critical venue (the only venue which can trade from tendered to received)
+- `venue_amount` are very approximate and do not lead to exact route they induce to do
+
+None of these trivitial to solve. 
+
+For example, what is tiny amount in real (USD value) or in numeric are hard to define and use.
+
+Setting some `trade_decision` for critical path also solveable logically, solver engine fails to find that path, reporting infeacible.
+
+## What paper suggest?
+
+It suggest using integer proramming, but integer progamming cannot be done without integer scaling and elimination of non trade pools. So need to solve real first.
+
+It tells we can sort `trade_decision` for some problem, and solver hopefully can solve linearly $O(M)$ where $M$ is venue count or randomly.
+
+So problm araises when best `trade_decision` taken with large volume, can became bad decision later and good again as we go using our $O(M)$ scan, because fees on and off.
+
+Enumerating all possible `trade_decision` is $O(2^M)$.
+
+On common hardware each run of OR solver takes 1-2 seconds on dozen of venues, so it leads to hundreds of seconds to solve. What would be on hundreds of venue? $O(M)$ is not good, need $O(log \ M)$.
+
+Randomization is not an option as it may miss critical path.
+
+## Real world cases
+ 
+Next table tells to trade over venue if it is multiplied by `trade_decision=1.0`.
+
+So `11*(1.0)` and `12*(1.0)` which are transfers of PICA to Osmosis and OSMO to composable. but were is exchange of PICA to OSMO?
+
+As you can see `0*(-0.0)` which tells not to trade at all. 
 
 
+This is one of dozen cases tested within current MANTIS Solver Blackbox codebase.
 
-    # find best etas ranged by etas found on first run (go/no go decision)
-    for eta_pivot in sorted(initial_etas):
-        try:
-            new_deltas, _new_lambdas, new_psi, new_etas = solve(
-                all_data,
-                input,
-                ctx,
-                [1 if eta <= eta_pivot else 0 for eta in initial_etas],
-            )
-            if new_psi.value[all_data.index_of_token(input.out_token_id)] >= received:
-                etas = new_etas
-                deltas = new_deltas
-        except Exception as e:
-            print(e)
-        
-    if ctx.debug:        
-        print("eliminating small venues")
-    eta_changed = True
-    while eta_changed:
-        eta_changed = False
-        try:
-            print("SADSADASDSADSADSDASSA")
-            for i, delta_locals in enumerate(deltas):
-                if all(delta_i.value < 1e-04 for delta_i in delta_locals):
-                    # if input into venue is small, disable using it
-                    etas[i] = 0
-                    eta_changed = True
-                    if ctx.debug:
-                        print(f"etas changed so it is {etas}")
-            deltas, _initial_lambdas, psi, _etas = solve(
-                all_data,
-                input,
-                ctx,
-                etas,
-            )
 
-        except Exception as e:
-            print(e)
-    raise ValueError("Not implemented")
+```
+0*(-0.0)(10000.0/09<->10000.0/10),delta=[9.99900513e-01 4.83004546e-07],lambda=[4.83103542e-07 9.99700573e-01]
+1*(-0.0)(10000.0/10<->9999.999999999998/12),delta=[8.49388192e-07 1.50926511e-06],lambda=[1.50907969e-06 8.49337181e-07]
+2*(-0.0)(10000.0/13<->10000.0/10),delta=[6.90021013e-07 9.65741019e-07],lambda=[6.60365208e-07 9.95218129e-07]
+3*(-0.0)(10000.0/10<->10000.0/16),delta=[9.73609037e-07 9.87462450e-07],lambda=[9.87363778e-07 9.73509796e-07]
+4*(-0.0)(10000.0/11<->10000.0/10),delta=[1.79167031e-06 9.65795946e-07],lambda=[1.76201449e-06 9.95158686e-07]
+5*(-0.0)(10000.0/14<->10000.0/10),delta=[8.77539628e-07 1.46569450e-06],lambda=[1.46551313e-06 8.77486806e-07]
+6*(-0.0)(10000.0/12<->10000.0/16),delta=[9.78733354e-07 9.82332683e-07],lambda=[9.82234365e-07 9.78634834e-07]
+7*(-0.0)(10000.0/10<->9999.999999999998/12),delta=[1.48109859e-06 8.54123119e-07],lambda=[8.54092557e-07 1.48089423e-06]
+8*(-0.0)(10000.0/14<->10000.0/10),delta=[1.49153690e-06 8.73919282e-07],lambda=[8.73907587e-07 1.49131377e-06]
+9*(-0.0)(10000.0/15<->10000.0/16),delta=[9.84432972e-07 9.76633766e-07],lambda=[9.76534470e-07 9.84333795e-07]
+10*(-0.0)(9999.999999999998/10<->9999.999999999998/15),delta=[9.69706603e-07 9.91361456e-07],lambda=[9.91260380e-07 9.69604146e-07]
+11*(1.0)(10000.0/09<->10000.0/73),delta=[4.83153060e-07 1.00000099e+00],lambda=[9.99900503e-01 9.75859992e-07]
+12*(1.0)(10000.0/10<->10000.0/74),delta=[9.99700758e-01 4.82955531e-07],lambda=[4.82955733e-07 9.99600798e-01]
+13*(-0.0)(10000.0/11<->10000.0/75),delta=[9.70607168e-07 9.85438451e-07],lambda=[9.90312515e-07 9.75487977e-07]
+14*(-0.0)(10000.0/12<->10000.0/78),delta=[9.70627783e-07 9.85459875e-07],lambda=[9.90333123e-07 9.75509402e-07]
+15*(-0.0)(10000.0/13<->10000.0/82),delta=[9.70652978e-07 9.85483967e-07],lambda=[9.90358311e-07 9.75533495e-07]
+16*(-0.0)(10000.0/15<->10000.0/81),delta=[9.70628839e-07 9.85460536e-07],lambda=[9.90334179e-07 9.75510063e-07]
+17*(0.0)(0/50<->0/77),delta=[0. 0.],lambda=[0. 0.]
+18*(-0.0)(10000.0/80<->10000.0/14),delta=[9.85460011e-07 9.70628291e-07],lambda=[9.75509538e-07 9.90333631e-07]
+19*(-0.0)(10000.0/47<->10000.0/10),delta=[9.85459337e-07 9.70627452e-07],lambda=[9.75508864e-07 9.90332793e-07]
+```
 
-    if ctx.debug:
-        print("run final time")
-    deltas, lambdas, psi, etas = solve(
-        all_data,
-        input,
-        ctx,
-        etas,
-    )
-    for i in range(all_data.venues_count):
-        print(
-            f"Market {all_data.venue(i)}, delta: {deltas[i].value}, lambda: {lambdas[i].value}, eta: {etas[i]}",
-        )
 
-    # basically, we have matrix where rows are in tokens (DELTA)
-    # columns are outs (LAMBDA)
-    # so recursively going DELTA-LAMBDA and subtracting values from cells
-    # will allow to build route with amounts
-    return (psi.value[all_data.index_of_token(input.out_token_id)], psi)
+Let solve for ust PICA to OSMO on Osmosis. It solves same `-0.0` for `100/PICA`, for `1000/PICA` or for `10000/PICA` it can loop freeze or tell infeasible, like solving large and small valut but stuck on middle one.
+
+Sometimes `venue_amount` go negative because of rounding. 
+
+Attemps to restrict trading many small amounts by reducing arbitrage hard to define.
+
+```
+11*(0.0)(10000.0/09<->10000.0/73),delta=[0. 1.],lambda=[0. 0.]
+```
+
+Above traded 10K of PICA agains 100M PICA pools and OSMO, and yet it traded to zero, which is not right.
+
+Various weird artifactes appear in wide range of constraints, from most relaxed to most strict.
+
+Another instabilit, solved and force some trades disabled, assuming will get same solution. Got infecible, meaning that forceing what calculated and should solve, fails.
+
+```
+2024-03-02 22:26:29.206 | INFO     | simulation.routers.angeris_cvxpy.data:summary:217 -  raw_in=-1.0->raw_out=0.9996001796662408((1.6090813573421516e-06/USD))
+2024-03-02 22:26:29.206 | INFO     | simulation.routers.angeris_cvxpy.data:summary:220 - original_in=1.0000000000000002/158456325028528675187087900673(0.011315484012931223/USD),original_out=1/158456325028528675187087900674
+2024-03-02 22:26:29.208 | INFO     | simulation.routers.angeris_cvxpy.data:summary:224 - 0*(1.0)(10000.0/237684487542793012780631851009<->9999.999999999996/237684487542793012780631851010),delta=[9.99900062e-01 9.00100010e-08],lambda=[5.16932098e-08 9.99700160e-01]
+2024-03-02 22:26:29.209 | INFO     | simulation.routers.angeris_cvxpy.data:summary:224 - 1*(0.0)(9999.999999999998/237684487542793012780631851010<->10000.0/237684487542793012780631851012),delta=[2.02483123e-07 1.87026614e-07],lambda=[2.73982269e-07 1.15501383e-07]
+2024-03-02 22:26:29.210 | INFO     | simulation.routers.angeris_cvxpy.data:summary:224 - 2*(0.0)(10000.0/237684487542793012780631851013<->9999.999999999998/237684487542793012780631851010),delta=[2.57863924e-07 1.44026398e-07],lambda=[2.47873925e-07 1.53989148e-07]
+2024-03-02 22:26:29.212 | INFO     | simulation.routers.angeris_cvxpy.data:summary:224 - 3*(0.0)(9999.999999999998/237684487542793012780631851010<->10000.0/237684487542793012780631851016),delta=[1.42094493e-07 1.43689253e-07],lambda=[1.43727874e-07 1.42038824e-07]
+2024-03-02 22:26:29.213 | INFO     | simulation.routers.angeris_cvxpy.data:summary:224 - 4*(0.0)(10000.0/237684487542793012780631851011<->9999.999999999996/237684487542793012780631851010),delta=[1.01813728e-07 1.35394300e-07],lambda=[9.18237288e-08 1.45370162e-07]
+2024-03-02 22:26:29.215 | INFO     | simulation.routers.angeris_cvxpy.data:summary:224 - 5*(0.0)(10000.0/237684487542793012780631851014<->9999.999999999998/237684487542793012780631851010),delta=[2.10644565e-07 1.76245668e-07],lambda=[2.62631559e-07 1.24232338e-07]
+2024-03-02 22:26:29.217 | INFO     | simulation.routers.angeris_cvxpy.data:summary:224 - 6*(0.0)(10000.0/237684487542793012780631851012<->10000.0/237684487542793012780631851016),delta=[1.37389267e-07 1.48622150e-07],lambda=[1.49861348e-07 1.36134380e-07]
+2024-03-02 22:26:29.218 | INFO     | simulation.routers.angeris_cvxpy.data:summary:224 - 7*(0.0)(9999.999999999998/237684487542793012780631851010<->9999.999999999998/237684487542793012780631851012),delta=[1.30320549e-07 1.22874123e-07],lambda=[8.12427273e-08 1.71937274e-07]
+2024-03-02 22:26:29.220 | INFO     | simulation.routers.angeris_cvxpy.data:summary:224 - 8*(0.0)(10000.0/237684487542793012780631851014<->9999.999999999998/237684487542793012780631851010),delta=[1.38259018e-07 1.18777775e-07],lambda=[7.62820254e-08 1.80743380e-07]
+2024-03-02 22:26:29.222 | INFO     | simulation.routers.angeris_cvxpy.data:summary:224 - 9*(0.0)(9999.999999999998/237684487542793012780631851015<->10000.0/237684487542793012780631851016),delta=[1.44667328e-07 1.40929543e-07],lambda=[1.40501785e-07 1.45077743e-07]
+2024-03-02 22:26:29.223 | INFO     | simulation.routers.angeris_cvxpy.data:summary:224 - 10*(0.0)(9999.999999999996/237684487542793012780631851010<->10000.0/237684487542793012780631851015),delta=[1.40281283e-07 1.45639082e-07],lambda=[1.46087311e-07 1.39814626e-07]
+2024-03-02 22:26:29.224 | INFO     | simulation.routers.angeris_cvxpy.data:summary:224 - 11*(1.0)(10000.0/237684487542793012780631851009<->10000.0/158456325028528675187087900673),delta=[-0.  1.],lambda=[0.9999 0.    ]
+2024-03-02 22:26:29.225 | INFO     | simulation.routers.angeris_cvxpy.data:summary:224 - 12*(1.0)(9999.999999999998/237684487542793012780631851010<->9999.999999999998/158456325028528675187087900674),delta=[9.9970023e-01 9.0000010e-08],lambda=[9.0000010e-08 9.9960027e-01]
+2024-03-02 22:26:29.226 | INFO     | simulation.routers.angeris_cvxpy.data:summary:224 - 13*(0.0)(10000.0/237684487542793012780631851011<->10000.0/158456325028528675187087900675),delta=[-0. -0.],lambda=[ 0. -0.]
+2024-03-02 22:26:29.228 | INFO     | simulation.routers.angeris_cvxpy.data:summary:224 - 14*(0.0)(10000.0/237684487542793012780631851012<->10000.0/158456325028528675187087900678),delta=[-0. -0.],lambda=[ 0. -0.]
+2024-03-02 22:26:29.229 | INFO     | simulation.routers.angeris_cvxpy.data:summary:224 - 15*(0.0)(10000.0/237684487542793012780631851013<->10000.0/158456325028528675187087900682),delta=[-0. -0.],lambda=[ 0. -0.]
+2024-03-02 22:26:29.230 | INFO     | simulation.routers.angeris_cvxpy.data:summary:224 - 16*(0.0)(10000.0/237684487542793012780631851015<->10000.0/158456325028528675187087900681),delta=[-0. -0.],lambda=[ 0. -0.]
+2024-03-02 22:26:29.231 | INFO     | simulation.routers.angeris_cvxpy.data:summary:224 - 17*(0.0)(0/316912650057057350374175801350<->0/158456325028528675187087900677),delta=[0. 0.],lambda=[0. 0.]
+2024-03-02 22:26:29.233 | INFO     | simulation.routers.angeris_cvxpy.data:summary:224 - 18*(0.0)(10000.0/158456325028528675187087900680<->10000.0/237684487542793012780631851014),delta=[-0. -0.],lambda=[-0.  0.]
+2024-03-02 22:26:29.234 | INFO     | simulation.routers.angeris_cvxpy.data:summary:224 - 19*(0.0)(9999.999999999998/316912650057057350374175801347<->9999.999999999998/237684487542793012780631851010),delta=[-0. -0.],lambda=[-0.  0.]
+2024-03-02 22:26:29.515 | INFO     | simulation.routers.generic_linear:solve:38 - using forcing etas [None, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, None, None, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0] for solution
+```
+
+## So what?
+
+It does not look that OR solver works well without sophisticated procedures to define  decision of trade or not. To take decsion and scale, oracles requried. Oracles are build using combinatiorial (graph) optimization. So we should (should have been go that way), also it does not do arbitrage nor splits to many-to-many trade, but it can robostly solve simpl paths.
+

@@ -22,6 +22,7 @@ from blackbox.cvm_runtime.response_to_get_config import (
 from blackbox.osmosis_pools import Model as OsmosisPoolsModel
 from blackbox.skip_money import Chain
 from simulation.routers.data import (
+    MINIMAL_FEE_PER_MILLION_DEFAULT,
     MINIMAL_TRANSACTION_USD_COST_DEFAULT,
     AssetPairsXyk,
     AssetTransfers,
@@ -158,7 +159,6 @@ class ExtendedCvmRegistry(BaseModel):
                         )
                         continue
 
-                    # raise Exception(indexer)
                     token_a_amount = (
                         int(indexer.token0Amount) if indexer.token0Amount else indexer.pool_assets[0].token.amount
                     )
@@ -210,17 +210,23 @@ def for_simulation(cvm_registry: ExtendedCvmRegistry, usd_oracles) -> Simulation
     """
     usd_oracles = {a.asset_id.root: a.usd_per_amount for a in usd_oracles}
     asset_transfers = []
+    bidirectional = set()
     for transfer in cvm_registry.network_assets:
-        asset_transfers.append(
-            AssetTransfers(
-                in_asset_id=transfer.asset_id.root,
-                out_asset_id=transfer.to_asset_id.root,
-                in_token_amount=-1,
-                out_token_amount=-1,
-                venue_fixed_costs_in_usd=0.001,
-                fee_per_million=0,
+        in_asset_id = transfer.asset_id.root
+        out_asset_id = transfer.to_asset_id.root
+        if (in_asset_id, out_asset_id) not in bidirectional:
+            asset_transfers.append(
+                AssetTransfers(
+                    in_asset_id=in_asset_id,
+                    out_asset_id=out_asset_id,
+                    in_token_amount=-1,
+                    out_token_amount=-1,
+                    venue_fixed_costs_in_usd=max(0.001, MINIMAL_TRANSACTION_USD_COST_DEFAULT),
+                    fee_per_million=MINIMAL_FEE_PER_MILLION_DEFAULT,
+                )
             )
-        )
+            bidirectional.add((in_asset_id, out_asset_id))
+            bidirectional.add((out_asset_id, in_asset_id))
     asset_pairs_xyk = []
     for pair in cvm_registry.exchanges:
         asset_pairs_xyk.append(
@@ -228,8 +234,8 @@ def for_simulation(cvm_registry: ExtendedCvmRegistry, usd_oracles) -> Simulation
                 pool_id=int(pair.exchange_id.root),
                 in_asset_id=pair.asset_a.asset_id.root,
                 out_asset_id=pair.asset_b.asset_id.root,
-                fee_of_in_per_million=pair.fee_per_million,
-                fee_of_out_per_million=pair.fee_per_million,
+                fee_of_in_per_million=max(pair.fee_per_million, MINIMAL_FEE_PER_MILLION_DEFAULT),
+                fee_of_out_per_million=max(pair.fee_per_million, MINIMAL_FEE_PER_MILLION_DEFAULT),
                 weight_a=pair.weight_a,
                 weight_b=pair.weight_b,
                 in_token_amount=int(pair.token_a_amount),

@@ -68,11 +68,12 @@ anytree = "2.12.1"
 shelved-cache = "^0.3.1"
 cachetools = "^5.3.2"
 loguru = "^0.7.2"
-pyright = "^1.1.352"
+mpire = "^2.10.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.4.3"
 ruff = "0.1.15"
+pyright = "^1.1.352"
 
 
 [build-system]

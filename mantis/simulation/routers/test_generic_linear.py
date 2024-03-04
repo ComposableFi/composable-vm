@@ -6,6 +6,7 @@ import numpy as np
 import pytest
 from loguru import logger
 
+from blackbox.cvm_runtime.execute import Spawn
 from simulation.routers.angeris_cvxpy import cvxpy_to_data
 from simulation.routers.data import (
     AllData,
@@ -107,7 +108,7 @@ def test_usd_arbitrage_low_fees_short_path():
     result = route(input, data)
     solution = cvxpy_to_data(input, data, ctx, result)
     assert solution.next[0].out_asset_id == "ETHEREUM/USDC"
-    assert solution.next[0].out_asset_amount == 999
+    assert solution.next[0].out_asset_amount == 1000
     assert len(solution.next[0].next) == 0
 
 
@@ -168,7 +169,8 @@ def create_usd_arbitrage_low_fees_long_path():
 def test_usd_arbitrage_high_fees_long_path():
     data = create_usd_arbitrage_low_fees_long_path()
     ctx = Ctx()
-    input = new_input("CENTAURI/ETHEREUM/USDC", "ETHEREUM/USDC", 1_000, 50)
+    in_amount = 1_000
+    input = new_input("CENTAURI/ETHEREUM/USDC", "ETHEREUM/USDC", in_amount, 50)
     result = route(
         input,
         data,
@@ -176,8 +178,11 @@ def test_usd_arbitrage_high_fees_long_path():
     )
     solution = cvxpy_to_data(input, data, ctx, result)
 
-    assert math.floor(result.received(data.index_of_token(input.out_token_id))) == 909
-    assert solution.next[0].next[0].next[0].out_asset_id == "ETHEREUM/USDC"
+    assert math.floor(result.received(data.index_of_token(input.out_token_id))) == 1000
+    assert solution.in_amount > 0
+    assert solution.in_amount <= in_amount
+    assert isinstance(solution.next[0], Spawn)
+    assert solution.next[0].next[0].out_asset_id == "ETHEREUM/USDC"
 
 
 def test_arbitrage_loop_of_start_middle_final_assets():

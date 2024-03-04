@@ -21,7 +21,7 @@ def oracalize_data(base_data: AllData, input: Input, ctx: Ctx) -> tuple[AllData,
 
     if oracalized_input.in_amount < ctx.min_input_in_usd:
         raise ToSmallUsdValueOfInput(
-            f"minimal amount is {ctx.minimal_amount} and you have {oracalized_input.in_amount} for {input.in_token_id}"
+            f"minimal amount is {ctx.minimal_venued_amount} and you have {oracalized_input.in_amount} for {input.in_token_id}"
         )
 
     # make all exchanges to be oracalized
@@ -130,7 +130,10 @@ def scale_in(base_data: AllData, input: Input, ctx: Ctx) -> tuple[AllData, Input
                     venue.in_token_amount = venue.in_token_amount * ratio
                 if venue.out_asset_id == asset_id:
                     venue.out_token_amount = venue.out_token_amount * ratio
-                if venue.in_token_amount < ctx.minimal_amount or venue.out_token_amount < ctx.minimal_amount:
+                if (
+                    venue.in_token_amount < ctx.minimal_venued_amount
+                    or venue.out_token_amount < ctx.minimal_venued_amount
+                ):
                     venue.in_token_amount = 0
                     venue.out_token_amount = 0
             for transfer in new_data.asset_transfers:
@@ -138,7 +141,10 @@ def scale_in(base_data: AllData, input: Input, ctx: Ctx) -> tuple[AllData, Input
                     transfer.in_token_amount = transfer.in_token_amount * ratio
                 if transfer.out_asset_id == asset_id:
                     transfer.out_token_amount = transfer.out_token_amount * ratio
-                if venue.in_token_amount < ctx.minimal_amount or venue.out_token_amount < ctx.minimal_amount:
+                if (
+                    venue.in_token_amount < ctx.minimal_venued_amount
+                    or venue.out_token_amount < ctx.minimal_venued_amount
+                ):
                     venue.in_token_amount = 0
                     venue.out_token_amount = 0
             if input.in_token_id == asset_id:
