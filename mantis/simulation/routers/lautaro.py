@@ -29,7 +29,7 @@ class Edge:
 
     def __init__(
         self,
-        e: [AssetTransfers | AssetPairsXyk],
+        e: list[AssetTransfers | AssetPairsXyk],
         tokensIds: dict[TId, int],
         usd_oracles: dict[TId, int],
     ):
@@ -173,7 +173,7 @@ def route(
     all_data: AllData,
     _ctx: Ctx = Ctx(),  # Context
     max_depth: int = 5,  # The maximum number of edges that can be used
-    splits: int = 1000,  # The number of flow units in which the amount is divided
+    splits: int = 10,  # The number of flow units in which the amount is divided
     revision=True,  # When uses an edge, check if the edge has been used before and if so, use the same edge
     Nproces=None,  # A parameter used for paralell programing. For now, it seems to be best to use only one threat than paralell programming
 ):
@@ -225,7 +225,7 @@ def route(
 
     # For each max_depth and splits
     for max_depth_i, splits_i in zip(max_depth, splits):
-        for split in range(splits_i):  # The split variable is not used but left for clarity
+        for _split in range(splits_i):  # The split variable is not used but left for clarity
             # Reset the dist and previous edge of each node for each length of the path
             for i in range(((max(max_depth) + 1) * n)):
                 state.dist[i] = (None, 0)

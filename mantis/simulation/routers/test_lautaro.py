@@ -1,5 +1,6 @@
 # solves using convex optimization
 # clarabel cvxpy local mip
+import copy
 import itertools
 
 import numpy as np
@@ -44,12 +45,18 @@ def test_single_chain_single_cffm_route_full_symmetry_exist():
     logger.info(result)
 
 
-def _test_big_numeric_range():
-    input = new_input(1, 2, 100, 50)
-    pair = new_pair(1, 1, 2, 0, 0, 1, 10, 1000, 10_000_000_000, 1_000_000_000)
+def test_big_numeric_range_one_pair_of_same_value():
+    in_amount = 1000
+    input = new_input(1, 2, in_amount, 50)
+    pair = new_pair(1, 1, 2, 0, 0, 1, 1, 1, 1_000, 1_000_000_000)
     data = new_data([pair], [])
-    result = route(input, data)
-    logger.info(result)
+    a, b, c, out_amount, router_in_amount = route(input, copy.deepcopy(data))
+    logger.info(f"{a} {b} {c}")
+    traded = pair.trade(1, in_amount)
+    assert in_amount == router_in_amount[0]
+    assert out_amount[0] == 500000000.0000001
+    assert traded == 500000000
+    
 
 
 def _test_simulate_all_connected_venues():
