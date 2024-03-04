@@ -57,15 +57,8 @@ class Edge:
         self.F = [self.toFloatOrZero(e.fee_in), self.toFloatOrZero(e.fee_out)]
         self.CF = [0, 0]
 
-    def GetAmount(self, Ti, Xi):
-        # Send Xi amount of token Ti and return the amount of the other token
-        i, o = 0, 1
-        if Ti == self.U[1]:
-            i, o = 1, 0
-        Xi = (Xi - self.CF[i]) * (1 - self.F[i])
-        return self.B[o] * (1 - (self.B[i] / (self.B[i] + Xi)) ** (self.W[i] / self.W[o]))
 
-    def DoChange(self, Ti, Xi):
+    def trade(self, Ti, Xi):
         # Actually do the change of the amount of the tokens
         i, o = 0, 1
         if Ti == self.U[1]:
@@ -136,7 +129,7 @@ def Range(e0, e1, state):
                         ee.DoChange(vv, dist[(jj - 1) * state.n + vv][1])
             else:
                 ee = e
-            Xv = ee.GetAmount(u, dist[j * state.n + u][1])
+            Xv = copy.deepcopy(ee).trade(u, dist[j * state.n + u][1])
             state.dlock[v].acquire()  # Lock the node
             if dist[(j + 1) * state.n + v][1] < Xv:
                 dist[(j + 1) * state.n + v] = (ei, Xv)
@@ -263,7 +256,7 @@ def route(
                                     pad = state.dist[jj * state.n + vv][0]
                                     vv = edges[pad].GetOther(vv)
                                     if pad == ei:
-                                        ee.DoChange(vv, state.dist[(jj - 1) * state.n + vv][1])
+                                        ee.trade(vv, state.dist[(jj - 1) * state.n + vv][1])
                             else:
                                 ee = e  # If the revision is not active, use the edge
                             # Get the amount of the other token
@@ -296,7 +289,7 @@ def route(
             for i in range(len(path)):
                 e = edges[path[i]]
                 deltas[path[i]] += Xi
-                Xj = e.DoChange(u, Xi)
+                Xj = e.trade(u, Xi)
                 lambdas[path[i]] += Xj
                 Xi = Xj
                 u = e.GetOther(u)
