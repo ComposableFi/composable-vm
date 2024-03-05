@@ -1,6 +1,7 @@
 import copy
 from dataclasses import dataclass
 import os
+from simulation.routers.errors import Infeasible
 
 from simulation.routers.data import (
     AllData,
@@ -17,12 +18,29 @@ class Edge:
     # A class that represent an edge in an useful way
     # In the future it could be used in hypergraph algorithms with a few changes
 
-    U: list[int]  # nodes of the edge
-    B: list[TAmount]  # amount of each token in the edge
-    W: list[int]  # weight of each token in the edge
-    F: list[float]  # fee of each token in the edge
-    CF: list[float]  # constant fee of each token in the edge
-
+    nodes: list[int]
+    """
+    nodes of the edge
+    """
+    
+    balances: list[TAmount]
+    """
+    amount of each token in the edge
+    """
+    
+    weights: list[int] 
+    """
+    weight of each token in the edge
+    """
+    fees: list[float]
+    """
+    fee of each token in the edge
+    """
+    constant_fees: list[float] 
+    """
+    constant fee of each token in the edge
+    """
+    
     def toFloatOrZero(self, x):  # Cast to float using 0.0 when it fails
         return float(x) if x else 0.0
 
@@ -39,42 +57,42 @@ class Edge:
             self.__initFromPairsXyk(e, tokensIds, usd_oracles)
 
     def __initFromTransfers(self, e: AssetTransfers, tokensIds: dict[TId, int], usd_oracles: dict[TId, int]):
-        self.U = [tokensIds[e.in_asset_id], tokensIds[e.out_asset_id]]
-        raise Exception("transfer amounts are not subject to same logic as exchanges")
-        self.B = [e.in_token_amount, e.out_token_amount]
-        self.W = [1, 1]
-        self.F = [
+        self.nodes = [tokensIds[e.in_asset_id], tokensIds[e.out_asset_id]]
+        # raise Exception("transfer amounts are not subject to same logic as exchanges")
+        self.balances = [e.in_token_amount, e.out_token_amount]
+        self.weights = [1, 1]
+        self.fees = [
             float(e.fee_per_million) / 1_000_000.0,
             float(e.fee_per_million) / 1_000_000.0,
         ]
-        self.CF = [0, 0]
+        self.constant_fees = [0, 0]
 
     def __initFromPairsXyk(self, e: AssetPairsXyk, tokensIds: dict[TId, int], usd_oracles: dict[TId, int]):
-        self.U = [tokensIds[e.in_asset_id], tokensIds[e.out_asset_id]]
-        self.B = [e.in_token_amount, e.out_token_amount]
-        self.W = [e.weight_a, e.weight_b]
-        self.F = [self.toFloatOrZero(e.fee_in), self.toFloatOrZero(e.fee_out)]
-        self.CF = [0, 0]
+        self.nodes = [tokensIds[e.in_asset_id], tokensIds[e.out_asset_id]]
+        self.balances = [e.in_token_amount, e.out_token_amount]
+        self.weights = [e.weight_a, e.weight_b]
+        self.fees = [self.toFloatOrZero(e.fee_in), self.toFloatOrZero(e.fee_out)]
+        self.constant_fees = [0, 0]
 
 
     def trade(self, Ti, Xi):
         # Actually do the change of the amount of the tokens
         i, o = 0, 1
-        if Ti == self.U[1]:
+        if Ti == self.nodes[1]:
             i, o = 1, 0
-        Xi = (Xi - self.CF[i]) * (1 - self.F[i])
-        result = self.B[o] * (1 - (self.B[i] / (self.B[i] + Xi)) ** (self.W[i] / self.W[o]))
-        self.B[i] += Xi
-        self.B[o] -= result
+        Xi = (Xi - self.constant_fees[i]) * (1 - self.fees[i])
+        result = self.balances[o] * (1 - (self.balances[i] / (self.balances[i] + Xi)) ** (self.weights[i] / self.weights[o]))
+        self.balances[i] += Xi
+        self.balances[o] -= result
         return result
 
     def GetOther(self, Ti):  # Assumes only 2 nodes in the edge
-        if Ti == self.U[0]:
-            return self.U[1]
-        return self.U[0]
+        if Ti == self.nodes[0]:
+            return self.nodes[1]
+        return self.nodes[0]
 
     def __repr__(self):
-        return f"Edge({self.U}, {self.B}, {self.W}, {self.F}, {self.CF})"
+        return f"Edge({self.nodes}, {self.balances}, {self.weights}, {self.fees}, {self.constant_fees})"
 
 
 @dataclass
@@ -130,7 +148,6 @@ def data2bf(
         edges.append(Edge(x, tokensIds, all_data.usd_oracles))
 
     return edges, tokensIds, all_tokens
-
 
 def route(
     input: Input,
@@ -190,15 +207,15 @@ def route(
             # Process each length of the path
             for step in range(max_depth_i):
                     for ei, e in enumerate(edges):
-                        for u in e.U:
-                            if state.dist[step * state.n + u].amount == 0:
+                        for node_index in e.nodes:
+                            if state.dist[step * state.n + node_index].amount == 0:
                                 continue
-                            v = e.GetOther(u)
+                            other_node_index = e.GetOther(node_index)
                             if (
                                 state.revision
                             ):  # If the revision is active, use the same edge if it has been used before
                                 ee = copy.deepcopy(e)
-                                vv = u
+                                vv = node_index
                                 # Go back in the path to check if the edge has been used before
                                 for jj in range(step, 0, -1):
                                     pad = state.dist[jj * state.n + vv].parent
@@ -208,10 +225,10 @@ def route(
                             else:
                                 ee = e  # If the revision is not active, use the edge
                             # Get the amount of the other token
-                            Xv = copy.deepcopy(ee).trade(u, state.dist[step * state.n + u].amount)
+                            Xv = copy.deepcopy(ee).trade(node_index, state.dist[step * state.n + node_index].amount)
                             # Update the amount of the other token if it is greater than the previous amount
-                            if state.dist[(step + 1) * state.n + v].amount < Xv:
-                                state.dist[(step + 1) * state.n + v] = Previous(ei, Xv)
+                            if state.dist[(step + 1) * state.n + other_node_index].amount < Xv:
+                                state.dist[(step + 1) * state.n + other_node_index] = Previous(ei, Xv)
 
             # Get the optimal path
             for j in range(1, max_depth_i + 1):
@@ -221,26 +238,26 @@ def route(
                     state.depth = j
 
             if state.depth == 0:  # if there is no path
-                raise Exception("No path found")
+                raise Infeasible("No path found")
 
             path: list[int] = [0] * state.depth
 
             # Rebuild the path
-            v = received_asset_index
+            other_node_index = received_asset_index
             for j in range(state.depth, 0, -1):
-                path[j - 1] = state.dist[j * n + v].parent
-                v = edges[path[j - 1]].GetOther(v)
+                path[j - 1] = state.dist[j * n + other_node_index].parent
+                other_node_index = edges[path[j - 1]].GetOther(other_node_index)
 
             # Use the path and update the edges
-            Xi = input.in_amount / (total_splits)
-            u = asset_id_to_index[input.in_token_id]
+            Xi = input.in_amount / total_splits
+            node_index = asset_id_to_index[input.in_token_id]
             for i in range(len(path)):
                 e = edges[path[i]]
                 deltas[path[i]] += Xi
-                Xj = e.trade(u, Xi)
+                Xj = e.trade(node_index, Xi)
                 lambdas[path[i]] += Xj
                 Xi = Xj
-                u = e.GetOther(u)
+                node_index = e.GetOther(node_index)
 
             # Update the paths and outcomes
             assert Xi > 0
