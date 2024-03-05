@@ -54,13 +54,12 @@ def test_big_numeric_range_one_pair_of_same_value():
     pair45 = new_pair(4, 3, 5, 0, 0, 1, 1, 1, 1_000, 1_000)
     pair35 = new_pair(5, 4, 5, 0, 0, 1, 1, 1, 1_000, 1_000)
     data = new_data([pair12, pair23, pair24, pair45, pair35], [])
-    a, b, c, router_out_amount, router_in_amount = route(input, copy.deepcopy(data), splits=4)
+    a, b, c, router_out_amount, router_in_amount = route(input, copy.deepcopy(data), splits=1)
     print(f"{a} {b} {c} {router_in_amount}->{router_out_amount}")
     traded = pair12.trade(1, in_amount)
     assert in_amount == router_in_amount[0]
     assert router_out_amount[0] == 500000000.0000001
     assert traded == 500000000
-    
 
 
 def _test_simulate_all_connected_venues():

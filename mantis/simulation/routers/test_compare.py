@@ -125,15 +125,15 @@ if __name__ == "__main__":
             for depth in [3, 5, 10, 15]
         }
 
-        routes[f"Lautaro 1 process, depth {[3,5,10,20]} and 1000 splits without revision"] = bellman_ford_oracle.BuildRoute(
-            [3, 5, 10, 20], [100, 300, 300, 300], revision=False, Nproces=1
-        )
+        routes[
+            f"Lautaro 1 process, depth {[3,5,10,20]} and 1000 splits without revision"
+        ] = bellman_ford_oracle.BuildRoute([3, 5, 10, 20], [100, 300, 300, 300], revision=False, Nproces=1)
         routes[f"Lautaro 1 process, depth {[5,10]} and 1000 splits without revision"] = bellman_ford_oracle.BuildRoute(
             [5, 10], [500, 500], revision=False, Nproces=1
         )
-        routes[f"Lautaro 1 process, depth {[3,5,10]} and 1000 splits without revision"] = bellman_ford_oracle.BuildRoute(
-            [3, 5, 10], [100, 400, 500], revision=False, Nproces=1
-        )
+        routes[
+            f"Lautaro 1 process, depth {[3,5,10]} and 1000 splits without revision"
+        ] = bellman_ford_oracle.BuildRoute([3, 5, 10], [100, 400, 500], revision=False, Nproces=1)
 
         routes.update(
             {

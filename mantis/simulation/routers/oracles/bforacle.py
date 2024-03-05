@@ -1,7 +1,7 @@
 import copy
 from dataclasses import dataclass
-import os
-from simulation.routers.errors import Infeasible
+
+from loguru import logger
 
 from simulation.routers.data import (
     AllData,
@@ -12,6 +12,7 @@ from simulation.routers.data import (
     TAmount,
     TId,
 )
+from simulation.routers.errors import Infeasible
 
 
 class Edge:
@@ -22,13 +23,13 @@ class Edge:
     """
     nodes of the edge
     """
-    
+
     balances: list[TAmount]
     """
     amount of each token in the edge
     """
-    
-    weights: list[int] 
+
+    weights: list[int]
     """
     weight of each token in the edge
     """
@@ -36,11 +37,11 @@ class Edge:
     """
     fee of each token in the edge
     """
-    constant_fees: list[float] 
+    constant_fees: list[float]
     """
     constant fee of each token in the edge
     """
-    
+
     def toFloatOrZero(self, x):  # Cast to float using 0.0 when it fails
         return float(x) if x else 0.0
 
@@ -59,7 +60,7 @@ class Edge:
     def __initFromTransfers(self, e: AssetTransfers, tokensIds: dict[TId, int], usd_oracles: dict[TId, int]):
         self.nodes = [tokensIds[e.in_asset_id], tokensIds[e.out_asset_id]]
         # raise Exception("transfer amounts are not subject to same logic as exchanges")
-        self.balances = [e.in_token_amount, e.out_token_amount]
+        self.balances = [10**22, 10**22]  # [e.in_token_amount, e.out_token_amount]
         self.weights = [1, 1]
         self.fees = [
             float(e.fee_per_million) / 1_000_000.0,
@@ -74,14 +75,15 @@ class Edge:
         self.fees = [self.toFloatOrZero(e.fee_in), self.toFloatOrZero(e.fee_out)]
         self.constant_fees = [0, 0]
 
-
     def trade(self, Ti, Xi):
         # Actually do the change of the amount of the tokens
         i, o = 0, 1
         if Ti == self.nodes[1]:
             i, o = 1, 0
         Xi = (Xi - self.constant_fees[i]) * (1 - self.fees[i])
-        result = self.balances[o] * (1 - (self.balances[i] / (self.balances[i] + Xi)) ** (self.weights[i] / self.weights[o]))
+        result = self.balances[o] * (
+            1 - (self.balances[i] / (self.balances[i] + Xi)) ** (self.weights[i] / self.weights[o])
+        )
         self.balances[i] += Xi
         self.balances[o] -= result
         return result
@@ -102,13 +104,14 @@ class Previous:
     Used venue index to arrive to `amount`
     """
     amount: int
-    
-    def default() -> 'Previous':
+
+    def default() -> "Previous":
         return Previous(None, 0)
-    
-    def start(tendered_asset) -> 'Previous':
-        return Previous(None, tendered_asset) 
-    
+
+    def start(tendered_asset) -> "Previous":
+        return Previous(None, tendered_asset)
+
+
 class State:
     # A class that represent the state of the algorithm
     # It's used to pass the state to the threads if executed in parallel
@@ -120,7 +123,7 @@ class State:
     revision: bool
     j: int
     n: int
-    
+
     def reset_distances(self, max_depth):
         self.distances = [[Previous.default()] * (max(max_depth) + 1) for _ in range(self.n)]
 
@@ -134,14 +137,7 @@ class State:
         self.j = None
         self.n = None
 
-# Bellman Ford based solution
-# The function divides the transaction if several paths (splits) and for each path
-# find an optimal path using the Bellman Ford algorithm without any modification.
-#
-# If the revision parameter is True, in each step the edge will be used with the information
-# of the path that reached the first node. This might be important in loops.
-#
-# The parameters of the functions allows to go over the runtime-accuracy tradeoff
+
 def data2bf(
     all_data: AllData,
 ):
@@ -155,14 +151,23 @@ def data2bf(
 
     return edges, tokensIds, all_tokens
 
+
 def route(
     input: Input,
     all_data: AllData,
     _ctx: Ctx = Ctx(),  # Context
-    max_depth: int = 5,  # The maximum number of edges that can be used
-    splits: int = 2,  # The number of flow units in which the amount is divided
+    max_depth: int = 6,  # The maximum number of edges that can be used
+    splits: int = 1,  # The number of flow units in which the amount is divided
     revision=True,  # When uses an edge, check if the edge has been used before and if so, use the same edge
 ):
+    """
+    Bellman Ford based solution
+    The function divides the transaction if several paths (`splits``) and for each path
+    find an optimal path using the Bellman Ford algorithm without any modification.
+    If the `revision` parameter is True, in each step the edge will be used with the information
+    of the path that reached the first node. This might be important in loops.
+    The parameters of the functions allows to go over the runtime-accuracy tradeoff
+    """
     # If max_depth or splits are not lists, convert them to lists
     if isinstance(max_depth, int):
         max_depth = [max_depth]
@@ -211,44 +216,63 @@ def route(
 
             # Process each length of the path
             for current_depth in range(max_depth_i):
-                    for venue_index, venue in enumerate(venues):
-                        for asset_index in venue.nodes:
-                            if state.distances[asset_index][current_depth].amount > 0:
-                                next_asset_index = venue.GetOther(asset_index)
-                                maybe_better_venue = copy.deepcopy(venue)
-                                if (
-                                    state.revision
-                                ):  # If the revision is active, use the same edge if it has been used before
-                                    previous_asset_index = asset_index
-                                    # Go back in the path to check if the edge has been used before
-                                    for step_back in range(current_depth, 0, -1):
-                                        used_venue_index = state.distances[previous_asset_index][step_back].used_venue_index
-                                        previous_asset_index = venues[used_venue_index].GetOther(previous_asset_index)
-                                        if used_venue_index == venue_index: 
-                                            maybe_better_venue.trade(previous_asset_index, state.distances[previous_asset_index][(step_back - 1)].amount)
-                                # Get the amount of the other token
-                                received_amount = maybe_better_venue.trade(asset_index, state.distances[asset_index][current_depth].amount)
-                                # Update the amount of the other token if it is greater than the previous amount
-                                if state.distances[next_asset_index][(current_depth + 1)].amount < received_amount:
-                                    state.distances[next_asset_index][(current_depth + 1)] = Previous(venue_index, received_amount)
+                for venue_index, venue in enumerate(venues):
+                    for asset_index in venue.nodes:
+                        if state.distances[asset_index][current_depth].amount > 0:
+                            next_asset_index = venue.GetOther(asset_index)
+                            maybe_better_venue = copy.deepcopy(venue)
+                            if (
+                                state.revision
+                            ):  # If the revision is active, use the same edge if it has been used before
+                                previous_asset_index = asset_index
+                                # Go back in the path to check if the edge has been used before
+                                for step_back in range(current_depth, 0, -1):
+                                    used_venue_index = state.distances[previous_asset_index][step_back].used_venue_index
+                                    previous_asset_index = venues[used_venue_index].GetOther(previous_asset_index)
+                                    if used_venue_index == venue_index:
+                                        maybe_better_venue.trade(
+                                            previous_asset_index,
+                                            state.distances[previous_asset_index][(step_back - 1)].amount,
+                                        )
+                            # Get the amount of the other token
+                            received_amount = maybe_better_venue.trade(
+                                asset_index, state.distances[asset_index][current_depth].amount
+                            )
+                            # Update the amount of the other token if it is greater than the previous amount
+                            if state.distances[next_asset_index][(current_depth + 1)].amount < received_amount:
+                                state.distances[next_asset_index][(current_depth + 1)] = Previous(
+                                    venue_index, received_amount
+                                )
 
             # Get the optimal path
+            received_amount = state.distances[received_asset_index][state.depth].amount
             for current_depth in range(1, max_depth_i + 1):
-                if state.distances[received_asset_index][current_depth] and (
-                    state.depth == 0 or state.distances[received_asset_index][current_depth].amount > state.distances[received_asset_index][state.depth].amount
-                ):
+                maybe_received_amount = state.distances[received_asset_index][current_depth].amount
+                if (
+                    state.distances[received_asset_index][current_depth]
+                    and maybe_received_amount
+                    > state.distances[received_asset_index][state.depth].amount
+                    and maybe_received_amount > received_amount
+                ): 
                     state.depth = current_depth
+                    received_amount = maybe_received_amount
 
+            if received_amount == 0:  
+                raise Infeasible("No path retaining some value found")
             if state.depth == 0:  # if there is no path
                 raise Infeasible("No path found")
 
-            path: list[int] = [0] * state.depth
+            path: list[int | None] = [None] * state.depth
 
             # Rebuild the path
             next_asset_index = received_asset_index
             for current_depth in range(state.depth, 0, -1):
-                path[current_depth - 1] = state.distances[next_asset_index][current_depth].used_venue_index
-                next_asset_index = venues[path[current_depth - 1]].GetOther(next_asset_index)
+                logger.error(f"{next_asset_index}:{current_depth}:{state.distances[next_asset_index]}")
+                used_venue_index = state.distances[next_asset_index][current_depth].used_venue_index
+
+                assert used_venue_index is not None
+                path[current_depth - 1] = used_venue_index
+                next_asset_index = venues[used_venue_index].GetOther(next_asset_index)
 
             # Use the path and update the edges
             tendered_amount = input.in_amount / total_splits

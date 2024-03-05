@@ -4,7 +4,6 @@ from typing import List
 
 import cachetools
 import requests
-from simulation.routers.oracles import bforacle
 import uvicorn
 from cachetools import TTLCache
 from cosmpy.aerial.config import NetworkConfig
@@ -37,6 +36,7 @@ from simulation.routers.data import (
     new_pair,
     read_dummy_data,
 )
+from simulation.routers.oracles import bforacle
 from simulation.routers.scaler import scale_in
 
 """"
@@ -163,7 +163,7 @@ def solve(original_input: Input, cvm_data: ExtendedCvmRegistry) -> list[SingleIn
 
     result = bforacle.route(original_input, original_data, ctx, max_depth=6, splits=1, revision=True)
     raise Exception(result)
-    
+
     scaled_data, scaled_input, scale = scale_in(original_data, original_input, ctx)
     solutions = generic_linear.route(scaled_input, scaled_data, ctx)
     routes = cvxpy_to_data(original_input, original_data, ctx, solutions, scale)
