@@ -197,7 +197,7 @@ def route(
     for max_depth_i, splits_i in zip(max_depth, splits):
         for _ in range(splits_i):  # The split variable is not used but left for clarity
             # Reset the dist and previous edge of each node for each length of the path
-            for i in range(((max(max_depth) + 1) * n)):
+            for i in range((max_depth + 1) * n):
                 state.distance[i] = Previous.default()
 
             # Initialize the first node
