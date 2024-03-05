@@ -272,21 +272,24 @@ class CvxpySolution:
                 venue = self.data.venue_by_index(i)
                 price_of_a = self.data.token_price_in_usd(venue.in_asset_id)
                 price_of_b = self.data.token_price_in_usd(venue.out_asset_id)
-                if price_of_a > 0 or price_of_b > 0:
-                    assert (
-                        price_of_a > 0 and price_of_b > 0
-                    )  # so oracle must know price of one token if its counter is oracalized
-                    d0u = np.abs(self.delta_values[i][0] * price_of_a)
-                    d0u = np.abs(self.delta_values[i][1] * price_of_a)
-                    l0u = np.abs(self.lambda_values[i][0] * price_of_b)
-                    l0u = np.abs(self.lambda_values[i][1] * price_of_b)
-                    trade_usd = sum([d0u, d0u, l0u, l0u])
-                    if trade_usd <= 0.000001:
-                        logger.warning(
-                            f"eliminated using sum of values in oracle via {i} in {trade_usd} USD with prices {self.delta_values[i][0]}*{price_of_a} and {self.delta_values[i][1]}*{price_of_b}"
-                        )
-                        # raise Exception(price_of_a, " ", price_of_b, " ", self.delta_values[i], " ", self.lambda_values[i], " ", i)
-                        self.eta_values[i] = 0
+                if price_of_a and price_of_b is not None:
+                    if price_of_a > 0 or price_of_b > 0:
+                        assert (
+                            price_of_a > 0 and price_of_b > 0
+                        )  # so oracle must know price of one token if its counter is oracalized
+                        d0u = np.abs(self.delta_values[i][0] * price_of_a)
+                        d0u = np.abs(self.delta_values[i][1] * price_of_a)
+                        l0u = np.abs(self.lambda_values[i][0] * price_of_b)
+                        l0u = np.abs(self.lambda_values[i][1] * price_of_b)
+                        trade_usd = sum([d0u, d0u, l0u, l0u])
+                        if trade_usd <= 0.000001:
+                            logger.warning(
+                                f"eliminated using sum of values in oracle via {i} in {trade_usd} USD with prices {self.delta_values[i][0]}*{price_of_a} and {self.delta_values[i][1]}*{price_of_b}"
+                            )
+                            # raise Exception(price_of_a, " ", price_of_b, " ", self.delta_values[i], " ", self.lambda_values[i], " ", i)
+                            self.eta_values[i] = 0
+                else:
+                    logger.error('Operator ">" not supported for "None".')
         pass
 
     def ensure_bug_trades_pay_fee(self):
