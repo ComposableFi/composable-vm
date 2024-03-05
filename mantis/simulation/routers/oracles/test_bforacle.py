@@ -46,15 +46,19 @@ def test_single_chain_single_cffm_route_full_symmetry_exist():
 
 
 def test_big_numeric_range_one_pair_of_same_value():
-    in_amount = 1000
-    input = new_input(1, 2, in_amount, 50)
-    pair = new_pair(1, 1, 2, 0, 0, 1, 1, 1, 1_000, 1_000_000_000)
-    data = new_data([pair], [])
-    a, b, c, out_amount, router_in_amount = route(input, copy.deepcopy(data))
-    logger.info(f"{a} {b} {c}")
-    traded = pair.trade(1, in_amount)
+    in_amount = 10000
+    input = new_input(1, 5, in_amount, 50)
+    pair12 = new_pair(1, 1, 2, 0, 0, 1, 1, 1, 1_000, 1_000)
+    pair23 = new_pair(2, 2, 3, 0, 0, 1, 1, 1, 1_000, 1_000)
+    pair24 = new_pair(3, 2, 4, 0, 0, 1, 1, 1, 1_000, 1_000)
+    pair45 = new_pair(4, 3, 5, 0, 0, 1, 1, 1, 1_000, 1_000)
+    pair35 = new_pair(5, 4, 5, 0, 0, 1, 1, 1, 1_000, 1_000)
+    data = new_data([pair12, pair23, pair24, pair45, pair35], [])
+    a, b, c, router_out_amount, router_in_amount = route(input, copy.deepcopy(data), splits=4)
+    print(f"{a} {b} {c} {router_in_amount}->{router_out_amount}")
+    traded = pair12.trade(1, in_amount)
     assert in_amount == router_in_amount[0]
-    assert out_amount[0] == 500000000.0000001
+    assert router_out_amount[0] == 500000000.0000001
     assert traded == 500000000
     
 

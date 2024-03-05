@@ -1,8 +1,6 @@
 import copy
 import os
-import threading as th
 
-# import time
 from simulation.routers.data import (
     AllData,
     AssetPairsXyk,
@@ -16,7 +14,7 @@ from simulation.routers.data import (
 
 class Edge:
     # A class that represent an edge in an useful way
-    # In the future it could be used in hipergraph algorithms with a few changes
+    # In the future it could be used in hypergraph algorithms with a few changes
 
     U: list[int]  # nodes of the edge
     B: list[TAmount]  # amount of each token in the edge
@@ -69,7 +67,7 @@ class Edge:
         self.B[o] -= result
         return result
 
-    def GetOther(self, Ti):  # Asumes only 2 nodes in the edge
+    def GetOther(self, Ti):  # Assumes only 2 nodes in the edge
         if Ti == self.U[0]:
             return self.U[1]
         return self.U[0]
@@ -84,11 +82,9 @@ class State:
     max_depth: int
     depth: int
     dist: list[list[tuple[int, float]]]
-    dlock: list[th.Lock]
-    u_end: int
+    received_asset_index: int
     edges: list[Edge]
     revision: bool
-    Nopts: int
     j: int
     n: int
 
@@ -96,48 +92,13 @@ class State:
         self.dist = None
         self.max_depth = None
         self.depth = None
-        self.u_end = None
+        self.received_asset_index = None
         self.edges = None
         self.revision = None
-        self.dlock = None
-        self.Nopts = None
         self.j = None
         self.n = None
 
-
-def Range(e0, e1, state):
-    # A function that is used by the threads to process a range of edges
-
-    edges = state.edges
-    j = state.j
-
-    # For each edge in the range run the BF step
-    dist = state.dist
-    for ei in range(e0, e1):
-        e = edges[ei]
-        for u in e.U:
-            if dist[j * state.n + u][1] == 0:
-                continue
-            v = e.GetOther(u)
-            if state.revision:
-                ee = copy.deepcopy(e)
-                vv = u
-                for jj in range(j, 0, -1):
-                    pad = dist[jj * state.n + vv][0]
-                    vv = edges[pad].GetOther(vv)
-                    if pad == ei:
-                        ee.DoChange(vv, dist[(jj - 1) * state.n + vv][1])
-            else:
-                ee = e
-            Xv = copy.deepcopy(ee).trade(u, dist[j * state.n + u][1])
-            state.dlock[v].acquire()  # Lock the node
-            if dist[(j + 1) * state.n + v][1] < Xv:
-                dist[(j + 1) * state.n + v] = (ei, Xv)
-            state.dlock[v].release()  # Unlock the node
-
-
 # Bellman Ford based solution
-
 # The function divides the transaction if several paths (splits) and for each path
 # find an optimal path using the Bellman Ford algorithm without any modification.
 #
@@ -145,9 +106,7 @@ def Range(e0, e1, state):
 # of the path that reached the first node. This might be important in loops.
 #
 # The parameters of the functions allows to go over the runtime-accuracy tradeoff
-
-
-def conversor(
+def data2bf(
     all_data: AllData,
 ):
     edges: list[Edge] = []
@@ -166,14 +125,9 @@ def route(
     all_data: AllData,
     _ctx: Ctx = Ctx(),  # Context
     max_depth: int = 5,  # The maximum number of edges that can be used
-    splits: int = 10,  # The number of flow units in which the amount is divided
+    splits: int = 2,  # The number of flow units in which the amount is divided
     revision=True,  # When uses an edge, check if the edge has been used before and if so, use the same edge
-    Nproces=None,  # A parameter used for paralell programing. For now, it seems to be best to use only one threat than paralell programming
 ):
-    # If the number of processes is not given, use the number of cpus
-    if Nproces is None:
-        Nproces = os.cpu_count()
-
     # If max_depth or splits are not lists, convert them to lists
     if isinstance(max_depth, int):
         max_depth = [max_depth]
@@ -182,7 +136,7 @@ def route(
 
     # Create the list of edges and tokens
 
-    edges, tokensIds, all_tokens = conversor(all_data)
+    edges, asset_id_to_index, all_tokens = data2bf(all_data)
 
     # Number of tokens
     n = len(all_tokens)
@@ -192,26 +146,17 @@ def route(
     lambdas: list[float] = [0] * len(edges)
     paths: list[list[int]] = []
     outcomes: list[float] = [0]
-    totSplits = sum(splits)
+    total_splits = sum(splits)
 
     # First and last nodes
-    u_init = tokensIds[input.in_token_id]
-    u_end = tokensIds[input.out_token_id]
+    tendered_asset_index = asset_id_to_index[input.in_token_id]
+    received_asset_index = asset_id_to_index[input.out_token_id]
 
-    # The state of the algorithm that can be passed to the threads if executed in parallel
     state = State()
-    state.u_end = u_end
+    state.received_asset_index = received_asset_index
     state.edges = edges
     state.revision = revision
-    state.dlock = [th.Lock() for i in range(n)]
     state.n = n
-
-    # If the number of processes is greater than 1, divide the edges into Nproces parts
-    if Nproces > 1:
-        e0 = [i * len(edges) // Nproces for i in range(Nproces)]
-        e1 = [(i + 1) * len(edges) // Nproces for i in range(Nproces)]
-        e1[-1] = len(edges)
-        state.dlock = [th.Lock() for i in range(n)]
 
     # The dist and previous edge of each node for each length of the path
     state.dist = [(None, 0)] * ((max(max_depth) + 1) * n)
@@ -224,23 +169,14 @@ def route(
                 state.dist[i] = (None, 0)
 
             # Initialize the first node
-            state.dist[u_init] = (None, input.in_amount / (totSplits))
+            state.dist[tendered_asset_index] = (None, input.in_amount / (total_splits))
 
-            # Actualizate the state
+            # Actualize the state
             state.depth = 0
             state.max_depth = max_depth_i
 
-            # Process each legth of the path
+            # Process each length of the path
             for step in range(max_depth_i):
-                #    start = time.time()
-                if Nproces > 1:  # If the number of processes is greater than 1, use the threads
-                    state.j = step
-                    threads = [th.Thread(target=Range, args=(e0[i], e1[i], state)) for i in range(Nproces)]
-                    for t in threads:
-                        t.start()
-                    for t in threads:
-                        t.join()
-                else:  # If the number of processes is 1, use the main thread
                     for ei, e in enumerate(edges):
                         for u in e.U:
                             if state.dist[step * state.n + u][1] == 0:
@@ -260,15 +196,15 @@ def route(
                             else:
                                 ee = e  # If the revision is not active, use the edge
                             # Get the amount of the other token
-                            Xv = ee.GetAmount(u, state.dist[step * state.n + u][1])
+                            Xv = copy.deepcopy(ee).trade(u, state.dist[step * state.n + u][1])
                             # Update the amount of the other token if it is greater than the previous amount
                             if state.dist[(step + 1) * state.n + v][1] < Xv:
                                 state.dist[(step + 1) * state.n + v] = (ei, Xv)
 
             # Get the optimal path
             for j in range(1, max_depth_i + 1):
-                if state.dist[j * n + u_end] and (
-                    state.depth == 0 or state.dist[j * n + u_end][1] > state.dist[state.depth * n + u_end][1]
+                if state.dist[j * n + received_asset_index] and (
+                    state.depth == 0 or state.dist[j * n + received_asset_index][1] > state.dist[state.depth * n + received_asset_index][1]
                 ):
                     state.depth = j
 
@@ -276,16 +212,16 @@ def route(
                 raise Exception("No path found")
 
             path: list[int] = [0] * state.depth
-            v = u_end
 
             # Rebuild the path
+            v = received_asset_index
             for j in range(state.depth, 0, -1):
                 path[j - 1] = state.dist[j * n + v][0]
                 v = edges[path[j - 1]].GetOther(v)
 
             # Use the path and update the edges
-            Xi = input.in_amount / (totSplits)
-            u = tokensIds[input.in_token_id]
+            Xi = input.in_amount / (total_splits)
+            u = asset_id_to_index[input.in_token_id]
             for i in range(len(path)):
                 e = edges[path[i]]
                 deltas[path[i]] += Xi
@@ -300,11 +236,3 @@ def route(
             outcomes.append(outcomes[-1] + Xi)
 
     return outcomes[-1], outcomes[-2], paths, lambdas, deltas
-
-
-# A way to fix some parameters of the function, use for a functional approach
-def BuildRoute(max_depth, splits, revision, Nproces=1):
-    def _route(input: Input, all_data: AllData, _ctx: Ctx = Ctx()):
-        return route(input, all_data, _ctx, max_depth, splits, revision, Nproces)
-
-    return _route
