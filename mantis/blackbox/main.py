@@ -161,8 +161,9 @@ def solve(original_input: Input, cvm_data: ExtendedCvmRegistry) -> list[SingleIn
             f"you are trading on market limit with {original_input.in_amount} for {original_data.maximal_reserves_of(original_input.in_token_id)}"
         )
 
-    result = bforacle.route(original_input, original_data, ctx, max_depth=5, splits=2, revision=True)
+    result = bforacle.route(original_input, original_data, ctx, max_depth=6, splits=1, revision=True)
     raise Exception(result)
+    
     scaled_data, scaled_input, scale = scale_in(original_data, original_input, ctx)
     solutions = generic_linear.route(scaled_input, scaled_data, ctx)
     routes = cvxpy_to_data(original_input, original_data, ctx, solutions, scale)
