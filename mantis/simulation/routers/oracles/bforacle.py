@@ -1,4 +1,5 @@
 import copy
+from dataclasses import dataclass
 import os
 
 from simulation.routers.data import (
@@ -76,12 +77,23 @@ class Edge:
         return f"Edge({self.U}, {self.B}, {self.W}, {self.F}, {self.CF})"
 
 
+@dataclass
+class Previous:
+    parent: int | None
+    amount: int
+    
+    def default() -> 'Previous':
+        return Previous(None, 0)
+    
+    def start(tendered_asset) -> 'Previous':
+        return Previous(None, tendered_asset) 
+    
 class State:
     # A class that represent the state of the algorithm
     # It's used to pass the state to the threads if executed in parallel
     max_depth: int
     depth: int
-    dist: list[list[tuple[int, float]]]
+    dist: list[Previous]
     received_asset_index: int
     edges: list[Edge]
     revision: bool
@@ -159,17 +171,17 @@ def route(
     state.n = n
 
     # The dist and previous edge of each node for each length of the path
-    state.dist = [(None, 0)] * ((max(max_depth) + 1) * n)
+    state.dist = [Previous.default()] * ((max(max_depth) + 1) * n)
 
     # For each max_depth and splits
     for max_depth_i, splits_i in zip(max_depth, splits):
-        for _split in range(splits_i):  # The split variable is not used but left for clarity
+        for _ in range(splits_i):  # The split variable is not used but left for clarity
             # Reset the dist and previous edge of each node for each length of the path
             for i in range(((max(max_depth) + 1) * n)):
-                state.dist[i] = (None, 0)
+                state.dist[i] = Previous.default()
 
             # Initialize the first node
-            state.dist[tendered_asset_index] = (None, input.in_amount / (total_splits))
+            state.dist[tendered_asset_index] = Previous.start(input.in_amount / total_splits)
 
             # Actualize the state
             state.depth = 0
@@ -179,7 +191,7 @@ def route(
             for step in range(max_depth_i):
                     for ei, e in enumerate(edges):
                         for u in e.U:
-                            if state.dist[step * state.n + u][1] == 0:
+                            if state.dist[step * state.n + u].amount == 0:
                                 continue
                             v = e.GetOther(u)
                             if (
@@ -189,22 +201,22 @@ def route(
                                 vv = u
                                 # Go back in the path to check if the edge has been used before
                                 for jj in range(step, 0, -1):
-                                    pad = state.dist[jj * state.n + vv][0]
+                                    pad = state.dist[jj * state.n + vv].parent
                                     vv = edges[pad].GetOther(vv)
                                     if pad == ei:
-                                        ee.trade(vv, state.dist[(jj - 1) * state.n + vv][1])
+                                        ee.trade(vv, state.dist[(jj - 1) * state.n + vv].amount)
                             else:
                                 ee = e  # If the revision is not active, use the edge
                             # Get the amount of the other token
-                            Xv = copy.deepcopy(ee).trade(u, state.dist[step * state.n + u][1])
+                            Xv = copy.deepcopy(ee).trade(u, state.dist[step * state.n + u].amount)
                             # Update the amount of the other token if it is greater than the previous amount
-                            if state.dist[(step + 1) * state.n + v][1] < Xv:
-                                state.dist[(step + 1) * state.n + v] = (ei, Xv)
+                            if state.dist[(step + 1) * state.n + v].amount < Xv:
+                                state.dist[(step + 1) * state.n + v] = Previous(ei, Xv)
 
             # Get the optimal path
             for j in range(1, max_depth_i + 1):
                 if state.dist[j * n + received_asset_index] and (
-                    state.depth == 0 or state.dist[j * n + received_asset_index][1] > state.dist[state.depth * n + received_asset_index][1]
+                    state.depth == 0 or state.dist[j * n + received_asset_index].amount > state.dist[state.depth * n + received_asset_index].amount
                 ):
                     state.depth = j
 
@@ -216,7 +228,7 @@ def route(
             # Rebuild the path
             v = received_asset_index
             for j in range(state.depth, 0, -1):
-                path[j - 1] = state.dist[j * n + v][0]
+                path[j - 1] = state.dist[j * n + v].parent
                 v = edges[path[j - 1]].GetOther(v)
 
             # Use the path and update the edges
