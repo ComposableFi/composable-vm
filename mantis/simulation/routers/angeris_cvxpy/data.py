@@ -272,7 +272,7 @@ class CvxpySolution:
                 venue = self.data.venue_by_index(i)
                 price_of_a = self.data.token_price_in_usd(venue.in_asset_id)
                 price_of_b = self.data.token_price_in_usd(venue.out_asset_id)
-                if price_of_a and price_of_b is not None: 
+                if price_of_a and price_of_b is not None:
                     if price_of_a > 0 or price_of_b > 0:
                         assert (
                             price_of_a > 0 and price_of_b > 0
