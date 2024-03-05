@@ -213,31 +213,29 @@ def route(
                         for asset_index in venue.nodes:
                             if state.distance[step * state.n + asset_index].amount > 0:
                                 other_node_index = venue.GetOther(asset_index)
+                                maybe_better_venue = copy.deepcopy(venue)
                                 if (
                                     state.revision
                                 ):  # If the revision is active, use the same edge if it has been used before
-                                    ee = copy.deepcopy(venue)
-                                    vv = asset_index
+                                    previous_asset_index = asset_index
                                     # Go back in the path to check if the edge has been used before
                                     for step_back in range(step, 0, -1):
-                                        used_venue_index = state.distance[step_back * state.n + vv].used_venue_index
-                                        vv = venues[used_venue_index].GetOther(vv)
+                                        used_venue_index = state.distance[step_back * state.n + previous_asset_index].used_venue_index
+                                        previous_asset_index = venues[used_venue_index].GetOther(previous_asset_index)
                                         if used_venue_index == venue_index:
-                                            ee.trade(vv, state.distance[(step_back - 1) * state.n + vv].amount)
-                                else:
-                                    ee = venue  # If the revision is not active, use the edge
+                                            maybe_better_venue.trade(previous_asset_index, state.distance[(step_back - 1) * state.n + previous_asset_index].amount)
                                 # Get the amount of the other token
-                                received_amount = copy.deepcopy(ee).trade(asset_index, state.distance[step * state.n + asset_index].amount)
+                                received_amount = maybe_better_venue.trade(asset_index, state.distance[step * state.n + asset_index].amount)
                                 # Update the amount of the other token if it is greater than the previous amount
                                 if state.distance[(step + 1) * state.n + other_node_index].amount < received_amount:
                                     state.distance[(step + 1) * state.n + other_node_index] = Previous(venue_index, received_amount)
 
             # Get the optimal path
-            for j in range(1, max_depth_i + 1):
-                if state.distance[j * n + received_asset_index] and (
-                    state.depth == 0 or state.distance[j * n + received_asset_index].amount > state.distance[state.depth * n + received_asset_index].amount
+            for current_depth in range(1, max_depth_i + 1):
+                if state.distance[current_depth * n + received_asset_index] and (
+                    state.depth == 0 or state.distance[current_depth * n + received_asset_index].amount > state.distance[state.depth * n + received_asset_index].amount
                 ):
-                    state.depth = j
+                    state.depth = current_depth
 
             if state.depth == 0:  # if there is no path
                 raise Infeasible("No path found")
@@ -246,24 +244,24 @@ def route(
 
             # Rebuild the path
             other_node_index = received_asset_index
-            for j in range(state.depth, 0, -1):
-                path[j - 1] = state.distance[j * n + other_node_index].used_venue_index
-                other_node_index = venues[path[j - 1]].GetOther(other_node_index)
+            for current_depth in range(state.depth, 0, -1):
+                path[current_depth - 1] = state.distance[current_depth * n + other_node_index].used_venue_index
+                other_node_index = venues[path[current_depth - 1]].GetOther(other_node_index)
 
             # Use the path and update the edges
-            Xi = input.in_amount / total_splits
+            tendered_amount = input.in_amount / total_splits
             asset_index = asset_id_to_index[input.in_token_id]
             for i in range(len(path)):
                 venue = venues[path[i]]
-                deltas[path[i]] += Xi
-                Xj = venue.trade(asset_index, Xi)
-                lambdas[path[i]] += Xj
-                Xi = Xj
+                deltas[path[i]] += tendered_amount
+                received_amount = venue.trade(asset_index, tendered_amount)
+                lambdas[path[i]] += received_amount
+                tendered_amount = received_amount
                 asset_index = venue.GetOther(asset_index)
 
             # Update the paths and outcomes
-            assert Xi > 0
+            assert tendered_amount > 0
             paths.append(path)
-            outcomes.append(outcomes[-1] + Xi)
+            outcomes.append(outcomes[-1] + tendered_amount)
 
     return outcomes[-1], outcomes[-2], paths, lambdas, deltas
