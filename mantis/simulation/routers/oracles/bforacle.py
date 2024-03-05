@@ -114,15 +114,18 @@ class State:
     # It's used to pass the state to the threads if executed in parallel
     max_depth: int
     depth: int
-    distance: list[Previous]
+    distances: list[list[Previous]]
     received_asset_index: int
     edges: list[Edge]
     revision: bool
     j: int
     n: int
+    
+    def reset_distances(self, max_depth):
+        self.distances = [[Previous.default()] * (max(max_depth) + 1) for _ in range(self.n)]
 
     def __init__(self):
-        self.distance = None
+        self.distances = None
         self.max_depth = None
         self.depth = None
         self.received_asset_index = None
@@ -191,48 +194,48 @@ def route(
     state.n = n
 
     # The dist and previous edge of each node for each length of the path
-    state.distance = [Previous.default()] * ((max(max_depth) + 1) * n)
+    state.reset_distances(max_depth)
 
     # For each max_depth and splits
     for max_depth_i, splits_i in zip(max_depth, splits):
         for _ in range(splits_i):  # The split variable is not used but left for clarity
             # Reset the dist and previous edge of each node for each length of the path
-            state.distance = [Previous.default()] * ((max(max_depth) + 1) * n)
+            state.reset_distances(max_depth)
 
             # Initialize the first node
-            state.distance[tendered_asset_index] = Previous.start(input.in_amount / total_splits)
+            state.distances[tendered_asset_index][0] = Previous.start(input.in_amount / total_splits)
 
             # Actualize the state
             state.depth = 0
             state.max_depth = max_depth_i
 
             # Process each length of the path
-            for step in range(max_depth_i):
+            for current_depth in range(max_depth_i):
                     for venue_index, venue in enumerate(venues):
                         for asset_index in venue.nodes:
-                            if state.distance[step * state.n + asset_index].amount > 0:
-                                other_node_index = venue.GetOther(asset_index)
+                            if state.distances[asset_index][current_depth].amount > 0:
+                                next_asset_index = venue.GetOther(asset_index)
                                 maybe_better_venue = copy.deepcopy(venue)
                                 if (
                                     state.revision
                                 ):  # If the revision is active, use the same edge if it has been used before
                                     previous_asset_index = asset_index
                                     # Go back in the path to check if the edge has been used before
-                                    for step_back in range(step, 0, -1):
-                                        used_venue_index = state.distance[step_back * state.n + previous_asset_index].used_venue_index
+                                    for step_back in range(current_depth, 0, -1):
+                                        used_venue_index = state.distances[previous_asset_index][step_back].used_venue_index
                                         previous_asset_index = venues[used_venue_index].GetOther(previous_asset_index)
-                                        if used_venue_index == venue_index:
-                                            maybe_better_venue.trade(previous_asset_index, state.distance[(step_back - 1) * state.n + previous_asset_index].amount)
+                                        if used_venue_index == venue_index: 
+                                            maybe_better_venue.trade(previous_asset_index, state.distances[previous_asset_index][(step_back - 1)].amount)
                                 # Get the amount of the other token
-                                received_amount = maybe_better_venue.trade(asset_index, state.distance[step * state.n + asset_index].amount)
+                                received_amount = maybe_better_venue.trade(asset_index, state.distances[asset_index][current_depth].amount)
                                 # Update the amount of the other token if it is greater than the previous amount
-                                if state.distance[(step + 1) * state.n + other_node_index].amount < received_amount:
-                                    state.distance[(step + 1) * state.n + other_node_index] = Previous(venue_index, received_amount)
+                                if state.distances[next_asset_index][(current_depth + 1)].amount < received_amount:
+                                    state.distances[next_asset_index][(current_depth + 1)] = Previous(venue_index, received_amount)
 
             # Get the optimal path
             for current_depth in range(1, max_depth_i + 1):
-                if state.distance[current_depth * n + received_asset_index] and (
-                    state.depth == 0 or state.distance[current_depth * n + received_asset_index].amount > state.distance[state.depth * n + received_asset_index].amount
+                if state.distances[received_asset_index][current_depth] and (
+                    state.depth == 0 or state.distances[received_asset_index][current_depth].amount > state.distances[received_asset_index][state.depth].amount
                 ):
                     state.depth = current_depth
 
@@ -242,10 +245,10 @@ def route(
             path: list[int] = [0] * state.depth
 
             # Rebuild the path
-            other_node_index = received_asset_index
+            next_asset_index = received_asset_index
             for current_depth in range(state.depth, 0, -1):
-                path[current_depth - 1] = state.distance[current_depth * n + other_node_index].used_venue_index
-                other_node_index = venues[path[current_depth - 1]].GetOther(other_node_index)
+                path[current_depth - 1] = state.distances[next_asset_index][current_depth].used_venue_index
+                next_asset_index = venues[path[current_depth - 1]].GetOther(next_asset_index)
 
             # Use the path and update the edges
             tendered_amount = input.in_amount / total_splits
