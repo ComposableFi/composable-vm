@@ -26,18 +26,18 @@ def oracalize_data(base_data: AllData, input: Input, ctx: Ctx) -> tuple[AllData,
 
     # make all exchanges to be oracalized
     for i, exchange in enumerate(base_data.asset_pairs_xyk):
-        oracalized_data.asset_pairs_xyk[i].in_token_amount = exchange.in_token_amount * base_data.token_price_in_usd(
+        oracalized_data.asset_pairs_xyk[i].in_asset_amount = exchange.in_asset_amount * base_data.token_price_in_usd(
             exchange.in_asset_id
         )
-        oracalized_data.asset_pairs_xyk[i].out_token_amount = exchange.out_token_amount * base_data.token_price_in_usd(
+        oracalized_data.asset_pairs_xyk[i].out_asset_amount = exchange.out_asset_amount * base_data.token_price_in_usd(
             exchange.out_asset_id
         )
     # make transfers oracalized
     for i, transfer in enumerate(base_data.asset_transfers):
-        oracalized_data.asset_transfers[i].in_token_amount = transfer.in_token_amount * base_data.token_price_in_usd(
+        oracalized_data.asset_transfers[i].in_asset_amount = transfer.in_asset_amount * base_data.token_price_in_usd(
             transfer.in_asset_id
         )
-        oracalized_data.asset_transfers[i].out_token_amount = transfer.out_token_amount * base_data.token_price_in_usd(
+        oracalized_data.asset_transfers[i].out_asset_amount = transfer.out_asset_amount * base_data.token_price_in_usd(
             transfer.out_asset_id
         )
 
@@ -55,8 +55,8 @@ def scale_in(base_data: AllData, input: Input, ctx: Ctx) -> tuple[AllData, Input
 
     # so we set all transfers amount to some estimate
     for transfer in base_data.asset_transfers:
-        transfer.in_token_amount = base_data.maximal_reserves_of(transfer.in_asset_id)
-        transfer.out_token_amount = base_data.maximal_reserves_of(transfer.out_asset_id)
+        transfer.in_asset_amount = base_data.maximal_reserves_of(transfer.in_asset_id)
+        transfer.out_asset_amount = base_data.maximal_reserves_of(transfer.out_asset_id)
 
     oracalized_data, oracalized_input = oracalize_data(base_data, input, ctx)
     new_data = copy.deepcopy(base_data)
@@ -68,25 +68,25 @@ def scale_in(base_data: AllData, input: Input, ctx: Ctx) -> tuple[AllData, Input
     for asset_id in all_asset_ids:
         for i, oracalized_venue in enumerate(oracalized_data.asset_pairs_xyk):
             if oracalized_venue.in_asset_id == asset_id:
-                oracalized_reserve = oracalized_venue.in_token_amount
+                oracalized_reserve = oracalized_venue.in_asset_amount
                 if oracalized_reserve == 0:
                     new_data.asset_pairs_xyk[i].zero()
                 else:
                     ratio = oracalized_input.in_asset_amount / oracalized_reserve
                     if ratio < ctx.min_input_to_reserve_ratio:
-                        new_data.asset_pairs_xyk[i].in_token_amount = new_data.asset_pairs_xyk[i].in_token_amount * (
+                        new_data.asset_pairs_xyk[i].in_asset_amount = new_data.asset_pairs_xyk[i].in_asset_amount * (
                             ratio / ctx.min_input_to_reserve_ratio
                         )
                     if oracalized_reserve < ctx.min_usd_reserve:
                         new_data.asset_pairs_xyk[i].zero()
             if oracalized_venue.out_asset_id == asset_id:
-                oracalized_reserve = oracalized_venue.out_token_amount
+                oracalized_reserve = oracalized_venue.out_asset_amount
                 if oracalized_reserve == 0:
                     new_data.asset_pairs_xyk[i].zero()
                 else:
                     ratio = oracalized_input.in_asset_amount / oracalized_reserve
                     if ratio < ctx.min_input_to_reserve_ratio:
-                        new_data.asset_pairs_xyk[i].out_token_amount = new_data.asset_pairs_xyk[i].out_token_amount * (
+                        new_data.asset_pairs_xyk[i].out_asset_amount = new_data.asset_pairs_xyk[i].out_asset_amount * (
                             ratio / ctx.min_input_to_reserve_ratio
                         )
                     if oracalized_reserve < ctx.min_usd_reserve:
@@ -94,25 +94,25 @@ def scale_in(base_data: AllData, input: Input, ctx: Ctx) -> tuple[AllData, Input
 
         for i, oracalized_venue in enumerate(oracalized_data.asset_transfers):
             if oracalized_venue.in_asset_id == asset_id:
-                oracalized_reserve = oracalized_venue.in_token_amount
+                oracalized_reserve = oracalized_venue.in_asset_amount
                 if oracalized_reserve == 0:
                     new_data.asset_transfers[i].zero()
                 else:
                     ratio = oracalized_input.in_asset_amount / oracalized_reserve
                     if ratio < ctx.min_input_to_reserve_ratio:
-                        new_data.asset_transfers[i].in_token_amount = new_data.asset_transfers[i].in_token_amount * (
+                        new_data.asset_transfers[i].in_asset_amount = new_data.asset_transfers[i].in_asset_amount * (
                             ratio / ctx.min_input_to_reserve_ratio
                         )
                     if oracalized_reserve < ctx.min_usd_reserve:
                         new_data.asset_transfers[i].zero()
             if oracalized_venue.out_asset_id == asset_id:
-                oracalized_reserve = oracalized_venue.out_token_amount
+                oracalized_reserve = oracalized_venue.out_asset_amount
                 if oracalized_reserve == 0:
                     new_data.asset_transfers[i].zero()
                 else:
                     ratio = oracalized_input.in_asset_amount / oracalized_reserve
                     if ratio < ctx.min_input_to_reserve_ratio:
-                        new_data.asset_transfers[i].out_token_amount = new_data.asset_transfers[i].out_token_amount * (
+                        new_data.asset_transfers[i].out_asset_amount = new_data.asset_transfers[i].out_asset_amount * (
                             ratio / ctx.min_input_to_reserve_ratio
                         )
                     if oracalized_reserve < ctx.min_usd_reserve:
@@ -127,26 +127,26 @@ def scale_in(base_data: AllData, input: Input, ctx: Ctx) -> tuple[AllData, Input
             ratios[asset_id] = ratio
             for venue in new_data.asset_pairs_xyk:
                 if venue.in_asset_id == asset_id:
-                    venue.in_token_amount = venue.in_token_amount * ratio
+                    venue.in_asset_amount = venue.in_asset_amount * ratio
                 if venue.out_asset_id == asset_id:
-                    venue.out_token_amount = venue.out_token_amount * ratio
+                    venue.out_asset_amount = venue.out_asset_amount * ratio
                 if (
-                    venue.in_token_amount < ctx.minimal_venued_amount
-                    or venue.out_token_amount < ctx.minimal_venued_amount
+                    venue.in_asset_amount < ctx.minimal_venued_amount
+                    or venue.out_asset_amount < ctx.minimal_venued_amount
                 ):
-                    venue.in_token_amount = 0
-                    venue.out_token_amount = 0
+                    venue.in_asset_amount = 0
+                    venue.out_asset_amount = 0
             for transfer in new_data.asset_transfers:
                 if transfer.in_asset_id == asset_id:
-                    transfer.in_token_amount = transfer.in_token_amount * ratio
+                    transfer.in_asset_amount = transfer.in_asset_amount * ratio
                 if transfer.out_asset_id == asset_id:
-                    transfer.out_token_amount = transfer.out_token_amount * ratio
+                    transfer.out_asset_amount = transfer.out_asset_amount * ratio
                 if (
-                    venue.in_token_amount < ctx.minimal_venued_amount
-                    or venue.out_token_amount < ctx.minimal_venued_amount
+                    venue.in_asset_amount < ctx.minimal_venued_amount
+                    or venue.out_asset_amount < ctx.minimal_venued_amount
                 ):
-                    venue.in_token_amount = 0
-                    venue.out_token_amount = 0
+                    venue.in_asset_amount = 0
+                    venue.out_asset_amount = 0
             if input.in_asset_id == asset_id:
                 new_input.in_asset_amount = new_input.in_asset_amount * ratio
             if input.out_asset_id == asset_id:

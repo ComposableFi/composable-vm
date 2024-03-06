@@ -60,6 +60,11 @@ class Ctx(BaseModel, Generic[TAmount]):
     We consider that cannot get more than 1/this arbitrage
     """
 
+    loop_risk_ratio: int = 2
+    """
+    Going from final token to other tokens and back if it will increase final amount by ratio. 
+    """
+    
     min_usd_reserve: float = 1
     min_input_in_usd: float = 0.00001
     minimal_trading_probability: float = 0.000001
@@ -156,13 +161,13 @@ class AssetTransfers(
         Fixed costs $q_i$ >= 0s
     """
 
-    in_token_amount: TAmount
+    in_asset_amount: TAmount
     """
      Tendered amount of token on chain were it is.
      Must be like escrowed amount.
     """
 
-    out_token_amount: TAmount
+    out_asset_amount: TAmount
     """
       Expected received amount LAMBDA.
       Must be like liquid amount of this token minted.
@@ -177,11 +182,11 @@ class AssetTransfers(
     def trade(self, asset_id, amount):
         amount = (1 - self.fee_per_million / 1e6) * amount
         if asset_id == self.in_asset_id:
-            self.in_token_amount += amount
-            self.out_token_amount -= amount
+            self.in_asset_amount += amount
+            self.out_asset_amount -= amount
         else:
-            self.in_token_amount -= amount
-            self.out_token_amount += amount
+            self.in_asset_amount -= amount
+            self.out_asset_amount += amount
         return amount
 
     @validator("metadata", pre=True, always=True)
@@ -220,37 +225,37 @@ class AssetPairsXyk(
     def trade(self, asset_id, amount):
         amount = (1 - self.fee_of_in_per_million / 1e6) * amount
         if asset_id == self.in_asset_id:
-            result = self.out_token_amount * (1 - self.in_token_amount / (self.in_token_amount + amount)) ** (
+            result = self.out_asset_amount * (1 - self.in_asset_amount / (self.in_asset_amount + amount)) ** (
                 self.weight_a / self.weight_b
             )
-            self.out_token_amount -= result
-            self.in_token_amount += amount
+            self.out_asset_amount -= result
+            self.in_asset_amount += amount
             return result
         else:
-            result = self.in_token_amount * (1 - self.out_token_amount / (self.out_token_amount + amount)) ** (
+            result = self.in_asset_amount * (1 - self.out_asset_amount / (self.out_asset_amount + amount)) ** (
                 self.weight_b / self.weight_a
             )
-            self.in_token_amount -= result
-            self.out_token_amount += amount
+            self.in_asset_amount -= result
+            self.out_asset_amount += amount
             return result
 
     # total amounts in reserves R
-    in_token_amount: TAmount
-    out_token_amount: TAmount
+    in_asset_amount: TAmount
+    out_asset_amount: TAmount
 
     @property
     def value_of_a_in_usd(self):
         """
         How much 1 of a costs in USD
         """
-        return self.a_usd / self.in_token_amount
+        return self.a_usd / self.in_asset_amount
 
     @property
     def value_of_b_in_usd(self):
         """
         How much 1 of a costs in USD
         """
-        return self.b_usd / self.out_token_amount
+        return self.b_usd / self.out_asset_amount
 
     @property
     def a_usd(self):
@@ -266,11 +271,11 @@ class AssetPairsXyk(
 
     @property
     def weighted_a(self):
-        return self.in_token_amount**self.weight_a
+        return self.in_asset_amount**self.weight_a
 
     @property
     def weighted_b(self):
-        return self.out_token_amount**self.weight_b
+        return self.out_asset_amount**self.weight_b
 
     @property
     def weighted_volume(self):
@@ -551,7 +556,7 @@ class AllData(BaseModel, Generic[TId, TAmount]):
         """
         reserves = []
         for x in self.asset_pairs_xyk:
-            reserves.append(np.array([x.in_token_amount, x.out_token_amount]))
+            reserves.append(np.array([x.in_asset_amount, x.out_asset_amount]))
         for x in self.asset_transfers:
             reserves.append(
                 np.array(
@@ -602,9 +607,9 @@ class AllData(BaseModel, Generic[TId, TAmount]):
         value = 0
         for venue in self.asset_pairs_xyk:
             if venue.in_asset_id == asset_id:
-                value = max(value, value, venue.in_token_amount)
+                value = max(value, value, venue.in_asset_amount)
             if venue.out_asset_id == asset_id:
-                value = max(value, venue.out_token_amount)
+                value = max(value, venue.out_asset_amount)
         if value > 0:
             return value
 
@@ -613,9 +618,9 @@ class AllData(BaseModel, Generic[TId, TAmount]):
             for venue in self.asset_pairs_xyk:
                 if venue.pool_id == exchange_id:
                     if self.transfers_disjoint_set.connected(venue.in_asset_id, asset_id):
-                        value = max(value, venue.in_token_amount)
+                        value = max(value, venue.in_asset_amount)
                     elif self.transfers_disjoint_set.connected(venue.out_asset_id, asset_id):
-                        value = max(value, venue.out_token_amount)
+                        value = max(value, venue.out_asset_amount)
                     else:
                         raise Exception(f"asset {asset_id} not connected to {venue}")
         if value > 0:
@@ -623,9 +628,9 @@ class AllData(BaseModel, Generic[TId, TAmount]):
 
         for venue in self.asset_transfers:
             if venue.in_asset_id == asset_id:
-                value = max(value, venue.in_token_amount)
+                value = max(value, venue.in_asset_amount)
             if venue.out_asset_id == asset_id:
-                value = max(value, venue.out_token_amount)
+                value = max(value, venue.out_asset_amount)
         if value > 0:
             return value
 
@@ -640,9 +645,9 @@ class AllData(BaseModel, Generic[TId, TAmount]):
         global_value_locked = 0
         for x in self.asset_pairs_xyk:
             if x.out_asset_id == token:
-                global_value_locked += x.out_token_amount
+                global_value_locked += x.out_asset_amount
             if x.in_asset_id == token:
-                global_value_locked += x.in_token_amount
+                global_value_locked += x.in_asset_amount
         if global_value_locked > 0:
             return global_value_locked
         return global_value_locked

@@ -143,14 +143,13 @@ def simulator_router(input: Input = Depends()) -> list[SingleInputAssetCvmRoute]
         raw_data.osmosis_pools,
     )
 
-    route = solve(input, cvm_data)
-
-    return route
+    routes = solve(input, cvm_data)
+    return routes
 
 
 def solve(original_input: Input, cvm_data: ExtendedCvmRegistry) -> list[SingleInputAssetCvmRoute]:
     ctx = Ctx()
-    ctx.max_depth_of_route = 4
+    ctx.max_depth_of_route = 5
     original_data = for_simulation(cvm_data, {})
 
     original_input.in_asset_amount = int(original_input.in_asset_amount)

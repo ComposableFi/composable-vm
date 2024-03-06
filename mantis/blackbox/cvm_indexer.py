@@ -218,8 +218,8 @@ def for_simulation(cvm_registry: ExtendedCvmRegistry, usd_oracles) -> Simulation
                 AssetTransfers(
                     in_asset_id=in_asset_id,
                     out_asset_id=out_asset_id,
-                    in_token_amount=-1,
-                    out_token_amount=-1,
+                    in_asset_amount=10**22,
+                    out_asset_amount=10**22,
                     venue_fixed_costs_in_usd=max(0.001, MINIMAL_TRANSACTION_USD_COST_DEFAULT),
                     fee_per_million=MINIMAL_FEE_PER_MILLION_DEFAULT,
                 )
@@ -228,6 +228,10 @@ def for_simulation(cvm_registry: ExtendedCvmRegistry, usd_oracles) -> Simulation
             bidirectional.add((out_asset_id, in_asset_id))
     asset_pairs_xyk = []
     for pair in cvm_registry.exchanges:
+        in_asset_amount=int(pair.token_a_amount)
+        out_asset_amount=int(pair.token_b_amount)
+        assert in_asset_amount > 0
+        assert out_asset_amount > 0
         asset_pairs_xyk.append(
             AssetPairsXyk(
                 pool_id=int(pair.exchange_id.root),
@@ -237,8 +241,8 @@ def for_simulation(cvm_registry: ExtendedCvmRegistry, usd_oracles) -> Simulation
                 fee_of_out_per_million=max(pair.fee_per_million, MINIMAL_FEE_PER_MILLION_DEFAULT),
                 weight_a=pair.weight_a,
                 weight_b=pair.weight_b,
-                in_token_amount=int(pair.token_a_amount),
-                out_token_amount=int(pair.token_b_amount),
+                in_asset_amount=in_asset_amount,
+                out_asset_amount=out_asset_amount,
                 pool_value_in_usd=int(pair.pool_value_in_usd),
                 venue_fixed_costs_in_usd=MINIMAL_TRANSACTION_USD_COST_DEFAULT,
                 closed=None,

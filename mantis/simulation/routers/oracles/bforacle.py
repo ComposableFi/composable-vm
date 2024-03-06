@@ -76,7 +76,7 @@ class Edge:
 
     def __initFromPairsXyk(self, venue: AssetPairsXyk, tokensIds: dict[TId, int], usd_oracles: dict[TId, int]):
         self.nodes = [tokensIds[venue.in_asset_id], tokensIds[venue.out_asset_id]]
-        self.balances = [venue.in_token_amount, venue.out_token_amount]
+        self.balances = [venue.in_asset_amount, venue.out_asset_amount]
         self.venue = copy.deepcopy(venue)
         self.weights = [venue.weight_a, venue.weight_b]
         self.fees = [self.toFloatOrZero(venue.fee_in), self.toFloatOrZero(venue.fee_out)]
@@ -95,7 +95,7 @@ class Edge:
         self.balances[o] -= result
         return result
 
-    def GetOther(self, Ti):  # Assumes only 2 nodes in the edge
+    def other(self, Ti):  # Assumes only 2 nodes in the edge
         if Ti == self.nodes[0]:
             return self.nodes[1]
         return self.nodes[0]
@@ -216,6 +216,7 @@ def route(
             state.reset_distances(max_depth)
 
             # Initialize the first node
+            assert input.in_asset_amount > 0
             state.distances[tendered_asset_index][0] = Previous.start(input.in_asset_amount / total_splits)
 
             # Actualize the state
@@ -227,14 +228,14 @@ def route(
                 for venue_index, venue in enumerate(venues):
                     for asset_index in venue.nodes:
                         if state.distances[asset_index][current_depth].amount > 0:
-                            next_asset_index = venue.GetOther(asset_index)
+                            next_asset_index = venue.other(asset_index)
                             maybe_better_venue = copy.deepcopy(venue)
                             # use the same edge if it has been used before
                             previous_asset_index = asset_index
                             # Go back in the path to check if the edge has been used before
                             for step_back in range(current_depth, 0, -1):
                                 used_venue_index = state.distances[previous_asset_index][step_back].used_venue_index
-                                previous_asset_index = venues[used_venue_index].GetOther(previous_asset_index)
+                                previous_asset_index = venues[used_venue_index].other(previous_asset_index)
                                 if used_venue_index == venue_index:
                                     maybe_better_venue.trade(
                                         previous_asset_index,
@@ -251,13 +252,15 @@ def route(
                                 )
 
             # Get the optimal path
+            
             received_amount = state.distances[received_asset_index][state.depth].amount
+            # raise Exception(f"{received_amount} {state.distances[received_asset_index]}")
             for current_depth in range(1, max_depth_i + 1):
                 maybe_received_amount = state.distances[received_asset_index][current_depth].amount
                 if (
                     state.distances[received_asset_index][current_depth]
                     and maybe_received_amount > state.distances[received_asset_index][state.depth].amount
-                    and maybe_received_amount > received_amount
+                    and maybe_received_amount > received_amount * ctx.loop_risk_ratio                    
                 ):
                     state.depth = current_depth
                     received_amount = maybe_received_amount
@@ -272,12 +275,12 @@ def route(
             # Rebuild the path
             next_asset_index = received_asset_index
             for current_depth in range(state.depth, 0, -1):
+                
                 logger.error(f"{next_asset_index}:{current_depth}:{state.distances[next_asset_index]}")
                 used_venue_index = state.distances[next_asset_index][current_depth].used_venue_index
-
                 assert used_venue_index is not None
                 path[current_depth - 1] = used_venue_index
-                next_asset_index = venues[used_venue_index].GetOther(next_asset_index)
+                next_asset_index = venues[used_venue_index].other(next_asset_index)
 
             # Use the path and update the edges
             tendered_amount = input.in_asset_amount / total_splits
@@ -288,7 +291,7 @@ def route(
                 received_amount = venue.trade(asset_index, tendered_amount)
                 lambdas[path[i]] += received_amount
                 tendered_amount = received_amount
-                asset_index = venue.GetOther(asset_index)
+                asset_index = venue.other(asset_index)
 
             # Update the paths and outcomes
             assert tendered_amount > 0
@@ -296,20 +299,16 @@ def route(
             outcomes.append(outcomes[-1] + tendered_amount)
 
 
-    def build_next(parent, path):
-        head, rest = path[0], path[1:]
-        logger.error(f"{parent} {head} {rest}")
-        step = None
-        if head is None:
-            step = SingleInputAssetCvmRoute(
-                out_asset_id=parent.in_asset_id,
-                out_asset_amount=parent.in_asset_amount,
-                next=[],
-            )
-        else:            
+    def build_next(parent, path):    
+        if len(path) > 0:
+            head, rest = path[0], path[1:]        
             venue = venues[head]
             received_amount = venue.venue.trade(parent.out_asset_id, parent.out_asset_amount)
             received_asset_id = venue.venue.other(parent.out_asset_id)
+            
+            logger.error(f"{parent.out_asset_amount}/{parent.out_asset_id}")
+            logger.error(f"{received_amount}/{received_asset_id}")
+            step = None
             if isinstance(venue.venue, AssetTransfers):
                 step = Spawn(
                     in_asset_id=parent.out_asset_id,
@@ -327,10 +326,13 @@ def route(
                     pool_id=str(venue.venue.pool_id),
                     next=[],
                 )
-            
-        if any(rest):
-             step.next = build_next(step, rest)
-        return step
-    route = build_next(input, sorted([path for path in paths], key= len)[0])
-    solution = BFSolution(outcomes, paths, lambdas, deltas, routes=[route])
-    return route
+            parent.next = [step]
+            build_next(step, rest)                    
+    route = SingleInputAssetCvmRoute(
+        out_asset_id=input.in_asset_id,
+        out_asset_amount=input.in_asset_amount,
+        next=[],
+    )    
+    build_next(route, sorted([path for path in paths], key= len)[0])
+    _solution = BFSolution(outcomes, paths, lambdas, deltas, routes=[route])
+    return [route]

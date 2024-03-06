@@ -26,10 +26,10 @@ def test_oracalize_data():
     assert oracle == 0.25
     assert oracalized_data.token_price_in_usd(2) == 1
     assert oracalized_input.in_asset_amount == 0.25
-    assert oracalized_data.asset_pairs_xyk[0].in_token_amount == 5
-    assert oracalized_data.asset_pairs_xyk[0].out_token_amount == 5
-    assert oracalized_data.asset_pairs_xyk[1].in_token_amount == 2.5
-    assert oracalized_data.asset_pairs_xyk[1].out_token_amount == 5
+    assert oracalized_data.asset_pairs_xyk[0].in_asset_amount == 5
+    assert oracalized_data.asset_pairs_xyk[0].out_asset_amount == 5
+    assert oracalized_data.asset_pairs_xyk[1].in_asset_amount == 2.5
+    assert oracalized_data.asset_pairs_xyk[1].out_asset_amount == 5
 
     transfer43 = new_transfer(3, 4, 20, 20, 0, 1)
     base_data = new_data([pair12, pair23], [transfer43])
@@ -63,11 +63,11 @@ def scale_out(data: AllData, input: Input, ratios):
     new_data = copy.deepcopy(data)
     new_input = copy.deepcopy(input)
     for venue in new_data.asset_pairs_xyk:
-        venue.in_token_amount = venue.in_token_amount / ratios[venue.in_asset_id]
-        venue.out_token_amount = venue.out_token_amount / ratios[venue.out_asset_id]
+        venue.in_asset_amount = venue.in_asset_amount / ratios[venue.in_asset_id]
+        venue.out_asset_amount = venue.out_asset_amount / ratios[venue.out_asset_id]
     for venue in new_data.asset_transfers:
-        venue.in_token_amount = venue.in_token_amount / ratios[venue.in_asset_id]
-        venue.out_token_amount = venue.out_token_amount / ratios[venue.out_asset_id]
+        venue.in_asset_amount = venue.in_asset_amount / ratios[venue.in_asset_id]
+        venue.out_asset_amount = venue.out_asset_amount / ratios[venue.out_asset_id]
     new_input.in_asset_amount = input.in_asset_amount / ratios[input.in_asset_id]
     new_input.out_asset_amount = input.out_asset_amount / ratios[input.out_asset_id]
     return new_data, new_input
