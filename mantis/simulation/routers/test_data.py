@@ -1,7 +1,8 @@
 # for alignment on input and output of algorithm
 from pathlib import Path
+from loguru import logger
 
-from mantis.simulation.routers.data import (
+from simulation.routers.data import (
     new_data,
     new_pair,
     new_transfer,
@@ -51,6 +52,8 @@ def test_token_price_in_usd_via_oracle():
         90,
     )
     data = new_data([pica_usd], [], {1: None, 2: None})
+    if data.asset_pairs_xyk is None:
+        raise ValueError("asset_pairs_xyk can't be None")
     assert data.asset_pairs_xyk[0].a_usd == 50
     assert data.asset_pairs_xyk[0].b_usd == 50
     assert data.asset_pairs_xyk[0].value_of_a_in_usd == data.token_price_in_usd(1)
