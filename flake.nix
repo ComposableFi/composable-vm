@@ -385,7 +385,7 @@
 
         inherit (poetry2nix.lib.mkPoetry2Nix {inherit pkgs;}) mkPoetryApplication mkPoetryPackages mkPoetryEnv overrides;
         env = {
-          OSMOSIS_POOLS = "https://app.osmosis.zone/api/pools?limit=2000&min_liquidity=500";
+          OSMOSIS_POOLS = "https://app.osmosis.zone/api/pools?limit=3000&min_liquidity=500";
           ASTROPORT_POOLS = "https://app.astroport.fi/api/trpc/pools.getAll?input=%7B%22json%22%3A%7B%22chainId%22%3A%5B%22neutron-1%22%5D%7D%7D";
           SKIP_MONEY_SWAGGER = "https://api-swagger.skip.money/";
           SKIP_MONEY = "https://api.skip.money/";
