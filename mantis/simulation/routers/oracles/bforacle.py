@@ -22,6 +22,8 @@ class Edge:
     # A class that represent an edge in an useful way
     # In the future it could be used in hypergraph algorithms with a few changes
 
+    venue: AssetTransfers | AssetPairsXyk
+
     nodes: list[int]
     """
     nodes of the edge
@@ -99,7 +101,7 @@ class Edge:
         return self.nodes[0]
 
     def __repr__(self):
-        return f"Edge({self.nodes}, {self.balances}, {self.weights}, {self.fees}, {self.constant_fees})"
+        return f"Edge({self.nodes}, {self.balances}, {self.weights}, {self.fees}, {self.constant_fees}, {self.venue})"
 
 
 @dataclass
@@ -157,12 +159,11 @@ def data2bf(
 
 @dataclass
 class BFSolution:
-    routes: list[SingleInputAssetCvmRoute]
     outcomes : list[float]
     paths: list[list[int | None]]
     lambdas: list[float]
     deltas : list[float]
-
+    routes: list[SingleInputAssetCvmRoute]
 
 def route(
     input: Input,
@@ -296,13 +297,13 @@ def route(
 
 
     def build_next(parent, path):
-                
         head, rest = path[0], path[1:]
+        logger.error(f"{parent} {head} {rest}")
         step = None
         if head is None:
             step = SingleInputAssetCvmRoute(
-                out_asset_id=input.in_asset_id,
-                out_asset_amount=input.in_asset_amount,
+                out_asset_id=parent.in_asset_id,
+                out_asset_amount=parent.in_asset_amount,
                 next=[],
             )
         else:            
@@ -330,7 +331,6 @@ def route(
         if any(rest):
              step.next = build_next(step, rest)
         return step
-
-    route = build_next(None, path[0])
-    raise Exception(route)
-    return BFSolution(outcomes, paths, lambdas, deltas)
+    route = build_next(input, sorted([path for path in paths], key= len)[0])
+    solution = BFSolution(outcomes, paths, lambdas, deltas, routes=[route])
+    return route

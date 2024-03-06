@@ -1493,6 +1493,7 @@ paths:
                         transfer_asset_release:
                           chain_id: "43114"
                           denom: wavax-wei
+                          released: true
                         error: null
                   summary: "Transfer with swap of Atom from Cosmoshub to wavax on Avalanche"
                 Multiple Transfers:
@@ -1542,6 +1543,7 @@ paths:
                               transfer_asset_release:
                                 chain_id: juno-1
                                 denom: ibc/C4CFF46FD6DE35CA4CF4CE031E643C8FDC9BA4B99AE598E9B0ED98FE3A2319F9
+                                released: true
                               error: null
                       - state: STATE_COMPLETED_SUCCESS
                         transfer_sequence:
@@ -1587,6 +1589,7 @@ paths:
                               transfer_asset_release:
                                 chain_id: canto_7700-1
                                 denom: ibc/9117A26BA81E29FA4F78F57DC2BD90CD3D26848101BA880445F119B22A1E254E
+                                released: true
                               error: null
                   summary: "Multiple transfers of Atom from Osmosis to Juno and from Osmosis to Canto"
                 Transfer from Noble to Ethereum via CCTP:
@@ -1611,6 +1614,7 @@ paths:
                         transfer_asset_release:
                           chain_id: "1"
                           denom: uusdc
+                          released: true
                         error: null
               schema:
                 type: object
@@ -2837,7 +2841,7 @@ components:
               description: The index of the entry in the `transfer_sequence` field that
                 the transfer is blocked on.
               type: integer
-            transfer_state:
+            state:
               $ref: '#/components/schemas/BlockingTransferState'
           type: object
         state:
@@ -2853,6 +2857,8 @@ components:
             denom:
               description: The denom of the asset that is released.
               type: string
+            released:
+              description: Indicates whether assets have been released and are accessible. The assets may still be in transit.
           type: object
         transfer_sequence:
           description: Lists any IBC and Axelar transfers as they are seen.

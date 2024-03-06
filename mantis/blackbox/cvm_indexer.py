@@ -188,8 +188,7 @@ class ExtendedCvmRegistry(BaseModel):
                     exchanges.append(x)
                 else:
                     logger.info(
-                        "error: mantis::solver::blackbox:: no pool indexer info found for ",
-                        pool_id,
+                        f"error: mantis::solver::blackbox:: no pool indexer info found for {pool_id}",
                     )
 
         network_assets = onchains.network_assets

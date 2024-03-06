@@ -323,7 +323,6 @@ def test_big_numeric_range():
 
 scale_value: int = 10000
 
-
 def test_simulate_all_connected_venues():
     np.random.seed(0)
     input = new_input("WETH", "ATOM", 2000 * scale_value, 1)
@@ -390,7 +389,6 @@ def simulate_all_connected_venues(CENTER_NODE, chains) -> AllData:
 
 def simulate_all_to_all_connected_chains_topology(input: Input):
     CENTER_NODE = "CENTAURI"  # Name of center Node
-in_asset_id
     chains: dict[str, list[str]] = {
         "ETHEREUM": [input.in_token_id, "USDC", "SHIBA"],
         CENTER_NODE: [],

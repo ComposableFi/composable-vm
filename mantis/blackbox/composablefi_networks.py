@@ -176,7 +176,7 @@ class Testnet(BaseModel):
 class Osmosis(BaseModel):
     devnet: Devnet3
     mainnet: Mainnet2
-    remote_devnet: RemoteDevnet = Field(..., alias="remote-devnet")
+    remote_devnet: RemoteDevnet = Field(..., alias='remote-devnet')
     testnet: Testnet
 
 
@@ -235,7 +235,7 @@ class Pica(BaseModel):
 
 
 class Model(BaseModel):
-    cosmos_hub: CosmosHub = Field(..., alias="cosmos-hub")
+    cosmos_hub: CosmosHub = Field(..., alias='cosmos-hub')
     devnet: Devnet1
     neutron: Neutron
     osmosis: Osmosis

@@ -191,6 +191,7 @@ class AssetTransfers(
 
 class AssetPairsXyk(
     BaseModel,
+    TwoTokenConverter,
     Generic[TId, TAmount],
 ):
     """_summary_
@@ -200,8 +201,6 @@ class AssetPairsXyk(
 
     # set key
     pool_id: TId
-    in_asset_id: TId
-    out_asset_id: TId
 
     # assumed that all all CFMM take fee from pair token in proportion
     fee_of_in_per_million: int
@@ -747,12 +746,12 @@ def new_data(pairs: list[AssetPairsXyk], transfers: list[AssetTransfers], usd_or
     )
 
 
-def new_input(in_token_id, out_token_id, in_amount, out_amount) -> Input:
+def new_input(in_asset_id, out_asset_id, in_asset_amount, out_asset_amount) -> Input:
     return Input(
-        in_token_id=in_token_id,
-        out_token_id=out_token_id,
-        in_amount=in_amount,
-        out_amount=out_amount,
+        in_asset_id=in_asset_id,
+        out_asset_id=out_asset_id,
+        in_asset_amount=in_asset_amount,
+        out_asset_amount=out_asset_amount,
         max=True,
     )
 

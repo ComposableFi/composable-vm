@@ -150,6 +150,7 @@ def simulator_router(input: Input = Depends()) -> list[SingleInputAssetCvmRoute]
 
 def solve(original_input: Input, cvm_data: ExtendedCvmRegistry) -> list[SingleInputAssetCvmRoute]:
     ctx = Ctx()
+    ctx.max_depth_of_route = 4
     original_data = for_simulation(cvm_data, {})
 
     original_input.in_asset_amount = int(original_input.in_asset_amount)
@@ -241,7 +242,6 @@ def get_remote_data() -> AllData:
 def start():
     logger.info(sys.path)
     logger.info(os.environ)
-    data.Input(in_token_id=42, out_token_id=42, in_amount=42, out_amount=42, max=True)
     uvicorn.run(
         "main:app",
         host="0.0.0.0",
