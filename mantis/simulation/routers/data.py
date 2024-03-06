@@ -20,7 +20,7 @@ from simulation.routers.oracles import merge_by_connection_from_existing
 # This is global unique ID for token(asset) or exchange(pool)
 TId = TypeVar("TId", int, str)
 TNetworkId = TypeVar("TNetworkId", int, str)
-TAmount = TypeVar("TAmount", int, str)
+TAmount = TypeVar("TAmount", int, float)
 
 MINIMAL_FEE_PER_MILLION_DEFAULT = 100
 """
@@ -128,7 +128,7 @@ class Ctx(BaseModel, Generic[TAmount]):
         return 10**self.max_reserve_decimals
 
 
-class TwoTokenConverter:
+class TwoTokenConverter(Generic[TId]):
     in_asset_id: TId
     out_asset_id: TId
 
@@ -249,10 +249,14 @@ class AssetPairsXyk(
 
     @property
     def a_usd(self):
+        if self.pool_value_in_usd is None:
+            raise ValueError("pool_value_in_usd can't be None")
         return self.pool_value_in_usd * self.weight_b / (self.weight_a + self.weight_b)
 
     @property
     def b_usd(self):
+        if self.pool_value_in_usd is None:
+            raise ValueError("pool_value_in_usd can't be None")
         return self.pool_value_in_usd * self.weight_a / (self.weight_a + self.weight_b)
 
     @property
@@ -272,14 +276,14 @@ class AssetPairsXyk(
         """_summary_
         Part of amount taken as fee
         """
-        self.fee_of_in_per_million / 1_000_000
+        return self.fee_of_in_per_million / 1_000_000
 
     @property
     def fee_out(self) -> float:
         """_summary_
         Part of amount taken as fee
         """
-        self.fee_of_out_per_million / 1_000_000
+        return self.fee_of_out_per_million / 1_000_000
 
     metadata: str | None = None
 
@@ -322,7 +326,7 @@ class Trade(Generic[TId, TAmount]):
 
 
 # @dataclass
-class Spawn(BaseModel, Trade):
+class Spawn(BaseModel, Trade, Generic[TId, TAmount]):
     """
     cross chain transfer assets
     """
@@ -338,7 +342,7 @@ class Spawn(BaseModel, Trade):
 
 
 # @dataclass
-class Exchange(BaseModel, Trade):
+class Exchange(BaseModel, Trade, Generic[TId, TAmount]):
     in_asset_amount: TAmount
     """
     none means all (DELTA)
@@ -350,7 +354,7 @@ class Exchange(BaseModel, Trade):
     next: list[Union[Exchange, Spawn]]
 
     @model_validator(mode="after")
-    def after(self) -> "Exchange":
+    def after(self: Exchange[TId, TAmount]) -> "Exchange":
         # assert self.out_asset_amount > 0
         # assert self.in_asset_amount > 0
         assert self.in_asset_id != self.out_asset_id
@@ -369,7 +373,7 @@ SingleInputAssetCvmRoute.model_rebuild()
 
 
 class RouteTree(NodeMixin):
-    trade: Union[SingleInputAssetCvmRoute | Exchange | Spawn]
+    trade: Union[SingleInputAssetCvmRoute , Exchange , Spawn]
 
     def __init__(
         self,
