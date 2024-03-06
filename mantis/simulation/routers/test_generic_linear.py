@@ -360,7 +360,7 @@ def simulate_all_connected_venues(CENTER_NODE, chains) -> AllData:
     for i, x in enumerate(all_token_pairs):
         [a, b] = np.random.randint(9500 * scale_value, 10500 * scale_value, 2)
         fee = np.random.randint(0, 10_000 * scale_value)
-        x = new_pair(i, x[0], x[1], fee, fee, 1, 1, 1_000, a, b)
+        x = new_pair(i, x[0], x[1], fee, fee, 1, 1, 1_000 * scale_value, a, b)
         pools.append(x)
 
     # simulate crosschain transfers as "pools"
