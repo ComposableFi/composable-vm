@@ -1583,28 +1583,32 @@ dev = ["twine (>=3.4.1)"]
 
 [[package]]
 name = "pyscipopt"
-version = "4.4.0"
+version = "5.0.0"
 description = "Python interface and modeling environment for SCIP"
 optional = false
-python-versions = "*"
+python-versions = ">=3.8"
 files = [
-    {file = "PySCIPOpt-4.4.0-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:da94fef084be20a654b2d9e4af05b5c7c8360f086a29466b7dcb5c256f604410"},
-    {file = "PySCIPOpt-4.4.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:f8f48dcc7c67512033bc3cca76f6fb142f6ecb7734513c10d14b87709c653ea9"},
-    {file = "PySCIPOpt-4.4.0-cp310-cp310-win_amd64.whl", hash = "sha256:94f5943f1864bb170e19dc7628bc5a9e4f67b81311b90ea4a8c5b93d3ab77ca5"},
-    {file = "PySCIPOpt-4.4.0-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:336b48b5b75a9dadc9126543747a2ff8db9701fed8ebb6838291e075eba1d5a9"},
-    {file = "PySCIPOpt-4.4.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:cad91ad249f7dda1b72b46d54f03433be5db1f9fadd79b3b3a87bb3eef7ad43e"},
-    {file = "PySCIPOpt-4.4.0-cp311-cp311-win_amd64.whl", hash = "sha256:6c9070336685dee1529c1aacba3cc5a922726b2979d49953f076e60b813d53dd"},
-    {file = "PySCIPOpt-4.4.0-cp36-cp36m-macosx_10_9_x86_64.whl", hash = "sha256:2a07d06779fc3fba9ea2201ed63b7827b723b12bfd17edd8b54453afc7d93a21"},
-    {file = "PySCIPOpt-4.4.0-cp36-cp36m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:ed1ac8c27bec617159330f114fc85ce8677f0acc7de5a652a4aee106fd1c5e2b"},
-    {file = "PySCIPOpt-4.4.0-cp37-cp37m-macosx_10_9_x86_64.whl", hash = "sha256:6b0de46d4353695b9bcd8fdd6c904850626f12d82fddf97bb7a23adfa101c7b6"},
-    {file = "PySCIPOpt-4.4.0-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:1d6e6eff6bdfe3583bcb92a8d1bf372d1e58cea5312cc9ee5acb0318805c08ea"},
-    {file = "PySCIPOpt-4.4.0-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:e54664545d6d8245f4638857e553b455079ef5853249842082ef4f32fa5d2991"},
-    {file = "PySCIPOpt-4.4.0-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:4c0bf10035bbbbaafafdbba6e930c077f873bda08700953314fc3998effc2c25"},
-    {file = "PySCIPOpt-4.4.0-cp38-cp38-win_amd64.whl", hash = "sha256:2a1673710b9d1b16fdafb9d880da234e1f1aa2a06843a318d887d1d5cc8e50e2"},
-    {file = "PySCIPOpt-4.4.0-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:6dfa7866562928b6675edce8463fba2cd7d59ecc2602657c356c470b0eaf5d23"},
-    {file = "PySCIPOpt-4.4.0-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:d1b76b5b4ae4246a2ee817f3735e7a30a2f7a964f77859730b286c3e44414520"},
-    {file = "PySCIPOpt-4.4.0-cp39-cp39-win_amd64.whl", hash = "sha256:81f878e6cf00030e9293fcdced88764d47d8e550746e25754090dd7032e4e18c"},
-    {file = "PySCIPOpt-4.4.0.tar.gz", hash = "sha256:87aad96de296991792db0b49ad5cab614ade3e00207bf80f3397745aa478579b"},
+    {file = "PySCIPOpt-5.0.0-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:1def73012cdac77597cacbe25747cf406cddb891bf061877dfee30add12f71b7"},
+    {file = "PySCIPOpt-5.0.0-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:1ab52a742fb27039e11050098be34d3786dfef54e8fedccaa6032c6d3f32e51b"},
+    {file = "PySCIPOpt-5.0.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:3413d533ac5c25da0346415f02cd37fe29f32951c6206ae79f198d698eaf84f1"},
+    {file = "PySCIPOpt-5.0.0-cp310-cp310-win_amd64.whl", hash = "sha256:6d1fb8ffdf53fb321d5b67ae54f4f73bd0a51356ea0f0eb81cf59086a776c861"},
+    {file = "PySCIPOpt-5.0.0-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:3dc35903915efa6f52f02e19dbd2bd4f02789c26f47b95b49787a8004d220195"},
+    {file = "PySCIPOpt-5.0.0-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:4d8168aa03b672226c262a26e7b6f853415e5dec7e802122bb33aace9f212bff"},
+    {file = "PySCIPOpt-5.0.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:d6d7e2afc047168a9ce899b0e6b3c23af819203274dead23f634ce12fe9c8063"},
+    {file = "PySCIPOpt-5.0.0-cp311-cp311-win_amd64.whl", hash = "sha256:4c3dd40104fef675f51d9eeac1149489f46a12371033f154846b28386a433321"},
+    {file = "PySCIPOpt-5.0.0-cp312-cp312-macosx_10_9_x86_64.whl", hash = "sha256:64a0dfb5a484f8633dc338c65735a7dd9d7f1fedb6230f6ef2ca598bafca05cf"},
+    {file = "PySCIPOpt-5.0.0-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:b9778c51a3fa8864482926832d467d53124f236f828b5a0146f41bf942a97810"},
+    {file = "PySCIPOpt-5.0.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:2d47e3fcc5a07fc80e5d4634fc4b457eba8811fb800d65d37dc2f9d100dfc5ed"},
+    {file = "PySCIPOpt-5.0.0-cp312-cp312-win_amd64.whl", hash = "sha256:1d4a1cef18c8b6c267997a3af8ccda44e57d4a15a9bf32583e09cc5d95281b42"},
+    {file = "PySCIPOpt-5.0.0-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:f828b149df7c669df5f436f8a85395946f8f3e5622972a3eccad1f394311475f"},
+    {file = "PySCIPOpt-5.0.0-cp38-cp38-macosx_11_0_arm64.whl", hash = "sha256:2aadefa1da88aa9cc2ba6b0017df6174deb6f8e1b96a84dd21b9eb10071b7448"},
+    {file = "PySCIPOpt-5.0.0-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:6f0161a2cca850cc09037f696d530b52b84e22156440ac26c40dc3b0abd7a319"},
+    {file = "PySCIPOpt-5.0.0-cp38-cp38-win_amd64.whl", hash = "sha256:825c1e862fa3042a8467322dc2c6a32ea8352541fcee4b10a9ef7fcffc2f4639"},
+    {file = "PySCIPOpt-5.0.0-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:209ed5b4aeac30b407b9e4c6231bf9009bf6fcd2ff7db40d8ce8b7a71c80cb67"},
+    {file = "PySCIPOpt-5.0.0-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:307737909ef8dcbc580167d73f1d5f360801ebb73b0e0697459ad5d025c30fad"},
+    {file = "PySCIPOpt-5.0.0-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:44e0baa99daf5b16979e188e140675449d35344cd30ad875f33b7e8ba9422ade"},
+    {file = "PySCIPOpt-5.0.0-cp39-cp39-win_amd64.whl", hash = "sha256:ed69598dc1c41c2efcc201f75d407691574b57d199dac82331abb57b3e1b7358"},
+    {file = "PySCIPOpt-5.0.0.tar.gz", hash = "sha256:f9c36c941e1373406b00c030f2511578c3fb02a95a2cf5559772deb846a0af47"},
 ]
 
 [[package]]
@@ -2598,4 +2602,4 @@ numpy = ">=1.23,<2.0a0"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.11.6, <=3.11.7"
-content-hash = "96749d71a83365c315ba7f0008d098c4ef9b8871cd544d07c5204874bf071972"
+content-hash = "a82cdb58f0ae791a863ab94c8392b66b676890d54dde9a8922f909393fcb2a78"
