@@ -86,6 +86,8 @@ class Ctx(BaseModel, Generic[TAmount]):
 
     min_usd_venue_amount: float = 0.0000000001
 
+    forced_split_count: int = 1
+
     maximal_split_count: int = 10_0000
     """_summary_
     Do not split trade more than to these parts.
@@ -113,7 +115,7 @@ class Ctx(BaseModel, Generic[TAmount]):
     Prevents arbitrage but allows for simpler routes if set small.
     """
 
-    depth_of_route: int = 3
+    max_depth_of_route: int = 7
     """_summary_
     Avoid too deep routes.
     """

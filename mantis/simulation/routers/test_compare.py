@@ -6,7 +6,7 @@ import time
 import numpy as np
 from loguru import logger
 
-from mantis.simulation.routers import bellman_ford_oracle
+from simulation.routers.oracles import bforacle
 from simulation.routers.data import (
     AllData,
     AssetPairsXyk,

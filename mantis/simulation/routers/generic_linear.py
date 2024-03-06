@@ -283,7 +283,7 @@ def route(
 
     if len(initial_solutions) == 0:
         raise Exception("all solvers failed, solution considered infeasible")
-
+    raise Exception("asdsad")
     forced = []
     for solution in initial_solutions:
         forced.append((solution.forced_etas, solution.to_forced_max(all_data, ctx)))
@@ -323,5 +323,5 @@ def route(
     initial_solutions.extend(forced_solutions)
 
     if len(initial_solutions) == 0:
-        raise Exception("no solved")
+        raise Exception("not of solutions feet")
     return initial_solutions

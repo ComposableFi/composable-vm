@@ -320,10 +320,11 @@ def test_big_numeric_range():
     assert result.next[0].in_asset_amount == 100
     assert result.next[0].out_asset_amount == 99
 
+scale_value:int = 10000   
 
 def test_simulate_all_connected_venues():
     np.random.seed(0)
-    input = new_input("WETH", "ATOM", 2000, 1)
+    input = new_input("WETH", "ATOM", 2000 * scale_value, 1)
     CENTER_NODE, chains = simulate_all_to_all_connected_chains_topology(input)
     data = simulate_all_connected_venues(CENTER_NODE, chains)
     logger.info(data)
@@ -350,7 +351,6 @@ def test_simulate_all_connected_venues():
 def simulate_all_connected_venues(CENTER_NODE, chains) -> AllData:
     pools: list[AssetPairsXyk] = []
     transfers: list[AssetTransfers] = []
-
     # simulate in chain CFMMS
     all_token_pairs = []
     for _other_chain, other_tokens in chains.items():
@@ -358,9 +358,9 @@ def simulate_all_connected_venues(CENTER_NODE, chains) -> AllData:
 
     # simulate reserves and gas costs to CFMM
     for i, x in enumerate(all_token_pairs):
-        [a, b] = np.random.randint(9500, 10500, 2)
-        fee = np.random.randint(0, 10_000)
-        x = new_pair(i, x[0], x[1], fee, fee, 1, 1, 1_000, a, b)
+        [a, b] = np.random.randint(9500 * scale_value, 10500 * scale_value, 2)
+        fee = np.random.randint(0, 10_000 * scale_value)
+        x = new_pair(i, x[0], x[1], fee, fee, 1, 1, 1_000 * scale_value, a, b)
         pools.append(x)
 
     # simulate crosschain transfers as "pools"
@@ -375,11 +375,11 @@ def simulate_all_connected_venues(CENTER_NODE, chains) -> AllData:
                         all_token_transfers.append((token_on_center, other_token))
 
     for _i, x in enumerate(all_token_transfers):
-        abc = np.random.randint(9500, 10500, 2)
+        abc = np.random.randint(9500 * scale_value, 10500 * scale_value, 2)
         a = abc[0]
         b = abc[1]
         tx_cost = np.random.randint(0, 1_00)
-        fee = np.random.randint(0, 10_000)
+        fee = np.random.randint(0, 10_000 * scale_value)
         x = new_transfer(x[0], x[1], tx_cost, a, b, fee)
         transfers.append(x)
 
