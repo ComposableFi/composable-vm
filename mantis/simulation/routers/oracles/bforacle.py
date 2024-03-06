@@ -150,6 +150,15 @@ def data2bf(
     return edges, tokensIds, all_tokens
 
 
+@dataclass
+class BFSolution:
+    routes: list[SingleInputAssetCvmRoute]
+    outcomes
+    paths
+    lambdas
+    deltas
+
+
 def route(
     input: Input,
     all_data: AllData,
@@ -241,14 +250,13 @@ def route(
                 maybe_received_amount = state.distances[received_asset_index][current_depth].amount
                 if (
                     state.distances[received_asset_index][current_depth]
-                    and maybe_received_amount
-                    > state.distances[received_asset_index][state.depth].amount
+                    and maybe_received_amount > state.distances[received_asset_index][state.depth].amount
                     and maybe_received_amount > received_amount
-                ): 
+                ):
                     state.depth = current_depth
                     received_amount = maybe_received_amount
 
-            if received_amount == 0:  
+            if received_amount == 0:
                 raise Infeasible("No path retaining some value found")
             if state.depth == 0:  # if there is no path
                 raise Infeasible("No path found")
@@ -281,4 +289,4 @@ def route(
             paths.append(path)
             outcomes.append(outcomes[-1] + tendered_amount)
 
-    return outcomes[-1], outcomes[-2], paths, lambdas, deltas
+    return BFSolution(outcomes, paths, lambdas, deltas)

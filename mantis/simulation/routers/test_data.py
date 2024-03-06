@@ -1,6 +1,5 @@
 # for alignment on input and output of algorithm
 from pathlib import Path
-from loguru import logger
 
 from simulation.routers.data import (
     new_data,

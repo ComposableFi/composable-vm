@@ -375,7 +375,7 @@ SingleInputAssetCvmRoute.model_rebuild()
 
 
 class RouteTree(NodeMixin):
-    trade: Union[SingleInputAssetCvmRoute , Exchange , Spawn]
+    trade: Union[SingleInputAssetCvmRoute, Exchange, Spawn]
 
     def __init__(
         self,

@@ -6,7 +6,6 @@ import time
 import numpy as np
 from loguru import logger
 
-from simulation.routers.oracles import bforacle
 from simulation.routers.data import (
     AllData,
     AssetPairsXyk,
@@ -19,6 +18,7 @@ from simulation.routers.data import (
     new_pair,
     new_transfer,
 )
+from simulation.routers.oracles import bforacle
 
 MAX_RESERVE = 1e10
 
@@ -119,25 +119,25 @@ def simulate_all_to_all_connected_chains_topology(input: Input):
 if __name__ == "__main__":
     for _ in range(10):
         routes = {
-            f"Lautaro 1 process, depth {depth} and 1000 splits without revision": bellman_ford_oracle.BuildRoute(
+            f"Lautaro 1 process, depth {depth} and 1000 splits without revision": bforacle.BuildRoute(
                 depth, 1000, False, 1
             )
             for depth in [3, 5, 10, 15]
         }
 
-        routes[
-            f"Lautaro 1 process, depth {[3,5,10,20]} and 1000 splits without revision"
-        ] = bellman_ford_oracle.BuildRoute([3, 5, 10, 20], [100, 300, 300, 300], revision=False, Nproces=1)
-        routes[f"Lautaro 1 process, depth {[5,10]} and 1000 splits without revision"] = bellman_ford_oracle.BuildRoute(
+        routes[f"Lautaro 1 process, depth {[3,5,10,20]} and 1000 splits without revision"] = bforacle.BuildRoute(
+            [3, 5, 10, 20], [100, 300, 300, 300], revision=False, Nproces=1
+        )
+        routes[f"Lautaro 1 process, depth {[5,10]} and 1000 splits without revision"] = bforacle.BuildRoute(
             [5, 10], [500, 500], revision=False, Nproces=1
         )
-        routes[
-            f"Lautaro 1 process, depth {[3,5,10]} and 1000 splits without revision"
-        ] = bellman_ford_oracle.BuildRoute([3, 5, 10], [100, 400, 500], revision=False, Nproces=1)
+        routes[f"Lautaro 1 process, depth {[3,5,10]} and 1000 splits without revision"] = bforacle.BuildRoute(
+            [3, 5, 10], [100, 400, 500], revision=False, Nproces=1
+        )
 
         routes.update(
             {
-                f"Lautaro 1 process, depth {depth} and 1000 splits with revision": bellman_ford_oracle.BuildRoute(
+                f"Lautaro 1 process, depth {depth} and 1000 splits with revision": bforacle.BuildRoute(
                     depth, 1000, True, 1
                 )
                 for depth in [5, 10]

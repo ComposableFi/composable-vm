@@ -320,7 +320,9 @@ def test_big_numeric_range():
     assert result.next[0].in_asset_amount == 100
     assert result.next[0].out_asset_amount == 99
 
-scale_value:int = 10000   
+
+scale_value: int = 10000
+
 
 def test_simulate_all_connected_venues():
     np.random.seed(0)
