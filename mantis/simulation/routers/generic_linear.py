@@ -323,5 +323,5 @@ def route(
     initial_solutions.extend(forced_solutions)
 
     if len(initial_solutions) == 0:
-        raise Exception("no solved")
+        raise Exception("not of solutions feet")
     return initial_solutions

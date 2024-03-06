@@ -120,7 +120,6 @@ class State:
     distances: list[list[Previous]]
     received_asset_index: int
     edges: list[Edge]
-    revision: bool
     j: int
     n: int
 
@@ -133,7 +132,6 @@ class State:
         self.depth = None
         self.received_asset_index = None
         self.edges = None
-        self.revision = None
         self.j = None
         self.n = None
 
@@ -155,20 +153,16 @@ def data2bf(
 def route(
     input: Input,
     all_data: AllData,
-    _ctx: Ctx = Ctx(),  # Context
-    max_depth: int = 6,  # The maximum number of edges that can be used
-    splits: int = 1,  # The number of flow units in which the amount is divided
-    revision=True,  # When uses an edge, check if the edge has been used before and if so, use the same edge
+    ctx: Ctx = Ctx(),
 ):
     """
-    Bellman Ford based solution
+    Bellman Ford inspired solution.
     The function divides the transaction if several paths (`splits``) and for each path
-    find an optimal path using the Bellman Ford algorithm without any modification.
-    If the `revision` parameter is True, in each step the edge will be used with the information
-    of the path that reached the first node. This might be important in loops.
-    The parameters of the functions allows to go over the runtime-accuracy tradeoff
+    find an optimal path without any modification.
     """
     # If max_depth or splits are not lists, convert them to lists
+    max_depth = ctx.max_depth_of_route
+    splits = ctx.forced_split_count
     if isinstance(max_depth, int):
         max_depth = [max_depth]
     if isinstance(splits, int):
@@ -195,7 +189,6 @@ def route(
     state = State()
     state.received_asset_index = received_asset_index
     state.edges = venues
-    state.revision = revision
     state.n = n
 
     # The dist and previous edge of each node for each length of the path
@@ -221,19 +214,17 @@ def route(
                         if state.distances[asset_index][current_depth].amount > 0:
                             next_asset_index = venue.GetOther(asset_index)
                             maybe_better_venue = copy.deepcopy(venue)
-                            if (
-                                state.revision
-                            ):  # If the revision is active, use the same edge if it has been used before
-                                previous_asset_index = asset_index
-                                # Go back in the path to check if the edge has been used before
-                                for step_back in range(current_depth, 0, -1):
-                                    used_venue_index = state.distances[previous_asset_index][step_back].used_venue_index
-                                    previous_asset_index = venues[used_venue_index].GetOther(previous_asset_index)
-                                    if used_venue_index == venue_index:
-                                        maybe_better_venue.trade(
-                                            previous_asset_index,
-                                            state.distances[previous_asset_index][(step_back - 1)].amount,
-                                        )
+                            # use the same edge if it has been used before
+                            previous_asset_index = asset_index
+                            # Go back in the path to check if the edge has been used before
+                            for step_back in range(current_depth, 0, -1):
+                                used_venue_index = state.distances[previous_asset_index][step_back].used_venue_index
+                                previous_asset_index = venues[used_venue_index].GetOther(previous_asset_index)
+                                if used_venue_index == venue_index:
+                                    maybe_better_venue.trade(
+                                        previous_asset_index,
+                                        state.distances[previous_asset_index][(step_back - 1)].amount,
+                                    )
                             # Get the amount of the other token
                             received_amount = maybe_better_venue.trade(
                                 asset_index, state.distances[asset_index][current_depth].amount
