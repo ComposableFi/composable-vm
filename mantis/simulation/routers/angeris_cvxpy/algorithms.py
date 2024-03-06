@@ -121,16 +121,16 @@ def cvxpy_to_data(
             route = RouteTree(
                 name="start",
                 trade=SingleInputAssetCvmRoute(
-                    out_asset_id=input.in_token_id,
-                    out_asset_amount=int(math.ceil(input.in_amount)),
+                    out_asset_id=input.in_asset_id,
+                    out_asset_amount=int(math.ceil(input.in_asset_amount)),
                     next=[],
                 ),
             )
-            build_routes(route, 0, input.out_token_id, 0)
+            build_routes(route, 0, input.out_asset_id, 0)
             for pre, _fill, node in RenderTree(route):
                 logger.error(f"{pre} {node.name} {node.trade}")
 
-            out_amount = route.ends(input.out_token_id)
+            out_amount = route.ends(input.out_asset_id)
             logger.error(f"ends {out_amount}")
             routes.append(route)
         except Exception as e:

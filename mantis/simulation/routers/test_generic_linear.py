@@ -178,7 +178,7 @@ def test_usd_arbitrage_high_fees_long_path():
     )
     solution = cvxpy_to_data(input, data, ctx, result)
 
-    assert math.floor(result.received(data.index_of_token(input.out_token_id))) == 1000
+    assert math.floor(result.received(data.index_of_token(input.out_asset_id))) == 1000
     assert solution.in_amount > 0
     assert solution.in_amount <= in_amount
     assert isinstance(solution.next[0], Spawn)
@@ -341,12 +341,12 @@ def test_simulate_all_connected_venues():
     sum = 0
     for next in queue:
         if not next.next or len(next.next) == 0:
-            assert next.out_asset_id == input.out_token_id
+            assert next.out_asset_id == input.out_asset_id
             sum += next.out_asset_amount
         else:
             queue.extend(next.next)
     assert sum >= 1900
-    assert sum > input.out_amount
+    assert sum > input.out_asset_amount
     logger.info(sum)
 
 
@@ -390,7 +390,7 @@ def simulate_all_connected_venues(CENTER_NODE, chains) -> AllData:
 
 def simulate_all_to_all_connected_chains_topology(input: Input):
     CENTER_NODE = "CENTAURI"  # Name of center Node
-
+in_asset_id
     chains: dict[str, list[str]] = {
         "ETHEREUM": [input.in_token_id, "USDC", "SHIBA"],
         CENTER_NODE: [],

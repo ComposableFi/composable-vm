@@ -25,7 +25,7 @@ def test_oracalize_data():
     oracle = base_data.token_price_in_usd(1)
     assert oracle == 0.25
     assert oracalized_data.token_price_in_usd(2) == 1
-    assert oracalized_input.in_amount == 0.25
+    assert oracalized_input.in_asset_amount == 0.25
     assert oracalized_data.asset_pairs_xyk[0].in_token_amount == 5
     assert oracalized_data.asset_pairs_xyk[0].out_token_amount == 5
     assert oracalized_data.asset_pairs_xyk[1].in_token_amount == 2.5
@@ -68,8 +68,8 @@ def scale_out(data: AllData, input: Input, ratios):
     for venue in new_data.asset_transfers:
         venue.in_token_amount = venue.in_token_amount / ratios[venue.in_asset_id]
         venue.out_token_amount = venue.out_token_amount / ratios[venue.out_asset_id]
-    new_input.in_amount = input.in_amount / ratios[input.in_token_id]
-    new_input.out_amount = input.out_amount / ratios[input.out_token_id]
+    new_input.in_asset_amount = input.in_asset_amount / ratios[input.in_asset_id]
+    new_input.out_asset_amount = input.out_asset_amount / ratios[input.out_asset_id]
     return new_data, new_input
 
 

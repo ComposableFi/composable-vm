@@ -16,12 +16,12 @@ def oracalize_data(base_data: AllData, input: Input, ctx: Ctx) -> tuple[AllData,
     assert base_data is not None
     oracalized_data = copy.deepcopy(base_data)
     oracalized_input = copy.deepcopy(input)
-    assert input.in_amount > 0
-    oracalized_input.in_amount = input.in_amount * base_data.token_price_in_usd(input.in_token_id)
+    assert input.in_asset_amount > 0
+    oracalized_input.in_asset_amount = input.in_asset_amount * base_data.token_price_in_usd(input.in_asset_id)
 
-    if oracalized_input.in_amount < ctx.min_input_in_usd:
+    if oracalized_input.in_asset_amount < ctx.min_input_in_usd:
         raise ToSmallUsdValueOfInput(
-            f"minimal amount is {ctx.minimal_venued_amount} and you have {oracalized_input.in_amount} for {input.in_token_id}"
+            f"minimal amount is {ctx.minimal_venued_amount} and you have {oracalized_input.in_asset_amount} for {input.in_asset_id}"
         )
 
     # make all exchanges to be oracalized
@@ -51,7 +51,7 @@ def scale_in(base_data: AllData, input: Input, ctx: Ctx) -> tuple[AllData, Input
     """
     Scales in data to be used by simulation
     """
-    assert base_data.token_price_in_usd(input.in_token_id) > 0
+    assert base_data.token_price_in_usd(input.in_asset_id) > 0
 
     # so we set all transfers amount to some estimate
     for transfer in base_data.asset_transfers:
@@ -72,7 +72,7 @@ def scale_in(base_data: AllData, input: Input, ctx: Ctx) -> tuple[AllData, Input
                 if oracalized_reserve == 0:
                     new_data.asset_pairs_xyk[i].zero()
                 else:
-                    ratio = oracalized_input.in_amount / oracalized_reserve
+                    ratio = oracalized_input.in_asset_amount / oracalized_reserve
                     if ratio < ctx.min_input_to_reserve_ratio:
                         new_data.asset_pairs_xyk[i].in_token_amount = new_data.asset_pairs_xyk[i].in_token_amount * (
                             ratio / ctx.min_input_to_reserve_ratio
@@ -84,7 +84,7 @@ def scale_in(base_data: AllData, input: Input, ctx: Ctx) -> tuple[AllData, Input
                 if oracalized_reserve == 0:
                     new_data.asset_pairs_xyk[i].zero()
                 else:
-                    ratio = oracalized_input.in_amount / oracalized_reserve
+                    ratio = oracalized_input.in_asset_amount / oracalized_reserve
                     if ratio < ctx.min_input_to_reserve_ratio:
                         new_data.asset_pairs_xyk[i].out_token_amount = new_data.asset_pairs_xyk[i].out_token_amount * (
                             ratio / ctx.min_input_to_reserve_ratio
@@ -98,7 +98,7 @@ def scale_in(base_data: AllData, input: Input, ctx: Ctx) -> tuple[AllData, Input
                 if oracalized_reserve == 0:
                     new_data.asset_transfers[i].zero()
                 else:
-                    ratio = oracalized_input.in_amount / oracalized_reserve
+                    ratio = oracalized_input.in_asset_amount / oracalized_reserve
                     if ratio < ctx.min_input_to_reserve_ratio:
                         new_data.asset_transfers[i].in_token_amount = new_data.asset_transfers[i].in_token_amount * (
                             ratio / ctx.min_input_to_reserve_ratio
@@ -110,7 +110,7 @@ def scale_in(base_data: AllData, input: Input, ctx: Ctx) -> tuple[AllData, Input
                 if oracalized_reserve == 0:
                     new_data.asset_transfers[i].zero()
                 else:
-                    ratio = oracalized_input.in_amount / oracalized_reserve
+                    ratio = oracalized_input.in_asset_amount / oracalized_reserve
                     if ratio < ctx.min_input_to_reserve_ratio:
                         new_data.asset_transfers[i].out_token_amount = new_data.asset_transfers[i].out_token_amount * (
                             ratio / ctx.min_input_to_reserve_ratio
@@ -147,10 +147,10 @@ def scale_in(base_data: AllData, input: Input, ctx: Ctx) -> tuple[AllData, Input
                 ):
                     venue.in_token_amount = 0
                     venue.out_token_amount = 0
-            if input.in_token_id == asset_id:
-                new_input.in_amount = new_input.in_amount * ratio
-            if input.out_token_id == asset_id:
-                new_input.out_amount = new_input.out_amount * ratio
+            if input.in_asset_id == asset_id:
+                new_input.in_asset_amount = new_input.in_asset_amount * ratio
+            if input.out_asset_id == asset_id:
+                new_input.out_asset_amount = new_input.out_asset_amount * ratio
         # and also we scale up some reserves if token is valuable
         # but scale up until max_reserve
 

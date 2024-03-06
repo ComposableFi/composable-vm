@@ -8,7 +8,10 @@ from simulation.routers.data import (
     AssetPairsXyk,
     AssetTransfers,
     Ctx,
+    Exchange,
     Input,
+    SingleInputAssetCvmRoute,
+    Spawn,
     TAmount,
     TId,
 )
@@ -57,22 +60,24 @@ class Edge:
         else:
             self.__initFromPairsXyk(e, tokensIds, usd_oracles)
 
-    def __initFromTransfers(self, e: AssetTransfers, tokensIds: dict[TId, int], usd_oracles: dict[TId, int]):
-        self.nodes = [tokensIds[e.in_asset_id], tokensIds[e.out_asset_id]]
+    def __initFromTransfers(self, venue: AssetTransfers, tokensIds: dict[TId, int], usd_oracles: dict[TId, int]):
+        self.nodes = [tokensIds[venue.in_asset_id], tokensIds[venue.out_asset_id]]
         # raise Exception("transfer amounts are not subject to same logic as exchanges")
         self.balances = [10**22, 10**22]  # [e.in_token_amount, e.out_token_amount]
         self.weights = [1, 1]
+        self.venue = copy.deepcopy(venue)
         self.fees = [
-            float(e.fee_per_million) / 1_000_000.0,
-            float(e.fee_per_million) / 1_000_000.0,
+            float(venue.fee_per_million) / 1_000_000.0,
+            float(venue.fee_per_million) / 1_000_000.0,
         ]
         self.constant_fees = [0, 0]
 
-    def __initFromPairsXyk(self, e: AssetPairsXyk, tokensIds: dict[TId, int], usd_oracles: dict[TId, int]):
-        self.nodes = [tokensIds[e.in_asset_id], tokensIds[e.out_asset_id]]
-        self.balances = [e.in_token_amount, e.out_token_amount]
-        self.weights = [e.weight_a, e.weight_b]
-        self.fees = [self.toFloatOrZero(e.fee_in), self.toFloatOrZero(e.fee_out)]
+    def __initFromPairsXyk(self, venue: AssetPairsXyk, tokensIds: dict[TId, int], usd_oracles: dict[TId, int]):
+        self.nodes = [tokensIds[venue.in_asset_id], tokensIds[venue.out_asset_id]]
+        self.balances = [venue.in_token_amount, venue.out_token_amount]
+        self.venue = copy.deepcopy(venue)
+        self.weights = [venue.weight_a, venue.weight_b]
+        self.fees = [self.toFloatOrZero(venue.fee_in), self.toFloatOrZero(venue.fee_out)]
         self.constant_fees = [0, 0]
 
     def trade(self, Ti, Xi):
@@ -153,10 +158,10 @@ def data2bf(
 @dataclass
 class BFSolution:
     routes: list[SingleInputAssetCvmRoute]
-    outcomes
-    paths
-    lambdas
-    deltas
+    outcomes : list[float]
+    paths: list[list[int | None]]
+    lambdas: list[float]
+    deltas : list[float]
 
 
 def route(
@@ -187,13 +192,13 @@ def route(
     # Initialize the variables
     deltas: list[float] = [0] * len(venues)
     lambdas: list[float] = [0] * len(venues)
-    paths: list[list[int]] = []
+    paths: list[list[int | None]] = []
     outcomes: list[float] = [0]
     total_splits = sum(splits)
 
     # First and last nodes
-    tendered_asset_index = asset_id_to_index[input.in_token_id]
-    received_asset_index = asset_id_to_index[input.out_token_id]
+    tendered_asset_index = asset_id_to_index[input.in_asset_id]
+    received_asset_index = asset_id_to_index[input.out_asset_id]
 
     state = State()
     state.received_asset_index = received_asset_index
@@ -210,7 +215,7 @@ def route(
             state.reset_distances(max_depth)
 
             # Initialize the first node
-            state.distances[tendered_asset_index][0] = Previous.start(input.in_amount / total_splits)
+            state.distances[tendered_asset_index][0] = Previous.start(input.in_asset_amount / total_splits)
 
             # Actualize the state
             state.depth = 0
@@ -274,8 +279,8 @@ def route(
                 next_asset_index = venues[used_venue_index].GetOther(next_asset_index)
 
             # Use the path and update the edges
-            tendered_amount = input.in_amount / total_splits
-            asset_index = asset_id_to_index[input.in_token_id]
+            tendered_amount = input.in_asset_amount / total_splits
+            asset_index = asset_id_to_index[input.in_asset_id]
             for i in range(len(path)):
                 venue = venues[path[i]]
                 deltas[path[i]] += tendered_amount
@@ -289,4 +294,43 @@ def route(
             paths.append(path)
             outcomes.append(outcomes[-1] + tendered_amount)
 
+
+    def build_next(parent, path):
+                
+        head, rest = path[0], path[1:]
+        step = None
+        if head is None:
+            step = SingleInputAssetCvmRoute(
+                out_asset_id=input.in_asset_id,
+                out_asset_amount=input.in_asset_amount,
+                next=[],
+            )
+        else:            
+            venue = venues[head]
+            received_amount = venue.venue.trade(parent.out_asset_id, parent.out_asset_amount)
+            received_asset_id = venue.venue.other(parent.out_asset_id)
+            if isinstance(venue.venue, AssetTransfers):
+                step = Spawn(
+                    in_asset_id=parent.out_asset_id,
+                    out_asset_id=received_asset_id,
+                    in_asset_amount=parent.out_asset_amount,
+                    out_asset_amount=received_amount,
+                    next=[],
+                )
+            else:               
+                step = Exchange(
+                    in_asset_id=parent.out_asset_id,
+                    out_asset_id=received_asset_id,
+                    in_asset_amount=parent.out_asset_amount,
+                    out_asset_amount=received_amount,
+                    pool_id=str(venue.venue.pool_id),
+                    next=[],
+                )
+            
+        if any(rest):
+             step.next = build_next(step, rest)
+        return step
+
+    route = build_next(None, path[0])
+    raise Exception(route)
     return BFSolution(outcomes, paths, lambdas, deltas)

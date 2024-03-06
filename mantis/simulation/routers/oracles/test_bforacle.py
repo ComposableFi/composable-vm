@@ -121,9 +121,9 @@ def simulate_all_to_all_connected_chains_topology(input: Input):
     CENTER_NODE = "CENTAURI"  # Name of center Node
 
     chains: dict[str, list[str]] = {
-        "ETHEREUM": [input.in_token_id, "USDC", "SHIBA"],
+        "ETHEREUM": [input.in_asset_id, "USDC", "SHIBA"],
         CENTER_NODE: [],
-        "OSMOSIS": [input.out_token_id, "SCRT"],
+        "OSMOSIS": [input.out_asset_id, "SCRT"],
     }
     populate_chain_dict(chains, CENTER_NODE)
     return CENTER_NODE, chains

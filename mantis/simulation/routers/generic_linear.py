@@ -51,10 +51,10 @@ def solve(
     # milp = lambda x: int(x) if mi else x
 
     # initial input assets
-    index_of_input_token = all_data.index_of_token(input.in_token_id)
-    all_data.index_of_token(input.out_token_id)
+    index_of_input_token = all_data.index_of_token(input.in_asset_id)
+    all_data.index_of_token(input.out_asset_id)
     current_assets = np.full((all_data.tokens_count), int(0))
-    current_assets[index_of_input_token] = input.in_amount
+    current_assets[index_of_input_token] = input.in_asset_amount
     # received_assets_index = np.full((all_data.tokens_count), int(0))
     # tendered_assets_index = np.full((all_data.tokens_count), int(0))
     # received_assets_index[index_of_output_asset] = 1
@@ -102,9 +102,9 @@ def solve(
 
     # Objective is to trade number_of_init_tokens of asset origin_token for a maximum amount of asset objective_token
     obj = cp.Maximize(
-        psi[all_data.index_of_token(input.out_token_id)]
+        psi[all_data.index_of_token(input.out_asset_id)]
         # so it will set ZERO to venues it wants to trades
-        - etas @ all_data.venue_fixed_costs_in(input.out_token_id)
+        - etas @ all_data.venue_fixed_costs_in(input.out_asset_id)
     )  # divide costs by target price in usd
 
     # Reserves after trade
@@ -124,16 +124,16 @@ def solve(
         input_forced_etas = np.full((all_data.venues_count), int(0))
         output_forced_etas = np.full((all_data.venues_count), int(0))
         for i, venue in enumerate(all_data.venues):
-            if venue.in_asset_id == input.in_token_id or venue.out_asset_id == input.in_token_id:
+            if venue.in_asset_id == input.in_asset_id or venue.out_asset_id == input.in_asset_id:
                 input_forced_etas[i] = 1
-            if venue.in_asset_id == input.out_token_id or venue.out_asset_id == input.out_token_id:
+            if venue.in_asset_id == input.out_asset_id or venue.out_asset_id == input.out_asset_id:
                 output_forced_etas[i] = 1
         constraints.append(cp.sum(etas) >= 1)
         constraints.append(cp.sum(cp.multiply(etas, input_forced_etas)) >= 1)
         constraints.append(cp.sum(cp.multiply(etas, output_forced_etas)) >= 1)
 
     if not relaxed:
-        constraints.append(psi[index_of_input_token] >= -input.in_amount)
+        constraints.append(psi[index_of_input_token] >= -input.in_asset_amount)
         # constraints.append(psi[index_of_output_asset] >= input.out_amount)
 
     # if not continuous and not etas_counter:

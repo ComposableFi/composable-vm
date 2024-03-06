@@ -138,6 +138,10 @@ class TwoTokenConverter(Generic[TId]):
         self.in_token_amount = 0
         self.out_token_amount = 0
 
+    def other(self, asset_id: TId) -> TId:
+        if asset_id == self.in_asset_id:
+            return self.out_asset_id
+        return self.in_asset_id
 
 class AssetTransfers(
     BaseModel,
@@ -302,13 +306,13 @@ class Input(
     this is what user asks for
     """
 
-    # natural set key is ordered pair (in_token_id, out_token_id)
-    in_token_id: TId
-    out_token_id: TId
+    # natural set key is ordered pair (`in_asset_id``, `out_asset_id`)
+    in_asset_id: TId
+    out_asset_id: TId
     # tendered amount DELTA
-    in_amount: TAmount
+    in_asset_amount: TAmount
     # expected received amount LAMBDA
-    out_amount: TAmount
+    out_asset_amount: TAmount
     # if max is True, user wants to spent all in to get at least out
     # if max is False, user wants to get exact out, but spent as small as possible in
     # please fail if bool is False for now
@@ -367,7 +371,6 @@ class SingleInputAssetCvmRoute(BaseModel, Trade):
     """
     always starts with Input asset_id
     """
-
     next: list[Union[Exchange, Spawn]]
 
 

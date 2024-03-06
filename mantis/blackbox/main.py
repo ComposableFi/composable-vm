@@ -152,15 +152,15 @@ def solve(original_input: Input, cvm_data: ExtendedCvmRegistry) -> list[SingleIn
     ctx = Ctx()
     original_data = for_simulation(cvm_data, {})
 
-    original_input.in_amount = int(original_input.in_amount)
-    original_input.out_amount = int(original_input.out_amount)
+    original_input.in_asset_amount = int(original_input.in_asset_amount)
+    original_input.out_asset_amount = int(original_input.out_asset_amount)
 
-    if original_input.in_amount >= ctx.max_trade * original_data.maximal_reserves_of(original_input.in_token_id):
+    if original_input.in_asset_amount >= ctx.max_trade * original_data.maximal_reserves_of(original_input.in_asset_id):
         raise Exception(
-            f"you are trading on market limit with {original_input.in_amount} for {original_data.maximal_reserves_of(original_input.in_token_id)}"
+            f"you are trading on market limit with {original_input.in_asset_amount} for {original_data.maximal_reserves_of(original_input.in_asset_id)}"
         )
 
-    routes = bforacle.route(original_input, original_data, ctx, max_depth=6, splits=1, revision=True)
+    routes = bforacle.route(original_input, original_data, ctx)
 
     # scaled_data, scaled_input, scale = scale_in(original_data, original_input, ctx)
     # solutions = generic_linear.route(scaled_input, scaled_data, ctx)
