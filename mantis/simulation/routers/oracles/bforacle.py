@@ -76,7 +76,7 @@ class Edge:
         ]
         self.constant_fees = [0, 0]
 
-    def __initFromPairsXyk(self, venue: AssetPairsXyk, tokensIds: dict[TId, int], usd_oracles: dict[TId, int]):
+    def __initFromPairsXyk(self, venue, tokensIds: dict[TId, int], usd_oracles: dict[TId, int]):
         self.nodes = [tokensIds[venue.in_asset_id], tokensIds[venue.out_asset_id]]
         self.balances = [venue.in_asset_amount, venue.out_asset_amount]
         self.venue = copy.deepcopy(venue)
@@ -122,10 +122,10 @@ class Previous:
     """
     amount: int
 
-    def default() -> "Previous":
+    def default(self) -> "Previous":
         return Previous(None, 0)
 
-    def start(tendered_asset) -> "Previous":
+    def start(self, tendered_asset) -> "Previous":
         return Previous(None, tendered_asset)
 
 
