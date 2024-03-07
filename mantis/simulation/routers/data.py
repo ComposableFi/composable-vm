@@ -20,7 +20,7 @@ from simulation.routers.oracles.usdoracle import merge_by_connection_from_existi
 # This is global unique ID for token(asset) or exchange(pool)
 TId = TypeVar("TId", int, str)
 TNetworkId = TypeVar("TNetworkId", int, str)
-TAmount = TypeVar("TAmount", int, float)
+TAmount = TypeVar("TAmount", int, str, float)
 
 MINIMAL_FEE_PER_MILLION_DEFAULT = 100
 """
@@ -333,6 +333,13 @@ class Trade(Generic[TId, TAmount]):
     """_summary_
     Asset expected to be used out of trade.
     """
+    
+    in_asset_amount: TAmount
+    """
+    none means all (DELTA)
+    """
+
+    in_asset_id: TId
 
 
 # @dataclass
@@ -353,13 +360,6 @@ class Spawn(BaseModel, Trade, Generic[TId, TAmount]):
 
 # @dataclass
 class Exchange(BaseModel, Trade, Generic[TId, TAmount]):
-    in_asset_amount: TAmount
-    """
-    none means all (DELTA)
-    """
-
-    in_asset_id: TId
-
     pool_id: TId
     next: list[Union[Exchange, Spawn]]
 
@@ -377,6 +377,11 @@ class SingleInputAssetCvmRoute(BaseModel, Trade):
     """
     next: list[Union[Exchange, Spawn]]
 
+    @model_validator(mode="after")
+    def model_validator_after(self):
+        assert self.in_asset_amount == self.out_asset_amount
+        assert self.in_asset_id == self.out_asset_id
+        assert self.out_asset_amount > 0
 
 SingleInputAssetCvmRoute.model_rebuild()
 
