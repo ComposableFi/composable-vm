@@ -43,3 +43,4 @@ good_lp = {workspace = true, features = ["coin_cbc", "singlethread-cbc"]}
 fraction = {workspace = true, features = ["default"]}
 
 [dev-dependencies]
+rustfmt-wrapper = "0.2.1"

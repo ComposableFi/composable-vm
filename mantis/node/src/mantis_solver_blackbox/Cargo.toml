@@ -1,0 +1,14 @@
+[package]
+name = "mantis_solver_blackbox"
+version = "3.0.3"
+edition = "2021"
+license = "SPECIFY A LICENSE BEFORE PUBLISHING"
+
+[dependencies]
+bytes = "1.5.0"
+futures-core = "0.3.30"
+progenitor-client = "0.6.0"
+reqwest = { version = "0.11.24", default-features=false, features = ["json", "stream"] }
+serde = { version = "1.0.197", features = ["derive"] }
+serde_urlencoded = "0.7.1"
+
