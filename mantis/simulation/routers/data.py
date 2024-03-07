@@ -13,7 +13,7 @@ import pandas as pd
 from anytree import NodeMixin
 from disjoint_set import DisjointSet
 from loguru import logger
-from pydantic import BaseModel, model_validator, validator
+from pydantic import BaseModel, model_validator, validator, Field
 
 from simulation.routers.oracles.usdoracle import merge_by_connection_from_existing
 
@@ -60,7 +60,7 @@ class Ctx(BaseModel, Generic[TAmount]):
     We consider that cannot get more than 1/this arbitrage
     """
 
-    loop_risk_ratio: int = 2
+    loop_risk_ratio: int = 10
     """
     Going from final token to other tokens and back if it will increase final amount by ratio. 
     """
@@ -120,7 +120,7 @@ class Ctx(BaseModel, Generic[TAmount]):
     Prevents arbitrage but allows for simpler routes if set small.
     """
 
-    max_depth_of_route: int = 7
+    max_depth_of_route: int = 6
     """_summary_
     Avoid too deep routes.
     """
@@ -311,16 +311,16 @@ class Input(
     """
 
     # natural set key is ordered pair (`in_asset_id``, `out_asset_id`)
-    in_asset_id: TId
-    out_asset_id: TId
+    in_asset_id: TId = Field(example="158456325028528675187087900673")
+    out_asset_id: TId = Field(example="158456325028528675187087900674")
     # tendered amount DELTA
-    in_asset_amount: TAmount
+    in_asset_amount: TAmount = Field(example="1000000000000")
     # expected received amount LAMBDA
-    out_asset_amount: TAmount
+    out_asset_amount: TAmount = Field(example="10")
     # if max is True, user wants to spent all in to get at least out
     # if max is False, user wants to get exact out, but spent as small as possible in
     # please fail if bool is False for now
-    max: bool
+    max: bool = Field(example=True)
 
 
 class Trade(Generic[TId, TAmount]):
@@ -377,11 +377,12 @@ class SingleInputAssetCvmRoute(BaseModel, Trade):
     """
     next: list[Union[Exchange, Spawn]]
 
-    @model_validator(mode="after")
-    def model_validator_after(self):
-        assert self.in_asset_amount == self.out_asset_amount
-        assert self.in_asset_id == self.out_asset_id
-        assert self.out_asset_amount > 0
+    # @model_validator(mode="after")
+    # def model_validator_after(self):
+        #pass
+        # assert self.in_asset_amount == self.out_asset_amount
+        # assert self.in_asset_id == self.out_asset_id
+        # assert self.out_asset_amount > 0
 
 SingleInputAssetCvmRoute.model_rebuild()
 

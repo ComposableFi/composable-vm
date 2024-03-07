@@ -1,5 +1,6 @@
 import copy
 from dataclasses import dataclass
+import math
 
 from loguru import logger
 
@@ -314,7 +315,7 @@ def route(
                     in_asset_id=parent.out_asset_id,
                     out_asset_id=received_asset_id,
                     in_asset_amount=parent.out_asset_amount,
-                    out_asset_amount=received_amount,
+                    out_asset_amount=int(math.floor(received_amount)),
                     next=[],
                 )
             else:               
@@ -322,7 +323,7 @@ def route(
                     in_asset_id=parent.out_asset_id,
                     out_asset_id=received_asset_id,
                     in_asset_amount=parent.out_asset_amount,
-                    out_asset_amount=received_amount,
+                    out_asset_amount=int(math.floor(received_amount)),
                     pool_id=str(venue.venue.pool_id),
                     next=[],
                 )
@@ -330,7 +331,9 @@ def route(
             build_next(step, rest)                    
     route = SingleInputAssetCvmRoute(
         out_asset_id=input.in_asset_id,
-        out_asset_amount=input.in_asset_amount,
+        out_asset_amount=int(math.floor(input.in_asset_amount)),
+        in_asset_id=input.in_asset_id,
+        in_asset_amount=int(math.floor(input.in_asset_amount)),
         next=[],
     )    
     build_next(route, sorted([path for path in paths], key= len)[0])
