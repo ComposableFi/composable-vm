@@ -471,6 +471,7 @@
               pkgs.zlib.out
               rust.cargo
               rust.rustc
+              rust.rustfmt
               envShell
               devour-flake
               # pkgs.vscode-extensions.yzhang.markdown-all-in-one

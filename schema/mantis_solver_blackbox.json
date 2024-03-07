@@ -1,0 +1,416 @@
+{
+    "openapi": "3.0.3",
+    "info": {
+        "title": "FastAPI",
+        "version": "0.1.0"
+    },
+    "paths": {
+        "/simulator/router": {
+            "get": {
+                "summary": "Simulator Router",
+                "description": "_summary_\nGiven input, find and return route.",
+                "operationId": "simulator_router_simulator_router_get",
+                "parameters": [
+                    {
+                        "name": "in_asset_id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "integer"
+                                },
+                                {
+                                    "type": "string"
+                                }
+                            ],
+                            "title": "In Asset Id"
+                        }
+                    },
+                    {
+                        "name": "out_asset_id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "integer"
+                                },
+                                {
+                                    "type": "string"
+                                }
+                            ],
+                            "title": "Out Asset Id"
+                        }
+                    },
+                    {
+                        "name": "in_asset_amount",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "integer"
+                                },
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "number"
+                                }
+                            ],
+                            "title": "In Asset Amount"
+                        }
+                    },
+                    {
+                        "name": "out_asset_amount",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "integer"
+                                },
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "number"
+                                }
+                            ],
+                            "title": "Out Asset Amount"
+                        }
+                    },
+                    {
+                        "name": "max",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "boolean",
+                            "title": "Max"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/SingleInputAssetCvmRoute"
+                                    },
+                                    "title": "Response Simulator Router Simulator Router Get"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Exchange": {
+                "properties": {
+                    "out_asset_amount": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "number"
+                            }
+                        ],
+                        "title": "Out Asset Amount"
+                    },
+                    "out_asset_id": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "string"
+                            }
+                        ],
+                        "title": "Out Asset Id"
+                    },
+                    "in_asset_amount": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "number"
+                            }
+                        ],
+                        "title": "In Asset Amount"
+                    },
+                    "in_asset_id": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "string"
+                            }
+                        ],
+                        "title": "In Asset Id"
+                    },
+                    "pool_id": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "string"
+                            }
+                        ],
+                        "title": "Pool Id"
+                    },
+                    "next": {
+                        "items": {
+                            "anyOf": [
+                                {
+                                    "$ref": "#/components/schemas/Exchange"
+                                },
+                                {
+                                    "$ref": "#/components/schemas/Spawn"
+                                }
+                            ]
+                        },
+                        "type": "array",
+                        "title": "Next"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "out_asset_amount",
+                    "out_asset_id",
+                    "in_asset_amount",
+                    "in_asset_id",
+                    "pool_id",
+                    "next"
+                ],
+                "title": "Exchange"
+            },
+            "HTTPValidationError": {
+                "properties": {
+                    "detail": {
+                        "items": {
+                            "$ref": "#/components/schemas/ValidationError"
+                        },
+                        "type": "array",
+                        "title": "Detail"
+                    }
+                },
+                "type": "object",
+                "title": "HTTPValidationError"
+            },
+            "SingleInputAssetCvmRoute": {
+                "properties": {
+                    "out_asset_amount": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "number"
+                            }
+                        ],
+                        "title": "Out Asset Amount"
+                    },
+                    "out_asset_id": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "string"
+                            }
+                        ],
+                        "title": "Out Asset Id"
+                    },
+                    "in_asset_amount": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "number"
+                            }
+                        ],
+                        "title": "In Asset Amount"
+                    },
+                    "in_asset_id": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "string"
+                            }
+                        ],
+                        "title": "In Asset Id"
+                    },
+                    "next": {
+                        "items": {
+                            "anyOf": [
+                                {
+                                    "$ref": "#/components/schemas/Exchange"
+                                },
+                                {
+                                    "$ref": "#/components/schemas/Spawn"
+                                }
+                            ]
+                        },
+                        "type": "array",
+                        "title": "Next"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "out_asset_amount",
+                    "out_asset_id",
+                    "in_asset_amount",
+                    "in_asset_id",
+                    "next"
+                ],
+                "title": "SingleInputAssetCvmRoute",
+                "description": "always starts with Input asset_id"
+            },
+            "Spawn": {
+                "properties": {
+                    "out_asset_amount": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "number"
+                            }
+                        ],
+                        "title": "Out Asset Amount"
+                    },
+                    "out_asset_id": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "string"
+                            }
+                        ],
+                        "title": "Out Asset Id"
+                    },
+                    "in_asset_amount": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "number"
+                            }
+                        ],
+                        "title": "In Asset Amount"
+                    },
+                    "in_asset_id": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "string"
+                            }
+                        ],
+                        "title": "In Asset Id"
+                    },
+                    "next": {
+                        "items": {
+                            "anyOf": [
+                                {
+                                    "$ref": "#/components/schemas/Exchange"
+                                },
+                                {
+                                    "$ref": "#/components/schemas/Spawn"
+                                }
+                            ]
+                        },
+                        "type": "array",
+                        "title": "Next"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "out_asset_amount",
+                    "out_asset_id",
+                    "next"
+                ],
+                "title": "Spawn",
+                "description": "cross chain transfer assets"
+            },
+            "ValidationError": {
+                "properties": {
+                    "loc": {
+                        "items": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "integer"
+                                }
+                            ]
+                        },
+                        "type": "array",
+                        "title": "Location"
+                    },
+                    "msg": {
+                        "type": "string",
+                        "title": "Message"
+                    },
+                    "type": {
+                        "type": "string",
+                        "title": "Error Type"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "loc",
+                    "msg",
+                    "type"
+                ],
+                "title": "ValidationError"
+            }
+        }
+    }
+}
