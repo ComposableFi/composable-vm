@@ -1,6 +1,7 @@
 import copy
-from dataclasses import dataclass
+import decimal
 import math
+from dataclasses import dataclass
 
 from loguru import logger
 
@@ -83,16 +84,24 @@ class Edge:
         self.fees = [self.toFloatOrZero(venue.fee_in), self.toFloatOrZero(venue.fee_out)]
         self.constant_fees = [0, 0]
 
-    def trade(self, Ti, Xi):
+    def trade(self, asset_index, in_asset_amount):
+        decimal.getcontext().prec = 28
         # Actually do the change of the amount of the tokens
         i, o = 0, 1
-        if Ti == self.nodes[1]:
+        if asset_index == self.nodes[1]:
             i, o = 1, 0
-        Xi = (Xi - self.constant_fees[i]) * (1 - self.fees[i])
-        result = self.balances[o] * (
-            1 - (self.balances[i] / (self.balances[i] + Xi)) ** (self.weights[i] / self.weights[o])
+        in_asset_amount = (in_asset_amount - self.constant_fees[i]) * (1 - self.fees[i])
+        result = decimal.Decimal(self.balances[o]) * (
+            1
+            - (
+                decimal.Decimal(self.balances[i])
+                / (decimal.Decimal(self.balances[i]) + decimal.Decimal(in_asset_amount))
+            )
+            ** decimal.Decimal(self.weights[i] / self.weights[o])
         )
-        self.balances[i] += Xi
+        result = float(result)
+
+        self.balances[i] += in_asset_amount
         self.balances[o] -= result
         return result
 
@@ -102,7 +111,7 @@ class Edge:
         return self.nodes[0]
 
     def __repr__(self):
-        return f"Edge({self.nodes}, {self.balances}, {self.weights}, {self.fees}, {self.constant_fees}, {self.venue})"
+        return f"Edge(a={self.nodes}, b={self.balances}, w={self.weights}, f={self.fees}, cf={self.constant_fees}, {self.venue})"
 
 
 @dataclass
@@ -149,22 +158,24 @@ def data2bf(
 ):
     edges: list[Edge] = []
     all_tokens = all_data.all_tokens
-    tokensIds = {x: i for i, x in enumerate(all_tokens)}
+    asset_id_to_index = {x: i for i, x in enumerate(all_tokens)}
+    index_to_asset_id = {i: x for i, x in enumerate(all_tokens)}
     for x in all_data.asset_transfers:
-        edges.append(Edge(x, tokensIds, all_data.usd_oracles))
+        edges.append(Edge(x, asset_id_to_index, all_data.usd_oracles))
     for x in all_data.asset_pairs_xyk:
-        edges.append(Edge(x, tokensIds, all_data.usd_oracles))
+        edges.append(Edge(x, asset_id_to_index, all_data.usd_oracles))
 
-    return edges, tokensIds, all_tokens
+    return edges, asset_id_to_index, all_tokens, index_to_asset_id
 
 
 @dataclass
 class BFSolution:
-    outcomes : list[float]
+    outcomes: list[float]
     paths: list[list[int | None]]
     lambdas: list[float]
-    deltas : list[float]
+    deltas: list[float]
     routes: list[SingleInputAssetCvmRoute]
+
 
 def route(
     input: Input,
@@ -186,7 +197,7 @@ def route(
 
     # Create the list of edges and tokens
 
-    venues, asset_id_to_index, all_tokens = data2bf(all_data)
+    venues, asset_id_to_index, all_tokens, index_to_asset_id = data2bf(all_data)
 
     # Number of tokens
     n = len(all_tokens)
@@ -224,15 +235,17 @@ def route(
             state.depth = 0
             state.max_depth = max_depth_i
 
-            # Process each length of the path
             for current_depth in range(max_depth_i):
                 for venue_index, venue in enumerate(venues):
-                    for asset_index in venue.nodes:
-                        if state.distances[asset_index][current_depth].amount > 0:
-                            next_asset_index = venue.other(asset_index)
+                    for current_asset_index in venue.nodes:
+                        # if asset_index == received_asset_index:
+                        #     raise Exception(state.distances[asset_index][current_depth].amount)
+                        current_amount = state.distances[current_asset_index][current_depth].amount
+                        if current_amount > 0:
                             maybe_better_venue = copy.deepcopy(venue)
+                            next_asset_index = maybe_better_venue.other(current_asset_index)
                             # use the same edge if it has been used before
-                            previous_asset_index = asset_index
+                            previous_asset_index = current_asset_index
                             # Go back in the path to check if the edge has been used before
                             for step_back in range(current_depth, 0, -1):
                                 used_venue_index = state.distances[previous_asset_index][step_back].used_venue_index
@@ -243,17 +256,21 @@ def route(
                                         state.distances[previous_asset_index][(step_back - 1)].amount,
                                     )
                             # Get the amount of the other token
-                            received_amount = maybe_better_venue.trade(
-                                asset_index, state.distances[asset_index][current_depth].amount
+                            maybe_better_received_amount = maybe_better_venue.trade(current_asset_index, current_amount)
+                            if maybe_better_received_amount == 0:
+                                raise Exception(maybe_better_venue)
+                            logger.error(
+                                f"{'=' * current_depth} for {current_amount}/{index_to_asset_id[current_asset_index]}->{maybe_better_received_amount}/{index_to_asset_id[next_asset_index]}"
                             )
                             # Update the amount of the other token if it is greater than the previous amount
-                            if state.distances[next_asset_index][(current_depth + 1)].amount < received_amount:
+                            best_known_received_amount = state.distances[next_asset_index][(current_depth + 1)].amount
+                            if maybe_better_received_amount > best_known_received_amount:
                                 state.distances[next_asset_index][(current_depth + 1)] = Previous(
-                                    venue_index, received_amount
+                                    venue_index, maybe_better_received_amount
                                 )
 
             # Get the optimal path
-            
+
             received_amount = state.distances[received_asset_index][state.depth].amount
             # raise Exception(f"{received_amount} {state.distances[received_asset_index]}")
             for current_depth in range(1, max_depth_i + 1):
@@ -261,7 +278,7 @@ def route(
                 if (
                     state.distances[received_asset_index][current_depth]
                     and maybe_received_amount > state.distances[received_asset_index][state.depth].amount
-                    and maybe_received_amount > received_amount * ctx.loop_risk_ratio                    
+                    and maybe_received_amount > received_amount * ctx.loop_risk_ratio
                 ):
                     state.depth = current_depth
                     received_amount = maybe_received_amount
@@ -276,7 +293,6 @@ def route(
             # Rebuild the path
             next_asset_index = received_asset_index
             for current_depth in range(state.depth, 0, -1):
-                
                 logger.error(f"{next_asset_index}:{current_depth}:{state.distances[next_asset_index]}")
                 used_venue_index = state.distances[next_asset_index][current_depth].used_venue_index
                 assert used_venue_index is not None
@@ -285,28 +301,27 @@ def route(
 
             # Use the path and update the edges
             tendered_amount = input.in_asset_amount / total_splits
-            asset_index = asset_id_to_index[input.in_asset_id]
+            current_asset_index = asset_id_to_index[input.in_asset_id]
             for i in range(len(path)):
                 venue = venues[path[i]]
                 deltas[path[i]] += tendered_amount
-                received_amount = venue.trade(asset_index, tendered_amount)
+                received_amount = venue.trade(current_asset_index, tendered_amount)
                 lambdas[path[i]] += received_amount
                 tendered_amount = received_amount
-                asset_index = venue.other(asset_index)
+                current_asset_index = venue.other(current_asset_index)
 
             # Update the paths and outcomes
             assert tendered_amount > 0
             paths.append(path)
             outcomes.append(outcomes[-1] + tendered_amount)
 
-
-    def build_next(parent, path):    
+    def build_next(parent, path):
         if len(path) > 0:
-            head, rest = path[0], path[1:]        
+            head, rest = path[0], path[1:]
             venue = venues[head]
             received_amount = venue.venue.trade(parent.out_asset_id, parent.out_asset_amount)
             received_asset_id = venue.venue.other(parent.out_asset_id)
-            
+
             logger.error(f"{parent.out_asset_amount}/{parent.out_asset_id}")
             logger.error(f"{received_amount}/{received_asset_id}")
             step = None
@@ -318,7 +333,7 @@ def route(
                     out_asset_amount=int(math.floor(received_amount)),
                     next=[],
                 )
-            else:               
+            else:
                 step = Exchange(
                     in_asset_id=parent.out_asset_id,
                     out_asset_id=received_asset_id,
@@ -328,14 +343,15 @@ def route(
                     next=[],
                 )
             parent.next = [step]
-            build_next(step, rest)                    
+            build_next(step, rest)
+
     route = SingleInputAssetCvmRoute(
         out_asset_id=input.in_asset_id,
         out_asset_amount=int(math.floor(input.in_asset_amount)),
         in_asset_id=input.in_asset_id,
         in_asset_amount=int(math.floor(input.in_asset_amount)),
         next=[],
-    )    
-    build_next(route, sorted([path for path in paths], key= len)[0])
+    )
+    build_next(route, sorted([path for path in paths], key=len)[0])
     _solution = BFSolution(outcomes, paths, lambdas, deltas, routes=[route])
     return [route]

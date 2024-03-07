@@ -53,7 +53,7 @@ class Reward(BaseModel):
     priceUsd: float
     precision: int
     amountPerDayUsd: str
-    yield_: float = Field(..., alias='yield')
+    yield_: float = Field(..., alias="yield")
     isExternal: bool
 
 
@@ -83,4 +83,4 @@ class JsonItem(BaseModel):
 
 
 class Model(BaseModel):
-    json_: List[JsonItem] = Field(..., alias='json')
+    json_: List[JsonItem] = Field(..., alias="json")

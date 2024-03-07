@@ -323,6 +323,7 @@ def test_big_numeric_range():
 
 scale_value: int = 10000
 
+
 def test_simulate_all_connected_venues():
     np.random.seed(0)
     input = new_input("WETH", "ATOM", 2000 * scale_value, 1)

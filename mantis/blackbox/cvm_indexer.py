@@ -228,8 +228,8 @@ def for_simulation(cvm_registry: ExtendedCvmRegistry, usd_oracles) -> Simulation
             bidirectional.add((out_asset_id, in_asset_id))
     asset_pairs_xyk = []
     for pair in cvm_registry.exchanges:
-        in_asset_amount=int(pair.token_a_amount)
-        out_asset_amount=int(pair.token_b_amount)
+        in_asset_amount = int(pair.token_a_amount)
+        out_asset_amount = int(pair.token_b_amount)
         assert in_asset_amount > 0
         assert out_asset_amount > 0
         asset_pairs_xyk.append(

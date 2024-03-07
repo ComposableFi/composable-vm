@@ -25,7 +25,7 @@ class Adr08IbcCallbacks(BaseModel):
 class AssetId(RootModel[str]):
     root: str = Field(
         ...,
-        description='Newtype for CVM assets ID. Must be unique for each asset and must never change. This ID is an opaque, arbitrary type from the CVM protocol and no assumption must be made on how it is computed.',
+        description="Newtype for CVM assets ID. Must be unique for each asset and must never change. This ID is an opaque, arbitrary type from the CVM protocol and no assumption must be made on how it is computed.",
     )
 
 
@@ -39,7 +39,7 @@ class AssetReference7(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra='forbid',
+        extra="forbid",
     )
     native: Native
 
@@ -54,7 +54,7 @@ class AssetReference8(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra='forbid',
+        extra="forbid",
     )
     cw20: Cw20
 
@@ -62,7 +62,7 @@ class AssetReference8(BaseModel):
 class AssetReference(RootModel[Union[AssetReference7, AssetReference8]]):
     root: Union[AssetReference7, AssetReference8] = Field(
         ...,
-        description='Definition of an asset native to some chain to operate on. For example for Cosmos CW and EVM chains both CW20 and ERC20 can be actual. So if asset is local or only remote to some chain depends on context of network or connection. this design leads to some dummy matches, but in general unifies code (so that if one have to solve other chain route it can)',
+        description="Definition of an asset native to some chain to operate on. For example for Cosmos CW and EVM chains both CW20 and ERC20 can be actual. So if asset is local or only remote to some chain depends on context of network or connection. this design leads to some dummy matches, but in general unifies code (so that if one have to solve other chain route it can)",
     )
 
 
@@ -89,7 +89,7 @@ class OsmosisPoolManagerModuleV1Beta1(BaseModel):
 
 class ExchangeType3(BaseModel):
     model_config = ConfigDict(
-        extra='forbid',
+        extra="forbid",
     )
     osmosis_pool_manager_module_v1_beta1: OsmosisPoolManagerModuleV1Beta1
 
@@ -102,7 +102,7 @@ class AstroportRouterContract(BaseModel):
 
 class ExchangeType4(BaseModel):
     model_config = ConfigDict(
-        extra='forbid',
+        extra="forbid",
     )
     astroport_router_contract: AstroportRouterContract
 
@@ -117,10 +117,8 @@ class IbcEndpoint(BaseModel):
 
 
 class IbcIcs20Sender(Enum):
-    CosmosStargateIbcApplicationsTransferV1MsgTransfer = (
-        'CosmosStargateIbcApplicationsTransferV1MsgTransfer'
-    )
-    CosmWasmStd1_3 = 'CosmWasmStd1_3'
+    CosmosStargateIbcApplicationsTransferV1MsgTransfer = "CosmosStargateIbcApplicationsTransferV1MsgTransfer"
+    CosmWasmStd1_3 = "CosmWasmStd1_3"
 
 
 class IcsPair(BaseModel):
@@ -135,7 +133,7 @@ class IcsPair(BaseModel):
 class NetworkId(RootModel[conint(ge=0)]):
     root: conint(ge=0) = Field(
         ...,
-        description='Newtype for CVM networks ID. Must be unique for each network and must never change. This ID is an opaque, arbitrary type from the CVM protocol and no assumption must be made on how it is computed.',
+        description="Newtype for CVM networks ID. Must be unique for each network and must never change. This ID is an opaque, arbitrary type from the CVM protocol and no assumption must be made on how it is computed.",
     )
 
 
@@ -144,11 +142,9 @@ class OsmosisIbcHooks(BaseModel):
 
 
 class CosmWasm(BaseModel):
-    admin: Addr = Field(..., description='admin of everything')
+    admin: Addr = Field(..., description="admin of everything")
     contract: Addr
-    executor_code_id: conint(ge=0) = Field(
-        ..., description='CVM executor contract code'
-    )
+    executor_code_id: conint(ge=0) = Field(..., description="CVM executor contract code")
 
 
 class OutpostId2(BaseModel):
@@ -157,7 +153,7 @@ class OutpostId2(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra='forbid',
+        extra="forbid",
     )
     cosm_wasm: CosmWasm
 
@@ -165,7 +161,7 @@ class OutpostId2(BaseModel):
 class OutpostId(RootModel[OutpostId2]):
     root: OutpostId2 = Field(
         ...,
-        description='when message is sent to other side, we should identify receiver of some kind',
+        description="when message is sent to other side, we should identify receiver of some kind",
     )
 
 
@@ -179,7 +175,7 @@ class Prefix3(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra='forbid',
+        extra="forbid",
     )
     s_s58: conint(ge=0)
 
@@ -190,7 +186,7 @@ class Prefix4(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra='forbid',
+        extra="forbid",
     )
     bech: str
 
@@ -198,7 +194,7 @@ class Prefix4(BaseModel):
 class Prefix(RootModel[Union[Prefix3, Prefix4]]):
     root: Union[Prefix3, Prefix4] = Field(
         ...,
-        description='given prefix you may form accounts from 32 bit addresses or partially identify chains',
+        description="given prefix you may form accounts from 32 bit addresses or partially identify chains",
     )
 
 
@@ -207,12 +203,10 @@ class PrefixedDenom(BaseModel):
     A type that contains the base denomination for ICS20 and the source tracing information path.
     """
 
-    base_denom: str = Field(
-        ..., description='Base denomination of the relayed fungible token.'
-    )
+    base_denom: str = Field(..., description="Base denomination of the relayed fungible token.")
     trace_path: str = Field(
         ...,
-        description='A series of `{port-id}/{channel-id}`s for tracing the source of the token.',
+        description="A series of `{port-id}/{channel-id}`s for tracing the source of the token.",
     )
 
 
@@ -222,7 +216,7 @@ class RelativeTimeout2(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra='forbid',
+        extra="forbid",
     )
     seconds: conint(ge=0)
 
@@ -230,7 +224,7 @@ class RelativeTimeout2(BaseModel):
 class RelativeTimeout(RootModel[RelativeTimeout2]):
     root: RelativeTimeout2 = Field(
         ...,
-        description='relative timeout to CW/IBC-rs time. very small, assumed messages are arriving fast enough, like less than hours',
+        description="relative timeout to CW/IBC-rs time. very small, assumed messages are arriving fast enough, like less than hours",
     )
 
 
@@ -241,12 +235,10 @@ class ChannelInfo(BaseModel):
 
     connection_id: ConnectionId = Field(
         ...,
-        description='the connection this exists on (you can use to query client/consensus info)',
+        description="the connection this exists on (you can use to query client/consensus info)",
     )
-    counterparty_endpoint: IbcEndpoint = Field(
-        ..., description='the remote channel/port we connect to'
-    )
-    id: ChannelId = Field(..., description='id of this channel')
+    counterparty_endpoint: IbcEndpoint = Field(..., description="the remote channel/port we connect to")
+    id: ChannelId = Field(..., description="id of this channel")
 
 
 class ExchangeItem(BaseModel):
@@ -262,7 +254,7 @@ class ExchangeItem(BaseModel):
 
 class ForeignAssetId3(BaseModel):
     model_config = ConfigDict(
-        extra='forbid',
+        extra="forbid",
     )
     ibc_ics20: PrefixedDenom
 
@@ -278,9 +270,7 @@ class Ics20Features(BaseModel):
 
     ibc_callbacks: Optional[Adr08IbcCallbacks] = None
     pfm: Optional[PFM] = None
-    wasm_hooks: Optional[OsmosisIbcHooks] = Field(
-        None, description='if it is exists, chain has that enabled'
-    )
+    wasm_hooks: Optional[OsmosisIbcHooks] = Field(None, description="if it is exists, chain has that enabled")
 
 
 class NetworkAssetItem(BaseModel):
@@ -290,16 +280,12 @@ class NetworkAssetItem(BaseModel):
 
 
 class OtherNetworkItem(BaseModel):
-    counterparty_timeout: RelativeTimeout = Field(
-        ..., description='default timeout to use for direct send'
-    )
-    ics27_channel: Optional[ChannelInfo] = Field(
-        None, description='if there is ICS27 IBC channel opened'
-    )
+    counterparty_timeout: RelativeTimeout = Field(..., description="default timeout to use for direct send")
+    ics27_channel: Optional[ChannelInfo] = Field(None, description="if there is ICS27 IBC channel opened")
     ics_20: Optional[IcsPair] = None
     use_shortcut: Optional[bool] = Field(
         None,
-        description='if true, than will use shortcuts for example, if program transfer only program will just use native transfer or if connection supports exchange, it will use exchange default is false if target chain has CVM gateway',
+        description="if true, than will use shortcuts for example, if program transfer only program will just use native transfer or if connection supports exchange, it will use exchange default is false if target chain has CVM gateway",
     )
 
 
@@ -309,17 +295,13 @@ class BridgeAsset(BaseModel):
 
 class Ics20Channel(BaseModel):
     features: Optional[Ics20Features] = None
-    sender: IbcIcs20Sender = Field(
-        ..., description='specific per chain way to send IBC ICS 20 assets'
-    )
+    sender: IbcIcs20Sender = Field(..., description="specific per chain way to send IBC ICS 20 assets")
 
 
 class NetworkToNetworkItem(BaseModel):
     closed: Optional[conint(ge=0)] = None
     from_network_id: NetworkId
-    to_network: OtherNetworkItem = Field(
-        ..., description='how to send `to_network_id` chain'
-    )
+    to_network: OtherNetworkItem = Field(..., description="how to send `to_network_id` chain")
     to_network_id: NetworkId
 
 
@@ -327,12 +309,10 @@ class AssetItem(BaseModel):
     asset_id: AssetId
     bridged: Optional[BridgeAsset] = Field(
         None,
-        description='if asset was bridged, it would have way to identify bridge/source/channel',
+        description="if asset was bridged, it would have way to identify bridge/source/channel",
     )
     local: AssetReference
-    network_id: NetworkId = Field(
-        ..., description='network id on which this asset id can be used locally'
-    )
+    network_id: NetworkId = Field(..., description="network id on which this asset id can be used locally")
 
 
 class IbcChannels(BaseModel):
@@ -344,12 +324,12 @@ class IbcEnabled(BaseModel):
 
 
 class NetworkItem(BaseModel):
-    accounts: Optional[Prefix] = Field(None, description='Account encoding type')
+    accounts: Optional[Prefix] = Field(None, description="Account encoding type")
     ibc: Optional[IbcEnabled] = None
     network_id: NetworkId
     outpost: Optional[OutpostId] = Field(
         None,
-        description='something which will be receiver on other side case of network has CVM deployed as contract, account address is stored here',
+        description="something which will be receiver on other side case of network has CVM deployed as contract, account address is stored here",
     )
 
 

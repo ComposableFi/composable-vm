@@ -13,7 +13,7 @@ import pandas as pd
 from anytree import NodeMixin
 from disjoint_set import DisjointSet
 from loguru import logger
-from pydantic import BaseModel, model_validator, validator, Field
+from pydantic import BaseModel, Field, model_validator, validator
 
 from simulation.routers.oracles.usdoracle import merge_by_connection_from_existing
 
@@ -62,9 +62,9 @@ class Ctx(BaseModel, Generic[TAmount]):
 
     loop_risk_ratio: int = 10
     """
-    Going from final token to other tokens and back if it will increase final amount by ratio. 
+    Going from final token to other tokens and back if it will increase final amount by ratio.
     """
-    
+
     min_usd_reserve: float = 1
     min_input_in_usd: float = 0.00001
     minimal_trading_probability: float = 0.000001
@@ -147,6 +147,7 @@ class TwoTokenConverter(Generic[TId]):
         if asset_id == self.in_asset_id:
             return self.out_asset_id
         return self.in_asset_id
+
 
 class AssetTransfers(
     BaseModel,
@@ -333,7 +334,7 @@ class Trade(Generic[TId, TAmount]):
     """_summary_
     Asset expected to be used out of trade.
     """
-    
+
     in_asset_amount: TAmount
     """
     none means all (DELTA)
@@ -375,14 +376,16 @@ class SingleInputAssetCvmRoute(BaseModel, Trade):
     """
     always starts with Input asset_id
     """
+
     next: list[Union[Exchange, Spawn]]
 
     # @model_validator(mode="after")
     # def model_validator_after(self):
-        #pass
-        # assert self.in_asset_amount == self.out_asset_amount
-        # assert self.in_asset_id == self.out_asset_id
-        # assert self.out_asset_amount > 0
+    # pass
+    # assert self.in_asset_amount == self.out_asset_amount
+    # assert self.in_asset_id == self.out_asset_id
+    # assert self.out_asset_amount > 0
+
 
 SingleInputAssetCvmRoute.model_rebuild()
 

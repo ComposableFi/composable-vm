@@ -16,17 +16,13 @@ class Addr(RootModel[str]):
 class NetworkId(RootModel[conint(ge=0)]):
     root: conint(ge=0) = Field(
         ...,
-        description='Newtype for CVM networks ID. Must be unique for each network and must never change. This ID is an opaque, arbitrary type from the CVM protocol and no assumption must be made on how it is computed.',
+        description="Newtype for CVM networks ID. Must be unique for each network and must never change. This ID is an opaque, arbitrary type from the CVM protocol and no assumption must be made on how it is computed.",
     )
 
 
 class HereItem(BaseModel):
-    admin: Addr = Field(
-        ..., description='The admin which is allowed to update the bridge list.'
-    )
-    network_id: NetworkId = Field(
-        ..., description='Network ID of this network where contract is deployed'
-    )
+    admin: Addr = Field(..., description="The admin which is allowed to update the bridge list.")
+    network_id: NetworkId = Field(..., description="Network ID of this network where contract is deployed")
 
 
 class InstantiateMsg(HereItem):

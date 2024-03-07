@@ -23,7 +23,7 @@ from blackbox.raw import (
     OsmosisPoolsResponse,
 )
 from blackbox.settings import settings
-from simulation.routers import data, generic_linear, test_generic_linear
+from simulation.routers import generic_linear, test_generic_linear
 from simulation.routers.angeris_cvxpy import cvxpy_to_data
 from simulation.routers.data import (
     AllData as SimulationData,
@@ -149,7 +149,7 @@ def simulator_router(input: Input = Depends()) -> list[SingleInputAssetCvmRoute]
 
 def solve(original_input: Input, cvm_data: ExtendedCvmRegistry) -> list[SingleInputAssetCvmRoute]:
     ctx = Ctx()
-    ctx.max_depth_of_route = 5
+    ctx.max_depth_of_route = 6
     original_data = for_simulation(cvm_data, {})
 
     original_input.in_asset_amount = int(original_input.in_asset_amount)
