@@ -344,7 +344,7 @@ class Trade(Generic[TId, TAmount]):
 
 
 # @dataclass
-class Spawn(BaseModel, Trade, Generic[TId, TAmount]):
+class Spawn(BaseModel, Trade[TId, TAmount], Generic[TId, TAmount]):
     """
     cross chain transfer assets
     """
@@ -360,7 +360,7 @@ class Spawn(BaseModel, Trade, Generic[TId, TAmount]):
 
 
 # @dataclass
-class Exchange(BaseModel, Trade, Generic[TId, TAmount]):
+class Exchange(BaseModel, Trade[TId, TAmount], Generic[TId, TAmount]):
     pool_id: TId
     next: list[Union[Exchange, Spawn]]
 
@@ -372,7 +372,7 @@ class Exchange(BaseModel, Trade, Generic[TId, TAmount]):
         return self
 
 
-class SingleInputAssetCvmRoute(BaseModel, Trade):
+class SingleInputAssetCvmRoute(BaseModel, Trade[TId, TAmount], Generic[TId, TAmount]):
     """
     always starts with Input asset_id
     """

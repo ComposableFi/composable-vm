@@ -259,7 +259,7 @@ def route(
                             maybe_better_received_amount = maybe_better_venue.trade(current_asset_index, current_amount)
                             if maybe_better_received_amount == 0:
                                 raise Exception(maybe_better_venue)
-                            logger.error(
+                            logger.debug(
                                 f"{'=' * current_depth} for {current_amount}/{index_to_asset_id[current_asset_index]}->{maybe_better_received_amount}/{index_to_asset_id[next_asset_index]}"
                             )
                             # Update the amount of the other token if it is greater than the previous amount

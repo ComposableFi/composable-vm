@@ -38,6 +38,8 @@ from simulation.routers.data import (
 )
 from simulation.routers.oracles import bforacle
 
+DEBUG = False
+
 """"
 logger = logging.getLogger(__name__)
 
@@ -56,82 +58,8 @@ app = FastAPI()
 cache = PersistentCache(TTLCache, filename="get_remote_data.cache", ttl=12 * 1000, maxsize=2)
 
 
-# 1. return csv data + data schema in 127.0.0.1:8000/docs
-# https://github.com/ComposableFi/composable/issues/4434
-@app.get("/data/dummy/everything")
-async def data_dummy_everything() -> SimulationData:
-    data = read_dummy_data("./simulation/routers/data/")
-    return data
-
-
-@app.get("/data/dummy/usd_only_routes")
-async def data_dummy_usd_only_routes() -> SimulationData:
-    return test_generic_linear.create_usd_arbitrage_low_fees_long_path()
-
-
-@app.get("/data/exchanges/dummy/stables_arbitrage")
-async def exchanges_dummy() -> List[AssetPairsXyk[int, int]]:
-    """
-    example of CVM data registry merged with indexer were we can see stable coin arbitrage
-    """
-    t1 = new_pair(
-        1,
-        1,
-        2,
-        0,
-        0,
-        1,
-        1,
-        100,
-        20,
-        80,
-    )
-    t2 = new_pair(
-        1,
-        1,
-        2,
-        0,
-        0,
-        1,
-        1,
-        100,
-        30,
-        80,
-    )
-    return [t1, t2]
-
-
-@app.get("/simulation/ctx")
-async def ctx() -> Ctx:
-    pass
-
-
-@app.get("/status")
-async def status():
-    return {"status": "ok"}
-
-
-# gets all data from all sources
-@app.get("/data/all")
-async def get_data_all() -> AllData:
-    result = get_remote_data()
-    return result
-
-
-@app.post("/simulator/router/dummy")
-def simulator_router_dummy(data: SimulationData, input: Input):
-    """_summary_
-    Given data and input, find and return route.
-    """
-    ctx = Ctx()
-    solution = generic_linear.route(input, data, ctx)
-    route = cvxpy_to_data(input, data, ctx, solution)
-
-    return route
-
-
 @app.get("/simulator/router")
-def simulator_router(input: Input = Depends()) -> list[SingleInputAssetCvmRoute]:
+def simulator_router(input: Input = Depends()) -> list[SingleInputAssetCvmRoute[str, int]]:
     """_summary_
     Given input, find and return route.
     """
@@ -169,45 +97,6 @@ def solve(original_input: Input, cvm_data: ExtendedCvmRegistry) -> list[SingleIn
     return routes
 
 
-@app.get("/skip_money/chains")
-def skip_money_chains():
-    raise Exception("For devnet testing to provide hardcoded chains list")
-
-
-@app.get("/simulator/router/random")
-def simulator_dummy():
-    return test_generic_linear.test_simulate_all_connected_venues()
-
-
-@app.get("/data/routable/raw")
-async def get_data_routable() -> raw.AllData:
-    result = get_remote_data()
-    return result
-
-
-@app.get("/data/routable/cvm")
-async def get_data_routable_cvm() -> ExtendedCvmRegistry:
-    raw_data = get_remote_data()
-    return ExtendedCvmRegistry.from_raw(
-        raw_data.cvm_registry,
-        raw_data.networks,
-        raw_data.cosmos_chains.chains,
-        raw_data.osmosis_pools,
-    )
-
-
-@app.get("/data/routable/oracalized_cvm")
-async def get_data_routable_oracalized() -> SimulationData:
-    raw_data = get_remote_data()
-    cvm_data = ExtendedCvmRegistry.from_raw(
-        raw_data.cvm_registry,
-        raw_data.networks,
-        raw_data.cosmos_chains.chains,
-        raw_data.osmosis_pools,
-    )
-    return for_simulation(cvm_data, {})
-
-
 @cachetools.cached(cache, lock=None, info=False)
 def get_remote_data() -> AllData:
     cfg = NetworkConfig(
@@ -236,6 +125,109 @@ def get_remote_data() -> AllData:
     )
 
     return result
+
+
+if DEBUG:
+    # 1. return csv data + data schema in 127.0.0.1:8000/docs
+    # https://github.com/ComposableFi/composable/issues/4434
+    @app.get("/data/dummy/everything")
+    async def data_dummy_everything() -> SimulationData:
+        data = read_dummy_data("./simulation/routers/data/")
+        return data
+
+    @app.get("/data/dummy/usd_only_routes")
+    async def data_dummy_usd_only_routes() -> SimulationData:
+        return test_generic_linear.create_usd_arbitrage_low_fees_long_path()
+
+    @app.get("/data/exchanges/dummy/stables_arbitrage")
+    async def exchanges_dummy() -> List[AssetPairsXyk[int, int]]:
+        """
+        example of CVM data registry merged with indexer were we can see stable coin arbitrage
+        """
+        t1 = new_pair(
+            1,
+            1,
+            2,
+            0,
+            0,
+            1,
+            1,
+            100,
+            20,
+            80,
+        )
+        t2 = new_pair(
+            1,
+            1,
+            2,
+            0,
+            0,
+            1,
+            1,
+            100,
+            30,
+            80,
+        )
+        return [t1, t2]
+
+    @app.get("/simulation/ctx")
+    async def ctx() -> Ctx:
+        pass
+
+    @app.get("/status")
+    async def status():
+        return {"status": "ok"}
+
+    # gets all data from all sources
+    @app.get("/data/all")
+    async def get_data_all() -> AllData:
+        result = get_remote_data()
+        return result
+
+    @app.post("/simulator/router/dummy")
+    def simulator_router_dummy(data: SimulationData, input: Input):
+        """_summary_
+        Given data and input, find and return route.
+        """
+        ctx = Ctx()
+        solution = generic_linear.route(input, data, ctx)
+        route = cvxpy_to_data(input, data, ctx, solution)
+
+        return route
+
+    @app.get("/skip_money/chains")
+    def skip_money_chains():
+        raise Exception("For devnet testing to provide hardcoded chains list")
+
+    @app.get("/simulator/router/random")
+    def simulator_dummy():
+        return test_generic_linear.test_simulate_all_connected_venues()
+
+    @app.get("/data/routable/raw")
+    async def get_data_routable() -> raw.AllData:
+        result = get_remote_data()
+        return result
+
+    @app.get("/data/routable/cvm")
+    async def get_data_routable_cvm() -> ExtendedCvmRegistry:
+        raw_data = get_remote_data()
+        return ExtendedCvmRegistry.from_raw(
+            raw_data.cvm_registry,
+            raw_data.networks,
+            raw_data.cosmos_chains.chains,
+            raw_data.osmosis_pools,
+        )
+
+    @app.get("/data/routable/oracalized_cvm")
+    async def get_data_routable_oracalized() -> SimulationData:
+        raw_data = get_remote_data()
+        cvm_data = ExtendedCvmRegistry.from_raw(
+            raw_data.cvm_registry,
+            raw_data.networks,
+            raw_data.cosmos_chains.chains,
+            raw_data.osmosis_pools,
+        )
+        return for_simulation(cvm_data, {})
 
 
 def start():
