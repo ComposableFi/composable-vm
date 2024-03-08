@@ -7,7 +7,7 @@ edition = "2021"
 name = "mantis"
 
 [dependencies]
-# mantis_solver_blackbox = { workspace = true }
+blackbox_rs = { path = "./../blackbox_rs" }
 bip32 = { workspace = true, default-features = false, features = [
     "alloc",
     "secp256k1",
