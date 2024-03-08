@@ -1,5 +1,5 @@
 [workspace]
-members = ["crates/*", "contracts/cosmwasm/*", "mantis/node"]
+members = ["crates/*", "contracts/cosmwasm/*", "mantis/node", "mantis/blackbox_rs"]
 exclude = ["contracts/cosmwasm/node_modules/", "contracts/cosmwasm/dist"]
 resolver = "2"
 package.version = "0.3.0"
@@ -18,6 +18,7 @@ let_unit_value = "allow"
 [workspace.dependencies]
 
 cvm = { path = "./crates/cvm", default-features = false }
+blackbox_rs = { path = "./node/blackbox_rs", default-features = false }
 cvm-route = { path = "./crates/cvm-route", default-features = false }
 cvm-runtime = { path = "./crates/cvm-runtime", default-features = false }
 cvm-runtime-exchange = { path = "./crates/cvm-runtime-exchange", default-features = false }
