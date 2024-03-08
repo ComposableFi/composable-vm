@@ -1,5 +1,5 @@
 [package]
-name = "mantis_solver_blackbox"
+name = "blackbox_rs"
 version = "3.0.3"
 edition = "2021"
 license = "SPECIFY A LICENSE BEFORE PUBLISHING"
