@@ -51,8 +51,10 @@ async fn route(
 
         fn build_next(next: &mut [NextItem]) -> CvmInstruction {
             match next.split_first_mut() {
-                Some(_) => todo!(),
-                None => 
+                Some(next) => {
+                    
+                }
+                None => info!("no more routes"),
             }
         }
     }
