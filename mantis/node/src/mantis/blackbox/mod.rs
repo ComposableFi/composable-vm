@@ -1,7 +1,7 @@
 use blackbox_rs::{prelude::*, types::*, Client};
 /// Given total amount it, order owners and desired out, produce CVM program from and by requesting route
 use cvm_runtime::{
-    outpost::GetConfigResponse, shared::{CvmInstruction, Displayed, XcAddr, XcProgram}, Amount, AssetId, ExchangeId 
+    outpost::GetConfigResponse, shared::{CvmInstruction, Displayed, XcAddr, CvmProgram}, Amount, AssetId, ExchangeId 
 };
 
 
@@ -34,7 +34,7 @@ async fn route(
     server: &str,
     input : BankInput,
     glt: GetConfigResponse,
-) -> XcProgram {
+) -> CvmProgram {
     let blackbox: Client = Client::new(server);
     let route = blackbox
         .simulator_router_simulator_router_get(
@@ -49,10 +49,13 @@ async fn route(
         .into_inner()
         .get(0).expect("at least one route");    
 
-        fn build_next(next: &mut [NextItem]) -> CvmInstruction {
+        fn build_next(current: CvmProgram, next: &mut [NextItem]) -> CvmInstruction {
             match next.split_first_mut() {
-                Some(next) => {
-                    
+                Some((head, rest) => {
+                    match head {
+                        NextItem::Exchange(_) => todo!(),
+                        NextItem::Spawn(_) => todo!(),
+                    }
                 }
                 None => info!("no more routes"),
             }
