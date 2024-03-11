@@ -11,6 +11,7 @@ pub struct MantisArgs {
 pub enum MantisCommands {
     Solve(SolverArgs),
     Id(IdArgs),
+    Simulate(SimulateArgs),
 }
 
 #[derive(Debug, Parser)]
@@ -37,6 +38,7 @@ pub enum AssetCommands {
 
 #[derive(clap::Parser, Debug)]
 pub struct SolverArgs {
+ 
     /// the node hosting order contract
     #[arg(long)]
     pub rpc_centauri: String,
@@ -72,6 +74,9 @@ pub struct SolverArgs {
 
     #[arg(long, default_value_t = 1_000_000_000)]
     pub gas: Gas,
+
+    #[arg(long, default_value_t = 100_000)]
+    pub 
 }
 
 impl MantisArgs {

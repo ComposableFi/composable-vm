@@ -1,7 +1,7 @@
 use blackbox_rs::{prelude::*, types::*, Client};
 /// Given total amount it, order owners and desired out, produce CVM program from and by requesting route
 use cvm_runtime::{
-    outpost::GetConfigResponse, shared::{CvmInstruction, Displayed, XcAddr, CvmProgram}, Amount, AssetId, ExchangeId 
+    outpost::GetConfigResponse, proto::cvm, shared::{CvmInstruction, CvmProgram, Displayed, XcAddr}, Amount, AssetId, ExchangeId 
 };
 
 
@@ -29,6 +29,27 @@ impl BankInput {
     }
 }
 
+/// given route and CVM stub with amount, build it to the end
+fn build_next(current: &mut CvmProgram, next: &mut [NextItem]) -> CvmInstruction {
+    match next.split_first_mut() {
+        Some((head, rest)) => {
+            match head {
+                NextItem::Exchange(exchange) => {
+                    let exchange = new_exchange(exchange);
+                    current.instructions.push(CvmInstruction::Exchange(exchange));
+                    build_next(current, rest)
+                },
+                NextItem::Spawn(spawn) => {
+                    let spawn = new_spawn(spawn);
+                    current.instructions.push(CvmInstruction::Spawn(spawn));
+                    build_next(spawn.program, rest)
+                },
+            }
+        }
+        None => info!("no more routes"),
+    }
+}
+
 /// `order_accounts` - account of order where to dispatch amounts (part of whole)
 async fn route(
     server: &str,
@@ -49,17 +70,7 @@ async fn route(
         .into_inner()
         .get(0).expect("at least one route");    
 
-        fn build_next(current: CvmProgram, next: &mut [NextItem]) -> CvmInstruction {
-            match next.split_first_mut() {
-                Some((head, rest) => {
-                    match head {
-                        NextItem::Exchange(_) => todo!(),
-                        NextItem::Spawn(_) => todo!(),
-                    }
-                }
-                None => info!("no more routes"),
-            }
-        }
-    }
-    CvmInstruction::Spawn { network_id: (), salt: (), assets: (), program: () }   
+    let mut program = CvmProgram::new();
+    build_next(&mut current, &mut route.next);
+    return program;   
 }
