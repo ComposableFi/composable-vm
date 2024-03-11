@@ -1,8 +1,7 @@
 use blackbox_rs::{prelude::*, types::*, Client};
 /// Given total amount it, order owners and desired out, produce CVM program from and by requesting route
 use cvm_runtime::{
-    shared::{Displayed, XcAddr, CvmInstruction, XcProgram},
-    Amount, AssetId, ExchangeId, 
+    outpost::GetConfigResponse, shared::{CvmInstruction, Displayed, XcAddr, XcProgram}, Amount, AssetId, ExchangeId 
 };
 
 
@@ -34,7 +33,7 @@ impl BankInput {
 async fn route(
     server: &str,
     input : BankInput,
-    
+    glt: GetConfigResponse,
 ) -> XcProgram {
     let blackbox: Client = Client::new(server);
     let route = blackbox
@@ -49,5 +48,13 @@ async fn route(
         .expect("route found")
         .into_inner()
         .get(0).expect("at least one route");    
-    CvmInstruction::Spawn { network_id: (), salt: (), assets: (), program: () }
+
+        fn build_next(next: &mut [NextItem]) -> CvmInstruction {
+            match next.split_first_mut() {
+                Some(_) => todo!(),
+                None => 
+            }
+        }
+    }
+    CvmInstruction::Spawn { network_id: (), salt: (), assets: (), program: () }   
 }
