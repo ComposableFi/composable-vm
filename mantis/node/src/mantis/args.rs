@@ -37,8 +37,7 @@ pub enum AssetCommands {
 }
 
 #[derive(clap::Parser, Debug)]
-pub struct SolverArgs {
- 
+pub struct SharedArgs {
     /// the node hosting order contract
     #[arg(long)]
     pub rpc_centauri: String,
@@ -49,34 +48,43 @@ pub struct SolverArgs {
     /// Order contract on Centauri
     #[arg(long)]
     pub order_contract: String,
-
-    /// tokens to send to order contract as problem
-    /// format: "token1amount1,token2amount2"
-    #[arg(long)]
-    pub simulate: Option<String>,
-
-    /// wallet to use.
+        /// wallet to use.
     /// For now BIP39 normalized English mnemonic empty passphrase with Kepler default derivation supported
     #[arg(long)]
     pub wallet: String,
 
-    /// The node with pools. Optional, only if consider solving against osmosis.
-    #[arg(long)]
-    pub osmosis: Option<String>,
 
-    /// The node with pools. Optional, only if consider solving against osmosis.
-    #[arg(long)]
-    pub neutron: Option<String>,
+    #[arg(long, default_value_t = 1_000_000_000)]
+    pub gas: Gas,
+
+}
+
+#[derive(clap::Parser, Debug)]
+pub struct SimulateArgs {
 
     /// CVM contract on Centauri. Optional, only if consider routing via cross chain CVM.
     #[arg(long)]
     pub cvm_contract: Option<String>,
 
-    #[arg(long, default_value_t = 1_000_000_000)]
-    pub gas: Gas,
+    /// tokens to send to order contract as problem
+    /// format: "token1amount1,token2amount2"
+    #[arg(long)]
+    pub pair: Option<String>,
 
-    #[arg(long, default_value_t = 100_000)]
-    pub 
+
+    /// the problem to solve
+    #[arg(long, default_value_t = 10)]
+    pub simulate_period_seconds: u16,
+}
+
+#[derive(clap::Parser, Debug)]
+pub struct SolverArgs {
+    #[arg(flatten)]
+    pub shared: SharedArgs,
+
+    /// the problem to solve
+    #[arg(long, default_value_t = 10)]
+    pub solve_period_seconds: u16,
 }
 
 impl MantisArgs {
