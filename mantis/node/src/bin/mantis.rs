@@ -25,7 +25,7 @@ use mantis_node::{
             cosmwasm::{smart_query, to_exec_signed, to_exec_signed_with_fund},
             *,
         },
-        mantis::randomize_order,
+        solve::randomize_order,
     },
     prelude::*,
     solver::{orderbook::OrderList, solution::Solution},
@@ -127,73 +127,7 @@ async fn main() {
     }
 }
 
-/// `assets` - is comma separate list. each entry is amount u64 glued with alphanumeric denomination
-/// that is splitted into array of CosmWasm coins.
-/// one coin is chosen as given,
-/// from remaining 2 other coins one is chosen as wanted
-/// amount of count is randomized around values
-///
-/// `write_client`
-/// `order_contract` - orders are formed for give and want, and send to orders contract.
-/// timeout is also randomized starting from 10 to 100 blocks
-///
-/// Also calls `timeout` so old orders are cleaned.
-async fn simulate_order(
-    write_client: &mut CosmWasmWriteClient,
-    cosmos_query_client: &mut CosmosQueryClient,
-    order_contract: String,
-    coins_pair: String,
-    signing_key: &cosmrs::crypto::secp256k1::SigningKey,
-    rpc: &str,
-    tip: &Tip,
-    gas: Gas,
-) {
-    println!("========================= simulate_order =========================");
-    let (msg, fund) = randomize_order(coins_pair, tip.block);
 
-    println!("msg: {:?}", msg);
-
-    let auth_info = simulate_and_set_fee(signing_key, &tip.account, gas).await;
-
-    let msg = to_exec_signed_with_fund(signing_key, order_contract, msg, fund);
-
-    let result = tx_broadcast_single_signed_msg(
-        msg.to_any().expect("proto"),
-        auth_info,
-        rpc,
-        signing_key,
-        &tip,
-    )
-    .await;
-
-    println!("simulated tx {:?}", result.height)
-}
-
-async fn cleanup(
-    write_client: &mut CosmWasmWriteClient,
-    cosmos_query_client: &mut CosmosQueryClient,
-    order_contract: String,
-    signing_key: &cosmrs::crypto::secp256k1::SigningKey,
-    rpc: &str,
-    tip: &Tip,
-    gas: Gas,
-) {
-    println!("========================= cleanup =========================");
-    let auth_info = simulate_and_set_fee(signing_key, &tip.account, gas).await;
-    let msg = cw_mantis_order::ExecMsg::Timeout {
-        orders: vec![],
-        solutions: vec![],
-    };
-    let msg = to_exec_signed(signing_key, order_contract, msg);
-    tx_broadcast_single_signed_msg(
-        msg.to_any().expect("proto"),
-        auth_info,
-        rpc,
-        signing_key,
-        tip,
-    )
-    .await;
-}
 
 /// gets orders, groups by pairs
 /// solves them using algorithm
@@ -214,7 +148,9 @@ async fn solve(
     println!("========================= solve =========================");
     let all_orders = get_all_orders(order_contract, cosmos_query_client, tip).await;
     if !all_orders.is_empty() {
-        let cows_per_pair = mantis_node::mantis::mantis::do_cows(all_orders);
+        let cows_per_pair = mantis_node::mantis::solve::do_cows(all_orders);
+        let cows_cvm = mantis_node::mantis::solve::route(cows_per_pair, all_orders);
+        let cvm_rest = mantis_node::mantis::cosmos::client::get_cvm_routing_data(rpc).await;
         for (cows, optimal_price) in cows_per_pair {
             send_solution(
                 cows,
@@ -261,17 +197,3 @@ async fn send_solution(
     println!("result: {:?}", result);
 }
 
-async fn get_all_orders(
-    order_contract: &String,
-    cosmos_query_client: &mut CosmWasmReadClient,
-    tip: &Tip,
-) -> Vec<OrderItem> {
-    let query = cw_mantis_order::QueryMsg::GetAllOrders {};
-    let all_orders = smart_query::<_, Vec<OrderItem>>(order_contract, query, cosmos_query_client)
-        .await
-        .into_iter()
-        .filter(|x| x.msg.timeout > tip.block.value())
-        .collect::<Vec<OrderItem>>();
-    println!("all_orders: {:?}", all_orders);
-    all_orders
-}

@@ -61,7 +61,9 @@ pub struct SharedArgs {
 
 #[derive(clap::Parser, Debug)]
 pub struct SimulateArgs {
-
+    #[arg(flatten)]
+    pub shared: SharedArgs,
+    
     /// CVM contract on Centauri. Optional, only if consider routing via cross chain CVM.
     #[arg(long)]
     pub cvm_contract: Option<String>,
