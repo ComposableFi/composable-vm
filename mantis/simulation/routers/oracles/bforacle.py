@@ -121,8 +121,9 @@ class Previous:
     Used venue index to arrive to `amount`
     """
     amount: int
-
-    def default(self) -> "Previous":
+    
+    @staticmethod
+    def default() -> "Previous":
         return Previous(None, 0)
 
     def start(self, tendered_asset) -> "Previous":
@@ -132,16 +133,19 @@ class Previous:
 class State:
     # A class that represent the state of the algorithm
     # It's used to pass the state to the threads if executed in parallel
-    max_depth: int
-    depth: int
-    distances: list[list[Previous]]
-    received_asset_index: int
-    edges: list[Edge]
-    j: int
-    n: int
+    max_depth: int | None
+    depth: int | None
+    distances: list[list[Previous]] | None
+    received_asset_index: int | None
+    edges: list[Edge] | None
+    j: int | None
+    n: int | None
 
     def reset_distances(self, max_depth):
-        self.distances = [[Previous.default()] * (max(max_depth) + 1) for _ in range(self.n)]
+        if max_depth is not None and self.n is not None:
+            self.distances = [[Previous.default()] * (max_depth + 1) for _ in range(self.n)]   # max_depth is int. Can't be use in argument of iterable function.
+        else:
+            raise ValueError("Argument of type 'None' cannot be assigned to parameter")
 
     def __init__(self):
         self.distances = None
@@ -160,8 +164,11 @@ def data2bf(
     all_tokens = all_data.all_tokens
     asset_id_to_index = {x: i for i, x in enumerate(all_tokens)}
     index_to_asset_id = {i: x for i, x in enumerate(all_tokens)}
-    for x in all_data.asset_transfers:
-        edges.append(Edge(x, asset_id_to_index, all_data.usd_oracles))
+    if all_data.asset_transfers is not None:
+        for x in all_data.asset_transfers:
+            edges.append(Edge(x, asset_id_to_index, all_data.usd_oracles))
+    else:
+        raise ValueError("Object of type 'None' cannot be used as iterable value (reportOptionalIterable)")
     for x in all_data.asset_pairs_xyk:
         edges.append(Edge(x, asset_id_to_index, all_data.usd_oracles))
 
