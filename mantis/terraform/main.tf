@@ -6,7 +6,17 @@ resource "digitalocean_droplet" "droplet" {
   ssh_keys = [
     digitalocean_ssh_key.sshkey.id
   ]
+  tags = [digitalocean_tag.tag1.id, digitalocean_tag.tag2.id]
 }
+
+resource "digitalocean_tag" "tag1" {
+  name = "mantis"
+}
+
+resource "digitalocean_tag" "tag2" {
+  name = "solver"
+}
+
 
 resource "digitalocean_firewall" "firewall" {
   name = "only-22-8080"
