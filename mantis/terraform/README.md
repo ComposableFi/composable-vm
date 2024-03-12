@@ -17,8 +17,9 @@ export your Digital Ocean's Personal Access token
 export DO_PAT="your_personal_access_token"
 ```
 
-### Provision
+### Provision droplet
 
+Use bash wrapper to provision droplet
 ```bash
 ./provision.sh
 ```
@@ -41,47 +42,67 @@ tags = toset([
 ])
 ```
 
-### Access to droplet
+Not `ipv4_address` to access droplet in next step.
 
+### Access droplet
+
+To access droplet, use your keyfile
 ```bash
 ssh -i path_to_prv_file root@<ip_of_droplet>
 ```
 
 ```bash
-❯ ssh -i ~/.ssh/do_test_id_rsa root@134.122.118.208
-Welcome to Ubuntu 22.04.2 LTS (GNU/Linux 5.15.0-67-generic x86_64)
-
- * Documentation:  https://help.ubuntu.com
- * Management:     https://landscape.canonical.com
- * Support:        https://ubuntu.com/advantage
-
-  System information as of Tue Mar 12 10:21:30 UTC 2024
-
-  System load:  0.0               Users logged in:       0
-  Usage of /:   6.9% of 24.05GB   IPv4 address for eth0: 134.122.118.208
-  Memory usage: 21%               IPv4 address for eth0: 10.10.0.6
-  Swap usage:   0%                IPv4 address for eth1: 10.116.0.3
-  Processes:    96
-
-Expanded Security Maintenance for Applications is not enabled.
-
-17 updates can be applied immediately.
-13 of these updates are standard security updates.
-To see these additional updates run: apt list --upgradable
-
-Enable ESM Apps to receive additional future security updates.
-See https://ubuntu.com/esm or run: sudo pro status
-
-The list of available updates is more than a week old.
-To check for new updates run: sudo apt update
-
-
-The programs included with the Ubuntu system are free software;
-the exact distribution terms for each program are described in the
-individual files in /usr/share/doc/*/copyright.
-
-Ubuntu comes with ABSOLUTELY NO WARRANTY, to the extent permitted by
-applicable law.
-
-root@ubuntu-nyc1-node-01:~#
+ssh -i ~/.ssh/do_test_id_rsa root@134.122.118.208
 ```
+
+Together with provisioning of droplet, following tools are installed and setup via `cloudinit`:
+
+```bash
+composable@ubuntu-nyc1-node-01:~$ python --version
+Python 3.11.7
+```
+
+```bash
+composable@ubuntu-nyc1-node-01:~$ poetry --version
+Poetry (version 1.8.2)
+```
+
+### Run solver
+
+In order to run solver, ssh into droplet and start project via projectry command:
+
+- switch to `composable` user
+```bash
+su - composable
+```
+
+- run poetry commands
+```bash
+cd composable-vm/mantis/
+poetry install
+poetry run blackbox
+```
+
+at the end you will see:
+```
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO:     Started reloader process [41097] using WatchFiles
+INFO:     Started server process [41103]
+INFO:     Waiting for application startup.
+TRACE:    ASGI [1] Started scope={'type': 'lifespan', 'asgi': {'version': '3.0', 'spec_version': '2.0'}, 'state': {}}
+TRACE:    ASGI [1] Receive {'type': 'lifespan.startup'}
+TRACE:    ASGI [1] Send {'type': 'lifespan.startup.complete'}
+INFO:     Application startup complete.
+```
+
+
+Visit: http://<ip_of_droplet>:8000/docs
+
+
+### Destroy infrastructure
+
+If you don't need that infrastructure anymore, you can use:
+```bash
+./destroy.sh
+```
+to decommision all components of infrasture.
