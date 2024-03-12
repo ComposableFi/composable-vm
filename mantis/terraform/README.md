@@ -1,5 +1,10 @@
 # Provision Solver
 
+## Prerequisites
+
+- Digital Ocean account
+- [Terraform v1.4.2+](https://developer.hashicorp.com/terraform/install)
+
 ## Digital Ocean
 
 Generate PAT in Digital Ocean's console panel:
