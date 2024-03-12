@@ -1,4 +1,4 @@
 #!/bin/bash
 
-terraform destroy
+terraform destroy \
     -var "do_token=${DO_PAT}"
