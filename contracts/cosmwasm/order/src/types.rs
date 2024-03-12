@@ -71,8 +71,8 @@ impl OrderItem {
     }
 }
 
-/// simple stucture which can be applied to order to fill or partial fill it
-pub struct Filling{
+/// simple structure which can be applied to order to fill or partial fill it
+pub struct Filling {
     order_id: u64,
     amount: Uint128,
 }

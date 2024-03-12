@@ -14,14 +14,26 @@ pub type CvmPacket = crate::Packet<CvmProgram>;
 pub type CvmProgram = crate::Program<Vec<CvmInstruction>>;
 
 impl CvmProgram {
-    fn new(instructions: Vec<CvmInstruction>) -> Self {
+    pub fn new(instructions: Vec<CvmInstruction>) -> Self {
         Self {
             tag: vec![0],
             instructions,
-        }     
-}
-}
+        }
+    }
 
+    pub fn last_spawns(&self) -> Vec<&CvmInstruction> {
+        self.instructions
+            .iter()
+            .filter_map(|i| 
+                if let CvmInstruction::Spawn { program, .. } = i {
+                    Some(program.last_spawns())
+                } else {
+                    None
+                }
+            )
+            .collect()
+    }
+}
 
 impl CvmInstruction {
     pub fn transfer_absolute_to_account(to: &str, asset_id: u128, amount: u128) -> Self {
