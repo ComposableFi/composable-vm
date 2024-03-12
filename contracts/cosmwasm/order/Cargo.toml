@@ -29,6 +29,13 @@ cvm-runtime = { path = "../../../crates/cvm-runtime", default-features = false, 
   "cosmwasm",
 ] }
 
+cvm-route = { path = "../../../crates/cvm-route", default-features = false, features = [
+  "cosmwasm",
+] }
+
+
+
+
 hex = {workspace = true, default-features = false, features = ["std"] }
 sha2 = {workspace = true, default-features = false, features = ["std"] }
 

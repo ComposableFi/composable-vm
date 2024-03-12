@@ -883,6 +883,7 @@ version = "0.3.0"
 dependencies = [
  "cosmwasm-schema",
  "cosmwasm-std",
+ "cvm-route",
  "cvm-runtime",
  "cw-controllers",
  "cw-storage-plus 1.2.0",

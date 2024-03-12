@@ -20,8 +20,8 @@ pub struct CowSolutionCalculation {
     pub filled: Vec<CowFilledOrder>,
 }
 
-/// each pair waits ate least this amount of blocks before being decided
-pub const BATCH_EPOCH: u32 = 1;
+/// each pair waits at least this amount of blocks before being decided
+pub const BATCH_EPOCH: u32 = 2;
 
 /// count of solutions at minimum which can be decided, just set 1 for ease of devtest
 pub const MIN_SOLUTION_COUNT: u32 = 1;
@@ -69,6 +69,12 @@ impl OrderItem {
         }
         Ok(())
     }
+}
+
+/// simple stucture which can be applied to order to fill or partial fill it
+pub struct Filling{
+    order_id: u64,
+    amount: Uint128,
 }
 
 #[cfg(test)]

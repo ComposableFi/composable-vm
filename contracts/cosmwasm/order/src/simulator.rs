@@ -1,10 +1,19 @@
 use cosmwasm_std::Storage;
+use cvm_route::asset::AssetItem;
 use cvm_runtime::shared::CvmProgram;
+use cvm_runtime::AssetId;
 
 use crate::prelude::*;
 use crate::CowFilledOrder;
 use crate::CowSolutionCalculation;
 use crate::SolvedOrder;
+
+
+/// given expected output amount and list of orders and CVM program, produce fill in of orders
+/// return filling amounts for all orders from program, which may or may not lead to full fill
+pub fn verify(route: CvmProgram, out_asset: &AssetItem, out_asset:&AssetItem, orders: Vec<SolvedOrder>) -> Result<Vec<int>, StdError> {
+    
+}
 
 /// All orders amounts aggregated into common pool.
 /// Ensure that solution does not violates this pool.
