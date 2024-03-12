@@ -18,6 +18,24 @@ export DO_PAT="your_personal_access_token"
 ./provision.sh
 ```
 
+At the end of provisioning script you wil find some info about your deployment:
+```
+Apply complete! Resources: 3 added, 1 changed, 1 destroyed.
+
+Outputs:
+
+droplet_id = "406459888"
+ipv4_address = "134.122.118.208"
+ipv4_address_private = "10.116.0.3"
+name = "ubuntu-nyc1-node-01"
+region = "nyc1"
+size = "s-1vcpu-1gb"
+tags = toset([
+  "mantis",
+  "solver",
+])
+```
+
 ### Access to droplet
 
 ```bash
