@@ -781,6 +781,8 @@ def new_pair(
     pool_value_in_usd,
     in_token_amount,
     out_token_amount,
+    in_asset_amount,
+    out_asset_amount,
     venue_fixed_costs_in_usd: float = 0.00001,
     metadata=None,
 ) -> AssetPairsXyk:
@@ -795,6 +797,8 @@ def new_pair(
         pool_value_in_usd=pool_value_in_usd,
         in_token_amount=in_token_amount,
         out_token_amount=out_token_amount,
+        in_asset_amount=in_asset_amount,
+        out_asset_amount=out_asset_amount,
         venue_fixed_costs_in_usd=venue_fixed_costs_in_usd,
         metadata=metadata,
     )
