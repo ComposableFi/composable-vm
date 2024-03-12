@@ -12,10 +12,8 @@ use crate::SolvedOrder;
 
 /// given expected output amount and list of orders and CVM program, produce fill in of orders
 /// return filling amounts for all orders from program, which may or may not lead to full fill
-pub fn verify(route: CvmProgram, in_asset: &AssetItem, out_asset:&AssetItem, orders: Vec<SolvedOrder>) -> Result<Vec<Filling>, StdError> {
-    // match route.instructions[0] {
-    //     cvm_runtime::Instruction::Spawn { network_id, salt, assets, program } => todo!(),
-    // }
+pub fn verify(route: CvmProgram, in_asset: &AssetItem, out_asset:&AssetItem, predicted_out_amount : u128, orders: Vec<SolvedOrder>) -> Result<Vec<Filling>, StdError> {
+    
     panic!()
 }
 
@@ -31,7 +29,7 @@ pub fn simulate_cows_via_bank(
 ) -> Result<CowSolutionCalculation, StdError> {
     let mut transfers = vec![];
     for order in orders.iter() {
-        let cowed = order.solution.cow_amount;
+        let cowed = order.solution.cow_out_amount;
         let filled_wanted = Coin {
             amount: cowed,
             denom: order.wanted_denom().clone(),

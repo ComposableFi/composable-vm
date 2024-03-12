@@ -41,12 +41,12 @@ pub mod order {
 }
 
 pub mod solution {
-    use crate::{prelude::*, Block, CowFillResult, Pair, SolutionItem};
+    use crate::{prelude::*, Block, CowFillResult, DenomPair, SolutionItem};
     use cosmwasm_std::Event;
     use sylvia::types::ExecCtx;
 
     pub fn mantis_solution_chosen(
-        ab: Pair,
+        ab: DenomPair,
         ctx: &ExecCtx<'_>,
         transfers: &Vec<CowFillResult>,
         cow_volume: u128,
@@ -67,7 +67,7 @@ pub mod solution {
         solution_chosen
     }
 
-    pub fn mantis_solution_upserted(ab: &Pair, ctx: &ExecCtx<'_>) -> Event {
+    pub fn mantis_solution_upserted(ab: &DenomPair, ctx: &ExecCtx<'_>) -> Event {
         let solution_upserted = Event::new("mantis-solution-upserted")
             .add_attribute("token_a", ab.clone().0)
             .add_attribute("token_b", ab.clone().1)

@@ -187,9 +187,9 @@ impl OrderContract<'_> {
 
         let contract = self.cvm_address.load(ctx.deps.storage)?;
 
-        let (a_taken, b_taken) = self.drain(
+        let (a_taken, b_taken) = self.pre_fill_remotely(
             ctx.branch(),
-            msg.msg.ratio,
+            msg.msg.optimal_price,
             msg.solution_id,
             msg.all_orders,
             msg.pair.clone(),
@@ -312,7 +312,7 @@ impl OrderContract<'_> {
         let solution_id = solution_item.id();
         let mut response = Response::default();
 
-        let transfers = self.fill(
+        let transfers = self.fill_local(
             ctx.deps.storage,
             transfers,
             ctx.info.sender.to_string(),
@@ -323,12 +323,12 @@ impl OrderContract<'_> {
         let cross_chain_b: u128 = all_orders
             .iter()
             .filter(|x| x.given().denom != ab.0)
-            .map(|x| x.solution.cross_chain.u128())
+            .map(|x| x.solution.out_asset_amount.u128())
             .sum();
         let cross_chain_a: u128 = all_orders
             .iter()
             .filter(|x| x.given().denom != ab.1)
-            .map(|x| x.solution.cross_chain.u128())
+            .map(|x| x.solution.out_asset_amount.u128())
             .sum();
 
         if let Some(msg) = solution_item.msg.route {
@@ -400,7 +400,7 @@ impl OrderContract<'_> {
     /// Returns relevant transfers and sets proper tracking info for remaining cross chain
     /// execution. Orders which are in cross chain execution are "locked", users cannot cancel them
     /// or take funds back during execution (because funds are moved).
-    fn fill(
+    fn fill_local(
         &self,
         storage: &mut dyn Storage,
         cows: Vec<CowFilledOrder>,
@@ -443,37 +443,39 @@ impl OrderContract<'_> {
         Ok(results)
     }
 
-    fn drain<'a>(
+    fn pre_fill_remotely<'a>(
         &self,
         ctx: ExecCtx<'a>,
-        ratio: Ratio,
+        optimal_price: Ratio,
         solution_id: SolutionHash,
         all_orders: Vec<SolvedOrder>,
-        ab: Pair,
+        pair: DenomPair,
     ) -> Result<(u128, u128), StdError> {
-        let mut a_amount: u128 = 0;
-        let mut b_amount: u128 = 0;
+        let mut routed_a_amount: u128 = 0;
+        let mut route_b_amount: u128 = 0;
         for order in all_orders.iter() {
             let order_id = order.order.order_id.u128();
             let mut item: OrderItem = self.orders.load(ctx.deps.storage, order_id)?;
-            let taken = if item.given.denom == ab.0 {
-                item.given.amount.u128() * (ratio.0.u64() as u128 / ratio.1.u64() as u128)
+            let taken = if item.given.denom == pair.0 {
+                item.given.amount.u128() * (optimal_price.0.u64() as u128 / optimal_price.1.u64() as u128)
             } else {
-                item.given.amount.u128() * (ratio.1.u64() as u128 / ratio.0.u64() as u128)
+                item.given.amount.u128() * (optimal_price.1.u64() as u128 / optimal_price.0.u64() as u128)
             };
-            if item.given.denom == ab.0 {
-                a_amount += taken;
+            if item.given.denom == pair.0 {
+                routed_a_amount += taken;
             } else {
-                b_amount += taken;
+                route_b_amount += taken;
             };
 
-            let promised = order.solution.cross_chain;
+            let promised = order.solution.out_asset_amount;
             item.given.amount = item
                 .given
                 .amount
                 .checked_sub(taken.into())
                 .expect("solution does not takes more than can");
             item.msg.wants.amount = item.msg.wants.amount.saturating_sub(promised);
+            //item.fill(wanted_fill_amount, optimal_ratio);
+
             let tracker = TrackedOrderItem {
                 order_id: item.order_id,
                 solution_id: solution_id.clone(),
@@ -487,6 +489,6 @@ impl OrderContract<'_> {
                 &tracker,
             )?;
         }
-        Ok((a_amount, b_amount))
+        Ok((routed_a_amount, route_b_amount))
     }
 }

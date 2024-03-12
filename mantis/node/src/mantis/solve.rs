@@ -53,8 +53,8 @@ pub fn do_cows(all_orders: Vec<OrderItem>) -> SolutionsPerPair {
                 let filled = x.amount_out.to_u128().expect("u128");
                 OrderSolution {
                     order_id: x.id,
-                    cow_amount: filled.into(),
-                    cross_chain: 0u128.into(),
+                    cow_out_amount: filled.into(),
+                    out_asset_amount: 0u128.into(),
                 }
             })
             .collect::<Vec<_>>();

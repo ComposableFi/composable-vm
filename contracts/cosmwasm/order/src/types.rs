@@ -44,8 +44,8 @@ pub struct OrderItem {
 
 impl OrderItem {
     /// `wanted_fill_amount` - amount to fill in `wants` amounts
-    /// reduces give amount
-    /// `optimal_price` - the price to solve agains, should be same or better than user limit
+    /// Reduces given amount
+    /// `optimal_price` - the price to solve against, should be same or better than user limit.
     pub fn fill(&mut self, wanted_fill_amount: Uint128, optimal_ratio: Ratio) -> StdResult<()> {
         // was given more or exact wanted - user happy or user was given all before, do not give more
         if wanted_fill_amount >= self.msg.wants.amount
@@ -196,7 +196,7 @@ impl SolutionItem {
 pub struct CrossChainPart {
     pub msg: ExecuteProgramMsg,
     /// what price is used to take from orders
-    pub ratio: Ratio,
+    pub optimal_price: Ratio,
 }
 
 /// price information will not be used on chain or deciding.
@@ -232,7 +232,7 @@ pub struct RouteSubMsg {
     pub all_orders: Vec<SolvedOrder>,
     pub msg: CrossChainPart,
     pub solution_id: SolutionHash,
-    pub pair: Pair,
+    pub pair: DenomPair,
 }
 
 #[cfg_attr(
@@ -258,16 +258,18 @@ pub struct SubWasmMsg<Payload> {
 pub struct OrderSolution {
     pub order_id: OrderId,
     /// how much of order to be solved by from bank for all aggregated cows, `want` unit
-    pub cow_amount: Amount,
-    /// how much to dispatch to user after routing
-    pub cross_chain: Amount,
+    pub cow_out_amount: Amount,
+    /// how much to take from user for cross chain routing, in `given` unit
+    pub in_asset_amount: Amount,
+    /// how much to dispatch to user after routing, in `wants` unit
+    pub out_asset_amount: Amount,
 }
 impl OrderSolution {
     pub fn new(order_id: OrderId, cow_amount: Amount, cross_chain: Amount) -> Self {
         Self {
             order_id,
-            cow_amount,
-            cross_chain,
+            cow_out_amount: cow_amount,
+            out_asset_amount: cross_chain,
         }
     }
 }
@@ -304,7 +306,7 @@ impl SolvedOrder {
         Ok(Self { order, solution })
     }
 
-    pub fn pair(&self) -> Pair {
+    pub fn pair(&self) -> DenomPair {
         let mut pair = (
             self.order.given.denom.clone(),
             self.order.msg.wants.denom.clone(),
@@ -314,11 +316,11 @@ impl SolvedOrder {
     }
 
     pub fn cross_chain(&self) -> u128 {
-        self.order.msg.wants.amount.u128() - self.solution.cow_amount.u128()
+        self.order.msg.wants.amount.u128() - self.solution.cow_out_amount.u128()
     }
 
     pub fn filled(&self) -> u128 {
-        self.solution.cow_amount.u128()
+        self.solution.cow_out_amount.u128()
     }
 
     pub fn wanted_denom(&self) -> String {
@@ -347,10 +349,10 @@ pub struct CowFillResult {
 }
 
 pub type Denom = String;
-pub type Pair = (Denom, Denom);
+pub type DenomPair = (Denom, Denom);
 pub type SolverAddress = String;
 
-pub type CrossChainSolutionKey = (SolverAddress, Pair, Block);
+pub type CrossChainSolutionKey = (SolverAddress, DenomPair, Block);
 
 pub type SolutionHash = Vec<u8>;
 

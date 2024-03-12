@@ -6,7 +6,7 @@ use crate::*;
 /// so we need to have several solution per pair to pick one best
 pub struct SolutionIndexes<'a> {
     /// (token pair secondary index), (stored item), (stored item full key)
-    pub pair: MultiIndex<'a, Pair, SolutionItem, (Denom, Denom, SolverAddress)>,
+    pub pair: MultiIndex<'a, DenomPair, SolutionItem, (Denom, Denom, SolverAddress)>,
 }
 
 /// (a,b,solver)
