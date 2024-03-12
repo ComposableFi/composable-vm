@@ -140,8 +140,8 @@ class TwoTokenConverter(Generic[TId]):
     out_asset_id: TId
 
     def zero(self):
-        self.in_token_amount = 0
-        self.out_token_amount = 0
+        self.in_asset_amount = 0
+        self.out_asset_amount = 0
 
     def other(self, asset_id: TId) -> TId:
         if asset_id == self.in_asset_id:
@@ -779,8 +779,6 @@ def new_pair(
     weight_a,
     weight_b,
     pool_value_in_usd,
-    in_token_amount,
-    out_token_amount,
     in_asset_amount,
     out_asset_amount,
     venue_fixed_costs_in_usd: float = 0.00001,
@@ -795,8 +793,6 @@ def new_pair(
         weight_a=weight_a,
         weight_b=weight_b,
         pool_value_in_usd=pool_value_in_usd,
-        in_token_amount=in_token_amount,
-        out_token_amount=out_token_amount,
         in_asset_amount=in_asset_amount,
         out_asset_amount=out_asset_amount,
         venue_fixed_costs_in_usd=venue_fixed_costs_in_usd,
@@ -808,8 +804,8 @@ def new_transfer(
     in_asset_id,
     out_asset_id,
     venue_fixed_costs_in_usd,
-    in_token_amount,
-    out_token_amount,
+    in_asset_amount,
+    out_asset_amount,
     fee_per_million,
     metadata=None,
 ) -> AssetTransfers:
@@ -817,8 +813,8 @@ def new_transfer(
         in_asset_id=in_asset_id,
         out_asset_id=out_asset_id,
         venue_fixed_costs_in_usd=venue_fixed_costs_in_usd,
-        in_token_amount=in_token_amount,
-        out_token_amount=out_token_amount,
+        in_asset_amount=in_asset_amount,
+        out_asset_amount=out_asset_amount,
         fee_per_million=fee_per_million,
         metadata=metadata,
     )
