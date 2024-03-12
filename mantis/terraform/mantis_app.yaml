@@ -53,11 +53,19 @@ write_files:
 
       source $HOME/.profile
 
-
       # install python version
       pyenv install 3.11.7
       pyenv global 3.11.7
-      
+
+      # install peotry
+      curl -sSL https://install.python-poetry.org | python3 -
+
+      cat >> $HOME/.profile << 'EOF'
+      export PATH="/home/composable/.local/bin:$PATH"
+      EOF
+
+      source $HOME/.profile
+
       # clone repo
       git clone https://github.com/ComposableFi/composable-vm.git $HOME/composable-vm 
     permissions: '0755'
