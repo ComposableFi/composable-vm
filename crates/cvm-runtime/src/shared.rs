@@ -16,8 +16,7 @@ pub type CvmInstruction = crate::Instruction<Vec<u8>, XcAddr, CvmFundsFilter>;
 pub type CvmPacket = crate::Packet<CvmProgram>;
 pub type CvmProgram = crate::Program<Vec<CvmInstruction>>;
 
-
-pub type CvmSpawnRef<'a> = (&'a CvmProgram,&'a CvmFundsFilter);   
+pub type CvmSpawnRef<'a> = (&'a CvmProgram, &'a CvmFundsFilter);
 
 impl CvmProgram {
     pub fn new(instructions: Vec<CvmInstruction>) -> Self {
@@ -37,7 +36,10 @@ impl CvmProgram {
         self.instructions
             .iter()
             .filter_map(|i| {
-                if let CvmInstruction::Spawn { program, assets, .. } = i {
+                if let CvmInstruction::Spawn {
+                    program, assets, ..
+                } = i
+                {
                     if program.will_spawn() {
                         Some(program.last_spawns())
                     } else {
@@ -60,11 +62,11 @@ impl CvmInstruction {
         }
     }
 
-    pub fn spawn(network_id: NetworkId, program: CvmProgram ) -> Self {
+    pub fn spawn(network_id: NetworkId, program: CvmProgram) -> Self {
         Self::Spawn {
             network_id,
             salt: vec![],
-            assets: vec![],
+            assets: <_>::default(),
             program,
         }
     }
@@ -78,17 +80,24 @@ pub fn decode_base64<S: AsRef<str>, T: DeserializeOwned>(encoded: S) -> StdResul
     from_json::<T>(&Binary::from_base64(encoded.as_ref())?)
 }
 
-
 #[cfg(test)]
 mod tests {
     use super::{CvmInstruction, CvmProgram};
 
-
     #[test]
-    pub fn spawn() {
-        let spawn = CvmInstruction::Spawn { network_id: (), salt: (), assets: (), program: () }
-        let program = CvmProgram::new(vec![
+    pub fn last_spawns() {
+        let program = CvmProgram::new(vec![CvmInstruction::spawn(
+            1.into(),
+            CvmProgram::new(vec![CvmInstruction::spawn(
+                2.into(),
+                CvmProgram::new(vec![
+                    CvmInstruction::transfer_absolute_to_account("alice", 1, 1),
+                    CvmInstruction::transfer_absolute_to_account("bob", 1, 1),
+                ]),
+            )]),
+        )]);
 
-        ]);
-    }   
+        let spawn = program.last_spawns()[0];
+        assert_eq!(spawn.0.instructions.len(), 2);
+    }
 }
