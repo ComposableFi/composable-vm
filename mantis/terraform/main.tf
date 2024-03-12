@@ -8,8 +8,8 @@ resource "digitalocean_droplet" "droplet" {
   ]
 }
 
-resource "digitalocean_firewall" "web" {
-  name = "only-22-80-and-443"
+resource "digitalocean_firewall" "firewall" {
+  name = "only-22-8080"
 
   droplet_ids = [digitalocean_droplet.droplet.id]
 
