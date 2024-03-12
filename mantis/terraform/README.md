@@ -98,6 +98,10 @@ INFO:     Application startup complete.
 
 Visit: http://<ip_of_droplet>:8000/docs
 
+You should see something like:
+
+![mantis docs](./docs.png)
+
 
 ### Destroy infrastructure
 
