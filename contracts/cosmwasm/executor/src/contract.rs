@@ -110,7 +110,7 @@ fn initiate_execution(
     deps: DepsMut,
     env: Env,
     tip: Addr,
-    program: shared::XcProgram,
+    program: shared::CvmProgram,
 ) -> Result {
     // Reset instruction pointer to zero.
     INSTRUCTION_POINTER_REGISTER.save(deps.storage, &0)?;
@@ -379,7 +379,7 @@ pub fn execute_spawn(
     network_id: NetworkId,
     salt: Vec<u8>,
     assets: Funds<Amount>,
-    program: shared::XcProgram,
+    program: shared::CvmProgram,
 ) -> Result {
     let Config {
         executor_origin,

@@ -1,5 +1,5 @@
 use cosmwasm_std::Storage;
-use cvm_runtime::shared::XcProgram;
+use cvm_runtime::shared::CvmProgram;
 
 use crate::prelude::*;
 use crate::CowFilledOrder;
@@ -66,7 +66,7 @@ pub fn simulate_cows_via_bank(
 /// Produces remaining each order will receive proportional to what is given.
 pub fn simulate_route(
     storage: &mut dyn Storage,
-    route: XcProgram,
+    route: CvmProgram,
     token_a_remaining: Coin,
     token_b_remaining: Coin,
     orders: Vec<SolvedOrder>,

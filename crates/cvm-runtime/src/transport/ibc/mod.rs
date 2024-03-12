@@ -1,7 +1,7 @@
 use crate::{
     outpost::{self, Ics20Features, OutpostId},
     prelude::*,
-    shared::XcPacket,
+    shared::CvmPacket,
     AssetId, NetworkId,
 };
 use cosmwasm_std::{Api, BlockInfo, CosmosMsg, Deps, IbcEndpoint, StdResult};
@@ -25,7 +25,7 @@ use ibc_apps_more::{
 )]
 pub struct XcMessageData {
     pub from_network_id: NetworkId,
-    pub packet: XcPacket,
+    pub packet: CvmPacket,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -68,7 +68,7 @@ pub fn to_cosmwasm_message<T>(
     api: &dyn Api,
     coin: Coin,
     route: IbcIcs20ProgramRoute,
-    packet: XcPacket,
+    packet: CvmPacket,
     block: BlockInfo,
     to_outpost: Addr,
 ) -> StdResult<CosmosMsg<T>> {

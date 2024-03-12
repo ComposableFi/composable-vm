@@ -19,7 +19,7 @@ use cosmwasm_std::{
     IbcPacketTimeoutMsg, IbcReceiveResponse, MessageInfo, Response, SubMsg,
 };
 use cvm_route::transport::ChannelInfo;
-use cvm_runtime::{proto::Isomorphism, shared::XcPacket, CallOrigin, XCVMAck};
+use cvm_runtime::{proto::Isomorphism, shared::CvmPacket, CallOrigin, XCVMAck};
 use ibc_core_host_types::identifiers::{ChannelId, ConnectionId};
 
 use super::make_ibc_failure_event;
@@ -92,7 +92,7 @@ pub fn ibc_packet_receive(
 ) -> Result<IbcReceiveResponse> {
     let response = IbcReceiveResponse::default().add_event(make_event("receive"));
     let msg = (|| -> Result<_> {
-        let packet = XcPacket::decode(&msg.packet.data)?;
+        let packet = CvmPacket::decode(&msg.packet.data)?;
         let call_origin = CallOrigin::Remote {
             user_origin: packet.user_origin,
         };
@@ -122,7 +122,7 @@ pub fn ibc_packet_receive(
 pub fn ibc_packet_ack(_deps: DepsMut, _env: Env, msg: IbcPacketAckMsg) -> Result<IbcBasicResponse> {
     let ack = XCVMAck::try_from(msg.acknowledgement.data.as_slice())
         .map_err(|_| ContractError::InvalidAck)?;
-    XcPacket::decode(&msg.original_packet.data)?;
+    CvmPacket::decode(&msg.original_packet.data)?;
     Ok(IbcBasicResponse::default().add_event(make_event("ack").add_attribute("ack", ack)))
 }
 
@@ -132,7 +132,7 @@ pub fn ibc_packet_timeout(
     _env: Env,
     msg: IbcPacketTimeoutMsg,
 ) -> Result<IbcBasicResponse> {
-    XcPacket::decode(&msg.packet.data)?;
+    CvmPacket::decode(&msg.packet.data)?;
     // https://github.com/cosmos/ibc/pull/998
     Ok(IbcBasicResponse::default())
 }
@@ -157,7 +157,7 @@ pub(crate) fn handle_bridge_forward_no_assets(
     let channel_id = other.connection.ics27_channel.map(|x| x.id).ok_or(
         ContractError::ConnectionFromToNotFoundOverIcs27(this.network_id, msg.to_network),
     )?;
-    let executor = XcPacket {
+    let executor = CvmPacket {
         executor: String::from(info.sender).into_bytes(),
         user_origin: msg.executor_origin.user_origin,
         salt: msg.msg.salt,

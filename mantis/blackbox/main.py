@@ -59,7 +59,7 @@ cache = PersistentCache(TTLCache, filename="get_remote_data.cache", ttl=12 * 100
 
 
 @app.get("/simulator/router")
-def simulator_router(input: Input = Depends()) -> list[SingleInputAssetCvmRoute[str, int]]:
+def simulator_router(input: Input[str, int] = Depends()) -> list[SingleInputAssetCvmRoute[str, int]]:
     """_summary_
     Given input, find and return route.
     """

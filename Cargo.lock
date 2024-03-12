@@ -315,6 +315,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "blackbox_rs"
+version = "3.0.3"
+dependencies = [
+ "bytes",
+ "futures-core",
+ "progenitor-client",
+ "reqwest",
+ "serde",
+ "serde_urlencoded",
+]
+
+[[package]]
 name = "block-buffer"
 version = "0.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -734,6 +746,10 @@ dependencies = [
  "serde",
  "serde-json-wasm 1.0.0",
 ]
+
+[[package]]
+name = "cvm-glt"
+version = "0.1.0"
 
 [[package]]
 name = "cvm-route"
@@ -2209,9 +2225,9 @@ dependencies = [
 
 [[package]]
 name = "log"
-version = "0.4.20"
+version = "0.4.21"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b5e6163cb8c49088c2c36f57875e58ccd8c87c7427f7fbd50ea6710b2f3f2e8f"
+checksum = "90ed8c1e510134f979dbc4f070f87d4313098b704861a105fe34231c70a3901c"
 
 [[package]]
 name = "mantis-node"
@@ -2219,6 +2235,7 @@ version = "0.1.0"
 dependencies = [
  "bip32",
  "bip39",
+ "blackbox_rs",
  "clap",
  "cosmos-sdk-proto",
  "cosmrs",
@@ -2229,6 +2246,7 @@ dependencies = [
  "fraction",
  "good_lp",
  "itertools 0.12.0",
+ "log",
  "ndarray",
  "num-traits",
  "prost-types",
@@ -2244,18 +2262,6 @@ dependencies = [
  "tokio",
  "tonic",
  "tuples",
-]
-
-[[package]]
-name = "mantis_solver_blackbox"
-version = "3.0.3"
-dependencies = [
- "bytes",
- "futures-core",
- "progenitor-client",
- "reqwest",
- "serde",
- "serde_urlencoded",
 ]
 
 [[package]]

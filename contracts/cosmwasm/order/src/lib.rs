@@ -19,7 +19,7 @@ pub use types::*;
 pub use crate::sv::{ExecMsg, QueryMsg};
 
 use cosmwasm_std::{wasm_execute, Addr, BankMsg, Coin, Event, Order, StdError, Storage};
-use cvm_runtime::shared::{XcInstruction, XcProgram};
+use cvm_runtime::shared::{CvmInstruction, CvmProgram};
 use cw_storage_plus::{Index, IndexList, IndexedMap, Item, Map};
 use sylvia::{
     contract,
@@ -206,14 +206,14 @@ impl OrderContract<'_> {
             },
         ];
         let cvm = wasm_execute(contract, &cvm, funds)?;
-
+        trust_fill();
         Ok(Response::default().add_message(cvm))
     }
 
     /// Provides solution for set of orders.
     /// All fully
     #[msg(exec)]
-    pub fn solve(&self, ctx: ExecCtx, msg: SolutionSubMsg) -> StdResult<Response> {
+    pub fn settle(&self, ctx: ExecCtx, msg: SolutionSubMsg) -> StdResult<Response> {
         // read all orders as solver provided
         let mut all_orders = join_solution_with_orders(&self.orders, &msg, &ctx)?;
         let at_least_one = all_orders.first().expect("at least one");

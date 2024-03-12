@@ -171,7 +171,7 @@ pub struct ExecuteProgramMsg<Assets = Option<Funds<crate::shared::Displayed<u128
     #[serde(skip_serializing_if = "Vec::is_empty", default)]
     pub salt: Vec<u8>,
     /// The program.
-    pub program: crate::shared::XcProgram,
+    pub program: crate::shared::CvmProgram,
     /// Assets to fund the CVM executor instance.
     /// The executor is funded prior to execution.
     /// If None, 100% of received funds go to executor.

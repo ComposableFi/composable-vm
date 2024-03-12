@@ -1,7 +1,7 @@
 use cosmwasm_std::Event;
 
 use crate::prelude::*;
-use crate::shared::XcProgram;
+use crate::shared::CvmProgram;
 use crate::ExecutorOrigin;
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -32,7 +32,7 @@ pub struct Step {
     /// instructions we already consumed.
     pub instruction_pointer: u16,
     /// The next instructions to execute (actual program).
-    pub program: XcProgram,
+    pub program: CvmProgram,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -43,7 +43,7 @@ pub struct Step {
 #[serde(rename_all = "snake_case")]
 pub enum ExecuteMsg {
     /// Execute an CVM program
-    Execute { tip: Addr, program: XcProgram },
+    Execute { tip: Addr, program: CvmProgram },
 
     /// This is only meant to be used by the executor itself, otherwise it will return an error
     /// The existence of this message is to allow the execution of the `Call` instruction. Once we

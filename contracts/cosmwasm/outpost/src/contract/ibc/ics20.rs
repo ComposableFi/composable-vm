@@ -14,7 +14,7 @@ use cosmwasm_std::{
 use cvm_route::asset::{AssetItem, AssetReference};
 use cvm_runtime::{
     outpost::{ExecuteMsg, ExecuteProgramMsg, OutpostId},
-    shared::{XcFunds, XcPacket, XcProgram},
+    shared::{CvmFunds, CvmPacket, CvmProgram},
     transport::ibc::{to_cosmwasm_message, IbcIcs20ProgramRoute, XcMessageData},
     AssetId, CallOrigin,
 };
@@ -69,7 +69,7 @@ pub(crate) fn handle_bridge_forward(
             .map(|(_, amount)| (route.on_remote_asset, *amount))
             .expect("not empty");
 
-        let packet = XcPacket {
+        let packet = CvmPacket {
             executor: String::from(info.sender).into_bytes(),
             user_origin: msg.executor_origin.user_origin.clone(),
             salt: msg.msg.salt,
@@ -235,14 +235,14 @@ pub(crate) fn ics20_message_hook(
     env: Env,
     info: MessageInfo,
 ) -> Result<Response, ContractError> {
-    let packet: XcPacket = msg.packet;
+    let packet: CvmPacket = msg.packet;
     ensure_anonymous(&packet.program)?;
     deps.api.debug(&format!(
         "cvm::outpost::ibc::ics20:: received assets {:?}, packet assets {:?}",
         &info.funds, &packet.assets
     ));
 
-    let assets: Result<XcFunds, ContractError> = info
+    let assets: Result<CvmFunds, ContractError> = info
         .funds
         .into_iter()
         .map(|coin| {
@@ -271,7 +271,7 @@ pub(crate) fn ics20_message_hook(
     Ok(Response::new().add_submessage(SubMsg::reply_always(msg, ReplyId::ExecProgram.into())))
 }
 
-fn ensure_anonymous(program: &XcProgram) -> Result<()> {
+fn ensure_anonymous(program: &CvmProgram) -> Result<()> {
     use cvm_runtime::Instruction::*;
     for ix in &program.instructions {
         match ix {
