@@ -1,0 +1,20 @@
+#cloud-config
+groups:
+  - ubuntu: [root,sys]
+  - composable
+
+# Add users to the system. Users are added after groups are added.
+users:
+  - default
+  - name: composable
+    gecos: composable
+    shell: /bin/bash
+    primary_group: composable
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    groups: users, admin
+    lock_passwd: false
+
+
+runcmd:
+  - sudo apt-get update
+  - sudo apt-get upgrade

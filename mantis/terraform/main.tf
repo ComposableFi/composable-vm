@@ -7,6 +7,8 @@ resource "digitalocean_droplet" "droplet" {
     digitalocean_ssh_key.sshkey.id
   ]
   tags = [digitalocean_tag.tag1.id, digitalocean_tag.tag2.id]
+
+  user_data = file("mantis_app.yaml")
 }
 
 resource "digitalocean_tag" "tag1" {
