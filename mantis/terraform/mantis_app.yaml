@@ -45,6 +45,16 @@ write_files:
       eval "$(pyenv init -)"
       EOF
 
+      cat >> $HOME/.profile << 'EOF'
+      export PYENV_ROOT="$HOME/.pyenv"
+      [[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
+      eval "$(pyenv init -)"
+      EOF
+
+      source $HOME/.profile
+
+
+      # install python version
       pyenv install 3.11.7
       pyenv global 3.11.7
       
