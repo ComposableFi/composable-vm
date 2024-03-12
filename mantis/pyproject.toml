@@ -73,7 +73,7 @@ mpire = "^2.10.0"
 [tool.poetry.dev-dependencies]
 pytest = "^7.4.3"
 ruff = "0.1.15"
-pyright = "^1.1.352"
+pyright = "^1.1.353"
 
 
 [build-system]

@@ -30,7 +30,7 @@ def populate_chain_dict(chains: dict[TNetworkId, list[TId]], center_node: TNetwo
         if chain != center_node:
             chains[center_node].extend(f"{chain}/{token}" for token in tokens)
 
-    1  # Add tokens from Center Node to outers
+    # Add tokens from Center Node to outers
 
     # Simulate IBC transfer through Composable Cosmos
     for chain, tokens in chains.items():
