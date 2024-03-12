@@ -39,18 +39,21 @@ resource "digitalocean_firewall" "firewall" {
     source_addresses = ["0.0.0.0/0", "::/0"]
   }
 
+  # open all outgoing tcp
   outbound_rule {
     protocol              = "tcp"
-    port_range            = "53"
+    port_range            = "1-65535"
     destination_addresses = ["0.0.0.0/0", "::/0"]
   }
 
+  # open all outgoing udp
   outbound_rule {
     protocol              = "udp"
-    port_range            = "53"
+    port_range            = "1-65535"
     destination_addresses = ["0.0.0.0/0", "::/0"]
   }
 
+  # open all outgoing icmp
   outbound_rule {
     protocol              = "icmp"
     destination_addresses = ["0.0.0.0/0", "::/0"]
