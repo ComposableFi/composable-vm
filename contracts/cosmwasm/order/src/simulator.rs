@@ -12,10 +12,11 @@ use crate::SolvedOrder;
 
 /// given expected output amount and list of orders and CVM program, produce fill in of orders
 /// return filling amounts for all orders from program, which may or may not lead to full fill
-pub fn verify(route: CvmProgram, out_asset: &AssetItem, out_asset:&AssetItem, orders: Vec<SolvedOrder>) -> Result<Vec<Filling>, StdError> {
-    match route.instructions[0] {
-        
-    }
+pub fn verify(route: CvmProgram, in_asset: &AssetItem, out_asset:&AssetItem, orders: Vec<SolvedOrder>) -> Result<Vec<Filling>, StdError> {
+    // match route.instructions[0] {
+    //     cvm_runtime::Instruction::Spawn { network_id, salt, assets, program } => todo!(),
+    // }
+    panic!()
 }
 
 /// All orders amounts aggregated into common pool.

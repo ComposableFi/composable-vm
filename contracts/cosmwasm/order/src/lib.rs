@@ -206,7 +206,7 @@ impl OrderContract<'_> {
             },
         ];
         let cvm = wasm_execute(contract, &cvm, funds)?;
-        trust_fill();
+        //trust_fill();
         Ok(Response::default().add_message(cvm))
     }
 
