@@ -32,10 +32,10 @@ resource "digitalocean_firewall" "firewall" {
     source_addresses = ["0.0.0.0/0", "::/0"]
   }
 
-  # open 8080
+  # open 8000
   inbound_rule {
     protocol         = "tcp"
-    port_range       = "8080"
+    port_range       = "8000"
     source_addresses = ["0.0.0.0/0", "::/0"]
   }
 
