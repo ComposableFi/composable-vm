@@ -164,7 +164,7 @@ impl OrderContract<'_> {
     }
 
     #[msg(exec)]
-    pub fn route(&self, mut ctx: ExecCtx, msg: RouteSubMsg) -> StdResult<Response> {
+    pub fn route(&self, mut ctx: ExecCtx, msg: RouteSubMsg) -> StdResult<Response> {        
         ensure!(
             ctx.info.sender == ctx.env.contract.address
                 || ctx.info.sender
@@ -452,7 +452,7 @@ impl OrderContract<'_> {
         pair: DenomPair,
     ) -> Result<(u128, u128), StdError> {
         let mut routed_a_amount: u128 = 0;
-        let mut route_b_amount: u128 = 0;
+        let mut routed_b_amount: u128 = 0;
         for order in all_orders.iter() {
             let order_id = order.order.order_id.u128();
             let mut item: OrderItem = self.orders.load(ctx.deps.storage, order_id)?;
@@ -464,7 +464,7 @@ impl OrderContract<'_> {
             if item.given.denom == pair.0 {
                 routed_a_amount += taken;
             } else {
-                route_b_amount += taken;
+                routed_b_amount += taken;
             };
 
             let promised = order.solution.out_asset_amount;
@@ -489,6 +489,6 @@ impl OrderContract<'_> {
                 &tracker,
             )?;
         }
-        Ok((routed_a_amount, route_b_amount))
+        Ok((routed_a_amount, routed_b_amount))
     }
 }
