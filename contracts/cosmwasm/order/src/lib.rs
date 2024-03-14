@@ -312,25 +312,38 @@ impl OrderContract<'_> {
         let solution_id = solution_item.id();
         let mut response = Response::default();
 
-        let transfers = self.fill_local(
+        let after_cows = self.fill_local(
             ctx.deps.storage,
             transfers,
             ctx.info.sender.to_string(),
             solution_item.block_added,
             to_cw_ratio(solution_item.msg.cow_optional_price),
+            & mut all_orders,
         )?;
 
+        
+                
         let cross_chain_b: u128 = all_orders
             .iter()
             .filter(|x| x.given().denom != ab.0)
-            .map(|x| x.solution.out_asset_amount.u128())
+            .map(|x| x.given_cross_chain())
             .sum();
+
         let cross_chain_a: u128 = all_orders
             .iter()
             .filter(|x| x.given().denom != ab.1)
-            .map(|x| x.solution.out_asset_amount.u128())
+            .map(|x| x.given_cross_chain())
             .sum();
 
+
+        self.solutions.clear(ctx.deps.storage);
+        let solution_chosen = emit_solution_chosen(ab, ctx, &after_cows, volume, cross_chain_b, cross_chain_a, solution_item);
+        
+        for transfer in after_cows {
+            response = response.add_message(transfer.bank_msg);
+            response = response.add_event(transfer.event);
+        }
+        
         if let Some(msg) = solution_item.msg.route {
             let msg = wasm_execute(
                 ctx.env.contract.address.clone(),
@@ -345,25 +358,7 @@ impl OrderContract<'_> {
             response = response.add_message(msg);
         };
 
-        self.solutions.clear(ctx.deps.storage);
 
-        let solution_chosen = mantis_solution_chosen(
-            ab,
-            &ctx,
-            &transfers,
-            volume,
-            cross_chain_b * cross_chain_a,
-            solution_item.owner,
-            solution_item.block_added,
-        );
-
-        ctx.deps
-            .api
-            .debug(&format!("mantis::solution::chosen: {:?}", &solution_chosen));
-        for transfer in transfers {
-            response = response.add_message(transfer.bank_msg);
-            response = response.add_event(transfer.event);
-        }
         Ok(response
             .add_event(solution_upserted)
             .add_event(solution_chosen))
@@ -407,12 +402,14 @@ impl OrderContract<'_> {
         solver_address: String,
         solution_block_added: u64,
         optimal_price: Ratio,
+        solver_orders: &mut Vec<SolvedOrder>,
     ) -> StdResult<Vec<CowFillResult>> {
         let mut results = vec![];
         for (transfer, order) in cows.into_iter() {
             let mut order: OrderItem = self.orders.load(storage, order.u128())?;
             order.fill(transfer.amount, optimal_price)?;
             let (event, remaining) = if order.given.amount.is_zero() {
+                
                 self.orders.remove(storage, order.order_id.u128());
                 (
                     mantis_order_filled_full(&order, &solver_address, solution_block_added),
@@ -421,7 +418,7 @@ impl OrderContract<'_> {
             } else {
                 self.orders.save(storage, order.order_id.u128(), &order)?;
                 (
-                    mantis_order_filled_parts(
+                    mantis_order_filled_partially(
                         &order,
                         &transfer,
                         &solver_address,
@@ -455,6 +452,7 @@ impl OrderContract<'_> {
         let mut routed_b_amount: u128 = 0;
         for order in all_orders.iter() {
             let order_id = order.order.order_id.u128();
+
             let mut item: OrderItem = self.orders.load(ctx.deps.storage, order_id)?;
             
             let taken = if item.given.denom == pair.0 {
@@ -492,4 +490,21 @@ impl OrderContract<'_> {
         }
         Ok((routed_a_amount, routed_b_amount))
     }
+}
+
+fn emit_solution_chosen(ab: (String, String), ctx: ExecCtx<'_>, transfers: &Vec<CowFillResult>, volume: u128, cross_chain_b: u128, cross_chain_a: u128, solution_item: SolutionItem) -> Event {
+    let solution_chosen = mantis_solution_chosen(
+        ab,
+        &ctx,
+        transfers,
+        volume,
+        cross_chain_b * cross_chain_a,
+        solution_item.owner,
+        solution_item.block_added,
+    );
+
+    ctx.deps
+        .api
+        .debug(&format!("mantis::solution::chosen: {:?}", &solution_chosen));
+    solution_chosen
 }

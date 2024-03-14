@@ -246,7 +246,6 @@ pub struct SubWasmMsg<Payload> {
     pub funds: Vec<Coin>,
 }
 
-
 #[cfg_attr(
     feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
     derive(schemars::JsonSchema)
@@ -260,9 +259,8 @@ pub enum OrderAmount {
     /// In and out amount. Must be above optimal price.
     /// .0 how much to take from user for cross chain routing, in `given` unit
     /// .1 how much to dispatch to user after routing, in `wants` unit
-    Part(Amount, Amount)
+    Part(Amount, Amount),
 }
-
 
 /// how much of order to be solved by CoW.
 /// difference with `Fill` to be solved by cross chain exchange
@@ -277,21 +275,19 @@ pub struct OrderSolution {
     pub order_id: OrderId,
     /// how much of order to be solved by from bank for all aggregated cows, `want` unit
     pub cow_out_amount: Amount,
-
     pub cross_chain_part: Option<OrderAmount>,
-    pub in_asset_amount: Amount,
-    pub out_asset_amount: Amount,
 }
 impl OrderSolution {
-    pub fn new(order_id: OrderId, cow_amount: Amount, cross_chain: Amount) -> Self {
+    pub fn new_part_local_remaining_remote(order_id: OrderId, cow_out_amount: Amount) -> Self {
         Self {
             order_id,
-            cow_out_amount: cow_amount,
-            out_asset_amount: cross_chain,
+            cow_out_amount,
+            cross_chain_part: Some(OrderAmount::All),
         }
     }
 }
 
+/// We have current status of order, and current solution found by solver.
 #[cfg_attr(
     feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
     derive(schemars::JsonSchema)
@@ -301,6 +297,27 @@ impl OrderSolution {
 pub struct SolvedOrder {
     pub order: OrderItem,
     pub solution: OrderSolution,
+}
+impl SolvedOrder {
+    pub fn given_cross_chain(&self) -> Amount {
+        match self.solution.cross_chain_part {
+            Some(x) => match x {
+                OrderAmount::All => self.order.given.amount.into(),
+                OrderAmount::Part(x, _) => x.into(),
+            },
+            None => 0u128.into(),
+        }
+    }
+    
+    pub fn wants_cross_chain(&self) -> Amount {
+        match self.solution.cross_chain_part {
+            Some(x) => match x {
+                OrderAmount::All => self.order.msg.wants.amount.into(),
+                OrderAmount::Part(_, x) => x.into(),
+            },
+            None => 0u128.into(),
+        }
+    }
 }
 
 #[cfg_attr(
@@ -343,6 +360,18 @@ impl SolvedOrder {
 
     pub fn wanted_denom(&self) -> String {
         self.order.msg.wants.denom.clone()
+    }
+
+    pub fn other(&self, denom: &str) -> String {
+        if self.order.given.denom == denom {
+            self.order.msg.wants.denom.clone()
+        } else {
+            self.order.given.denom.clone()
+        }
+    }
+
+    pub fn given_denom(&self) -> String {
+        self.order.given.denom.clone()
     }
 
     pub fn given(&self) -> &Coin {

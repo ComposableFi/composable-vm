@@ -15,7 +15,7 @@ pub mod order {
             .add_attribute("order_wants_denom", order.msg.wants.denom.to_string())
     }
 
-    pub fn mantis_order_filled_parts(
+    pub fn mantis_order_filled_partially(
         order: &OrderItem,
         transfer: &Coin,
         solver_address: &String,
