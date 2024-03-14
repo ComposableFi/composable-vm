@@ -13,6 +13,7 @@ from simulation.routers.data import (
     AssetTransfers,
     Ctx,
     Input,
+    SingleInputAssetCvmRoute,
     TId,
     TNetworkId,
     new_data,
@@ -50,9 +51,11 @@ def test_single_chain_single_cffm_route_full_symmetry_exist():
     logger.info(input)
     logger.info(pair)
     logger.info(data)
+    assert isinstance(result, list), "The result is expected to be a list."
+    assert all(isinstance(route, SingleInputAssetCvmRoute) for route in result), "All result elements must be of the SingleInputAssetCvmRoute type."
     assert len(result) == 1, "The list of routes is empty or contains too many items. A single route is expected to be present."
-    assert result[0].in_asset_id == input.in_asset_id, f"Expected in_asset_id={input.in_asset_id}, received {result[0].in_asset_id}"
-    assert result[0].out_asset_id == input.out_asset_id, f"Expected out_asset_id={input.out_asset_id}, received {result[0].out_asset_id}"
+    assert result[0].next[0].in_asset_id == input.in_asset_id, f"Expected in_asset_id={input.in_asset_id}, received {result[0].next[0].in_asset_id}"
+    assert result[0].next[0].out_asset_id == input.out_asset_id, f"Expected out_asset_id={input.out_asset_id}, received {result[0].next[0].out_asset_id}"
 
 @pytest.mark.run_these_tests
 def test_big_numeric_range_one_pair_of_same_value():
