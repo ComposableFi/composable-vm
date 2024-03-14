@@ -10,6 +10,7 @@ mod types;
 
 use events::order::*;
 use events::solution::*;
+use itertools::Itertools;
 use prelude::*;
 use simulator::simulate_cows_via_bank;
 use simulator::simulate_route;
@@ -164,7 +165,7 @@ impl OrderContract<'_> {
     }
 
     #[msg(exec)]
-    pub fn route(&self, mut ctx: ExecCtx, msg: RouteSubMsg) -> StdResult<Response> {        
+    pub fn route(&self, mut ctx: ExecCtx, msg: RouteSubMsg) -> StdResult<Response> {
         ensure!(
             ctx.info.sender == ctx.env.contract.address
                 || ctx.info.sender
@@ -318,32 +319,37 @@ impl OrderContract<'_> {
             ctx.info.sender.to_string(),
             solution_item.block_added,
             to_cw_ratio(solution_item.msg.cow_optional_price),
-            & mut all_orders,
+            &mut all_orders,
         )?;
 
-        
-                
         let cross_chain_b: u128 = all_orders
             .iter()
             .filter(|x| x.given().denom != ab.0)
-            .map(|x| x.given_cross_chain())
+            .map(|x| x.given_cross_chain().u128())
             .sum();
 
         let cross_chain_a: u128 = all_orders
             .iter()
             .filter(|x| x.given().denom != ab.1)
-            .map(|x| x.given_cross_chain())
+            .map(|x| x.given_cross_chain().u128())
             .sum();
 
-
         self.solutions.clear(ctx.deps.storage);
-        let solution_chosen = emit_solution_chosen(ab, ctx, &after_cows, volume, cross_chain_b, cross_chain_a, solution_item);
-        
+        let solution_chosen = emit_solution_chosen(
+            ab,
+            ctx,
+            &after_cows,
+            volume,
+            cross_chain_b,
+            cross_chain_a,
+            solution_item,
+        );
+
         for transfer in after_cows {
             response = response.add_message(transfer.bank_msg);
             response = response.add_event(transfer.event);
         }
-        
+
         if let Some(msg) = solution_item.msg.route {
             let msg = wasm_execute(
                 ctx.env.contract.address.clone(),
@@ -357,7 +363,6 @@ impl OrderContract<'_> {
             )?;
             response = response.add_message(msg);
         };
-
 
         Ok(response
             .add_event(solution_upserted)
@@ -409,13 +414,30 @@ impl OrderContract<'_> {
             let mut order: OrderItem = self.orders.load(storage, order.u128())?;
             order.fill(transfer.amount, optimal_price)?;
             let (event, remaining) = if order.given.amount.is_zero() {
-                
+                // hey, need some other data structure for this
+                let (idx, solver_order) = solver_orders
+                    .iter()
+                    .find_position(|x| x.order.order_id == order.order_id)
+                    .expect("solver order");
+
+                ensure!(
+                    solver_order.solution.cross_chain_part.is_none(),
+                    errors::filled_order_cannot_be_cross_chain_routed()
+                );
+
                 self.orders.remove(storage, order.order_id.u128());
                 (
                     mantis_order_filled_full(&order, &solver_address, solution_block_added),
                     false,
                 )
             } else {
+                let solver_order = solver_orders
+                    .iter_mut()
+                    .find(|x| x.order.order_id == order.order_id)
+                    .expect("solver order");
+
+                solver_order.order = order.clone();
+
                 self.orders.save(storage, order.order_id.u128(), &order)?;
                 (
                     mantis_order_filled_partially(
@@ -454,11 +476,13 @@ impl OrderContract<'_> {
             let order_id = order.order.order_id.u128();
 
             let mut item: OrderItem = self.orders.load(ctx.deps.storage, order_id)?;
-            
+
             let taken = if item.given.denom == pair.0 {
-                item.given.amount.u128() * (optimal_price.0.u64() as u128 / optimal_price.1.u64() as u128)
+                item.given.amount.u128()
+                    * (optimal_price.0.u64() as u128 / optimal_price.1.u64() as u128)
             } else {
-                item.given.amount.u128() * (optimal_price.1.u64() as u128 / optimal_price.0.u64() as u128)
+                item.given.amount.u128()
+                    * (optimal_price.1.u64() as u128 / optimal_price.0.u64() as u128)
             };
             if item.given.denom == pair.0 {
                 routed_a_amount += taken;
@@ -492,7 +516,15 @@ impl OrderContract<'_> {
     }
 }
 
-fn emit_solution_chosen(ab: (String, String), ctx: ExecCtx<'_>, transfers: &Vec<CowFillResult>, volume: u128, cross_chain_b: u128, cross_chain_a: u128, solution_item: SolutionItem) -> Event {
+fn emit_solution_chosen(
+    ab: (String, String),
+    ctx: ExecCtx<'_>,
+    transfers: &Vec<CowFillResult>,
+    volume: u128,
+    cross_chain_b: u128,
+    cross_chain_a: u128,
+    solution_item: SolutionItem,
+) -> Event {
     let solution_chosen = mantis_solution_chosen(
         ab,
         &ctx,
