@@ -395,6 +395,23 @@ pub struct CowFillResult {
     pub event: Event,
 }
 
+pub struct CvmFillResult {
+    pub tracking: TrackedOrderItem,
+    pub remaining: Option<OrderItem>,
+    pub event: Event,
+}
+
+impl CvmFillResult {
+    pub fn new(tracking: TrackedOrderItem, event: Event) -> Self {
+        Self {
+            tracking,
+            remaining : None,
+            event,
+        }
+    }
+}
+
+
 pub type Denom = String;
 pub type DenomPair = (Denom, Denom);
 pub type SolverAddress = String;

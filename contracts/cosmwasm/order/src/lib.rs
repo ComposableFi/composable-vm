@@ -468,7 +468,9 @@ impl OrderContract<'_> {
     fn pre_fill_remotely<'a>(
         &self,
         ctx: ExecCtx<'a>,
+        storage: &mut dyn Storage,
         optimal_price: Ratio,
+        solver_address: String,
         solution_id: SolutionHash,
         solver_orders: Vec<SolvedOrder>,
         pair: DenomPair,
@@ -478,10 +480,22 @@ impl OrderContract<'_> {
         for order in solver_orders.iter() {
             if let Some(cross_chain_part) = order.solution.cross_chain_part {
                 match cross_chain_part {
-                    OrderAmount::All => todo!(),
-                    OrderAmount::Part(_, _) => return Err(errors::partial_cross_chain_not_implemented())
+                    OrderAmount::Part(_, _) => return Err(errors::partial_cross_chain_not_implemented()),
+                    OrderAmount::All => {
+                        if order.given().denom == pair.0 {
+                            routed_a_amount += order.given().amount.u128();
+                        } else {
+                            routed_b_amount += order.given().amount.u128();
+                        }
+                        self.orders.remove(storage, order.order.order_id.u128());
+                        (
+                            mantis_order_routed_full(&order, &solver_address),
+                            false,
+                        )
+                    }
                 }
             }
+            
             let order_id = order.order.order_id.u128();
 
             let mut item: OrderItem = self.orders.load(ctx.deps.storage, order_id)?;

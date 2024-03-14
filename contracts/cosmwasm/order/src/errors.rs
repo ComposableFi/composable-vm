@@ -12,3 +12,10 @@ pub fn filled_order_cannot_be_cross_chain_routed() -> StdError {
     StdError::generic_err("Filled order cannot be cross chain routed")
 }
 
+
+
+pub fn partial_cross_chain_not_implemented() -> StdError {
+    StdError::generic_err("Partial cross chain not implemented")
+}
+
+
