@@ -456,6 +456,7 @@ impl OrderContract<'_> {
         for order in all_orders.iter() {
             let order_id = order.order.order_id.u128();
             let mut item: OrderItem = self.orders.load(ctx.deps.storage, order_id)?;
+            
             let taken = if item.given.denom == pair.0 {
                 item.given.amount.u128() * (optimal_price.0.u64() as u128 / optimal_price.1.u64() as u128)
             } else {

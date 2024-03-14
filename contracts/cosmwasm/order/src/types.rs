@@ -246,6 +246,24 @@ pub struct SubWasmMsg<Payload> {
     pub funds: Vec<Coin>,
 }
 
+
+#[cfg_attr(
+    feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
+    derive(schemars::JsonSchema)
+)]
+#[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum OrderAmount {
+    /// whole remaining amount in order
+    /// (same as part, when calculated manually)
+    All,
+    /// In and out amount. Must be above optimal price.
+    /// .0 how much to take from user for cross chain routing, in `given` unit
+    /// .1 how much to dispatch to user after routing, in `wants` unit
+    Part(Amount, Amount)
+}
+
+
 /// how much of order to be solved by CoW.
 /// difference with `Fill` to be solved by cross chain exchange
 /// aggregate pool of all orders in solution is used to give user amount he wants.
@@ -259,9 +277,9 @@ pub struct OrderSolution {
     pub order_id: OrderId,
     /// how much of order to be solved by from bank for all aggregated cows, `want` unit
     pub cow_out_amount: Amount,
-    /// how much to take from user for cross chain routing, in `given` unit
+
+    pub cross_chain_part: Option<OrderAmount>,
     pub in_asset_amount: Amount,
-    /// how much to dispatch to user after routing, in `wants` unit
     pub out_asset_amount: Amount,
 }
 impl OrderSolution {
