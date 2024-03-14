@@ -470,12 +470,18 @@ impl OrderContract<'_> {
         ctx: ExecCtx<'a>,
         optimal_price: Ratio,
         solution_id: SolutionHash,
-        all_orders: Vec<SolvedOrder>,
+        solver_orders: Vec<SolvedOrder>,
         pair: DenomPair,
     ) -> Result<(u128, u128), StdError> {
         let mut routed_a_amount: u128 = 0;
         let mut routed_b_amount: u128 = 0;
-        for order in all_orders.iter() {
+        for order in solver_orders.iter() {
+            if let Some(cross_chain_part) = order.solution.cross_chain_part {
+                match cross_chain_part {
+                    OrderAmount::All => todo!(),
+                    OrderAmount::Part(_, _) => return Err(errors::partial_cross_chain_not_implemented())
+                }
+            }
             let order_id = order.order.order_id.u128();
 
             let mut item: OrderItem = self.orders.load(ctx.deps.storage, order_id)?;
