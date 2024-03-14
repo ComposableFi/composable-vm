@@ -35,6 +35,8 @@ In order solution have to be accepted, it must:
 - CVM must adhere Connection.fork_join_supported, for now it is always false (it restrict set routes possible)
 - Must adhere to single assets per spawn if multi assets are not supported (all for now)
 
+CoW cannot violate user limit, even if violating user limit allows to catch up better with CVM route.
+
 ## Implementation
 
 Current implementation is for 1 solution for one user, 1 to 1 asset, permissioned solvers without collateral.
@@ -59,6 +61,5 @@ If solution requires multiblock tracking for execution its id added with block s
 A was split into B and C, and then B and C were moved to be D.
 
 D must "summed" from 2 amounts must be 2 separate CVM routes branches.
-
 
 Run over fork-join tree and product no joins (split rotes).

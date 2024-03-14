@@ -229,9 +229,10 @@ pub fn to_cw_ratio(ratio: (u64, u64)) -> Ratio {
 #[derive(Clone, Debug, Serialize, PartialEq, Eq, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub struct RouteSubMsg {
-    pub all_orders: Vec<SolvedOrder>,
+    pub solved_orders: Vec<SolvedOrder>,
     pub msg: CrossChainPart,
     pub solution_id: SolutionHash,
+    pub solver_address: String,
     pub pair: DenomPair,
 }
 

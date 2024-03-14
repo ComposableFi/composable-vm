@@ -188,27 +188,29 @@ impl OrderContract<'_> {
 
         let contract = self.cvm_address.load(ctx.deps.storage)?;
 
-        let (a_taken, b_taken) = self.pre_fill_remotely(
-            ctx.branch(),
-            msg.msg.optimal_price,
-            msg.solution_id,
-            msg.all_orders,
-            msg.pair.clone(),
-        )?;
+        // let cvm_filled = self.pre_fill_remotely(
+        //     ctx.branch(),
+        //     ctx.deps.storage,
+        //     msg.msg.optimal_price,
+        //     msg.solver_address,
+        //     msg.solution_id,
+        //     msg.solved_orders,
+        //     msg.pair.clone(),
+        // )?;
 
-        let funds = vec![
-            Coin {
-                denom: msg.pair.0,
-                amount: a_taken.into(),
-            },
-            Coin {
-                denom: msg.pair.1,
-                amount: b_taken.into(),
-            },
-        ];
-        let cvm = wasm_execute(contract, &cvm, funds)?;
-        //trust_fill();
-        Ok(Response::default().add_message(cvm))
+        // let funds = vec![
+        //     Coin {
+        //         denom: msg.pair.0,
+        //         amount: a_taken.into(),
+        //     },
+        //     Coin {
+        //         denom: msg.pair.1,
+        //         amount: b_taken.into(),
+        //     },
+        // ];
+        // let cvm = wasm_execute(contract, &cvm, funds)?;
+        // //trust_fill();
+        // Ok(Response::default().add_message(cvm))
     }
 
     /// Provides solution for set of orders.
@@ -354,10 +356,11 @@ impl OrderContract<'_> {
             let msg = wasm_execute(
                 ctx.env.contract.address.clone(),
                 &ExecMsg::route(RouteSubMsg {
-                    all_orders,
+                    solved_orders: all_orders,
                     msg,
                     solution_id,
                     pair: ab.clone(),
+                    solver_address: solution_item.owner.to_string(),
                 }),
                 vec![],
             )?;
@@ -474,68 +477,35 @@ impl OrderContract<'_> {
         solution_id: SolutionHash,
         solver_orders: Vec<SolvedOrder>,
         pair: DenomPair,
-    ) -> Result<(u128, u128), StdError> {
-        let mut routed_a_amount: u128 = 0;
-        let mut routed_b_amount: u128 = 0;
+    ) -> Result<Vec<CvmFillResult>, StdError> {
+        let mut result = vec![]; 
         for order in solver_orders.iter() {
             if let Some(cross_chain_part) = order.solution.cross_chain_part {
                 match cross_chain_part {
                     OrderAmount::Part(_, _) => return Err(errors::partial_cross_chain_not_implemented()),
                     OrderAmount::All => {
-                        if order.given().denom == pair.0 {
-                            routed_a_amount += order.given().amount.u128();
-                        } else {
-                            routed_b_amount += order.given().amount.u128();
-                        }
+                        let event = mantis_order_routed_full(&order, &solver_address);
+                        let tracker = TrackedOrderItem {
+                            order_id: order.order.order_id,
+                            solution_id: solution_id.clone(),
+                            amount_taken: order.given().amount.u128(),
+                            // so we expect promised to be same as remaining.
+                            // no really flexible
+                            // really it must allow CoWs to violate limits,
+                            // fixed by CVM later
+                            // but bruno described differently, so we stick with that                            
+                            promised: order.wants().amount,
+                        };
                         self.orders.remove(storage, order.order.order_id.u128());
-                        (
-                            mantis_order_routed_full(&order, &solver_address),
-                            false,
-                        )
+                        result.push(CvmFillResult::new(
+                            tracker,
+                            event,
+                        ));
                     }
                 }
-            }
-            
-            let order_id = order.order.order_id.u128();
-
-            let mut item: OrderItem = self.orders.load(ctx.deps.storage, order_id)?;
-
-            let taken = if item.given.denom == pair.0 {
-                item.given.amount.u128()
-                    * (optimal_price.0.u64() as u128 / optimal_price.1.u64() as u128)
-            } else {
-                item.given.amount.u128()
-                    * (optimal_price.1.u64() as u128 / optimal_price.0.u64() as u128)
-            };
-            if item.given.denom == pair.0 {
-                routed_a_amount += taken;
-            } else {
-                routed_b_amount += taken;
-            };
-
-            let promised = order.solution.out_asset_amount;
-            item.given.amount = item
-                .given
-                .amount
-                .checked_sub(taken.into())
-                .expect("solution does not takes more than can");
-            item.msg.wants.amount = item.msg.wants.amount.saturating_sub(promised);
-            //item.fill(wanted_fill_amount, optimal_ratio);
-
-            let tracker = TrackedOrderItem {
-                order_id: item.order_id,
-                solution_id: solution_id.clone(),
-                amount_taken: taken.into(),
-                promised,
-            };
-            self.orders.save(ctx.deps.storage, order_id, &item)?;
-            self.tracked_orders.save(
-                ctx.deps.storage,
-                (order_id, solution_id.clone()),
-                &tracker,
-            )?;
-        }
-        Ok((routed_a_amount, routed_b_amount))
+            }           
+        } 
+        Ok(result)
     }
 }
 
