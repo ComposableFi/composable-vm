@@ -10,19 +10,13 @@ from typing import Callable, NewType
 from uuid import uuid4
 
 from loguru import logger
+from mantis.simulation.orders.types import OrderType
 
 getcontext().prec = 18
-BuyToken = NewType("BuyToken", Decimal)
-SellToken = NewType("SellToken", Decimal)
-Price = NewType("Price", Decimal)
 
-
-class OrderType(enum.Enum):
-    BUY = "Buy"
-    SELL = "Sell"
-
-    def __str__(self) -> str:
-        return self.value
+TBuyToken = NewType("BuyToken", Decimal)
+TSellToken = NewType("SellToken", Decimal)
+TPrice = NewType("Price", Decimal)
 
 
 class OrderStatus(enum.Enum):
@@ -41,18 +35,17 @@ class OrderBookStatus(enum.Enum):
     def __str__(self) -> str:
         return self.value
 
-
 class Order:
-    amount_in: BuyToken | SellToken  # Depending on order type
-    _filled_price: Price = Decimal(0)
+    amount_in: TBuyToken | TSellToken  # Depending on order type
+    _filled_price: TPrice = Decimal(0)
     type: OrderType
-    amount_out: SellToken | BuyToken = Decimal(0)
-    amount_filled: BuyToken | SellToken = Decimal(0)
+    amount_out: TSellToken | TBuyToken = Decimal(0)
+    amount_filled: TBuyToken | TSellToken = Decimal(0)
 
     def __init__(
         self,
-        amount_in: BuyToken | SellToken,
-        limit_price: Price,
+        amount_in: TBuyToken | TSellToken,
+        limit_price: TPrice,
         order_type: OrderType,
         id=None,
     ):
@@ -69,7 +62,7 @@ class Order:
         return self._filled_price
 
     @filled_price.setter
-    def filled_price(self, value: Price):
+    def filled_price(self, value: TPrice):
         self._filled_price = Decimal(value)
 
     @property
@@ -78,17 +71,17 @@ class Order:
             return self.amount_in - self.amount_out / self.filled_price
         return Decimal(0)
 
-    def is_acceptable_price(self, price: Price):
+    def is_acceptable_price(self, price: TPrice):
         if self.type is OrderType.SELL:
             return price >= self.limit_price
         return price <= self.limit_price
 
-    def token1_at_price(self, price: Price) -> BuyToken:
+    def token1_at_price(self, price: TPrice) -> TBuyToken:
         if self.type is OrderType.SELL:
             return self.amount_in * price
         return self.amount_in
 
-    def fill(self, volume: BuyToken | SellToken, price: Price) -> None:
+    def fill(self, volume: TBuyToken | TSellToken, price: TPrice) -> None:
         if volume == 0:
             return
         elif volume < 0:
@@ -192,7 +185,7 @@ class OrderList:
     def amount_filled(self):
         return sum(order.amount_filled for order in self.value)
 
-    def token1_sum(self, price: Price):
+    def token1_sum(self, price: TPrice):
         return sum(order.token1_at_price(price) for order in self.value)
 
     def id(self, id):
@@ -208,7 +201,7 @@ class OrderList:
         return hash(tuple(order.id for order in self))
 
     @functools.cache
-    def compute_optimal_price(self, num_range=50) -> Price:
+    def compute_optimal_price(self, num_range=50) -> TPrice:
         """Computes the optimal price that will maximize the transacted volume in batch auction"""
         optimal_price = -1
         max_volume = -1
@@ -222,11 +215,11 @@ class OrderList:
                 max_volume = volume
         return optimal_price
 
-    def volume_by_price(self, price: Price) -> BuyToken:
+    def volume_by_price(self, price: TPrice) -> TBuyToken:
         matched = self.is_acceptable_price(price)
         return min(matched.buy().token1_sum(price), matched.sell().token1_sum(price))
 
-    def resolve_predominant(self, predominant_orders: OrderList, other_orders: OrderList, price: Price):
+    def resolve_predominant(self, predominant_orders: OrderList, other_orders: OrderList, price: TPrice):
         filled = Decimal(0)
         for order in other_orders:
             order.fill(order.amount_in, price)
@@ -249,9 +242,9 @@ class OrderList:
 
 class Solution:
     orders: OrderList
-    matched_price: Price = Decimal("0")
-    buy_volume: BuyToken = Decimal("0")
-    sell_volume: SellToken = Decimal("0")
+    matched_price: TPrice = Decimal("0")
+    buy_volume: TBuyToken = Decimal("0")
+    sell_volume: TSellToken = Decimal("0")
 
     def __init__(self, orders: list[Order]) -> None:
         self.orders = OrderList(sorted(orders, key=lambda x: x.limit_price))
@@ -286,7 +279,7 @@ class Solution:
         return copy.deepcopy(self)
 
     @classmethod
-    def match_orders(cls, orders: OrderList, price: Price) -> Solution:
+    def match_orders(cls, orders: OrderList, price: TPrice) -> Solution:
         orders = orders.clone()
         orders.value.sort(key=lambda x: x.limit_price)
 
@@ -328,13 +321,13 @@ class Solution:
 @dataclass
 class Solver:
     orders: OrderList
-    target_price: Price
-    buy_token: BuyToken
-    sell_token: SellToken
+    target_price: TPrice
+    buy_token: TBuyToken
+    sell_token: TSellToken
     order: Order = Order(0, 0, OrderType.BUY, "fake-order")
 
     @property
-    def limit_price(self) -> Price:
+    def limit_price(self) -> TPrice:
         return self.target_price
 
     def f_maximaize(self, order: Order):
@@ -379,7 +372,7 @@ class Solver:
 class CFMMSolver(Solver):
     cfmm: CFMM
 
-    def __init__(self, ob: Solution, cfmm: CFMM, buy_token: BuyToken, sell_token: SellToken):
+    def __init__(self, ob: Solution, cfmm: CFMM, buy_token: TBuyToken, sell_token: TSellToken):
         self.cfmm = cfmm
         self.orders = ob
         self.buy_token = buy_token
@@ -387,11 +380,11 @@ class CFMMSolver(Solver):
         self._optimal_price = self.orders.compute_optimal_price()
 
     @property
-    def target_price(self) -> Price:
+    def target_price(self) -> TPrice:
         return 1 / self.cfmm.price
 
     @property
-    def limit_price(self) -> Price:
+    def limit_price(self) -> TPrice:
         return (
             Decimal(self._optimal_price) * Decimal("1.1")
             if self._optimal_price < self.cfmm.price
@@ -425,44 +418,3 @@ class Mechanism:
     def submit_orderbook(self, orderbook):
         assert orderbook
         self.orderbooks.append(orderbook)
-
-
-@dataclass
-class CFMM:
-    R0: BuyToken
-    R1: SellToken
-    chain_id: int = 1
-    fee: Decimal = Decimal("0.03")
-
-    @property
-    def gamma(self) -> Decimal:
-        return 1 - self.fee
-
-    @gamma.setter
-    def gamma(self, value):
-        self.fee = 1 - value
-
-    def sell(self, Delta, simulate=True) -> BuyToken:
-        amount_out = self.swap(Delta, self.R1, self.R0)
-        if not simulate:
-            self.R0 -= amount_out
-            self.R1 += Delta
-        return amount_out
-
-    def buy(self, Delta, simulate=True) -> SellToken:
-        amount_out = self.swap(Delta, self.R0, self.R1)
-        if not simulate:
-            self.R1 -= amount_out
-            self.R0 += Delta
-        return amount_out
-
-    def swap(self, Delta: BuyToken | SellToken, in_reserve, out_reserve):
-        return out_reserve - in_reserve * out_reserve / (in_reserve + self.gamma * Delta)
-
-    @property
-    def price(self):
-        return self.R0 / self.R1
-
-    @classmethod
-    def random(cls, R0=(500, 1500), R1=(500, 1500)):
-        return cls(Decimal(random.uniform(*R0)), Decimal(random.uniform(*R1)))
