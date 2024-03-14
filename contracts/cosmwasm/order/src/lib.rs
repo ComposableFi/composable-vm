@@ -462,6 +462,9 @@ impl OrderContract<'_> {
         Ok(results)
     }
 
+    /// similar to `fill_local`, but instead of transfers via bank,
+    /// produced movement of movement funds to tracking,
+    /// but eventing and cleanup has same behavior
     fn pre_fill_remotely<'a>(
         &self,
         ctx: ExecCtx<'a>,
