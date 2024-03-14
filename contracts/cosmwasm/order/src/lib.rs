@@ -1,6 +1,7 @@
 #![allow(clippy::disallowed_methods)] // does unwrap inside
 #![allow(deprecated)] // sylvia macro
 
+mod constants;
 mod errors;
 mod events;
 mod prelude;
@@ -38,11 +39,14 @@ pub struct OrderContract<'a> {
     /// address for CVM contact to send routes to
     pub cvm_address: Item<'a, String>,
     pub admin: cw_controllers::Admin<'a>,
+    /// block on which pair got some solution
+    pub pair_to_block: Map<'a, DenomPair, Block>,
 }
 
 impl Default for OrderContract<'_> {
     fn default() -> Self {
         Self {
+            pair_to_block: Map::new("pair_to_block"),
             tracked_orders: Map::new("tracked_orders"),
             orders: Map::new("orders"),
             next_order_id: Item::new("next_order_id"),
@@ -188,35 +192,45 @@ impl OrderContract<'_> {
 
         let contract = self.cvm_address.load(ctx.deps.storage)?;
 
-        // let cvm_filled = self.pre_fill_remotely(
-        //     ctx.branch(),
-        //     ctx.deps.storage,
-        //     msg.msg.optimal_price,
-        //     msg.solver_address,
-        //     msg.solution_id,
-        //     msg.solved_orders,
-        //     msg.pair.clone(),
-        // )?;
+        let cvm_filled = self.pre_fill_remotely(
+            ctx.branch(),
+            msg.msg.optimal_price,
+            msg.solver_address,
+            msg.solution_id,
+            msg.solved_orders,
+            msg.pair.clone(),
+        )?;
 
-        // let funds = vec![
-        //     Coin {
-        //         denom: msg.pair.0,
-        //         amount: a_taken.into(),
-        //     },
-        //     Coin {
-        //         denom: msg.pair.1,
-        //         amount: b_taken.into(),
-        //     },
-        // ];
-        // let cvm = wasm_execute(contract, &cvm, funds)?;
-        // //trust_fill();
-        // Ok(Response::default().add_message(cvm))
+        let a_funds = cvm_filled
+            .iter()
+            .filter(|x| x.tracking.amount_taken.denom == msg.pair.0)
+            .map(|x| x.tracking.amount_taken.amount)
+            .sum();
+
+        let b_funds = cvm_filled
+            .iter()
+            .filter(|x| x.tracking.amount_taken.denom == msg.pair.1)
+            .map(|x| x.tracking.amount_taken.amount)
+            .sum();
+
+        let funds = vec![
+            Coin {
+                denom: msg.pair.0,
+                amount: a_funds,
+            },
+            Coin {
+                denom: msg.pair.1,
+                amount: b_funds,
+            },
+        ];
+        let cvm = wasm_execute(contract, &cvm, funds)?;
+        Ok(Response::default().add_message(cvm))
     }
 
     /// Provides solution for set of orders.
     /// All fully
     #[msg(exec)]
-    pub fn settle(&self, ctx: ExecCtx, msg: SolutionSubMsg) -> StdResult<Response> {
+    pub fn settle(&self, mut ctx: ExecCtx, msg: SolutionSubMsg) -> StdResult<Response> {
         // read all orders as solver provided
         let mut all_orders = join_solution_with_orders(&self.orders, &msg, &ctx)?;
         let at_least_one = all_orders.first().expect("at least one");
@@ -236,15 +250,16 @@ impl OrderContract<'_> {
             owner: ctx.info.sender.clone(),
         };
 
-        self.solutions.save(
-            ctx.deps.storage,
-            &(
-                ab.clone().0,
-                ab.clone().1,
-                ctx.info.sender.clone().to_string(),
-            ),
-            &possible_solution,
-        )?;
+        self.start_solution(ctx.branch(), ab.clone())?;
+
+        let solution_key = (
+            ab.clone().0,
+            ab.clone().1,
+            ctx.info.sender.clone().to_string(),
+        );
+
+        self.solutions
+            .save(ctx.deps.storage, &solution_key, &possible_solution)?;
         let solution_upserted = mantis_solution_upserted(&ab, &ctx);
 
         ctx.deps.api.debug(&format!(
@@ -263,6 +278,18 @@ impl OrderContract<'_> {
         ctx.deps
             .api
             .debug(&format!("mantis::solutions::current {:?}", all_solutions));
+
+        /// wait before solve
+        let started = self
+            .pair_to_block
+            .load(ctx.deps.storage, ab.clone())
+            .expect("pair to block");
+
+        if started + constants::BATCH_EPOCH as u64 > ctx.env.block.height {
+            return Ok(Response::default());
+        } else {
+            self.pair_to_block.remove(ctx.deps.storage, ab.clone());
+        }
 
         // pick up optimal solution with solves with bank
         let mut a_in = 0u128;
@@ -338,13 +365,13 @@ impl OrderContract<'_> {
 
         self.solutions.clear(ctx.deps.storage);
         let solution_chosen = emit_solution_chosen(
-            ab,
-            ctx,
+            ab.clone(),
+            ctx.branch(),
             &after_cows,
             volume,
             cross_chain_b,
             cross_chain_a,
-            solution_item,
+            solution_item.clone(),
         );
 
         for transfer in after_cows {
@@ -370,6 +397,19 @@ impl OrderContract<'_> {
         Ok(response
             .add_event(solution_upserted)
             .add_event(solution_chosen))
+    }
+
+    fn start_solution(&self, mut ctx: ExecCtx<'_>, ab: DenomPair) -> Result<(), StdError> {
+        Ok(
+            if self
+                .pair_to_block
+                .load(ctx.deps.storage, ab.clone())
+                .is_err()
+            {
+                self.pair_to_block
+                    .save(ctx.deps.storage, ab, &ctx.env.block.height)?;
+            },
+        )
     }
 
     /// Simple get all orders
@@ -471,40 +511,39 @@ impl OrderContract<'_> {
     fn pre_fill_remotely<'a>(
         &self,
         ctx: ExecCtx<'a>,
-        storage: &mut dyn Storage,
         optimal_price: Ratio,
         solver_address: String,
         solution_id: SolutionHash,
         solver_orders: Vec<SolvedOrder>,
         pair: DenomPair,
     ) -> Result<Vec<CvmFillResult>, StdError> {
-        let mut result = vec![]; 
+        let mut result = vec![];
         for order in solver_orders.iter() {
             if let Some(cross_chain_part) = order.solution.cross_chain_part {
                 match cross_chain_part {
-                    OrderAmount::Part(_, _) => return Err(errors::partial_cross_chain_not_implemented()),
+                    OrderAmount::Part(_, _) => {
+                        return Err(errors::partial_cross_chain_not_implemented())
+                    }
                     OrderAmount::All => {
-                        let event = mantis_order_routed_full(&order, &solver_address);
+                        let event = mantis_order_routed_full(&order.order, &solver_address);
                         let tracker = TrackedOrderItem {
                             order_id: order.order.order_id,
                             solution_id: solution_id.clone(),
-                            amount_taken: order.given().amount.u128(),
+                            amount_taken: order.given().clone(),
                             // so we expect promised to be same as remaining.
                             // no really flexible
                             // really it must allow CoWs to violate limits,
                             // fixed by CVM later
-                            // but bruno described differently, so we stick with that                            
+                            // but bruno described differently, so we stick with that
                             promised: order.wants().amount,
                         };
-                        self.orders.remove(storage, order.order.order_id.u128());
-                        result.push(CvmFillResult::new(
-                            tracker,
-                            event,
-                        ));
+                        self.orders
+                            .remove(ctx.deps.storage, order.order.order_id.u128());
+                        result.push(CvmFillResult::new(tracker, event));
                     }
                 }
-            }           
-        } 
+            }
+        }
         Ok(result)
     }
 }

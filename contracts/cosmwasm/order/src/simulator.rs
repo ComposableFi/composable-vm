@@ -9,11 +9,15 @@ use crate::CowSolutionCalculation;
 use crate::Filling;
 use crate::SolvedOrder;
 
-
 /// given expected output amount and list of orders and CVM program, produce fill in of orders
 /// return filling amounts for all orders from program, which may or may not lead to full fill
-pub fn verify(route: CvmProgram, in_asset: &AssetItem, out_asset:&AssetItem, predicted_out_amount : u128, orders: Vec<SolvedOrder>) -> Result<Vec<Filling>, StdError> {
-    
+pub fn verify(
+    route: CvmProgram,
+    in_asset: &AssetItem,
+    out_asset: &AssetItem,
+    predicted_out_amount: u128,
+    orders: Vec<SolvedOrder>,
+) -> Result<Vec<Filling>, StdError> {
     panic!()
 }
 

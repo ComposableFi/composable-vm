@@ -39,14 +39,11 @@ pub mod order {
             .add_attribute("solution_block_added", solution_block_added.to_string())
     }
 
-    pub fn mantis_order_routed_full(
-        order: &OrderItem,
-        solver_address: &String,
-    ) -> Event {
+    pub fn mantis_order_routed_full(order: &OrderItem, solver_address: &String) -> Event {
         Event::new("mantis-order-routed-full")
             .add_attribute("order_id", order.order_id.to_string())
             .add_attribute("solver_address", solver_address.clone())
-    }    
+    }
 }
 
 pub mod solution {

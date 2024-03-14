@@ -20,12 +20,6 @@ pub struct CowSolutionCalculation {
     pub filled: Vec<CowFilledOrder>,
 }
 
-/// each pair waits at least this amount of blocks before being decided
-pub const BATCH_EPOCH: u32 = 2;
-
-/// count of solutions at minimum which can be decided, just set 1 for ease of devtest
-pub const MIN_SOLUTION_COUNT: u32 = 1;
-
 /// parts of a whole, numerator / denominator
 pub type Ratio = (Uint64, Uint64);
 
@@ -251,7 +245,7 @@ pub struct SubWasmMsg<Payload> {
     feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
     derive(schemars::JsonSchema)
 )]
-#[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
+#[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize, Copy)]
 #[serde(rename_all = "snake_case")]
 pub enum OrderAmount {
     /// whole remaining amount in order
@@ -309,7 +303,7 @@ impl SolvedOrder {
             None => 0u128.into(),
         }
     }
-    
+
     pub fn wants_cross_chain(&self) -> Amount {
         match self.solution.cross_chain_part {
             Some(x) => match x {
@@ -331,7 +325,7 @@ impl SolvedOrder {
 pub struct TrackedOrderItem {
     pub order_id: OrderId,
     pub solution_id: SolutionHash,
-    pub amount_taken: Amount,
+    pub amount_taken: Coin,
     pub promised: Amount,
 }
 
@@ -406,12 +400,11 @@ impl CvmFillResult {
     pub fn new(tracking: TrackedOrderItem, event: Event) -> Self {
         Self {
             tracking,
-            remaining : None,
+            remaining: None,
             event,
         }
     }
 }
-
 
 pub type Denom = String;
 pub type DenomPair = (Denom, Denom);
