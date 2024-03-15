@@ -181,6 +181,15 @@ Because B to C will be single hop transfer.
 Other cases rejected.
 
 
+## What is fork join?
+
+A was split into B and C, and then B and C were moved to be D.
+
+D must "summed" from 2 amounts must be 2 separate CVM routes branches.
+
+Run over fork-join tree and product no joins (split rotes).
+
+
 ## Solution constraints and questions
 
 Given CVM program(tree) and Registry data(graph) on chain, solution to provide annotated CVM program with hints on transports and payloads to use on each hop.

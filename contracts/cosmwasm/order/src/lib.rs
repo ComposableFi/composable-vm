@@ -9,6 +9,7 @@ mod prelude;
 mod simulator;
 mod state;
 mod types;
+mod validation;
 
 use events::order::*;
 use events::solution::*;
@@ -233,6 +234,26 @@ impl OrderContract<'_> {
         Ok(Response::default().add_message(cvm).add_events(events))
     }
 
+    /// Executes single order via CVM without use of CoW
+    #[msg(exec)]
+    pub fn execute(
+        &self,
+        ctx: ExecCtx,
+        order_id: OrderId,
+        mut cvm_program: CvmProgram,
+    ) -> StdResult<Response> {
+        let order: OrderItem = self.orders.load(ctx.deps.storage, order_id.u128())?;
+        validation::validate_solver(ctx.deps.as_ref(), &ctx.info.sender, &order)?;
+        self.orders.remove(ctx.deps.storage, order_id.u128());
+        validation::validate_program(ctx.deps.as_ref(), &cvm_program, &order)?;
+        let cvm = wasm_execute(
+            self.cvm_address.load(ctx.deps.storage)?,
+            &cvm_program,
+            vec![order.given],
+        )?;
+        Ok(Response::default().add_message(cvm))
+    }
+
     /// Provides solution for set of orders.
     /// All fully
     #[msg(exec)]
@@ -299,6 +320,12 @@ impl OrderContract<'_> {
         let mut solution_item: SolutionItem = possible_solution;
         let mut volume = 0u128;
         for solution in all_solutions {
+            if validation::validate_solvers(&ctx.deps, &solution, &all_orders).is_err() {
+                continue;
+            }
+            if validation::validate_routes(&ctx.deps, &solution, &all_orders).is_err() {
+                continue;
+            }
             let solution_orders = join_solution_with_orders(&self.orders, &solution.msg, &ctx)?;
             let a_total_from_orders_in_solution: u128 = solution_orders
                 .iter()
