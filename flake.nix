@@ -32,10 +32,6 @@
       url = "github:ComposableFi/networks";
     };
 
-    cosmpy-src = {
-      url = "github:fetchai/cosmpy/v0.9.2";
-      flake = false;
-    };
 
     fastapi-cache-src = {
       url = "github:long2ice/fastapi-cache";
@@ -90,7 +86,6 @@
     devour-flake,
     datamodel-code-generator-src,
     poetry2nix,
-    cosmpy-src,
     nixpkgs,
     scip,
     pyscipopt-src,
@@ -212,17 +207,6 @@
           checkGroups = [];
         };
 
-        # cosmpy = pkgs.python3Packages.buildPythonPackage {
-        #   name = "cosmpy";
-        #   version = "0.9.2";
-        #   format = "pyproject";
-
-        #   src = cosmpy-src;
-
-        #   nativeBuildInputs = [
-        #     pkgs.python3Packages.poetry-core
-        #   ];
-        # };
 
         # https://github.com/nanne-aben/strictly_typed_pandas/issues/140
         strictly-typed-pandas-latest = pkgs.python3Packages.buildPythonPackage {
@@ -359,7 +343,6 @@
               buildInputs = old.buildInputs or [] ++ [self.python.pkgs.setuptools];
             });
             cvxpy = cvxpy-latest;
-            #            cosmpy = cosmpy;
 
             maturin = maturin-latest;
             strictly-typed-pandas = strictly-typed-pandas-latest;
@@ -502,7 +485,6 @@
             mantis-blackbox
             pyscipopt-latest
             maturin-latest
-            #cosmpy
             
             ;
           all =
