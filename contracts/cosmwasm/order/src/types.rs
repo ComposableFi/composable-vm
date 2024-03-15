@@ -168,12 +168,13 @@ pub struct OrderSubMsg {
 
 #[cw_serde]
 pub struct SolutionItem {
-    pub pair: (String, String),
+    pub pair: DenomPair,
     pub msg: SolutionSubMsg,
     /// at which block solution was added
     pub block_added: u64,
     pub owner: Addr,
 }
+
 
 impl SolutionItem {
     pub fn id(&self) -> Vec<u8> {

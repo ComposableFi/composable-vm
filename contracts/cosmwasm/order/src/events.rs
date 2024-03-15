@@ -1,6 +1,6 @@
 pub mod order {
 
-    use crate::prelude::*;
+    use crate::{prelude::*, TrackedOrderItem};
     use cosmwasm_std::Event;
 
     use crate::OrderItem;
@@ -43,6 +43,14 @@ pub mod order {
         Event::new("mantis-order-routed-full")
             .add_attribute("order_id", order.order_id.to_string())
             .add_attribute("solver_address", solver_address.clone())
+    }
+
+    pub fn mantis_order_cross_chain_tracked(tracking: &TrackedOrderItem) -> Event {
+        Event::new("mantis-order-cross-chain-tracked")
+            .add_attribute("order_id", tracking.order_id.to_string())
+            .add_attribute("amount_taken", tracking.amount_taken.to_string())
+            .add_attribute("promised", tracking.promised.to_string())
+            .add_attribute("meta", "solution is not verified, do not use for big funds".to_string())
     }
 }
 

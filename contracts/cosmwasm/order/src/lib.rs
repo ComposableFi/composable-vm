@@ -4,6 +4,7 @@
 mod constants;
 mod errors;
 mod events;
+pub mod ordered_tuple;
 mod prelude;
 mod simulator;
 mod state;
@@ -223,8 +224,13 @@ impl OrderContract<'_> {
                 amount: b_funds,
             },
         ];
+
+        let events = cvm_filled
+            .iter()
+            .map(|x| mantis_order_cross_chain_tracked(&x.tracking));
+
         let cvm = wasm_execute(contract, &cvm, funds)?;
-        Ok(Response::default().add_message(cvm))
+        Ok(Response::default().add_message(cvm).add_events(events))
     }
 
     /// Provides solution for set of orders.
