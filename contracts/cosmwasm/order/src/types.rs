@@ -1,7 +1,7 @@
 use cosmwasm_std::{ensure, BankMsg, Event, StdResult, Uint64, WasmMsg};
 use cvm_runtime::{outpost::ExecuteProgramMsg, shared::CvmProgram, AssetId, ExchangeId, NetworkId};
 
-use crate::prelude::*;
+use crate::{ordered_tuple::OrderedTuple2, prelude::*};
 
 pub type OrderId = Uint128;
 
@@ -175,7 +175,6 @@ pub struct SolutionItem {
     pub owner: Addr,
 }
 
-
 impl SolutionItem {
     pub fn id(&self) -> Vec<u8> {
         solution_id(&(self.owner.to_string(), self.pair.clone(), self.block_added))
@@ -338,12 +337,10 @@ impl SolvedOrder {
     }
 
     pub fn pair(&self) -> DenomPair {
-        let mut pair = (
+        DenomPair::new(
             self.order.given.denom.clone(),
             self.order.msg.wants.denom.clone(),
-        );
-        pair.sort_selection();
-        pair
+        )
     }
 
     pub fn cross_chain(&self) -> u128 {
@@ -408,7 +405,7 @@ impl CvmFillResult {
 }
 
 pub type Denom = String;
-pub type DenomPair = (Denom, Denom);
+pub type DenomPair = OrderedTuple2<String>;
 pub type SolverAddress = String;
 
 pub type CrossChainSolutionKey = (SolverAddress, DenomPair, Block);
@@ -419,8 +416,8 @@ pub fn solution_id(id: &CrossChainSolutionKey) -> SolutionHash {
     use sha2::*;
     let mut hash = Sha256::new();
     hash.update(id.0.as_bytes());
-    hash.update(id.1 .0.as_bytes());
-    hash.update(id.1 .1.as_bytes());
+    hash.update(id.1.a.as_bytes());
+    hash.update(id.1.b.as_bytes());
     hash.update(id.2.to_be_bytes());
     hash.finalize().to_vec()
 }

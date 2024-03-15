@@ -204,23 +204,23 @@ impl OrderContract<'_> {
 
         let a_funds = cvm_filled
             .iter()
-            .filter(|x| x.tracking.amount_taken.denom == msg.pair.0)
+            .filter(|x| x.tracking.amount_taken.denom == msg.pair.a)
             .map(|x| x.tracking.amount_taken.amount)
             .sum();
 
         let b_funds = cvm_filled
             .iter()
-            .filter(|x| x.tracking.amount_taken.denom == msg.pair.1)
+            .filter(|x| x.tracking.amount_taken.denom == msg.pair.b)
             .map(|x| x.tracking.amount_taken.amount)
             .sum();
 
         let funds = vec![
             Coin {
-                denom: msg.pair.0,
+                denom: msg.pair.a,
                 amount: a_funds,
             },
             Coin {
-                denom: msg.pair.1,
+                denom: msg.pair.b,
                 amount: b_funds,
             },
         ];
@@ -242,11 +242,10 @@ impl OrderContract<'_> {
         let at_least_one = all_orders.first().expect("at least one");
 
         // normalize pair
-        let mut ab = (
+        let mut ab = DenomPair::new(
             at_least_one.given().denom.clone(),
             at_least_one.wants().denom.clone(),
         );
-        ab.sort_selection();
 
         // add solution to total solutions
         let possible_solution = SolutionItem {
@@ -258,11 +257,7 @@ impl OrderContract<'_> {
 
         self.start_solution(ctx.branch(), ab.clone())?;
 
-        let solution_key = (
-            ab.clone().0,
-            ab.clone().1,
-            ctx.info.sender.clone().to_string(),
-        );
+        let solution_key = (ab.clone(), ctx.info.sender.clone().to_string());
 
         self.solutions
             .save(ctx.deps.storage, &solution_key, &possible_solution)?;
@@ -276,7 +271,7 @@ impl OrderContract<'_> {
         // get all solution for pair
         let all_solutions: Result<Vec<SolutionItem>, _> = self
             .solutions
-            .prefix(ab.clone())
+            .prefix(ab.clone().into())
             .range(ctx.deps.storage, None, None, Order::Ascending)
             .map(|r| r.map(|(_, solution)| solution))
             .collect();
@@ -300,7 +295,6 @@ impl OrderContract<'_> {
         // pick up optimal solution with solves with bank
         let mut a_in = 0u128;
         let mut b_in = 0u128;
-        let (a, b) = ab.clone();
         let mut transfers = vec![];
         let mut solution_item: SolutionItem = possible_solution;
         let mut volume = 0u128;
@@ -308,12 +302,12 @@ impl OrderContract<'_> {
             let solution_orders = join_solution_with_orders(&self.orders, &solution.msg, &ctx)?;
             let a_total_from_orders_in_solution: u128 = solution_orders
                 .iter()
-                .filter(|x| x.given().denom == a)
+                .filter(|x| x.given().denom == ab.a)
                 .map(|x: &SolvedOrder| x.given().amount.u128())
                 .sum();
             let b_total_from_orders_in_solution: u128 = solution_orders
                 .iter()
-                .filter(|x: &&SolvedOrder| x.given().denom == b)
+                .filter(|x: &&SolvedOrder| x.given().denom == ab.b)
                 .map(|x| x.given().amount.u128())
                 .sum();
 
@@ -359,13 +353,13 @@ impl OrderContract<'_> {
 
         let cross_chain_b: u128 = all_orders
             .iter()
-            .filter(|x| x.given().denom != ab.0)
+            .filter(|x| x.given().denom != ab.a)
             .map(|x| x.given_cross_chain().u128())
             .sum();
 
         let cross_chain_a: u128 = all_orders
             .iter()
-            .filter(|x| x.given().denom != ab.1)
+            .filter(|x| x.given().denom != ab.b)
             .map(|x| x.given_cross_chain().u128())
             .sum();
 
@@ -555,7 +549,7 @@ impl OrderContract<'_> {
 }
 
 fn emit_solution_chosen(
-    ab: (String, String),
+    ab: DenomPair,
     ctx: ExecCtx<'_>,
     transfers: &Vec<CowFillResult>,
     volume: u128,

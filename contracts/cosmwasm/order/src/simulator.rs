@@ -41,7 +41,7 @@ pub fn simulate_cows_via_bank(
 
         // so if not enough was deposited as was taken from original orders, it will fail - so
         // solver cannot rob the bank
-        if order.pair().0 == filled_wanted.denom {
+        if order.pair().a == filled_wanted.denom {
             a_total_from_orders =
                 a_total_from_orders
                     .checked_sub(cowed.u128())

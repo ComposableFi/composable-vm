@@ -6,12 +6,12 @@ use crate::*;
 /// so we need to have several solution per pair to pick one best
 pub struct SolutionIndexes<'a> {
     /// (token pair secondary index), (stored item), (stored item full key)
-    pub pair: MultiIndex<'a, DenomPair, SolutionItem, (Denom, Denom, SolverAddress)>,
+    pub pair: MultiIndex<'a, DenomPair, SolutionItem, (DenomPair, SolverAddress)>,
 }
 
-/// (a,b,solver)
+/// (DenomPair,SolverAddress) -> SolutionItem
 pub type SolutionMultiMap<'a> =
-    IndexedMap<'a, &'a (Denom, Denom, SolverAddress), SolutionItem, SolutionIndexes<'a>>;
+    IndexedMap<'a, &'a (DenomPair, SolverAddress), SolutionItem, SolutionIndexes<'a>>;
 
 impl<'a> IndexList<SolutionItem> for SolutionIndexes<'a> {
     fn get_indexes(&'_ self) -> Box<dyn Iterator<Item = &'_ dyn Index<SolutionItem>> + '_> {
@@ -20,8 +20,7 @@ impl<'a> IndexList<SolutionItem> for SolutionIndexes<'a> {
     }
 }
 
-pub fn solutions<'a>(
-) -> IndexedMap<'a, &'a (String, String, String), SolutionItem, SolutionIndexes<'a>> {
+pub fn solutions<'a>() -> SolutionMultiMap<'a> {
     let indexes = SolutionIndexes {
         pair: MultiIndex::new(
             |_pk: &[u8], d: &SolutionItem| d.pair.clone(),

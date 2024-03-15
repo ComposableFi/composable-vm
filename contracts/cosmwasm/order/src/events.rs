@@ -50,7 +50,10 @@ pub mod order {
             .add_attribute("order_id", tracking.order_id.to_string())
             .add_attribute("amount_taken", tracking.amount_taken.to_string())
             .add_attribute("promised", tracking.promised.to_string())
-            .add_attribute("meta", "solution is not verified, do not use for big funds".to_string())
+            .add_attribute(
+                "meta",
+                "solution is not verified, do not use for big funds".to_string(),
+            )
     }
 }
 
@@ -70,8 +73,8 @@ pub mod solution {
     ) -> Event {
         let solution_id = crate::types::solution_id(&(owner.to_string(), ab.clone(), block_added));
         let solution_chosen = Event::new("mantis-solution-chosen")
-            .add_attribute("token_a", ab.clone().0)
-            .add_attribute("token_b", ab.clone().1)
+            .add_attribute("token_a", ab.clone().a)
+            .add_attribute("token_b", ab.clone().b)
             .add_attribute("solver_address", ctx.info.sender.to_string())
             .add_attribute("cow_volume", cow_volume.to_string())
             .add_attribute("cross_chain_volume", cow_volume.to_string())
@@ -83,8 +86,8 @@ pub mod solution {
 
     pub fn mantis_solution_upserted(ab: &DenomPair, ctx: &ExecCtx<'_>) -> Event {
         let solution_upserted = Event::new("mantis-solution-upserted")
-            .add_attribute("token_a", ab.clone().0)
-            .add_attribute("token_b", ab.clone().1)
+            .add_attribute("token_a", ab.clone().a)
+            .add_attribute("token_b", ab.clone().b)
             .add_attribute("solver_address", ctx.info.sender.to_string());
         solution_upserted
     }

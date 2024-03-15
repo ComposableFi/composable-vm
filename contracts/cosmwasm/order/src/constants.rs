@@ -1,4 +1,3 @@
-
 /// each pair waits at least this amount of blocks before being decided
 pub const BATCH_EPOCH: u32 = 2;
 
