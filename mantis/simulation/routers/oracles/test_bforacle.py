@@ -2,6 +2,7 @@
 # clarabel cvxpy local mip
 import copy
 import itertools
+import pytest
 
 import numpy as np
 from loguru import logger
@@ -12,6 +13,7 @@ from simulation.routers.data import (
     AssetTransfers,
     Ctx,
     Input,
+    SingleInputAssetCvmRoute,
     TId,
     TNetworkId,
     new_data,
@@ -37,15 +39,25 @@ def populate_chain_dict(chains: dict[TNetworkId, list[TId]], center_node: TNetwo
         if chain != center_node:
             chains[chain].extend(f"{center_node}/{token}" for token in chains[center_node] if f"{chain}/" not in token)
 
-
+@pytest.mark.run_these_tests
 def test_single_chain_single_cffm_route_full_symmetry_exist():
     input = new_input(1, 2, 100, 50)
     pair = new_pair(1, 1, 2, 0, 0, 1, 1, 100, 1_000_000, 1_000_000)
     data = new_data([pair], [])
     result = route(input, data)
     logger.info(result)
+    logger.info(len(result))
+    logger.info("")
+    logger.info(input)
+    logger.info(pair)
+    logger.info(data)
+    assert isinstance(result, list), "The result is expected to be a list."
+    assert all(isinstance(route, SingleInputAssetCvmRoute) for route in result), "All result elements must be of the SingleInputAssetCvmRoute type."
+    assert len(result) == 1, "The list of routes is empty or contains too many items. A single route is expected to be present."
+    assert result[0].next[0].in_asset_id == input.in_asset_id, f"Expected in_asset_id={input.in_asset_id}, received {result[0].next[0].in_asset_id}"
+    assert result[0].next[0].out_asset_id == input.out_asset_id, f"Expected out_asset_id={input.out_asset_id}, received {result[0].next[0].out_asset_id}"
 
-
+@pytest.mark.run_these_tests
 def test_big_numeric_range_one_pair_of_same_value():
     in_amount = 10000
     input = new_input(1, 5, in_amount, 50)
