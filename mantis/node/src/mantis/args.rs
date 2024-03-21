@@ -12,7 +12,24 @@ pub enum MantisCommands {
     Solve(SolverArgs),
     Id(IdArgs),
     Simulate(SimulateArgs),
+    Glt(GltArgs),
 }
+
+#[derive(Debug, Subcommand)]
+pub struct GltArgs {
+    #[command(subcommand)]
+    pub command: GltCommands,
+}
+
+GltComands
+    // given offchain configuration, validates is
+    Validate
+    // given offchain configuration and existing chains, plans apply
+    // outputs offline transaction to chains provided
+    Plan
+    /// adds specific things to offchain config
+    Add
+    
 
 #[derive(Debug, Parser)]
 pub struct IdArgs {
