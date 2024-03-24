@@ -39,25 +39,28 @@ def populate_chain_dict(chains: dict[TNetworkId, list[TId]], center_node: TNetwo
         if chain != center_node:
             chains[chain].extend(f"{center_node}/{token}" for token in chains[center_node] if f"{chain}/" not in token)
 
-@pytest.mark.run_these_tests
+#@pytest.mark.run_these_tests
 def test_single_chain_single_cffm_route_full_symmetry_exist():
     input = new_input(1, 2, 100, 50)
     pair = new_pair(1, 1, 2, 0, 0, 1, 1, 100, 1_000_000, 1_000_000)
     data = new_data([pair], [])
     result = route(input, data)
-    logger.info(result)
-    logger.info(len(result))
-    logger.info("")
-    logger.info(input)
-    logger.info(pair)
-    logger.info(data)
     assert isinstance(result, list), "The result is expected to be a list."
     assert all(isinstance(route, SingleInputAssetCvmRoute) for route in result), "All result elements must be of the SingleInputAssetCvmRoute type."
-    assert len(result) == 1, "The list of routes is empty or contains too many items. A single route is expected to be present."
     assert result[0].next[0].in_asset_id == input.in_asset_id, f"Expected in_asset_id={input.in_asset_id}, received {result[0].next[0].in_asset_id}"
     assert result[0].next[0].out_asset_id == input.out_asset_id, f"Expected out_asset_id={input.out_asset_id}, received {result[0].next[0].out_asset_id}"
+    assert len(result) == 1, "The list of routes is empty or contains too many items. A single route is expected to be present."
+    route_exists = any(route for route in result if route.next and route.next[0].in_asset_id == input.in_asset_id and route.next[0].out_asset_id == input.out_asset_id)
+    assert route_exists, "No route found matching input and output assets."
+    actual_output_amount = result[0].next[0].out_asset_amount if result[0].next else 0
+    expected_output_amount = input.out_asset_amount
+    assert actual_output_amount >= expected_output_amount, f"Expected output amount {expected_output_amount}, got {actual_output_amount}"
+    relative_tolerance = 0.01
+    approximated_expected_output_amount = input.in_asset_amount
+    assert abs((actual_output_amount - approximated_expected_output_amount) / approximated_expected_output_amount) <= relative_tolerance, f"actual_output_amount = {actual_output_amount} is not maximally approximated to the expected_output_amount={expected_output_amount} with an allowable relative deviation of {relative_tolerance}"
 
-@pytest.mark.run_these_tests
+
+#@pytest.mark.run_these_tests
 def test_big_numeric_range_one_pair_of_same_value():
     in_amount = 10000
     input = new_input(1, 5, in_amount, 50)
@@ -67,7 +70,7 @@ def test_big_numeric_range_one_pair_of_same_value():
     pair45 = new_pair(4, 3, 5, 0, 0, 1, 1, 1, 1_000, 1_000)
     pair35 = new_pair(5, 4, 5, 0, 0, 1, 1, 1, 1_000, 1_000)
     ctx = Ctx()
-    ctx.max_depth_of_route = 4
+    ctx.max_depth_of_route = 5
     data = new_data([pair12, pair23, pair24, pair45, pair35], [])
     routes = route(input, copy.deepcopy(data), ctx)
     raise Exception(routes)
