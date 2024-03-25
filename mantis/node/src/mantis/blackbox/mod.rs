@@ -44,13 +44,41 @@ fn build_next(current: &mut CvmProgram, next: &mut [NextItem]) {
             }
             NextItem::Spawn(spawn) => {
                 let spawn = new_spawn(spawn);
-                current.instructions.push(CvmInstruction::Spawn(spawn));
+                current.instructions.push(spawn);
                 build_next(spawn.program, rest);
             }
         },
         None => {
             log::info!("no more routes");
         }
+    }
+}
+
+fn new_spawn(spawn: &mut Spawn, glt: GetConfigResponse) -> CvmInstruction {
+    let exchange_id = match spawn.pool_id {
+        PoolId::Variant1(id) => id.parse().expect("pool id"),
+        _ => panic!("exchange_id"),
+    };
+    let in_asset_id = match spawn.in_asset_id {
+        InAssetId::Variant1(id) => id.parse().expect("in_asset_id"),
+        _ => panic!("in_asset_id"),
+    };
+
+    let in_amount : Amount = match spawn.in_asset_amount {
+        InAssetAmount::Variant0(x) => x.try_into().expect("in_asset_amount"),
+        InAssetAmount::Variant1(x) => x.parse().expect("in_asset_amount"),
+        InAssetAmount::Variant2(x) => Amount::try_floor_f64(x).expect("in_asset_amount"),
+    };
+
+    let out_asset_id = match spawn.out_asset_id {
+        OutAssetId::Variant1(id) => id.parse().expect("in_asset_id"),
+        _ => panic!("in_asset_id"),
+    };
+
+    CvmInstruction::Spawn {
+        give: CvmFundsFilter::one(in_asset_id, in_amount),
+        want: CvmFundsFilter::one(out_asset_id, Amount::one()),
+        program: Box::new(CvmProgram::default()),
     }
 }
 
