@@ -52,6 +52,18 @@ fn build_next(current: &mut CvmProgram, next: &mut [NextItem]) {
     }
 }
 
+fn new_exchange(exchange: &Exchange) -> CvmInstruction {
+    let exchange_id = match exchange.pool_id {
+        PoolId::Variant1(id) => id.parse().expect("pool id"),
+        _ => panic!("exchange_id") 
+    };
+    CvmInstruction::Exchange{
+        exchange_id,
+        give: todo!(),
+        want: todo!(),
+    }
+}
+
 /// `order_accounts` - account of order where to dispatch amounts (part of whole)
 async fn route(
     server: &str,
