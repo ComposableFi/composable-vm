@@ -1,5 +1,5 @@
 use cosmrs::tendermint::block::Height;
-use cw_mantis_order::{OrderItem, OrderSolution, OrderSubMsg};
+use cw_mantis_order::{CrossChainPart, OrderAmount, OrderItem, OrderSolution, OrderSubMsg};
 
 use crate::{
     prelude::*,
@@ -53,8 +53,8 @@ pub fn do_cows(all_orders: Vec<OrderItem>) -> SolutionsPerPair {
                 let filled = x.amount_out.to_u128().expect("u128");
                 OrderSolution {
                     order_id: x.id,
-                    cow_out_amount: filled.into(),
-                    out_asset_amount: 0u128.into(),
+                    cow_out_amount: filled.into(),                    
+                    cross_chain_part: Some(OrderAmount::All),
                 }
             })
             .collect::<Vec<_>>();

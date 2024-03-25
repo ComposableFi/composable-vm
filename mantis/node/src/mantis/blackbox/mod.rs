@@ -30,23 +30,25 @@ impl BankInput {
 }
 
 /// given route and CVM stub with amount, build it to the end
-fn build_next(current: &mut CvmProgram, next: &mut [NextItem]) -> CvmInstruction {
+fn build_next(current: &mut CvmProgram, next: &mut [NextItem]) {
     match next.split_first_mut() {
         Some((head, rest)) => {
             match head {
                 NextItem::Exchange(exchange) => {
                     let exchange = new_exchange(exchange);
                     current.instructions.push(CvmInstruction::Exchange(exchange));
-                    build_next(current, rest)
+                    build_next(current, rest);
                 },
                 NextItem::Spawn(spawn) => {
                     let spawn = new_spawn(spawn);
                     current.instructions.push(CvmInstruction::Spawn(spawn));
-                    build_next(spawn.program, rest)
+                    build_next(spawn.program, rest);
                 },
             }
         }
-        None => info!("no more routes"),
+        None => { 
+            log::info!("no more routes");
+        },
     }
 }
 
@@ -57,7 +59,7 @@ async fn route(
     glt: GetConfigResponse,
 ) -> CvmProgram {
     let blackbox: Client = Client::new(server);
-    let route = blackbox
+    let  mut route = blackbox
         .simulator_router_simulator_router_get(
             &InAssetAmount::Variant0(input.in_asset_amount.0.try_into().expect("in_asset_amount")),
             &InAssetId::Variant1(input.in_asset_id.to_string()),
@@ -67,10 +69,9 @@ async fn route(
         )
         .await
         .expect("route found")
-        .into_inner()
-        .get(0).expect("at least one route");    
+        .into_inner().pop().expect("at least one route");
 
-    let mut program = CvmProgram::new();
-    build_next(&mut current, &mut route.next);
+    let mut program = CvmProgram::default();
+    build_next(&mut program, &mut route.next);
     return program;   
 }

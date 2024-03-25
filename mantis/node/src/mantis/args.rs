@@ -15,20 +15,23 @@ pub enum MantisCommands {
     Glt(GltArgs),
 }
 
-#[derive(Debug, Subcommand)]
+#[derive(Debug, Parser)]
 pub struct GltArgs {
     #[command(subcommand)]
     pub command: GltCommands,
 }
 
-GltComands
+
+#[derive(Debug, Subcommand)]
+pub enum GltCommands {
     // given offchain configuration, validates is
-    Validate
+    Validate,
     // given offchain configuration and existing chains, plans apply
     // outputs offline transaction to chains provided
-    Plan
+    Plan,
     /// adds specific things to offchain config
-    Add
+    Add,
+}
     
 
 #[derive(Debug, Parser)]
@@ -78,7 +81,7 @@ pub struct SharedArgs {
 
 #[derive(clap::Parser, Debug)]
 pub struct SimulateArgs {
-    #[arg(flatten)]
+    #[command(flatten)]
     pub shared: SharedArgs,
     
     /// CVM contract on Centauri. Optional, only if consider routing via cross chain CVM.
@@ -98,7 +101,7 @@ pub struct SimulateArgs {
 
 #[derive(clap::Parser, Debug)]
 pub struct SolverArgs {
-    #[arg(flatten)]
+    #[command(flatten)]
     pub shared: SharedArgs,
 
     /// the problem to solve
