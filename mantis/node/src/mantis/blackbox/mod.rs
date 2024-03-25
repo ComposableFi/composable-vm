@@ -67,7 +67,7 @@ fn new_exchange(exchange: &Exchange) -> CvmInstruction {
     let in_amount : Amount = match exchange.in_asset_amount {
         InAssetAmount::Variant0(x) => x.try_into().expect("in_asset_amount"),
         InAssetAmount::Variant1(x) => x.parse().expect("in_asset_amount"),
-        InAssetAmount::Variant2(x) => x.try_into().expect("in_asset_amount"),
+        InAssetAmount::Variant2(x) => Amount::try_floor_f64(x).expect("in_asset_amount"),
     };
 
     let out_asset_id = match exchange.out_asset_id {
@@ -78,7 +78,7 @@ fn new_exchange(exchange: &Exchange) -> CvmInstruction {
     CvmInstruction::Exchange {
         exchange_id,
         give: CvmFundsFilter::one(in_asset_id, in_amount),
-        want: CvmFundsFilter::one(out_asset_id, 1.into()),
+        want: CvmFundsFilter::one(out_asset_id, Amount::one()),
     }
 }
 
