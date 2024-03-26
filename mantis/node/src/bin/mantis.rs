@@ -36,7 +36,7 @@ async fn main() {
     match &args.command {
         MantisCommands::Solve(_) => todo!(),
         MantisCommands::Simulate(x) => {
-            simulate_orders(&args, x).await;
+            simulate_orders(x).await;
         }
         
         MantisCommands::Id(_) => todo!(),
@@ -115,9 +115,9 @@ async fn main() {
 
 }
 
-async fn simulate_orders(mantis_args: &MantisArgs, simulate_args: &SimulateArgs)  {
-
-    let mut wasm_read_client = create_wasm_query_client(&args.grpc_centauri).await;
+async fn simulate_orders(simulate_args: &SimulateArgs)  {
+    let args = simulate_args.shared;
+    let mut wasm_read_client = create_wasm_query_client(&args.).await;
 
             let signer = mantis_node::mantis::cosmos::signer::from_mnemonic(
                 args.wallet.as_str(),

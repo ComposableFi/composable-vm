@@ -91,14 +91,9 @@ pub struct SimulateArgs {
     pub cvm_contract: Option<String>,
 
     /// tokens to send to order contract as problem
-    /// format: "token1amount1,token2amount2"
-    #[arg(long)]
-    pub pair: Option<String>,
-
-
-    /// the problem to solve
-    #[arg(long, default_value_t = 10)]
-    pub simulate_period_seconds: u16,
+    /// format: "--coins="token1amount1,token2amount2" --coins="token2amount2,token3amount3"
+    #[arg(long, value_delimiter = ' ', num_args = 1..)]
+    pub coins: Vec<String>,
 }
 
 #[derive(clap::Parser, Debug)]
