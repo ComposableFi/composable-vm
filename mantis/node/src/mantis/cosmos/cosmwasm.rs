@@ -2,6 +2,7 @@ use std::str::FromStr;
 
 use cosmos_sdk_proto::cosmwasm::{self, wasm::v1::QuerySmartContractStateRequest};
 use cosmrs::{cosmwasm::MsgExecuteContract, AccountId};
+use cosmwasm_std::Coin;
 
 pub fn to_exec_signed_with_fund<T: serde::ser::Serialize>(
     signing_key: &cosmrs::crypto::secp256k1::SigningKey,
@@ -55,4 +56,13 @@ pub async fn smart_query<T: serde::ser::Serialize, O: serde::de::DeserializeOwne
         .into_inner()
         .data;
     serde_json_wasm::from_slice(&result).expect("result parsed")
+}
+
+pub fn parse_coin_pair(pair: &String) -> (Coin, Coin) {
+    let pair: Vec<_> = pair
+        .split(',')
+        .map(|x| Coin::from_str(x).expect("coin"))
+        .collect();
+    assert_eq!(pair.len(), 2);
+    (pair[0].clone(), pair[1].clone())
 }

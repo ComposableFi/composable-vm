@@ -20,9 +20,7 @@ use cw_mantis_order::{Amount, OrderItem, OrderSolution, OrderSubMsg, SolutionSub
 use mantis_node::{
     mantis::{
         args::*, autopilot, blackbox, cosmos::{
-            client::*,
-            cosmwasm::{smart_query, to_exec_signed, to_exec_signed_with_fund},
-            *,
+            client::*, cosmwasm::{smart_query, to_exec_signed, to_exec_signed_with_fund}, cvm::get_salt, *
         }, indexer::{get_all_orders, get_cvm_glt}, simulate
     },
     prelude::*,
@@ -117,9 +115,8 @@ async fn main() {
 
 async fn simulate_orders(simulate_args: &SimulateArgs)  {
 
-
-    let args = simulate_args.shared;
-    let mut wasm_read_client = create_wasm_query_client(&args.).await;
+    let args = &simulate_args.shared;
+    let mut wasm_read_client = create_wasm_query_client(&args.grpc_centauri).await;
 
             let signer = mantis_node::mantis::cosmos::signer::from_mnemonic(
                 args.wallet.as_str(),
@@ -144,7 +141,7 @@ async fn simulate_orders(simulate_args: &SimulateArgs)  {
         &mut write_client,
         &mut cosmos_query_client,
         args.order_contract.clone(),
-        assets,
+        pair,
         &signer,
         &args.rpc_centauri,
         &tip,
@@ -173,7 +170,7 @@ async fn solve(
     gas: Gas,
 ) {
 
-    let salt = get_salt(signing_key, tip);
+    let salt = crate::cvm::get_salt(signing_key, tip);
     println!("========================= solve =========================");
     let all_orders = get_all_orders(order_contract, cosmos_query_client, tip).await;
     if !all_orders.is_empty() {

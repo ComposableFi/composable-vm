@@ -174,12 +174,3 @@ pub async fn simulate_and_set_fee(
         });
     auth_info
 }
-
-
-
-pub fn parse_coin_pair(coins_pair: String) -> (cosmrs::Coin, cosmrs::Coin) {
-    coins_pair
-        .split(',')
-        .map(|x| cosmwasm_std::Coin::from_str(x).expect("coin"))
-        .collect()
-}

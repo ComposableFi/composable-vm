@@ -5,27 +5,27 @@ use crate::{
     mantis::cosmos::{client::{simulate_and_set_fee, tx_broadcast_single_signed_msg}, cosmwasm::to_exec_signed_with_fund}, prelude::*, solver::{orderbook::OrderList, solution::Solution, types::OrderType}
 };
 
-use super::cosmos::client::{timeout, CosmWasmWriteClient, CosmosQueryClient, Tip};
+use super::cosmos::{client::{timeout, CosmWasmWriteClient, CosmosQueryClient, Tip}, cosmwasm::parse_coin_pair};
 
 pub fn randomize_order(
-    coins_pair: String,
+    pair: &String,
     tip: Height,
 ) -> (cw_mantis_order::ExecMsg, cosmrs::Coin) {
-    let coins = fun_name(coins_pair);
+    let pair = parse_coin_pair(pair);
 
-    let coins = if rand::random::<bool>() {
-        (coins[0].clone(), coins[1].clone())
+    let pair = if rand::random::<bool>() {
+        (pair.0.clone(), pair.1.clone())
     } else {
-        (coins[1].clone(), coins[0].clone())
+        (pair.1.clone(), pair.0.clone())
     };
-    let coin_0_random = randomize_coin(coins.0.amount.u128());
-    let coin_1_random = randomize_coin(coins.1.amount.u128());
+    let coin_0_random = randomize_coin(pair.0.amount.u128());
+    let coin_1_random = randomize_coin(pair.1.amount.u128());
 
     let msg = cw_mantis_order::ExecMsg::Order {
         msg: OrderSubMsg {
             wants: cosmwasm_std::Coin {
                 amount: coin_0_random.into(),
-                denom: coins.0.denom.clone(),
+                denom: pair.0.denom.clone(),
             },
             transfer: None,
             timeout: timeout(tip, 100),
@@ -34,7 +34,7 @@ pub fn randomize_order(
     };
     let fund = cosmrs::Coin {
         amount: coin_1_random.into(),
-        denom: cosmrs::Denom::from_str(&coins.1.denom).expect("denom"),
+        denom: cosmrs::Denom::from_str(&pair.1.denom).expect("denom"),
     };
     (msg, fund)
 }
@@ -64,14 +64,14 @@ pub async fn simulate_order(
     write_client: &mut CosmWasmWriteClient,
     cosmos_query_client: &mut CosmosQueryClient,
     order_contract: String,
-    coins_pair: String,
+    coins_pair: &String,
     signing_key: &cosmrs::crypto::secp256k1::SigningKey,
     rpc: &str,
     tip: &Tip,
     gas: Gas,
 ) {
     log::info!("========================= simulate_order =========================");
-    let (msg, fund) = randomize_order(coins_pair, tip.block);
+    let (msg, fund) = randomize_order(&coins_pair, tip.block);
 
     println!("msg: {:?}", msg);
 
