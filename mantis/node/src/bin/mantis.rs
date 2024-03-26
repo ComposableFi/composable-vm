@@ -25,7 +25,6 @@ use mantis_node::{
             cosmwasm::{smart_query, to_exec_signed, to_exec_signed_with_fund},
             *,
         },
-        solve::randomize_order,
     },
     prelude::*,
     solver::{orderbook::OrderList, solution::Solution},
@@ -149,7 +148,7 @@ async fn solve(
     let all_orders = get_all_orders(order_contract, cosmos_query_client, tip).await;
     if !all_orders.is_empty() {
         let cows_per_pair = mantis_node::mantis::solve::do_cows(all_orders);
-        let cows_cvm = mantis_node::mantis::solve::route(cows_per_pair, all_orders);
+        let cows_cvm = route(cows_per_pair, all_orders);
         let cvm_rest = mantis_node::mantis::cosmos::client::get_cvm_routing_data(rpc).await;
         for (cows, optimal_price) in cows_per_pair {
             send_solution(

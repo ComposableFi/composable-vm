@@ -1,4 +1,9 @@
-async fn get_all_orders(
+use cw_mantis_order::OrderItem;
+
+use super::cosmos::client::{CosmWasmReadClient, Tip};
+
+
+pub async fn get_all_orders(
     order_contract: &String,
     cosmos_query_client: &mut CosmWasmReadClient,
     tip: &Tip,
