@@ -152,6 +152,7 @@
           NIX_BUILD_FLAKE = "true";
           RUST_BACKTRACE = "full";
           CARGO_PROFILE_RELEASE_BUILD_OVERRIDE_DEBUG = true;
+          RUSTFLAGS="$RUSTFLAGS -A warnings";
           buildInputs = [pkgs.protobuf];
         };
         cw-cvm-outpost = makeCosmwasmContract "cw-cvm-outpost" rust "--no-default-features --features=std,json-schema,cosmos";
