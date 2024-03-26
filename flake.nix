@@ -2,13 +2,9 @@
   description = "CVM and MANTIS";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/23.11";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     rust-overlay = {
       url = "github:oxalica/rust-overlay";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    nix2container = {
-      url = "github:nlewo/nix2container";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     crane = {
@@ -32,7 +28,6 @@
       url = "github:ComposableFi/networks";
     };
 
-
     fastapi-cache-src = {
       url = "github:long2ice/fastapi-cache";
       flake = false;
@@ -42,7 +37,6 @@
       url = github:dzmitry-lahoda-forks/scip/7f083e91574527c8fb788c608e3b47f39217b47b;
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    devenv.url = "github:cachix/devenv";
     strictly-typed-pandas-src = {
       url = "github:nanne-aben/strictly_typed_pandas";
       flake = false;
@@ -93,7 +87,6 @@
   }:
     flake-parts.lib.mkFlake {inherit inputs;} {
       imports = [
-        inputs.devenv.flakeModule
       ];
       # would be happy to support more, so solver engines are crazy heavy on some hardcode deps
       systems = ["x86_64-linux" "aarch64-darwin"];
