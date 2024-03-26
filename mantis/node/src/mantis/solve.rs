@@ -53,7 +53,7 @@ pub fn do_cows(all_orders: Vec<OrderItem>) -> SolutionsPerPair {
                 let filled = x.amount_out.to_u128().expect("u128");
                 OrderSolution {
                     order_id: x.id,
-                    cow_out_amount: filled.into(),                    
+                    cow_out_amount: filled.into(),
                     cross_chain_part: Some(OrderAmount::All),
                 }
             })

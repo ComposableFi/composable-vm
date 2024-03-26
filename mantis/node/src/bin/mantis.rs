@@ -128,7 +128,7 @@ async fn simulate_orders(simulate_args: &SimulateArgs) {
     )
     .expect("mnemonic");
     let gas = args.gas;
-    let mut cosmos_query_client = create_cosmos_query_client(&args.rpc_centauri).await;
+    let mut cosmos_query_client = create_cocsmos_query_client(&args.rpc_centauri).await;
     let mut write_client = create_wasm_write_client(&args.rpc_centauri).await;
     log::info!("Simulating orders");
 

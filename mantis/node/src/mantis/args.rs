@@ -23,7 +23,6 @@ pub struct GltArgs {
     pub command: GltCommands,
 }
 
-
 #[derive(Debug, Subcommand)]
 pub enum GltCommands {
     // given offchain configuration, validates is
@@ -34,7 +33,6 @@ pub enum GltCommands {
     /// adds specific things to offchain config
     Add,
 }
-    
 
 #[derive(Debug, Parser)]
 pub struct IdArgs {
@@ -70,22 +68,20 @@ pub struct SharedArgs {
     /// Order contract on Centauri
     #[arg(long)]
     pub order_contract: String,
-        /// wallet to use.
+    /// wallet to use.
     /// For now BIP39 normalized English mnemonic empty passphrase with Kepler default derivation supported
     #[arg(long)]
     pub wallet: String,
 
-
     #[arg(long, default_value_t = 1_000_000_000)]
     pub gas: Gas,
-
 }
 
 #[derive(clap::Parser, Debug)]
 pub struct SimulateArgs {
     #[command(flatten)]
     pub shared: SharedArgs,
-    
+
     /// CVM contract on Centauri. Optional, only if consider routing via cross chain CVM.
     #[arg(long)]
     pub cvm_contract: Option<String>,

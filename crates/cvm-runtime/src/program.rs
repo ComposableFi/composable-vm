@@ -22,4 +22,3 @@ pub struct Program<Instructions> {
     /// list of instructions to be executed
     pub instructions: Instructions,
 }
-

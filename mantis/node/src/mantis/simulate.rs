@@ -2,15 +2,20 @@ use cosmrs::{tendermint::block::Height, tx::Msg, Gas};
 use cw_mantis_order::{OrderItem, OrderSolution, OrderSubMsg};
 
 use crate::{
-    mantis::cosmos::{client::{simulate_and_set_fee, tx_broadcast_single_signed_msg}, cosmwasm::to_exec_signed_with_fund}, prelude::*, solver::{orderbook::OrderList, solution::Solution, types::OrderType}
+    mantis::cosmos::{
+        client::{simulate_and_set_fee, tx_broadcast_single_signed_msg},
+        cosmwasm::to_exec_signed_with_fund,
+    },
+    prelude::*,
+    solver::{orderbook::OrderList, solution::Solution, types::OrderType},
 };
 
-use super::cosmos::{client::{timeout, CosmWasmWriteClient, CosmosQueryClient, Tip}, cosmwasm::parse_coin_pair};
+use super::cosmos::{
+    client::{timeout, CosmWasmWriteClient, CosmosQueryClient, Tip},
+    cosmwasm::parse_coin_pair,
+};
 
-pub fn randomize_order(
-    pair: &String,
-    tip: Height,
-) -> (cw_mantis_order::ExecMsg, cosmrs::Coin) {
+pub fn randomize_order(pair: &String, tip: Height) -> (cw_mantis_order::ExecMsg, cosmrs::Coin) {
     let pair = parse_coin_pair(pair);
 
     let pair = if rand::random::<bool>() {
@@ -39,15 +44,12 @@ pub fn randomize_order(
     (msg, fund)
 }
 
-
 pub fn randomize_coin(coin_0_amount: u128) -> u128 {
     let delta_0 = 1.max(coin_0_amount / 10);
     let coin_0_random = rand_distr::Uniform::new(coin_0_amount - delta_0, coin_0_amount + delta_0);
     let coin_0_random: u128 = coin_0_random.sample(&mut rand::thread_rng());
     coin_0_random
 }
-
-
 
 /// `assets` - is comma separate list. each entry is amount u64 glued with alphanumeric denomination
 /// that is splitted into array of CosmWasm coins.
@@ -77,7 +79,6 @@ pub async fn simulate_order(
 
     let auth_info = simulate_and_set_fee(signing_key, &tip.account, gas).await;
 
-    
     let msg = to_exec_signed_with_fund(signing_key, order_contract, msg, fund);
 
     let result = tx_broadcast_single_signed_msg(

@@ -18,7 +18,6 @@ pub type CvmProgram = crate::Program<Vec<CvmInstruction>>;
 
 pub type CvmSpawnRef<'a> = (&'a CvmProgram, &'a CvmFundsFilter);
 
-
 impl Default for CvmProgram {
     fn default() -> Self {
         Self {

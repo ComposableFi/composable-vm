@@ -1,5 +1,6 @@
 //! just make all math/containers/number at hand. for now i concern to be as close as possible to the original python code in simplicity.
 pub use itertools::*;
+pub use log::{debug, error, info, trace, warn};
 pub use num_traits::cast::ToPrimitive;
 pub use rand::distributions::Standard;
 pub use rand::prelude::*;
@@ -15,7 +16,6 @@ pub use std::fmt::format;
 pub use std::fmt::Debug;
 pub use std::str::FromStr;
 pub use tuples::*;
-pub use log::{debug, error, info, trace, warn};
 
 #[cfg(test)]
 pub use cosmwasm_std::testing::*;

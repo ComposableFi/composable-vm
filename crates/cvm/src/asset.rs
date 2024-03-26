@@ -159,11 +159,9 @@ impl From<(u64, u64)> for Amount {
 }
 
 impl Amount {
-
-
     pub const MAX_PARTS: u64 = 1_000_000_000_000_000_000;
 
-    pub fn one() -> Self{
+    pub fn one() -> Self {
         Self::absolute(1)
     }
 
