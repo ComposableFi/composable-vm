@@ -1,10 +1,7 @@
 use blackbox_rs::{prelude::*, types::*, Client};
 /// Given total amount it, order owners and desired out, produce CVM program from and by requesting route
 use cvm_runtime::{
-    outpost::GetConfigResponse,
-    proto::cvm,
-    shared::{CvmFundsFilter, CvmInstruction, CvmProgram, Displayed, XcAddr},
-    Amount, AssetId, ExchangeId,
+    network, outpost::GetConfigResponse, proto::cvm, shared::{CvmFundsFilter, CvmInstruction, CvmProgram, Displayed, XcAddr}, Amount, AssetId, ExchangeId
 };
 
 /// input batched summarized from users for routing
@@ -32,7 +29,7 @@ impl BankInput {
 }
 
 /// given route and CVM stub with amount, build it to the end
-fn build_next(current: &mut CvmProgram, next: &mut [NextItem], glt: &GetConfigResponse) {
+fn build_next(current: &mut CvmProgram, next: &mut [NextItem], glt: &GetConfigResponse, salt: &[u8]) {
     match next.split_first_mut() {
         Some((head, rest)) => match head {
             NextItem::Exchange(exchange) => {
@@ -40,12 +37,13 @@ fn build_next(current: &mut CvmProgram, next: &mut [NextItem], glt: &GetConfigRe
                 current
                     .instructions
                     .push(exchange);
-                build_next(current, rest, &glt);
+                build_next(current, rest, &glt, salt);
             }
             NextItem::Spawn(spawn) => {
-                let spawn = new_spawn(spawn, glt);
+                let mut program = CvmProgram::default();
+                build_next(&mut program, rest, glt, salt);
+                let spawn = new_spawn(spawn, program, glt, salt);
                 current.instructions.push(spawn);
-                build_next(spawn.program, rest, glt);
             }
         },
         None => {
@@ -54,48 +52,54 @@ fn build_next(current: &mut CvmProgram, next: &mut [NextItem], glt: &GetConfigRe
     }
 }
 
-fn new_spawn(spawn: &mut Spawn, glt: &GetConfigResponse) -> CvmInstruction {
-    let in_asset_id = match spawn.in_asset_id {
+fn new_spawn(spawn: &Spawn, program: CvmProgram, glt: &GetConfigResponse, salt: &[u8]) -> CvmInstruction {
+    let in_asset_id = match spawn.in_asset_id.as_ref().expect("in_asset_id") {
         InAssetId::Variant1(id) => id.parse().expect("in_asset_id"),
         _ => panic!("in_asset_id"),
     };
 
-    let in_amount : Amount = match spawn.in_asset_amount {
-        InAssetAmount::Variant0(x) => x.try_into().expect("in_asset_amount"),
+    let in_amount : Amount = match spawn.in_asset_amount.as_ref().expect("in_asset_amount") {
+        InAssetAmount::Variant0(x) => (*x).try_into().expect("in_asset_amount"),
         InAssetAmount::Variant1(x) => x.parse().expect("in_asset_amount"),
-        InAssetAmount::Variant2(x) => Amount::try_floor_f64(x).expect("in_asset_amount"),
+        InAssetAmount::Variant2(x) => Amount::try_floor_f64(*x).expect("in_asset_amount"),
     };
 
-    let out_asset_id = match spawn.out_asset_id {
+    let out_asset_id = match &spawn.out_asset_id {
         OutAssetId::Variant1(id) => id.parse().expect("in_asset_id"),
         _ => panic!("in_asset_id"),
     };
 
+    let network_id = glt
+        .assets
+        .iter()
+        .find(|x| x.asset_id == out_asset_id)
+        .map(|x| x.network_id)
+        .expect("network_id");
     CvmInstruction::Spawn {
-        program: Box::new(CvmProgram::default()),
-        network_id: todo!(),
-        salt: todo!(),
-        assets: todo!(),
+        program,
+        network_id,
+        salt : salt.to_vec(),
+        assets: CvmFundsFilter::one(in_asset_id, in_amount)
     }
 }
 
 fn new_exchange(exchange: &Exchange) -> CvmInstruction {
-    let exchange_id = match exchange.pool_id {
+    let exchange_id = match &exchange.pool_id {
         PoolId::Variant1(id) => id.parse().expect("pool id"),
         _ => panic!("exchange_id"),
     };
-    let in_asset_id = match exchange.in_asset_id {
+    let in_asset_id = match &exchange.in_asset_id {
         InAssetId::Variant1(id) => id.parse().expect("in_asset_id"),
         _ => panic!("in_asset_id"),
     };
 
-    let in_amount : Amount = match exchange.in_asset_amount {
-        InAssetAmount::Variant0(x) => x.try_into().expect("in_asset_amount"),
+    let in_amount : Amount = match &exchange.in_asset_amount {
+        InAssetAmount::Variant0(x) => (*x).try_into().expect("in_asset_amount"),
         InAssetAmount::Variant1(x) => x.parse().expect("in_asset_amount"),
-        InAssetAmount::Variant2(x) => Amount::try_floor_f64(x).expect("in_asset_amount"),
+        InAssetAmount::Variant2(x) => Amount::try_floor_f64(*x).expect("in_asset_amount"),
     };
 
-    let out_asset_id = match exchange.out_asset_id {
+    let out_asset_id = match &exchange.out_asset_id {
         OutAssetId::Variant1(id) => id.parse().expect("in_asset_id"),
         _ => panic!("in_asset_id"),
     };
@@ -108,7 +112,7 @@ fn new_exchange(exchange: &Exchange) -> CvmInstruction {
 }
 
 /// `order_accounts` - account of order where to dispatch amounts (part of whole)
-async fn route(server: &str, input: BankInput, glt: &GetConfigResponse) -> CvmProgram {
+async fn route(server: &str, input: BankInput, glt: &GetConfigResponse, salt: &[u8]) -> CvmProgram {
     let blackbox: Client = Client::new(server);
     let mut route = blackbox
         .simulator_router_simulator_router_get(
@@ -125,6 +129,6 @@ async fn route(server: &str, input: BankInput, glt: &GetConfigResponse) -> CvmPr
         .expect("at least one route");
 
     let mut program = CvmProgram::default();
-    build_next(&mut program, &mut route.next, glt);
+    build_next(&mut program, &mut route.next, glt, salt);
     return program;
 }
