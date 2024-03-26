@@ -33,9 +33,11 @@ use mantis_node::{
 async fn main() {
     let args = MantisArgs::parsed();
 
-    match args.command {
+    match &args.command {
         MantisCommands::Solve(_) => todo!(),
-        MantisCommands::Simulate(_) => todo!(),
+        MantisCommands::Simulate(x) => {
+            simulate_orders(&args, x).await;
+        }
         
         MantisCommands::Id(_) => todo!(),
         MantisCommands::Glt(_) => todo!(),
@@ -134,7 +136,19 @@ async fn main() {
     }
 }
 
+async fn simulate_orders(args: &MantisArgs, x: &SimulateArgs) -> _ {
+    todo!()
+}
 
+
+/// given key and latest block and sequence number, produces binary salt for cross chain block
+/// isolating execution of one cross chain transaction from other
+fn get_salt(signing_key: &cosmrs::crypto::secp256k1::SigningKey, tip:&Tip) -> Vec<u8> {
+    let mut base = signing_key.public_key().to_bytes().to_vec();
+    base.extend(tip.block.value().to_be_bytes().to_vec());
+    base.extend(tip.account.sequence.to_be_bytes().to_vec());
+    base
+}
 
 /// gets orders, groups by pairs
 /// solves them using algorithm
@@ -154,12 +168,14 @@ async fn solve(
     tip: &Tip,
     gas: Gas,
 ) {
+
+    let salt = get_salt(signing_key, tip);
     println!("========================= solve =========================");
     let all_orders = get_all_orders(order_contract, cosmos_query_client, tip).await;
     if !all_orders.is_empty() {
         let cows_per_pair = mantis_node::mantis::solve::do_cows(all_orders);
-        let cows_cvm = blackbox::route(cows_per_pair, all_orders).await;
-        let cvm_rest = get_cvm_glt(cvm_contact, &mut cosmos_query_client).await;
+        let cvm_glt = get_cvm_glt(cvm_contact, &mut cosmos_query_client).await;
+        let cows_cvm = blackbox::route(cows_per_pair, all_orders, &cvm_glt, salt.as_ref()).await;
         for (cows, optimal_price) in cows_per_pair {
             send_solution(
                 cows,
@@ -193,7 +209,7 @@ async fn send_solution(
     };
 
     let auth_info = simulate_and_set_fee(signing_key, &tip.account, gas).await;
-    let msg = cw_mantis_order::ExecMsg::Solve { msg: solution };
+    let msg = cw_mantis_order::ExecMsg::Settle { msg: solution };
     let msg = to_exec_signed(signing_key, order_contract.clone(), msg);
     let result = tx_broadcast_single_signed_msg(
         msg.to_any().expect("proto"),
