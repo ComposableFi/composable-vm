@@ -114,5 +114,7 @@ pub struct GetConfigResponse {
 }
 
 impl GetConfigResponse {
-    pub fn get_network_for_asset() 
+    pub fn get_network_for_asset(&self, asset_id:AssetId  ) -> NetworkId {
+        self.assets.iter().find(|x| x.asset_id == asset_id).map(|x| x.network_id).expect("network_id")
+    } 
 }

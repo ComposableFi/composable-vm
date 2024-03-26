@@ -32,7 +32,7 @@ impl BankInput {
 }
 
 /// given route and CVM stub with amount, build it to the end
-fn build_next(current: &mut CvmProgram, next: &mut [NextItem]) {
+fn build_next(current: &mut CvmProgram, next: &mut [NextItem], glt: &GetConfigResponse) {
     match next.split_first_mut() {
         Some((head, rest)) => match head {
             NextItem::Exchange(exchange) => {
@@ -40,12 +40,12 @@ fn build_next(current: &mut CvmProgram, next: &mut [NextItem]) {
                 current
                     .instructions
                     .push(exchange);
-                build_next(current, rest);
+                build_next(current, rest, &glt);
             }
             NextItem::Spawn(spawn) => {
-                let spawn = new_spawn(spawn);
+                let spawn = new_spawn(spawn, glt);
                 current.instructions.push(spawn);
-                build_next(spawn.program, rest);
+                build_next(spawn.program, rest, glt);
             }
         },
         None => {
@@ -54,11 +54,7 @@ fn build_next(current: &mut CvmProgram, next: &mut [NextItem]) {
     }
 }
 
-fn new_spawn(spawn: &mut Spawn, glt: GetConfigResponse) -> CvmInstruction {
-    let exchange_id = match spawn.pool_id {
-        PoolId::Variant1(id) => id.parse().expect("pool id"),
-        _ => panic!("exchange_id"),
-    };
+fn new_spawn(spawn: &mut Spawn, glt: &GetConfigResponse) -> CvmInstruction {
     let in_asset_id = match spawn.in_asset_id {
         InAssetId::Variant1(id) => id.parse().expect("in_asset_id"),
         _ => panic!("in_asset_id"),
@@ -76,9 +72,10 @@ fn new_spawn(spawn: &mut Spawn, glt: GetConfigResponse) -> CvmInstruction {
     };
 
     CvmInstruction::Spawn {
-        give: CvmFundsFilter::one(in_asset_id, in_amount),
-        want: CvmFundsFilter::one(out_asset_id, Amount::one()),
         program: Box::new(CvmProgram::default()),
+        network_id: todo!(),
+        salt: todo!(),
+        assets: todo!(),
     }
 }
 
@@ -111,7 +108,7 @@ fn new_exchange(exchange: &Exchange) -> CvmInstruction {
 }
 
 /// `order_accounts` - account of order where to dispatch amounts (part of whole)
-async fn route(server: &str, input: BankInput, glt: GetConfigResponse) -> CvmProgram {
+async fn route(server: &str, input: BankInput, glt: &GetConfigResponse) -> CvmProgram {
     let blackbox: Client = Client::new(server);
     let mut route = blackbox
         .simulator_router_simulator_router_get(
@@ -128,6 +125,6 @@ async fn route(server: &str, input: BankInput, glt: GetConfigResponse) -> CvmPro
         .expect("at least one route");
 
     let mut program = CvmProgram::default();
-    build_next(&mut program, &mut route.next);
+    build_next(&mut program, &mut route.next, glt);
     return program;
 }
