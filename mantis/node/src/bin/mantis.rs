@@ -19,7 +19,7 @@ use cosmrs::{
 use cw_mantis_order::{Amount, OrderItem, OrderSolution, OrderSubMsg, SolutionSubMsg};
 use mantis_node::{
     mantis::{
-        args::*, autopilot, cosmos::{
+        args::*, autopilot, blackbox, cosmos::{
             client::*,
             cosmwasm::{smart_query, to_exec_signed, to_exec_signed_with_fund},
             *,
@@ -149,8 +149,8 @@ async fn solve(
     let all_orders = get_all_orders(order_contract, cosmos_query_client, tip).await;
     if !all_orders.is_empty() {
         let cows_per_pair = mantis_node::mantis::solve::do_cows(all_orders);
-        let cows_cvm = route(cows_per_pair, all_orders);
-        let cvm_rest = get_cvm_glt(cvm_contact, rpc).await;
+        let cows_cvm = blackbox::route(cows_per_pair, all_orders).await;
+        let cvm_rest = get_cvm_glt(cvm_contact, &mut cosmos_query_client).await;
         for (cows, optimal_price) in cows_per_pair {
             send_solution(
                 cows,
