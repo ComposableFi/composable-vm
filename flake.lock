@@ -1729,8 +1729,7 @@
         "pyscipopt-src": "pyscipopt-src",
         "rust-overlay": "rust-overlay",
         "scip": "scip",
-        "scipy-src": "scipy-src",
-        "strictly-typed-pandas-src": "strictly-typed-pandas-src"
+        "scipy-src": "scipy-src"
       }
     },
     "rust-overlay": {
@@ -1921,22 +1920,6 @@
       "original": {
         "owner": "freshautomations",
         "repo": "stoml",
-        "type": "github"
-      }
-    },
-    "strictly-typed-pandas-src": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1706293259,
-        "narHash": "sha256-GLa3vBaJdP4eBwE/9sxmruD7Dj0YoC2aJLR18xQScGM=",
-        "owner": "nanne-aben",
-        "repo": "strictly_typed_pandas",
-        "rev": "ab26ddf5585860d9e50b3696f2313386a2d02e98",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nanne-aben",
-        "repo": "strictly_typed_pandas",
         "type": "github"
       }
     },

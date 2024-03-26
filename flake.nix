@@ -37,10 +37,6 @@
       url = github:dzmitry-lahoda-forks/scip/7f083e91574527c8fb788c608e3b47f39217b47b;
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    strictly-typed-pandas-src = {
-      url = "github:nanne-aben/strictly_typed_pandas";
-      flake = false;
-    };
 
     maturin-src = {
       url = "github:PyO3/maturin";
@@ -200,22 +196,6 @@
           checkGroups = [];
         };
 
-
-        # https://github.com/nanne-aben/strictly_typed_pandas/issues/140
-        strictly-typed-pandas-latest = pkgs.python3Packages.buildPythonPackage {
-          name = "strictly-typed-pandas";
-          version = "0.0.1";
-          format = "pyproject";
-
-          src = inputs.strictly-typed-pandas-src;
-
-          nativeBuildInputs = with pkgs.python3Packages; [
-            poetry-core
-            setuptools
-            setuptools-git-versioning
-          ];
-        };
-
         scipy-latest = pkgs.python3Packages.buildPythonPackage {
           name = "scipy";
           version = "0.0.1";
@@ -338,7 +318,6 @@
             cvxpy = cvxpy-latest;
 
             maturin = maturin-latest;
-            strictly-typed-pandas = strictly-typed-pandas-latest;
           });
 
         envShell = mkPoetryEnv {
@@ -416,24 +395,16 @@
           OSMOSIS_POOLS = env.OSMOSIS_POOLS;
           ASTROPORT_POOLS = env.ASTROPORT_POOLS;
           SKIP_MONEY = env.SKIP_MONEY;
-          LD_LIBRARY_PATH = pkgs.lib.strings.makeLibraryPath [
-            pkgs.stdenv.cc.cc.lib
-            pkgs.zlib
-            pkgs.zlib.dev
-            pkgs.zlib.out
 
-            "${inputs'.scip.packages.scip}/lib"
-          ];
           BETTER_EXCEPTIONS = 1;
 
           buildInputs =
             [
-              pkgs.nix
-              pkgs.zlib
-              pkgs.zlib.dev
-              pkgs.zlib.out
+              inputs'.scip.packages.scip
               devour-flake
+              envShell
               pkgs.conda
+              pkgs.nix
               pkgs.nodejs
               pkgs.nodePackages.npm
               pkgs.poetry
@@ -441,14 +412,13 @@
               pkgs.python3Packages.flit
               pkgs.python3Packages.flit-core
               pkgs.python3Packages.uvicorn
+              pkgs.stdenv.cc.cc.lib
               pkgs.virtualenv
               pkgs.zlib
               pkgs.zlib.dev
               pkgs.zlib.out
               rust.cargo
               rust.rustc
-              envShell
-              devour-flake
               # pkgs.vscode-extensions.yzhang.markdown-all-in-one
               # pkgs.vscode-extensions.ms-python.python
               # pkgs.vscode-extensions.ms-python.vscode-pylance
@@ -477,7 +447,7 @@
             cosmwasm-json-schema-ts
             mantis-blackbox
             pyscipopt-latest
-            maturin-latest          
+            maturin-latest
             ;
           all =
             pkgs.linkFarmFromDrvs "all"
