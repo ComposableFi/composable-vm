@@ -32,6 +32,15 @@ use mantis_node::{
 #[tokio::main]
 async fn main() {
     let args = MantisArgs::parsed();
+
+    match args.command {
+        MantisCommands::Solve(_) => todo!(),
+        MantisCommands::Simulate(_) => todo!(),
+        
+        MantisCommands::Id(_) => todo!(),
+        MantisCommands::Glt(_) => todo!(),
+    }
+
     match args.command {
         MantisCommands::Solve(args) => {
             let mut wasm_read_client = create_wasm_query_client(&args.grpc_centauri).await;

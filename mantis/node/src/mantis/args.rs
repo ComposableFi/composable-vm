@@ -9,8 +9,10 @@ pub struct MantisArgs {
 
 #[derive(Debug, Subcommand)]
 pub enum MantisCommands {
+    /// solves orders
     Solve(SolverArgs),
     Id(IdArgs),
+    /// spams chain with test orders
     Simulate(SimulateArgs),
     Glt(GltArgs),
 }
@@ -107,6 +109,9 @@ pub struct SolverArgs {
     /// the problem to solve
     #[arg(long, default_value_t = 10)]
     pub solve_period_seconds: u16,
+
+    /// http url to call with parameters to obtain route
+    pub solution_provider: String,
 }
 
 impl MantisArgs {
