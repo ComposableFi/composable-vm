@@ -484,8 +484,7 @@
             cosmwasm-json-schema-ts
             mantis-blackbox
             pyscipopt-latest
-            maturin-latest
-            
+            maturin-latest          
             ;
           all =
             pkgs.linkFarmFromDrvs "all"

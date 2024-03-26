@@ -26,6 +26,14 @@ pub struct AssetId(
     pub Displayed<u128>,
 );
 
+impl FromStr for AssetId {
+    type Err = <u128 as FromStr>::Err;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        Ok(AssetId(Displayed(u128::from_str(s)?)))
+    }
+}
+
 impl core::fmt::Display for AssetId {
     fn fmt(&self, fmtr: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         self.0 .0.fmt(fmtr)
@@ -94,6 +102,25 @@ pub struct Amount {
     pub slope: Displayed<u64>,
 }
 
+impl TryFrom<i64> for Amount {
+    type Error = ArithmeticError;
+
+    fn try_from(value: i64) -> Result<Self, Self::Error> {
+        if value < 0 {
+            return Err(ArithmeticError::Underflow);
+        }
+        Ok(Amount::absolute(value as u64 as u128))
+    }
+}
+
+impl FromStr for Amount {
+    type Err = <u128 as FromStr>::Err;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        u128::from_str(s).map(Amount::absolute)
+    }
+}
+
 /// analog of `Coin`s in IBC/CW, but with CVM numeric id and amount
 /// requires registry to map id back and forth as needed
 #[cfg_attr(
@@ -132,7 +159,23 @@ impl From<(u64, u64)> for Amount {
 }
 
 impl Amount {
+
+
     pub const MAX_PARTS: u64 = 1_000_000_000_000_000_000;
+
+    pub fn one() -> Self{
+        Self::absolute(1)
+    }
+
+    pub fn try_floor_f64(value: f64) -> Result<Self, ArithmeticError> {
+        if value < 0.0 || value.is_nan() {
+            Err(ArithmeticError::Underflow)
+        } else if value > u128::MAX as f64 {
+            Err(ArithmeticError::Underflow)
+        } else {
+            Ok((value as u128).into())
+        }
+    }
 
     pub const fn new(intercept: u128, slope: u64) -> Self {
         Self {

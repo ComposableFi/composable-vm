@@ -113,6 +113,6 @@ pub struct GetConfigResponse {
     pub network_assets: Vec<NetworkAssetItem>,
 }
 
-// impl GetConfigResponse {
-//     pub fn 
-// }
+impl GetConfigResponse {
+    pub fn get_network_for_asset() 
+}
