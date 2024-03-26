@@ -19,9 +19,16 @@ use cosmrs::{
 use cw_mantis_order::{Amount, OrderItem, OrderSolution, OrderSubMsg, SolutionSubMsg};
 use mantis_node::{
     mantis::{
-        args::*, autopilot, blackbox, cosmos::{
-            client::*, cosmwasm::{smart_query, to_exec_signed, to_exec_signed_with_fund}, cvm::get_salt, *
-        }, indexer::{get_all_orders, get_cvm_glt}, simulate
+        args::*,
+        autopilot, blackbox,
+        cosmos::{
+            client::*,
+            cosmwasm::{smart_query, to_exec_signed, to_exec_signed_with_fund},
+            cvm::get_salt,
+            *,
+        },
+        indexer::{get_all_orders, get_cvm_glt},
+        simulate,
     },
     prelude::*,
     solver::{orderbook::OrderList, solution::Solution},
@@ -36,7 +43,7 @@ async fn main() {
         MantisCommands::Simulate(x) => {
             simulate_orders(x).await;
         }
-        
+
         MantisCommands::Id(_) => todo!(),
         MantisCommands::Glt(_) => todo!(),
     }
@@ -53,7 +60,6 @@ async fn main() {
     //         let gas = args.gas;
     //         let mut cosmos_query_client = create_cosmos_query_client(&args.rpc_centauri).await;
     //         let mut write_client = create_wasm_write_client(&args.rpc_centauri).await;
-            
 
     //         let start = std::time::Instant::now();
     //         loop {
@@ -110,33 +116,30 @@ async fn main() {
     //         },
     //     },
     // }
-
 }
 
-async fn simulate_orders(simulate_args: &SimulateArgs)  {
-
+async fn simulate_orders(simulate_args: &SimulateArgs) {
     let args = &simulate_args.shared;
     let mut wasm_read_client = create_wasm_query_client(&args.grpc_centauri).await;
 
-            let signer = mantis_node::mantis::cosmos::signer::from_mnemonic(
-                args.wallet.as_str(),
-                "m/44'/118'/0'/0/0",
-            )
-            .expect("mnemonic");
-            let gas = args.gas;
-            let mut cosmos_query_client = create_cosmos_query_client(&args.rpc_centauri).await;
-            let mut write_client = create_wasm_write_client(&args.rpc_centauri).await;
+    let signer = mantis_node::mantis::cosmos::signer::from_mnemonic(
+        args.wallet.as_str(),
+        "m/44'/118'/0'/0/0",
+    )
+    .expect("mnemonic");
+    let gas = args.gas;
+    let mut cosmos_query_client = create_cosmos_query_client(&args.rpc_centauri).await;
+    let mut write_client = create_wasm_write_client(&args.rpc_centauri).await;
     log::info!("Simulating orders");
 
-    let tip = get_latest_block_and_account_by_key(
-        &args.rpc_centauri,
-        &args.grpc_centauri,
-        &signer,
-    )
-    .await;
+    let tip =
+        get_latest_block_and_account_by_key(&args.rpc_centauri, &args.grpc_centauri, &signer).await;
 
-    let pair = simulate_args.coins.choose(&mut rand::thread_rng()).expect("some");
-    
+    let pair = simulate_args
+        .coins
+        .choose(&mut rand::thread_rng())
+        .expect("some");
+
     simulate::simulate_order(
         &mut write_client,
         &mut cosmos_query_client,
@@ -149,7 +152,6 @@ async fn simulate_orders(simulate_args: &SimulateArgs)  {
     )
     .await;
 }
-
 
 /// gets orders, groups by pairs
 /// solves them using algorithm
@@ -169,27 +171,27 @@ async fn solve(
     tip: &Tip,
     gas: Gas,
 ) {
-
-    let salt = crate::cvm::get_salt(signing_key, tip);
-    println!("========================= solve =========================");
-    let all_orders = get_all_orders(order_contract, cosmos_query_client, tip).await;
-    if !all_orders.is_empty() {
-        let cows_per_pair = mantis_node::mantis::solve::do_cows(all_orders);
-        let cvm_glt = get_cvm_glt(cvm_contact, &mut cosmos_query_client).await;
-        let cows_cvm = blackbox::route(cows_per_pair, all_orders, &cvm_glt, salt.as_ref()).await;
-        for (cows, optimal_price) in cows_per_pair {
-            send_solution(
-                cows,
-                tip,
-                optimal_price,
-                signing_key,
-                order_contract,
-                rpc,
-                gas,
-            )
-            .await;
-        }
-    }
+    panic!()
+    // let salt = crate::cvm::get_salt(signing_key, tip);
+    // println!("========================= solve =========================");
+    // let all_orders = get_all_orders(order_contract, cosmos_query_client, tip).await;
+    // if !all_orders.is_empty() {
+    //     let cows_per_pair = mantis_node::mantis::solve::do_cows(all_orders);
+    //     let cvm_glt = get_cvm_glt(cvm_contact, &mut cosmos_query_client).await;
+    //     let cows_cvm = blackbox::route(cows_per_pair, all_orders, &cvm_glt, salt.as_ref()).await;
+    //     for (cows, optimal_price) in cows_per_pair {
+    //         send_solution(
+    //             cows,
+    //             tip,
+    //             optimal_price,
+    //             signing_key,
+    //             order_contract,
+    //             rpc,
+    //             gas,
+    //         )
+    //         .await;
+    //     }
+    // }
 }
 
 async fn send_solution(
@@ -222,4 +224,3 @@ async fn send_solution(
     .await;
     println!("result: {:?}", result);
 }
-
