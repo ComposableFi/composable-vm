@@ -1,12 +1,11 @@
-use cosmrs::tendermint::block::Height;
+use cosmrs::{tendermint::block::Height, tx::Msg, Gas};
 use cw_mantis_order::{OrderItem, OrderSolution, OrderSubMsg};
 
 use crate::{
-    prelude::*,
-    solver::{orderbook::OrderList, solution::Solution, types::OrderType},
+    mantis::cosmos::{client::{simulate_and_set_fee, tx_broadcast_single_signed_msg}, cosmwasm::to_exec_signed_with_fund}, prelude::*, solver::{orderbook::OrderList, solution::Solution, types::OrderType}
 };
 
-use super::cosmos::client::timeout;
+use super::cosmos::client::{timeout, CosmWasmWriteClient, CosmosQueryClient, Tip};
 
 pub fn randomize_order(
     coins_pair: String,
@@ -62,7 +61,7 @@ fn randomize_coin(coin_0_amount: u128) -> u128 {
 /// timeout is also randomized starting from 10 to 100 blocks
 ///
 /// Also calls `timeout` so old orders are cleaned.
-async fn simulate_order(
+pub async fn simulate_order(
     write_client: &mut CosmWasmWriteClient,
     cosmos_query_client: &mut CosmosQueryClient,
     order_contract: String,
@@ -79,6 +78,7 @@ async fn simulate_order(
 
     let auth_info = simulate_and_set_fee(signing_key, &tip.account, gas).await;
 
+    
     let msg = to_exec_signed_with_fund(signing_key, order_contract, msg, fund);
 
     let result = tx_broadcast_single_signed_msg(

@@ -19,12 +19,11 @@ use cosmrs::{
 use cw_mantis_order::{Amount, OrderItem, OrderSolution, OrderSubMsg, SolutionSubMsg};
 use mantis_node::{
     mantis::{
-        args::*,
-        cosmos::{
+        args::*, autopilot, cosmos::{
             client::*,
             cosmwasm::{smart_query, to_exec_signed, to_exec_signed_with_fund},
             *,
-        },
+        }, indexer::{get_all_orders, get_cvm_glt}, simulate
     },
     prelude::*,
     solver::{orderbook::OrderList, solution::Solution},
@@ -58,7 +57,7 @@ async fn main() {
                             &signer,
                         )
                         .await;
-                        simulate_order(
+                        simulate::simulate_order(
                             &mut write_client,
                             &mut cosmos_query_client,
                             args.order_contract.clone(),
@@ -79,7 +78,7 @@ async fn main() {
                         &signer,
                     )
                     .await;
-                    cleanup(
+                    autopilot::cleanup(
                         &mut write_client,
                         &mut cosmos_query_client,
                         args.order_contract.clone(),
@@ -138,6 +137,8 @@ async fn main() {
 async fn solve(
     write_client: &mut CosmWasmWriteClient,
     cosmos_query_client: &mut CosmWasmReadClient,
+    // really this should query Python Blackbox
+    cvm_contact: &String,
     order_contract: &String,
     signing_key: &cosmrs::crypto::secp256k1::SigningKey,
     rpc: &str,
@@ -149,7 +150,7 @@ async fn solve(
     if !all_orders.is_empty() {
         let cows_per_pair = mantis_node::mantis::solve::do_cows(all_orders);
         let cows_cvm = route(cows_per_pair, all_orders);
-        let cvm_rest = mantis_node::mantis::cosmos::client::get_cvm_routing_data(rpc).await;
+        let cvm_rest = get_cvm_glt(cvm_contact, rpc).await;
         for (cows, optimal_price) in cows_per_pair {
             send_solution(
                 cows,

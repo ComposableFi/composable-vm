@@ -112,7 +112,7 @@ fn new_exchange(exchange: &Exchange) -> CvmInstruction {
 }
 
 /// `order_accounts` - account of order where to dispatch amounts (part of whole)
-async fn route(server: &str, input: BankInput, glt: &GetConfigResponse, salt: &[u8]) -> CvmProgram {
+pub async fn route(server: &str, input: BankInput, glt: &GetConfigResponse, salt: &[u8]) -> CvmProgram {
     let blackbox: Client = Client::new(server);
     let mut route = blackbox
         .simulator_router_simulator_router_get(

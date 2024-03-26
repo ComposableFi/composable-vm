@@ -1,5 +1,10 @@
+use cosmrs::{tx::Msg, Gas};
 
-async fn cleanup(
+use crate::{mantis::cosmos::{client::{simulate_and_set_fee, tx_broadcast_single_signed_msg}, cosmwasm::to_exec_signed}, prelude::*};
+
+use super::cosmos::client::{CosmWasmWriteClient, CosmosQueryClient, Tip};
+
+pub async fn cleanup(
     write_client: &mut CosmWasmWriteClient,
     cosmos_query_client: &mut CosmosQueryClient,
     order_contract: String,
@@ -26,6 +31,6 @@ async fn cleanup(
 }
 
 /// move protocol forwards, cranks auctions ending and also cleans up old orders
-async fn move(){
+async fn _move(){
 
 }
