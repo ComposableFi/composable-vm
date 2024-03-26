@@ -43,9 +43,81 @@ async fn main() {
         MantisCommands::Glt(_) => todo!(),
     }
 
-    match args.command {
-        MantisCommands::Solve(args) => {
-            let mut wasm_read_client = create_wasm_query_client(&args.grpc_centauri).await;
+    // match args.command {
+    //     MantisCommands::Solve(args) => {
+    //         let mut wasm_read_client = create_wasm_query_client(&args.grpc_centauri).await;
+
+    //         let signer = mantis_node::mantis::cosmos::signer::from_mnemonic(
+    //             args.wallet.as_str(),
+    //             "m/44'/118'/0'/0/0",
+    //         )
+    //         .expect("mnemonic");
+    //         let gas = args.gas;
+    //         let mut cosmos_query_client = create_cosmos_query_client(&args.rpc_centauri).await;
+    //         let mut write_client = create_wasm_write_client(&args.rpc_centauri).await;
+            
+
+    //         let start = std::time::Instant::now();
+    //         loop {
+
+    //             if start.elapsed().as_millis() % 10000 == 0 {
+    //                 let tip = get_latest_block_and_account_by_key(
+    //                     &args.rpc_centauri,
+    //                     &args.grpc_centauri,
+    //                     &signer,
+    //                 )
+    //                 .await;
+    //                 autopilot::cleanup(
+    //                     &mut write_client,
+    //                     &mut cosmos_query_client,
+    //                     args.order_contract.clone(),
+    //                     &signer,
+    //                     &args.rpc_centauri,
+    //                     &tip,
+    //                     gas,
+    //                 )
+    //                 .await;
+    //             };
+
+    //             let tip = get_latest_block_and_account_by_key(
+    //                 &args.rpc_centauri,
+    //                 &args.grpc_centauri,
+    //                 &signer,
+    //             )
+    //             .await;
+
+    //             solve(
+    //                 &mut write_client,
+    //                 &mut wasm_read_client,
+    //                 &args.order_contract,
+    //                 &signer,
+    //                 &args.rpc_centauri,
+    //                 &tip,
+    //                 gas,
+    //             )
+    //             .await;
+    //         }
+    //     }
+    //     MantisCommands::Id(args) => match args.command {
+    //         IdCommands::Asset(args) => match args.command {
+    //             AssetCommands::Gen {
+    //                 network_id,
+    //                 asset_id,
+    //             } => {
+    //                 println!(
+    //                     "{}",
+    //                     cvm_runtime::generate_asset_id(network_id.into(), 0, asset_id.into())
+    //                 );
+    //             }
+    //         },
+    //     },
+    // }
+
+}
+
+async fn simulate_orders(mantis_args: &MantisArgs, simulate_args: &SimulateArgs)  {
+
+    let mut wasm_read_client = create_wasm_query_client(&args.grpc_centauri).await;
 
             let signer = mantis_node::mantis::cosmos::signer::from_mnemonic(
                 args.wallet.as_str(),
@@ -54,101 +126,28 @@ async fn main() {
             .expect("mnemonic");
             let gas = args.gas;
             let mut cosmos_query_client = create_cosmos_query_client(&args.rpc_centauri).await;
-            print!("client 1");
             let mut write_client = create_wasm_write_client(&args.rpc_centauri).await;
-            print!("client 2");
+    log::info!("Simulating orders");
 
-            let start = std::time::Instant::now();
-            loop {
-                if let Some(assets) = args.simulate.clone() {
-                    if start.elapsed().as_millis() % 100 == 0 {
-                        let tip = get_latest_block_and_account_by_key(
-                            &args.rpc_centauri,
-                            &args.grpc_centauri,
-                            &signer,
-                        )
-                        .await;
-                        simulate::simulate_order(
-                            &mut write_client,
-                            &mut cosmos_query_client,
-                            args.order_contract.clone(),
-                            assets,
-                            &signer,
-                            &args.rpc_centauri,
-                            &tip,
-                            gas,
-                        )
-                        .await;
-                    };
-                };
-
-                if start.elapsed().as_millis() % 10000 == 0 {
-                    let tip = get_latest_block_and_account_by_key(
-                        &args.rpc_centauri,
-                        &args.grpc_centauri,
-                        &signer,
-                    )
-                    .await;
-                    autopilot::cleanup(
-                        &mut write_client,
-                        &mut cosmos_query_client,
-                        args.order_contract.clone(),
-                        &signer,
-                        &args.rpc_centauri,
-                        &tip,
-                        gas,
-                    )
-                    .await;
-                };
-
-                let tip = get_latest_block_and_account_by_key(
-                    &args.rpc_centauri,
-                    &args.grpc_centauri,
-                    &signer,
-                )
-                .await;
-
-                solve(
-                    &mut write_client,
-                    &mut wasm_read_client,
-                    &args.order_contract,
-                    &signer,
-                    &args.rpc_centauri,
-                    &tip,
-                    gas,
-                )
-                .await;
-            }
-        }
-        MantisCommands::Id(args) => match args.command {
-            IdCommands::Asset(args) => match args.command {
-                AssetCommands::Gen {
-                    network_id,
-                    asset_id,
-                } => {
-                    println!(
-                        "{}",
-                        cvm_runtime::generate_asset_id(network_id.into(), 0, asset_id.into())
-                    );
-                }
-            },
-        },
-    }
+    let tip = get_latest_block_and_account_by_key(
+        &args.rpc_centauri,
+        &args.grpc_centauri,
+        &signer,
+    )
+    .await;
+    simulate::simulate_order(
+        &mut write_client,
+        &mut cosmos_query_client,
+        args.order_contract.clone(),
+        assets,
+        &signer,
+        &args.rpc_centauri,
+        &tip,
+        gas,
+    )
+    .await;
 }
 
-async fn simulate_orders(args: &MantisArgs, x: &SimulateArgs) -> _ {
-    todo!()
-}
-
-
-/// given key and latest block and sequence number, produces binary salt for cross chain block
-/// isolating execution of one cross chain transaction from other
-fn get_salt(signing_key: &cosmrs::crypto::secp256k1::SigningKey, tip:&Tip) -> Vec<u8> {
-    let mut base = signing_key.public_key().to_bytes().to_vec();
-    base.extend(tip.block.value().to_be_bytes().to_vec());
-    base.extend(tip.account.sequence.to_be_bytes().to_vec());
-    base
-}
 
 /// gets orders, groups by pairs
 /// solves them using algorithm

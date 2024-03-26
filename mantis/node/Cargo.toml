@@ -23,6 +23,7 @@ cw-mantis-order = { workspace = true, features = [
     "json-schema",
     "std",
 ] }
+log = { workspace = true }
 derive_more = { workspace = true, features = [] }
 itertools = { workspace = true, features = []}
 num-traits = { workspace = true, features = ["std"]}
@@ -42,7 +43,7 @@ cvm-runtime = { workspace = true, features = ["std"] }
 ndarray ={ workspace = true, features = ["std", "serde"]}
 good_lp = {workspace = true, features = ["coin_cbc", "singlethread-cbc"]}
 fraction = {workspace = true, features = ["default"]}
-log ={ workspace = true}
+env_logger = {workspace = true}
 
 [dev-dependencies]
 rustfmt-wrapper = "0.2.1"
