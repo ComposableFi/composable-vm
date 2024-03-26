@@ -11,10 +11,7 @@ pub fn randomize_order(
     coins_pair: String,
     tip: Height,
 ) -> (cw_mantis_order::ExecMsg, cosmrs::Coin) {
-    let coins: Vec<_> = coins_pair
-        .split(',')
-        .map(|x| cosmwasm_std::Coin::from_str(x).expect("coin"))
-        .collect();
+    let coins = fun_name(coins_pair);
 
     let coins = if rand::random::<bool>() {
         (coins[0].clone(), coins[1].clone())
@@ -42,12 +39,14 @@ pub fn randomize_order(
     (msg, fund)
 }
 
-fn randomize_coin(coin_0_amount: u128) -> u128 {
+
+pub fn randomize_coin(coin_0_amount: u128) -> u128 {
     let delta_0 = 1.max(coin_0_amount / 10);
     let coin_0_random = rand_distr::Uniform::new(coin_0_amount - delta_0, coin_0_amount + delta_0);
     let coin_0_random: u128 = coin_0_random.sample(&mut rand::thread_rng());
     coin_0_random
 }
+
 
 
 /// `assets` - is comma separate list. each entry is amount u64 glued with alphanumeric denomination
@@ -71,7 +70,7 @@ pub async fn simulate_order(
     tip: &Tip,
     gas: Gas,
 ) {
-    println!("========================= simulate_order =========================");
+    log::info!("========================= simulate_order =========================");
     let (msg, fund) = randomize_order(coins_pair, tip.block);
 
     println!("msg: {:?}", msg);

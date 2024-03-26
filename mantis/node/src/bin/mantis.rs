@@ -116,6 +116,8 @@ async fn main() {
 }
 
 async fn simulate_orders(simulate_args: &SimulateArgs)  {
+
+
     let args = simulate_args.shared;
     let mut wasm_read_client = create_wasm_query_client(&args.).await;
 
@@ -135,6 +137,9 @@ async fn simulate_orders(simulate_args: &SimulateArgs)  {
         &signer,
     )
     .await;
+
+    let pair = simulate_args.coins.choose(&mut rand::thread_rng()).expect("some");
+    
     simulate::simulate_order(
         &mut write_client,
         &mut cosmos_query_client,
