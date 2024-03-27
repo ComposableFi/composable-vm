@@ -136,10 +136,16 @@ pub async fn sign_and_tx_tendermint(
     result
 }
 
+#[derive(Debug, Clone)]
+pub struct CosmosChainInfo {
+    pub rpc: String,
+    pub chain_id: String,
+}
+
 pub async fn tx_broadcast_single_signed_msg(
     msg: Any,
     auth_info: tx::AuthInfo,
-    rpc: &str,
+    rpc: &CosmosChainInfo,
     signing_key: &cosmrs::crypto::secp256k1::SigningKey,
     tip: &Tip,
 ) -> cosmrs::rpc::endpoint::broadcast::tx_commit::Response {
@@ -148,12 +154,12 @@ pub async fn tx_broadcast_single_signed_msg(
     let sign_doc = SignDoc::new(
         &tx_body,
         &auth_info,
-        &chain::Id::try_from("centauri-1").expect("id"),
+        &chain::Id::try_from(rpc.chain_id.as_ref()).expect("chain_id"),
         tip.account.account_number,
     )
     .unwrap();
 
-    sign_and_tx_tendermint(rpc, sign_doc, signing_key).await
+    sign_and_tx_tendermint(&rpc.rpc, sign_doc, signing_key).await
 }
 
 /// simulates tx and ensure fees are within limits

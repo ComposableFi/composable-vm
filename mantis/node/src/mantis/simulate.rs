@@ -11,7 +11,7 @@ use crate::{
 };
 
 use super::cosmos::{
-    client::{timeout, CosmWasmWriteClient, CosmosQueryClient, Tip},
+    client::{timeout, CosmWasmWriteClient, CosmosChainInfo, CosmosQueryClient, Tip},
     cosmwasm::parse_coin_pair,
 };
 
@@ -68,7 +68,7 @@ pub async fn simulate_order(
     order_contract: String,
     coins_pair: &String,
     signing_key: &cosmrs::crypto::secp256k1::SigningKey,
-    rpc: &str,
+    rpc: &CosmosChainInfo,
     tip: &Tip,
     gas: Gas,
 ) {

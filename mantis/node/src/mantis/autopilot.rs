@@ -29,7 +29,7 @@ pub async fn cleanup(
     tx_broadcast_single_signed_msg(
         msg.to_any().expect("proto"),
         auth_info,
-        rpc,
+        panic!(),
         signing_key,
         tip,
     )

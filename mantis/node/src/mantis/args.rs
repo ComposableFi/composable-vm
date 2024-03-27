@@ -58,6 +58,9 @@ pub enum AssetCommands {
 
 #[derive(clap::Parser, Debug)]
 pub struct SharedArgs {
+    #[arg(long)]
+    pub main_chain_id: String,
+
     /// the node hosting order contract
     #[arg(long)]
     pub rpc_centauri: String,

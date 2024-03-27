@@ -139,14 +139,17 @@ async fn simulate_orders(simulate_args: &SimulateArgs) {
         .coins
         .choose(&mut rand::thread_rng())
         .expect("some");
-
+    let rpc = CosmosChainInfo {
+        rpc: args.rpc_centauri.clone(),
+        chain_id: args.main_chain_id.clone(),
+    };
     simulate::simulate_order(
         &mut write_client,
         &mut cosmos_query_client,
         args.order_contract.clone(),
         pair,
         &signer,
-        &args.rpc_centauri,
+        &rpc,
         &tip,
         gas,
     )
@@ -217,7 +220,7 @@ async fn send_solution(
     let result = tx_broadcast_single_signed_msg(
         msg.to_any().expect("proto"),
         auth_info,
-        rpc,
+        panic!(), // rpc,
         signing_key,
         tip,
     )
