@@ -75,15 +75,27 @@ async fn solve_orders(solver_args: &SolverArgs) {
     let mut write_client = create_wasm_write_client(&args.rpc_centauri).await;
     let gas = args.gas;
 
-    let start = std::time::Instant::now();
     loop {
-        if start.elapsed().as_millis() % 10000 == 0 {
-            let tip = get_latest_block_and_account_by_key(
-                &args.rpc_centauri,
-                &args.grpc_centauri,
-                &signer,
-            )
-            .await;
+        let all_orders = get_all_orders(order_contract, cosmos_query_client, tip).await;
+        let tip = get_latest_block_and_account_by_key(
+            &args.rpc_centauri,
+            &args.grpc_centauri,
+            &signer,
+        )
+        .await;
+        
+        // 1. proper order stuctue 1. solve and clean timeout
+        // 2. form CVM from string
+        // 3. deploy to devnet 
+        // 4. test
+        // 5. final fix
+        if all_orders.any() {
+
+            if all_orders.iter().filter(|x| x.msg.timeout)
+        }
+
+        if start.elapsed().as_millis() % solver_args.solve_period_seconds == 0 {
+            
             autopilot::cleanup(
                 &mut write_client,
                 &mut cosmos_query_client,
@@ -172,7 +184,7 @@ async fn solve(
     panic!()
     // let salt = crate::cvm::get_salt(signing_key, tip);
     // println!("========================= solve =========================");
-    // let all_orders = get_all_orders(order_contract, cosmos_query_client, tip).await;
+    // 
     // if !all_orders.is_empty() {
     //     let cows_per_pair = mantis_node::mantis::solve::do_cows(all_orders);
     //     let cvm_glt = get_cvm_glt(cvm_contact, &mut cosmos_query_client).await;
