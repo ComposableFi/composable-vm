@@ -39,7 +39,7 @@ async fn main() {
     let args = MantisArgs::parsed();
 
     match &args.command {
-        MantisCommands::Solve(_) => todo!(),
+        MantisCommands::Solve(x) => solve_orders(x).await,
         MantisCommands::Simulate(x) => {
             simulate_orders(x).await;
         }
@@ -117,6 +117,12 @@ async fn main() {
     //     },
     // }
 }
+
+async fn solve_orders(x: &SolverArgs) {
+    
+}
+
+
 
 async fn simulate_orders(simulate_args: &SimulateArgs) {
     let args = &simulate_args.shared;
