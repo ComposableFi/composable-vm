@@ -323,6 +323,8 @@ class Input(
     # please fail if bool is False for now
     max: bool = Field(example=True)
 
+class Exchange(BaseModel, Generic[TId, TAmount]): pass
+class Spawn(BaseModel, Generic[TId, TAmount]): pass
 
 class Trade(Generic[TId, TAmount]):
     out_asset_amount: TAmount
@@ -342,6 +344,9 @@ class Trade(Generic[TId, TAmount]):
 
     in_asset_id: TId
 
+    # next: list[Union['Exchange', 'Spawn']]
+    # next: list[Union['Exchange[TId, TAmount]', 'Spawn[TId, TAmount]']]
+
 
 # @dataclass
 class Spawn(BaseModel, Trade[TId, TAmount], Generic[TId, TAmount]):
@@ -356,12 +361,16 @@ class Spawn(BaseModel, Trade[TId, TAmount], Generic[TId, TAmount]):
     amount to take with transfer
     (delta)
     """
+    # next: list[Union['Exchange[TId, TAmount]', 'Spawn[TId, TAmount]']]
+    # next: list[Union['Exchange', 'Spawn']]
     next: list[Union[Exchange, Spawn]]
 
 
 # @dataclass
 class Exchange(BaseModel, Trade[TId, TAmount], Generic[TId, TAmount]):
     pool_id: TId
+    # next: list[Union['Exchange[TId, TAmount]', 'Spawn[TId, TAmount]']]
+    # next: list[Union['Exchange', 'Spawn']]
     next: list[Union[Exchange, Spawn]]
 
     @model_validator(mode="after")
@@ -377,7 +386,10 @@ class SingleInputAssetCvmRoute(BaseModel, Trade[TId, TAmount], Generic[TId, TAmo
     always starts with Input asset_id
     """
 
+    # next: list[Union['Exchange', 'Spawn']]
+
     next: list[Union[Exchange, Spawn]]
+    # next: list[Union['Exchange[TId, TAmount]', 'Spawn[TId, TAmount]']]
 
     # @model_validator(mode="after")
     # def model_validator_after(self):
