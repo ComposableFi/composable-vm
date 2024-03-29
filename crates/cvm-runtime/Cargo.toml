@@ -7,7 +7,7 @@ description = "CVM runner on various chains"
 version = "0.1.0"
 
 [dependencies]
-bech32 = { workspace = true, features = ["strict"] }
+bech32 = { workspace = true, features = [] }
 cosmwasm-schema = { workspace = true, optional = true }
 cosmwasm-std = { workspace = true, features = ["ibc3"] }
 cw-storage-plus = { workspace = true, optional = true }

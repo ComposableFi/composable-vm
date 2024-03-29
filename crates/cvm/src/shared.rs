@@ -53,23 +53,50 @@ impl TryFrom<Vec<u8>> for XcAddr {
 impl XcAddr {
     /// idea that whatever user plugs into, it works, really for adoption
     /// sure for Ethereum he must plug exact binary address, but for others it's just a string
+    #[cfg(feature = "cosmwasm")]
     pub fn encode_cosmwasm(&self, api: &dyn Api) -> Result<String, StdError> {
-        if let Ok(addr) = Binary::from_base64(&self.0) {
-            if let Ok(addr) = api.addr_humanize(&CanonicalAddr(addr)) {
-                return Ok(addr.into_string());
-            }
-        }
-        if let Ok((_, addr, _)) = bech32::decode(&self.0) {
-            use bech32::FromBase32;
-            if let Ok(addr) = Vec::from_base32(&addr) {
-                if let Ok(addr) = api.addr_humanize(&CanonicalAddr(Binary(addr))) {
-                    return Ok(addr.into_string());
-                }
-            }
-        }
+        let addr = self.parse()?;
+        
+        Ok(api.addr_humanize(&CanonicalAddr(addr))?.to_string())
+    }
+    
+    #[cfg(feature = "cosmwasm")]
+    pub fn parse(&self) -> Result<Binary, StdError> {
+        use bech32::{primitives::decode::CheckedHrpstring, Bech32};
+        let addr  = if let Ok(addr) = CheckedHrpstring::new::<Bech32>(&self.0)  {
+            Binary(addr.byte_iter().into_iter().collect())
+        } else if let Ok(addr) = Binary::from_base64(&self.0) {
+            addr
+        } 
+        else {
+            return Err(StdError::generic_err("Failed to ensure XcAddr encoding")).into();
+        };
+        Ok(addr)
+    }
+}
 
-        // here we will do CW on Substrate if that will be needed, but not prio
-        Err(StdError::generic_err("Failed to ensure XcAddr encoding"))
+#[cfg(test)]
+mod tests {
+    #[cfg(feature = "cosmwasm")]
+    #[test]
+    fn xcaddr() {
+        let addr_a = "osmovalcons1qg7u70m2af8qpx9thg40y0eavkkryjz3rsxafg";
+        let addr_b = "Aj3PP2rqTgCYq7oq8j89ZawySFE="; 
+        let addr_c = "cosmosvalcons1qg7u70m2af8qpx9thg40y0eavkkryjz35gfmyw";
+
+        // this is valid base64 and this is very bad
+        let addr_d = "023DCF3F6AEA4E0098ABBA2AF23F3D65AC324851";
+        
+        let xcaddr_a = super::XcAddr(addr_a.to_string());
+        let xcaddr_b = super::XcAddr(addr_b.to_string());
+        let xcaddr_c = super::XcAddr(addr_c.to_string());
+        let xcaddr_d = super::XcAddr(addr_d.to_string());
+        assert_eq!(addr_b, xcaddr_a.parse().unwrap().to_base64());
+        assert_eq!(addr_b, xcaddr_b.parse().unwrap().to_base64());
+        assert_eq!(addr_b, xcaddr_c.parse().unwrap().to_base64());
+        
+        // next fails
+        // assert_eq!(addr_b, xcaddr_d.parse().unwrap().to_base64());
     }
 }
 

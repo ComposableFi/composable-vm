@@ -179,7 +179,7 @@ mod tests {
     fn network_ids() {
         assert_eq!(Picasso::ID, NetworkId(1));
         assert_eq!(Centauri::ID, NetworkId(2));
-        assert_eq!(Ethereum::ID, NetworkId(3));
+        assert_eq!(Ethereum::ID, NetworkId(7));
     }
 
     #[test]

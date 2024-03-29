@@ -390,6 +390,7 @@ impl<T> From<Funds<T>> for Vec<(u128, T)> {
 
 /// see `generate_network_prefixed_id`
 ///```rust
+/// use cvm::generate_asset_id;
 /// let pica_on_picasso = generate_asset_id(0.into(), 0, 1);
 /// assert_eq!(pica_on_picasso, 1.into());
 /// let pica_on_composable = generate_asset_id(1.into(), 0, 1);
