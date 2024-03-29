@@ -38,10 +38,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    maturin-src = {
-      url = "github:PyO3/maturin";
-      flake = false;
-    };
+    # maturin-src = {
+    #   url = "github:PyO3/maturin";
+    #   flake = false;
+    # };
 
     pydantic-src = {
       url = "github:pydantic/pydantic/v2.5.3";
@@ -258,29 +258,29 @@
           ];
         };
 
-        maturin-latest = pkgs.python3Packages.buildPythonPackage {
-          name = "maturin";
-          version = "0.0.1";
-          format = "pyproject";
+        # maturin-latest = pkgs.python3Packages.buildPythonPackage {
+        #   name = "maturin";
+        #   version = "0.0.1";
+        #   format = "pyproject";
 
-          src = inputs.maturin-src;
+        #   src = inputs.maturin-src;
 
-          cargoDeps = pkgs.rustPlatform.fetchCargoTarball {
-            src = inputs.maturin-src;
-            name = "maturin";
-            version = "0.0.1";
-            hash = "sha256-ujbZ9AfDKPva/E/xGVr6Pq/M++U+B3Iv0TVGpE1aGQM=";
-          };
+        #   cargoDeps = pkgs.rustPlatform.fetchCargoTarball {
+        #     src = inputs.maturin-src;
+        #     name = "maturin";
+        #     version = "0.0.1";
+        #     hash = "sha256-ujbZ9AfDKPva/E/xGVr6Pq/M++U+B3Iv0TVGpE1aGQM=";
+        #   };
 
-          nativeBuildInputs = with pkgs.python3Packages; [
-            poetry-core
-            setuptools
-            setuptools-rust
-            setuptools-git-versioning
-            pkgs.rustPlatform.cargoSetupHook
-            pkgs.rustPlatform.maturinBuildHook
-          ];
-        };
+        #   nativeBuildInputs = with pkgs.python3Packages; [
+        #     poetry-core
+        #     setuptools
+        #     setuptools-rust
+        #     setuptools-git-versioning
+        #     pkgs.rustPlatform.cargoSetupHook
+        #     pkgs.rustPlatform.maturinBuildHook
+        #   ];
+        # };
 
         poetryDeps = mkPoetryPackages {
           projectDir = ./mantis;
@@ -318,7 +318,7 @@
             });
             cvxpy = cvxpy-latest;
 
-            maturin = maturin-latest;
+            # maturin = maturin-latest;
           });
 
         envShell = mkPoetryEnv {
@@ -448,7 +448,7 @@
             cosmwasm-json-schema-ts
             mantis-blackbox
             pyscipopt-latest
-            maturin-latest
+            # maturin-latest
             ;
           all =
             pkgs.linkFarmFromDrvs "all"
