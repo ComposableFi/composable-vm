@@ -7,7 +7,7 @@ members = [
 ]
 exclude = ["contracts/cosmwasm/node_modules/", "contracts/cosmwasm/dist"]
 resolver = "2"
-package.version = "0.3.0"
+package.version = "0.4.0"
 
 [workspace.lints.rust]
 unsafe = "deny"
@@ -57,7 +57,7 @@ log = { version = "0.4.21", default_features = false, features = [
     "kv_sval",
     "kv_serde",
 ] }
-env_logger = { version = "*", default-features = false, features = [
+env_logger = { version = "0.11.3", default-features = false, features = [
     "default",
     "color",
     "auto-color",
@@ -67,44 +67,44 @@ env_logger = { version = "*", default-features = false, features = [
 ] }
 hex = { version = "^0.4.3", default-features = false }
 num = { version = "^0.4.1", default-features = false }
-enumn = { version = "0.1.12" }
+enumn = { version = "0.1.13" }
 prost-build = { version = "^0.12.2" }
-bech32 = { version = "^0.9.1", default-features = false }
+bech32 = { version = "^0.11.0", default-features = false }
 cosmwasm-std = { version = "^1.5.0", features = [
     "iterator",
 ], default-features = false }
 
-parity-scale-codec = { version = "^3.6.5", default-features = false }
+parity-scale-codec = { version = "^3.6.9", default-features = false }
 cw20 = { version = "^1.1.2", default-features = false }
 cw-controllers = { version = "^1.1.1", default-features = false }
 sylvia = { version = "^0.9.1", default-features = false }
 schemars = { version = "^0.8.16", default-features = false }
 cosmwasm-schema = { version = "^1.5.0", default-features = false }
-serde = { version = "^1.0.192", default-features = false }
+serde = { version = "^1.0.197", default-features = false }
 cw-storage-plus = { version = "^1.2.0", features = [
     "iterator",
 ], default-features = false }
-itertools = { version = "^0.12.0", default-features = false }
+itertools = { version = "^0.12.1", default-features = false }
 num-rational = { version = "^0.4.1", default-features = false }
-num-integer = { version = "^0.1.45", default-features = false }
+num-integer = { version = "^0.1.46", default-features = false }
 
-ibc-proto = { version = "^0.39.1", default-features = false }
-serde-json-wasm = { version = "^1.0.0", default-features = false }
+ibc-proto = { version = "^0.42.2", default-features = false }
+serde-json-wasm = { version = "^1.0.1", default-features = false }
 
-clap = { version = "^4.4.8", features = ["derive"] }
-cosmrs = { version = "^0.15.0", features = [
+clap = { version = "^4.5.4", features = ["derive"] }
+cosmrs = { version = "^0.16.0", features = [
     "cosmwasm",
     "rpc",
     "grpc",
     "bip32",
     "dev",
 ] }
-tokio = { version = "^1.34.0", features = ["full"] }
-cosmos-sdk-proto = { version = "^0.20.0", features = ["grpc-transport"] }
-tonic = { version = "^0.10.2" }
+tokio = { version = "^1.37.0", features = ["full"] }
+cosmos-sdk-proto = { version = "^0.21.1", features = ["grpc-transport"] }
+tonic = { version = "^0.11.0" }
 rand = { version = "^0.8.5", default-features = false }
-rust_decimal = "^1.33"
-rust_decimal_macros = "^1.33"
+rust_decimal = {version =  "^1.35" }
+rust_decimal_macros = {version = "^1.34.2"}
 rand_distr = "^0.4.3"
 strum = "^0.25"
 strum_macros = "^0.25"
