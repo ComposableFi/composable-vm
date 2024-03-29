@@ -99,29 +99,28 @@ async fn solve_orders(solver_args: &SolverArgs) {
             .await;
         }
 
+        let tip =
+            get_latest_block_and_account_by_key(&args.rpc_centauri, &args.grpc_centauri, &signer)
+                .await;
+        let all_orders = get_all_orders(&args.order_contract, &mut wasm_read_client, &tip).await;
+
         // 1. proper order structure 1. solve and clean timeout
         // 2. form CVM from string
         // 3. deploy to devnet
         // 4. test
         // 5. final fix
-        // if all_orders.any() {
-
-        // };
-
-        // let tip =
-        //     get_latest_block_and_account_by_key(&args.rpc_centauri, &args.grpc_centauri, &signer)
-        //         .await;
-
-        // solve(
-        //     &mut write_client,
-        //     &mut wasm_read_client,
-        //     &args.order_contract,
-        //     &signer,
-        //     &args.rpc_centauri,
-        //     &tip,
-        //     gas,
-        // )
-        // .await;
+        if all_orders.any() {
+            solve(
+                &mut write_client,
+                &mut wasm_read_client,
+                &args.order_contract,
+                &signer,
+                &args.rpc_centauri,
+                &tip,
+                gas,
+            )
+            .await;
+        };
     }
 }
 
