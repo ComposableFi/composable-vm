@@ -6,6 +6,7 @@ use crate::{
 use cosmwasm_std::{Deps, Env, MessageInfo};
 use cvm::NetworkId;
 use cvm_route::transport::*;
+use ibc_apps_more::types::hook::derive_intermediate_sender;
 
 /// Authorisation token indicating call is authorised according to policy
 /// `T`.
@@ -99,7 +100,7 @@ impl Auth<policy::WasmHook> {
             .ok_or(ContractError::ICS20NotFound)?
             .source;
         let hash_of_channel_and_sender =
-            ibc_apps_more::hook::derive_intermediate_sender(&channel, &sender, &prefix)?;
+            derive_intermediate_sender(&channel, &sender, &prefix)?;
         deps.api.debug(&format!(
             "cvm::outpost:auth:: {0} {1}",
             &hash_of_channel_and_sender, &info.sender

@@ -14,16 +14,6 @@ pub fn validate_solver(
     Ok(())
 }
 
-/// Validate program is sane
-pub(crate) fn validate_program(
-    as_ref: cosmwasm_std::Deps<'_>,
-    cvm_program: &cvm_runtime::Program<
-        Vec<cvm_runtime::Instruction<Vec<u8>, cvm_runtime::shared::XcAddr, cvm_runtime::Funds>>,
-    >,
-    order: &OrderItem,
-) -> StdResult<()> {
-    Ok(())
-}
 
 /// Validate solver can solver amount he claimed
 pub(crate) fn validate_solvers(

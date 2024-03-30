@@ -8,5 +8,7 @@ pub mod network;
 mod prelude;
 pub mod proto;
 pub mod shared;
+pub mod address;
 pub use asset::*;
 pub use network::*;
+pub use address::*;

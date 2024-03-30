@@ -52,7 +52,7 @@ pub enum ContractError {
     #[error("Route not found.")]
     RouteNotFound,
     #[error("{0}")]
-    Bech32(bech32::Error),
+    Bech32(bech32::EncodeError),
     #[error("{0}")]
     Serde(#[from] serde_json_wasm::ser::Error),
     #[error("Assets non transferrable")]
@@ -94,8 +94,8 @@ impl From<cvm_runtime::proto::DecodeError> for ContractError {
     }
 }
 
-impl From<bech32::Error> for ContractError {
-    fn from(value: bech32::Error) -> Self {
+impl From<bech32::EncodeError> for ContractError {
+    fn from(value: bech32::EncodeError) -> Self {
         Self::Bech32(value)
     }
 }

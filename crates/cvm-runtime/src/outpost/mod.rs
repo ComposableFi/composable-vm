@@ -8,6 +8,7 @@ use cvm_route::{
     asset::{AssetItem, AssetReference},
     exchange::ExchangeItem,
 };
+use ibc_apps_more::types::hook::{Callback, HookMemo, LazyHookMemo};
 pub use query::*;
 
 use crate::{
@@ -92,9 +93,9 @@ impl ExecutePacketICS20Msg {
 
     pub fn into_wasm_hook(self, contract: ibc_primitives::Signer) -> Result<ExecuteMsg, StdError> {
         let ics20 = self.into_packet()?;
-        let memo: ibc_apps_more::memo::Memo = serde_json_wasm::from_str(&ics20.memo.to_string())
+        let memo: LazyHookMemo = serde_json_wasm::from_str(&ics20.memo.to_string())
             .map_err(|x| StdError::generic_err(format!("{:?}", x)))?;
-        let wasm: ibc_apps_more::hook::Callback = memo
+        let wasm: Callback<serde_cw_value::Value> = memo.base
             .wasm
             .ok_or(StdError::generic_err(format!("no wasm in memo")))?;
         ensure!(

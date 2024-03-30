@@ -1,6 +1,7 @@
 use crate::{error::ContractError, state};
 use cosmwasm_std::{entry_point, wasm_execute, Coin, DepsMut, Env, Event, Response};
-use ibc_apps_more::hook::{IBCLifecycleComplete, SudoMsg};
+
+use ibc_apps_more::types::hook::{IBCLifecycleComplete, SudoMsg};
 use ibc_core_host_types::identifiers::ChannelId;
 
 #[cfg_attr(not(feature = "library"), entry_point)]

@@ -16,7 +16,7 @@ use cosmwasm_std::{
     SubMsgResult, WasmMsg, WasmQuery,
 };
 use cvm_route::{asset::AssetReference, exchange::ExchangeItem};
-use cvm_runtime::executor::*;
+use cvm_runtime::{executor::*, shared::CvmAddress};
 use cvm_runtime::{
     apply_bindings,
     exchange::*,
@@ -457,7 +457,7 @@ pub fn interpret_transfer(
     deps: &mut DepsMut,
     env: &Env,
     tip: &Addr,
-    to: Destination<shared::XcAddr>,
+    to: Destination<CvmAddress>,
     assets: Funds<Amount>,
 ) -> Result {
     let Config {

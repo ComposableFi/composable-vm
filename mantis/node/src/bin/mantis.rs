@@ -103,7 +103,7 @@ async fn solve_orders(solver_args: &SolverArgs) {
             get_latest_block_and_account_by_key(&args.rpc_centauri, &args.grpc_centauri, &signer)
                 .await;
         let all_orders = get_all_orders(&args.order_contract, &mut wasm_read_client, &tip).await;
-        if all_orders.any() {
+        if !all_orders.is_empty() {
             solve(
                 &mut write_client,
                 &mut wasm_read_client,

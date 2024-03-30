@@ -4,7 +4,8 @@ use cvm_runtime::{
     network,
     outpost::GetConfigResponse,
     proto::cvm,
-    shared::{CvmFundsFilter, CvmInstruction, CvmProgram, Displayed, XcAddr},
+    
+    shared::{CvmAddress, CvmFundsFilter, CvmInstruction, CvmProgram, Displayed},
     Amount, AssetId, ExchangeId,
 };
 
@@ -13,7 +14,7 @@ struct BankInput {
     pub in_asset_id: AssetId,
     pub in_asset_amount: Displayed<u64>,
     pub out_asset_id: AssetId,
-    pub order_accounts: Vec<(XcAddr, Amount)>,
+    pub order_accounts: Vec<(CvmAddress, Amount)>,
 }
 
 impl BankInput {
@@ -21,7 +22,7 @@ impl BankInput {
         in_asset_id: AssetId,
         in_asset_amount: Displayed<u64>,
         out_asset_id: AssetId,
-        order_accounts: Vec<(XcAddr, Amount)>,
+        order_accounts: Vec<(CvmAddress, Amount)>,
     ) -> Self {
         Self {
             in_asset_id,

@@ -245,7 +245,6 @@ impl OrderContract<'_> {
         let order: OrderItem = self.orders.load(ctx.deps.storage, order_id.u128())?;
         validation::validate_solver(ctx.deps.as_ref(), &ctx.info.sender, &order)?;
         self.orders.remove(ctx.deps.storage, order_id.u128());
-        validation::validate_program(ctx.deps.as_ref(), &cvm_program, &order)?;
         let cvm = wasm_execute(
             self.cvm_address.load(ctx.deps.storage)?,
             &cvm_program,

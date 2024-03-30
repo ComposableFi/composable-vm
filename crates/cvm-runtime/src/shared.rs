@@ -2,7 +2,7 @@ use core::panic;
 
 use crate::{prelude::*, AssetId};
 use cosmwasm_std::{from_json, to_json_binary, Api, Binary, CanonicalAddr, StdError, StdResult};
-use cvm::NetworkId;
+use cvm::{NetworkId, XcAddr};
 use serde::{de::DeserializeOwned, Serialize};
 
 pub use cvm::shared::*;
@@ -12,6 +12,7 @@ pub type CvmFunds = Vec<(AssetId, Displayed<u128>)>;
 /// like `CvmFunds`, but allow relative(percentages) amounts. Similar to assets filters in XCM
 pub type CvmBalanceFilter = crate::asset::Amount;
 pub type CvmFundsFilter = crate::Funds<CvmBalanceFilter>;
+pub type CvmAddress = XcAddr;
 pub type CvmInstruction = crate::Instruction<Vec<u8>, XcAddr, CvmFundsFilter>;
 pub type CvmPacket = crate::Packet<CvmProgram>;
 pub type CvmProgram = crate::Program<Vec<CvmInstruction>>;
