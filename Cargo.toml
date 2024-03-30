@@ -111,7 +111,7 @@ strum = "^0.25"
 strum_macros = "^0.25"
 tuples = { version = "^1.14.0" }
 serde-cw-value = { git = "https://github.com/dzmitry-lahoda-forks/serde-cw-value.git", branch = "dz/3", default-features = false }
-petgraph = {version = "*", default-features = false , features = ["graphmap", "stable_graph", "matrix_graph", "serde-1", "rayon",
+petgraph = {version = "*", default-features = false , features = ["graphmap", "stable_graph", "matrix_graph", "serde-1", 
 ]}
 
 no-panic = "^0.1"
