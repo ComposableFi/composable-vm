@@ -2,7 +2,7 @@
 use cosmrs::tendermint::block::Height;
 use cosmwasm_std::{testing::*, Addr, Binary, Coin, CustomQuery, DepsMut, MessageInfo, Uint128};
 use cw_mantis_order::{sv::*, OrderItem, OrderSubMsg, SolutionSubMsg};
-use mantis_node::{mantis::solve::randomize_order, prelude::*};
+use mantis_node::{mantis::simulate::randomize_order, prelude::*};
 
 #[test]
 fn cows_scenarios() {
@@ -198,7 +198,7 @@ fn cows_scenarios() {
 
     for _ in 1..100 {
         let (msg, funds): (cw_mantis_order::ExecMsg, cosmrs::Coin) = randomize_order(
-            "20a,200000b".to_string(),
+            &"20a,200000b".to_string(),
             Height::try_from(env.block.height).unwrap(),
         );
 

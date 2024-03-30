@@ -215,7 +215,7 @@ async fn send_solution(
     };
 
     let auth_info = simulate_and_set_fee(signing_key, &tip.account, gas).await;
-    let msg = cw_mantis_order::ExecMsg::Settle { msg: solution };
+    let msg = cw_mantis_order::ExecMsg::Solve { msg: solution };
     let msg = to_exec_signed(signing_key, order_contract.clone(), msg);
     let result = tx_broadcast_single_signed_msg(
         msg.to_any().expect("proto"),

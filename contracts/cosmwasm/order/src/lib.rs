@@ -256,7 +256,7 @@ impl OrderContract<'_> {
     /// Provides solution for set of orders.
     /// All fully
     #[msg(exec)]
-    pub fn settle(&self, mut ctx: ExecCtx, msg: SolutionSubMsg) -> StdResult<Response> {
+    pub fn solve(&self, mut ctx: ExecCtx, msg: SolutionSubMsg) -> StdResult<Response> {
         // read all orders as solver provided
         let mut all_orders = join_solution_with_orders(&self.orders, &msg, &ctx)?;
         let at_least_one = all_orders.first().expect("at least one");
