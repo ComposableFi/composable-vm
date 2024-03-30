@@ -8,6 +8,8 @@ use cvm_runtime::{
     Amount, AssetId, ExchangeId,
 };
 
+use crate::solver::router::bf;
+
 use super::solve::BankInput;
 
 /// given route and CVM stub with amount, build it to the end
@@ -109,12 +111,14 @@ pub async fn get_route(
     salt: &[u8],
 ) -> CvmProgram {
     if route_provider == "solver" {
-        panic!("hardcode");
-    } else  {
+        return bf::route(input, cvm_glt, salt);
+    } else {
         let blackbox: Client = Client::new(route_provider);
         let mut route = blackbox
             .simulator_router_simulator_router_get(
-                &InAssetAmount::Variant0(input.in_asset_amount.0.try_into().expect("in_asset_amount")),
+                &InAssetAmount::Variant0(
+                    input.in_asset_amount.0.try_into().expect("in_asset_amount"),
+                ),
                 &InAssetId::Variant1(input.in_asset_id.to_string()),
                 true,
                 &OutAssetAmount::Variant0(10),
@@ -125,9 +129,9 @@ pub async fn get_route(
             .into_inner()
             .pop()
             .expect("at least one route");
-    
+
         let mut program = CvmProgram::default();
         build_next(&mut program, &mut route.next, cvm_glt, salt);
-        return program;        
+        return program;
     }
 }
