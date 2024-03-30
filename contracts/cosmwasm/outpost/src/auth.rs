@@ -99,8 +99,7 @@ impl Auth<policy::WasmHook> {
             .ics_20
             .ok_or(ContractError::ICS20NotFound)?
             .source;
-        let hash_of_channel_and_sender =
-            derive_intermediate_sender(&channel, &sender, &prefix)?;
+        let hash_of_channel_and_sender = derive_intermediate_sender(&channel, &sender, &prefix)?;
         deps.api.debug(&format!(
             "cvm::outpost:auth:: {0} {1}",
             &hash_of_channel_and_sender, &info.sender

@@ -1,4 +1,8 @@
 use cosmrs::tendermint::block::Height;
+use cvm_runtime::{
+    shared::{CvmAddress, Displayed},
+    Amount, AssetId,
+};
 use cw_mantis_order::{CrossChainPart, OrderAmount, OrderItem, OrderSolution, OrderSubMsg};
 
 use crate::{
@@ -8,9 +12,33 @@ use crate::{
 
 use super::cosmos::client::timeout;
 
+/// input batched summarized from users for routing
+pub struct BankInput {
+    pub in_asset_id: AssetId,
+    pub in_asset_amount: Displayed<u64>,
+    pub out_asset_id: AssetId,
+    pub order_accounts: Vec<(CvmAddress, Amount)>,
+}
+
+impl BankInput {
+    pub fn new(
+        in_asset_id: AssetId,
+        in_asset_amount: Displayed<u64>,
+        out_asset_id: AssetId,
+        order_accounts: Vec<(CvmAddress, Amount)>,
+    ) -> Self {
+        Self {
+            in_asset_id,
+            in_asset_amount,
+            out_asset_id,
+            order_accounts,
+        }
+    }
+}
+
 pub type SolutionsPerPair = Vec<(Vec<OrderSolution>, (u64, u64))>;
 
-pub fn do_cows(all_orders: Vec<OrderItem>) -> SolutionsPerPair {
+pub fn find_cows(all_orders: Vec<OrderItem>) -> SolutionsPerPair {
     let all_orders = all_orders.into_iter().group_by(|x| {
         let mut ab = [x.given.denom.clone(), x.msg.wants.denom.clone()];
         ab.sort();
@@ -87,4 +115,8 @@ fn decimal_to_fraction(amount: Decimal) -> (u64, u64) {
             *fraction.denom().expect("denom"),
         )
     }
+}
+
+pub fn find_intent_amount(cows: &[OrderSolution]) -> BankInput {
+    todo!()
 }

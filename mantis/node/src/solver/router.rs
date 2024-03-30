@@ -7,8 +7,6 @@ use std::{
 };
 
 use cosmrs::tendermint::chain;
-// use good_lp::*;
-use itertools::*;
 use ndarray::*;
 use prelude::*;
 use tuples::TupleCloned;

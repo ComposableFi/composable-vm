@@ -94,7 +94,6 @@ impl From<ibc_apps_more::types::error::HookError> for ContractError {
     fn from(value: ibc_apps_more::types::error::HookError) -> Self {
         Self::HookError(value)
     }
-
 }
 
 impl From<cvm_runtime::proto::DecodeError> for ContractError {

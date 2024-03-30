@@ -95,7 +95,8 @@ impl ExecutePacketICS20Msg {
         let ics20 = self.into_packet()?;
         let memo: LazyHookMemo = serde_json_wasm::from_str(&ics20.memo.to_string())
             .map_err(|x| StdError::generic_err(format!("{:?}", x)))?;
-        let wasm: Callback<serde_cw_value::Value> = memo.base
+        let wasm: Callback<serde_cw_value::Value> = memo
+            .base
             .wasm
             .ok_or(StdError::generic_err(format!("no wasm in memo")))?;
         ensure!(

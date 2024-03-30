@@ -43,6 +43,7 @@ cvm-runtime = { workspace = true, features = ["std"] }
 ndarray ={ workspace = true, features = ["std", "serde"]}
 fraction = {workspace = true, features = ["default"]}
 env_logger = {workspace = true}
+cw-multi-test = { workspace = true }
 
 [dev-dependencies]
 rustfmt-wrapper = "0.2.1"

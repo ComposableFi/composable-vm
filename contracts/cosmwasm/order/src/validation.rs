@@ -14,7 +14,6 @@ pub fn validate_solver(
     Ok(())
 }
 
-
 /// Validate solver can solver amount he claimed
 pub(crate) fn validate_solvers(
     deps: &cosmwasm_std::DepsMut<'_>,

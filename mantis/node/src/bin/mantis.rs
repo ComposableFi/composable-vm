@@ -16,6 +16,7 @@ use cosmrs::{
     tx::{self, Fee, SignerInfo},
     AccountId,
 };
+use cvm_runtime::shared::CvmProgram;
 use cw_mantis_order::{Amount, OrderItem, OrderSolution, OrderSubMsg, SolutionSubMsg};
 use mantis_node::{
     mantis::{
@@ -104,14 +105,21 @@ async fn solve_orders(solver_args: &SolverArgs) {
                 .await;
         let all_orders = get_all_orders(&args.order_contract, &mut wasm_read_client, &tip).await;
         if !all_orders.is_empty() {
+            let main_chain = CosmosChainInfo {
+                rpc: args.rpc_centauri.clone(),
+                chain_id: args.main_chain_id.clone(),
+            };
             solve(
                 &mut write_client,
                 &mut wasm_read_client,
+                &solver_args.cvm_contract,
                 &args.order_contract,
                 &signer,
-                &args.rpc_centauri,
+                &main_chain,
                 &tip,
                 gas,
+                all_orders,
+                solver_args.solution_provider.as_ref(),
             )
             .await;
         };
@@ -170,40 +178,42 @@ async fn solve(
     cvm_contact: &String,
     order_contract: &String,
     signing_key: &cosmrs::crypto::secp256k1::SigningKey,
-    rpc: &str,
+    rpc: &CosmosChainInfo,
     tip: &Tip,
     gas: Gas,
+    all_orders: Vec<OrderItem>,
+    router_api: &str,
 ) {
-    panic!()
-    // let salt = crate::cvm::get_salt(signing_key, tip);
-    // println!("========================= solve =========================");
-    //
-    // if !all_orders.is_empty() {
-    //     let cows_per_pair = mantis_node::mantis::solve::do_cows(all_orders);
-    //     let cvm_glt = get_cvm_glt(cvm_contact, &mut cosmos_query_client).await;
-    //     let cows_cvm = blackbox::route(cows_per_pair, all_orders, &cvm_glt, salt.as_ref()).await;
-    //     for (cows, optimal_price) in cows_per_pair {
-    //         send_solution(
-    //             cows,
-    //             tip,
-    //             optimal_price,
-    //             signing_key,
-    //             order_contract,
-    //             rpc,
-    //             gas,
-    //         )
-    //         .await;
-    //     }
-    // }
+    let salt = crate::cvm::get_salt(signing_key, tip);
+    log::info!(target: "mantis::solver", "Solving orders");
+
+    let cows_per_pair = mantis_node::mantis::solve::find_cows(all_orders);
+    let cvm_glt = get_cvm_glt(cvm_contact, cosmos_query_client).await;
+    for (cows, optimal_price) in cows_per_pair {
+        let bank = mantis_node::mantis::solve::find_intent_amount(cows.as_ref());
+        let cvm_route = blackbox::get_route(router_api, bank, &cvm_glt, salt.as_ref()).await;
+        send_solution(
+            cows,
+            cvm_route,
+            tip,
+            optimal_price,
+            signing_key,
+            order_contract,
+            rpc,
+            gas,
+        )
+        .await;
+    }
 }
 
 async fn send_solution(
     cows: Vec<OrderSolution>,
+    cvm: CvmProgram,
     tip: &Tip,
     optimal_price: (u64, u64),
     signing_key: &cosmrs::crypto::secp256k1::SigningKey,
     order_contract: &String,
-    rpc: &str,
+    rpc: &CosmosChainInfo,
     gas: Gas,
 ) {
     println!("========================= settle =========================");
@@ -220,10 +230,10 @@ async fn send_solution(
     let result = tx_broadcast_single_signed_msg(
         msg.to_any().expect("proto"),
         auth_info,
-        panic!(), // rpc,
+        rpc,
         signing_key,
         tip,
     )
     .await;
-    println!("result: {:?}", result);
+    log::info!("result: {:?}", result);
 }

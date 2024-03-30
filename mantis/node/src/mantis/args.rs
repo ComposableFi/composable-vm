@@ -100,6 +100,10 @@ pub struct SolverArgs {
     #[command(flatten)]
     pub shared: SharedArgs,
 
+    /// CVM
+    #[arg(long)]
+    pub cvm_contract: String,
+
     /// http url to call with parameters to obtain route
     pub solution_provider: String,
 }

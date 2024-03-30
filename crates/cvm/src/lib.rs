@@ -2,13 +2,13 @@
 #![cfg_attr(no_std, feature(error_in_core))]
 extern crate alloc;
 
+pub mod address;
 pub mod asset;
 pub mod exchange;
 pub mod network;
 mod prelude;
 pub mod proto;
 pub mod shared;
-pub mod address;
+pub use address::*;
 pub use asset::*;
 pub use network::*;
-pub use address::*;

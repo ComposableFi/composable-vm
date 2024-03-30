@@ -87,6 +87,7 @@ cw-storage-plus = { version = "^1.2.0", features = [
 itertools = { version = "^0.12.1", default-features = false }
 num-rational = { version = "^0.4.1", default-features = false }
 num-integer = { version = "^0.1.46", default-features = false }
+cw-multi-test  = {version = "^1.0.0", default-features = false}
 
 ibc-proto = { version = "^0.42.2", default-features = false }
 serde-json-wasm = { version = "^1.0.1", default-features = false }
@@ -110,6 +111,8 @@ strum = "^0.25"
 strum_macros = "^0.25"
 tuples = { version = "^1.14.0" }
 serde-cw-value = { git = "https://github.com/dzmitry-lahoda-forks/serde-cw-value.git", branch = "dz/3", default-features = false }
+petgraph = {version = "*", default-features = false , features = ["graphmap", "stable_graph", "matrix_graph", "serde-1", "rayon",
+]}
 
 no-panic = "^0.1"
 scale-info = { version = "^2.10.0", default-features = false }
@@ -141,9 +144,9 @@ ibc-primitives = { git = "https://github.com/dzmitry-lahoda-forks/ibc-rs.git", b
 primitive-types = { git = "https://github.com/dzmitry-lahoda-forks/parity-common.git", branch = "dz/3", default-features = false, features = [
     "serde_no_std",
 ] }
-neutron-sdk = { version = "^0.7.0", default-features = false }
+neutron-sdk = { version = "^0.10.0", default-features = false }
 
-osmosis-std = { version = "^0.20.1", default-features = false }
+osmosis-std = { version = "^0.22.0", default-features = false }
 
 astroport = { version = "^3.6.1", default-features = false }
 
@@ -151,15 +154,12 @@ ndarray = { version = "^0.15.6", default-features = false }
 
 good_lp = { version = "^1.7", default-features = false }
 
-cw-multi-test = { version = "0.20.0" }
-
-
 cw-mantis-order = { path = "./contracts/cosmwasm/order", features = [
     "json-schema",
     "std",
 ] }
 
-fraction = { version = "0.14", default-features = false }
+fraction = { version = "0.15.1", default-features = false }
 
 [profile.deployment]
 inherits = "release"

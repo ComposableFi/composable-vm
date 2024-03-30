@@ -16,7 +16,6 @@ use cosmwasm_std::{
     SubMsgResult, WasmMsg, WasmQuery,
 };
 use cvm_route::{asset::AssetReference, exchange::ExchangeItem};
-use cvm_runtime::{executor::*, shared::CvmAddress};
 use cvm_runtime::{
     apply_bindings,
     exchange::*,
@@ -24,6 +23,7 @@ use cvm_runtime::{
     outpost::{BridgeExecuteProgramMsg, BridgeForwardMsg},
     shared, Amount, BindingValue, Destination, Funds, Instruction, NetworkId, Register,
 };
+use cvm_runtime::{executor::*, shared::CvmAddress};
 use cw2::{ensure_from_older_version, set_contract_version};
 use cw20::{BalanceResponse, Cw20Contract, Cw20ExecuteMsg, Cw20QueryMsg};
 use num::Zero;

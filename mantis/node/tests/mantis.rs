@@ -43,7 +43,7 @@ fn cows_scenarios() {
     let orders: Binary =
         cw_mantis_order::entry_points::query(deps.as_ref(), env.clone(), msg).unwrap();
     let orders: Vec<OrderItem> = serde_json_wasm::from_slice(orders.as_slice()).unwrap();
-    let cows = mantis_node::mantis::solve::do_cows(orders);
+    let cows = mantis_node::mantis::solve::find_cows(orders);
     assert!(cows.is_empty());
 
     // order 2 perfect match
@@ -63,7 +63,7 @@ fn cows_scenarios() {
 
     /// try solve
     let orders = query_all_orders(&deps, &env);
-    let cows_per_pair = mantis_node::mantis::solve::do_cows(orders);
+    let cows_per_pair = mantis_node::mantis::solve::find_cows(orders);
     do_solve(cows_per_pair, &mut deps, &env, info.clone());
 
     let orders = query_all_orders(&deps, &env);
@@ -131,7 +131,7 @@ fn cows_scenarios() {
 
     // solving
     let orders = query_all_orders(&deps, &env);
-    let cows_per_pair = mantis_node::mantis::solve::do_cows(orders);
+    let cows_per_pair = mantis_node::mantis::solve::find_cows(orders);
     do_solve(cows_per_pair, &mut deps, &env, info.clone());
     let orders = query_all_orders(&deps, &env);
     assert!(orders.is_empty());
@@ -170,7 +170,7 @@ fn cows_scenarios() {
 
     // second half
     let orders = query_all_orders(&deps, &env);
-    let cows_per_pair = mantis_node::mantis::solve::do_cows(orders);
+    let cows_per_pair = mantis_node::mantis::solve::find_cows(orders);
     do_solve(cows_per_pair, &mut deps, &env, info.clone());
     let orders = query_all_orders(&deps, &env);
     assert!(!orders.is_empty());
@@ -191,7 +191,7 @@ fn cows_scenarios() {
 
     // solving
     let orders = query_all_orders(&deps, &env);
-    let cows_per_pair = mantis_node::mantis::solve::do_cows(orders);
+    let cows_per_pair = mantis_node::mantis::solve::find_cows(orders);
     do_solve(cows_per_pair, &mut deps, &env, info.clone());
     let orders = query_all_orders(&deps, &env);
     assert!(orders.is_empty());
@@ -214,7 +214,7 @@ fn cows_scenarios() {
     }
 
     let orders = query_all_orders(&deps, &env);
-    let cows_per_pair = mantis_node::mantis::solve::do_cows(orders);
+    let cows_per_pair = mantis_node::mantis::solve::find_cows(orders);
     let responses = do_solve(cows_per_pair, &mut deps, &env, info.clone());
     let orders = query_all_orders(&deps, &env);
     println!("solved {}", orders.len());
