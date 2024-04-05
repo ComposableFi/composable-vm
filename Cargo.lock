@@ -876,6 +876,7 @@ dependencies = [
  "cw-storage-plus 1.2.0",
  "hex",
  "itertools 0.12.1",
+ "mantis-cw",
  "no-panic",
  "num-integer",
  "num-rational",
@@ -2283,6 +2284,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "mantis-cw"
+version = "0.4.0"
+dependencies = [
+ "cosmwasm-schema",
+ "cosmwasm-std",
+ "cw-storage-plus 1.2.0",
+ "tuples",
+]
+
+[[package]]
 name = "mantis-node"
 version = "0.1.0"
 dependencies = [
@@ -2301,6 +2312,7 @@ dependencies = [
  "fraction",
  "itertools 0.12.1",
  "log",
+ "mantis-cw",
  "ndarray",
  "num-traits",
  "petgraph",

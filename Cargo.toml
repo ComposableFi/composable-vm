@@ -25,6 +25,7 @@ let_unit_value = "allow"
 cvm = { path = "./crates/cvm", default-features = false }
 blackbox_rs = { path = "./node/blackbox_rs", default-features = false }
 cvm-route = { path = "./crates/cvm-route", default-features = false }
+mantis-cw = { path = "./crates/mantis-cw", default-features = false }
 cvm-runtime = { path = "./crates/cvm-runtime", default-features = false }
 cvm-runtime-exchange = { path = "./crates/cvm-runtime-exchange", default-features = false }
 derive_more = { version = "0.99.17", default-features = false, features = [

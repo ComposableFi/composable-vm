@@ -1,0 +1,19 @@
+[package]
+name = "mantis-cw"
+version = {workspace = true}
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+cosmwasm-std = { workspace = true, features = [
+  "iterator",
+], default-features = false }
+
+cosmwasm-schema = { workspace = true, default-features = false }
+cw-storage-plus = { workspace = true, features = [
+  "iterator",
+], default-features = false }
+
+tuples = { workspace = true }

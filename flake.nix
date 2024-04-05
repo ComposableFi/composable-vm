@@ -321,7 +321,7 @@
             # maturin = maturin-latest;
           });
 
-        envShell = mkPoetryEnv {
+        pyEnvShell = mkPoetryEnv {
           projectDir = ./mantis;
           overrides = override overrides;
         };
@@ -383,7 +383,7 @@
           pkgs.ipopt
           pkgs.or-tools
         ];
-        pythonPackages = [pkgs.poetry envShell];
+        pythonPackages = [pkgs.poetry pyEnvShell];
       in {
         _module.args.pkgs = import self.inputs.nixpkgs {
           inherit system;
@@ -403,7 +403,7 @@
             [
               inputs'.scip.packages.scip
               devour-flake
-              envShell
+              #pyEnvShell
               pkgs.conda
               pkgs.nix
               pkgs.nodejs

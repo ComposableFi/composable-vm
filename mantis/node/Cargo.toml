@@ -23,6 +23,8 @@ cw-mantis-order = { workspace = true, features = [
     "json-schema",
     "std",
 ] }
+
+mantis-cw = { workspace = true, default-features = false }
 log = { workspace = true }
 derive_more = { workspace = true, features = [] }
 itertools = { workspace = true, features = []}
