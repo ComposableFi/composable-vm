@@ -86,9 +86,9 @@ cw-storage-plus = { version = "^1.2.0", features = [
     "iterator",
 ], default-features = false }
 itertools = { version = "^0.12.1", default-features = false }
-num-rational = { version = "^0.4.1", default-features = false }
 num-integer = { version = "^0.1.46", default-features = false }
 cw-multi-test  = {version = "^1.0.0", default-features = false}
+num-rational = {git = "https://github.com/dzmitry-lahoda-forks/num-rational.git", branch = "dz/1", default-features = false}
 
 ibc-proto = { version = "^0.42.2", default-features = false }
 serde-json-wasm = { version = "^1.0.1", default-features = false }

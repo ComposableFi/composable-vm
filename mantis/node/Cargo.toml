@@ -47,6 +47,8 @@ fraction = {workspace = true, features = ["default"]}
 env_logger = {workspace = true}
 cw-multi-test = { workspace = true }
 petgraph = {workspace = true}
+num-rational = {workspace = true, features = ["cosmwasm", "serde", "json-schema"]}
+
 
 [dev-dependencies]
 rustfmt-wrapper = "0.2.1"

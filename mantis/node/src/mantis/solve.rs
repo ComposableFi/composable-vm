@@ -5,6 +5,8 @@ use cvm_runtime::{
     outpost::GetConfigResponse, shared::{CvmAddress, Displayed}, Amount, AssetId
 };
 use cw_mantis_order::{ordered_tuple::OrderedTuple2, CrossChainPart, Denom, DenomPair, OrderAmount, OrderItem, OrderSolution, OrderSubMsg};
+use mantis_cw::OrderCoinPair;
+use num_rational::Rational64;
 
 use crate::{
     prelude::*,
@@ -39,13 +41,14 @@ impl IntentBankInput {
     }
 
     /// given CoW solution and total amount of assets, aggregate remaining to bank for two sides
-    pub fn find_intent_amount(cows: &[OrderSolution], orders: &[OrderItem], cvm_glt: &GetConfigResponse, pair: DenomPair ) -> (IntentBankInput, IntentBankInput) {
-        
+    pub fn find_intent_amount(cows: &[OrderSolution], orders: &[OrderItem], optimal_ratio: Ratio<u64>, cvm_glt: &GetConfigResponse, pair: DenomPair ) -> (IntentBankInput, IntentBankInput) {
+        let pair = OrderCoinPair::from(pair);
         for cow in cows {
             match cow.cross_chain_part {
                 Some(OrderAmount::All) => {
-                    let cowed = orders.iter().find(|x| x.order_id == cow.order_id).expect("order").clone();
-                    cowed.
+                    let order = orders.iter().find(|x| x.order_id == cow.order_id).expect("order").clone();
+                    let remaining = order.remaining(cow.cow_out_amount, optimal_ratio);
+                    
                 },
                 None => {},
                 _ => panic!("unsupported cross chain part")
@@ -54,7 +57,7 @@ impl IntentBankInput {
     }
 }
 
-pub type SolutionsPerPair = Vec<(Vec<OrderSolution>, (u64, u64))>;
+pub type SolutionsPerPair = Vec<(Vec<OrderSolution>, Rational64)>;
 
 pub fn find_cows(all_orders: Vec<OrderItem>) -> SolutionsPerPair {
     let all_orders = all_orders.into_iter().group_by(|x| {

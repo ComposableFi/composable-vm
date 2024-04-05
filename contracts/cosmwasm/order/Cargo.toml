@@ -37,19 +37,18 @@ cvm-route = { path = "../../../crates/cvm-route", default-features = false, feat
 
 
 
-
 hex = {workspace = true, default-features = false, features = ["std"] }
 sha2 = {workspace = true, default-features = false, features = ["std"] }
 
 no-panic = { workspace = true }
 tuples = { workspace = true }
-
-[features]
-std = ["cvm-runtime/std"]
-json-schema = ["cvm-runtime/json-schema", "dep:schemars"]
-
-[dev-dependencies]
 num-rational = { workspace = true, default-features = false, features = [
   "num-bigint-std",
-  "std",
+  "serde",
 ] }
+
+
+[features]
+std = ["cvm-runtime/std", "num-rational/std",]
+json-schema = ["cvm-runtime/json-schema", "dep:schemars", "num-rational/json-schema"]
+

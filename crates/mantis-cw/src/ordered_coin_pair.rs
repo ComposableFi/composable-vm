@@ -1,4 +1,4 @@
-use crate::OrderedTuple2;
+use crate::{Denom, OrderedTuple2};
 
 /// CosmWasm Coin pair ordered by denom
 pub struct OrderCoinPair {
@@ -13,5 +13,11 @@ impl OrderCoinPair {
             a: cosmwasm_std::Coin { denom : ab.a, ..Default::default()},
             b: cosmwasm_std::Coin { denom : ab.b, ..Default::default()},
         }
+    }
+}
+
+impl From<(Denom, Denom)> for OrderCoinPair {
+    fn from(ab: (Denom, Denom)) -> Self {
+        Self::zero(ab.0, ab.1)
     }
 }

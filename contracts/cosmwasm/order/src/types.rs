@@ -1,7 +1,11 @@
 use cosmwasm_std::{ensure, BankMsg, Event, StdResult, Uint64, WasmMsg};
 use cvm_runtime::{outpost::ExecuteProgramMsg, shared::CvmProgram, AssetId, ExchangeId, NetworkId};
+use mantis_cw::DenomPair;
 
-use crate::{ordered_tuple::OrderedTuple2, prelude::*};
+
+pub type Ratio = num_rational::Ratio<u64>;
+
+use crate::prelude::*;
 
 pub type OrderId = Uint128;
 
@@ -20,9 +24,6 @@ pub struct CowSolutionCalculation {
     pub filled: Vec<CowFilledOrder>,
 }
 
-/// parts of a whole, numerator / denominator
-pub type Ratio = (Uint64, Uint64);
-
 #[cfg_attr(
     feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
     derive(schemars::JsonSchema)
@@ -40,7 +41,7 @@ impl OrderItem {
     /// `wanted_fill_amount` - amount to fill in `wants` amounts
     /// Reduces given amount
     /// `optimal_price` - the price to solve against, should be same or better than user limit.
-    pub fn fill(&mut self, wanted_fill_amount: Uint128, optimal_ratio: Ratio) -> StdResult<()> {
+    pub fn fill(&mut self, wanted_fill_amount: Amount, optimal_ratio: Ratio) -> StdResult<()> {
         // was given more or exact wanted - user happy or user was given all before, do not give more
         if wanted_fill_amount >= self.msg.wants.amount
             || self.msg.wants.amount.u128() == <_>::default()
@@ -62,6 +63,13 @@ impl OrderItem {
             assert!(self.given.amount > <_>::default());
         }
         Ok(())
+    }
+
+    /// remaining after want fill using optimal price
+    pub fn remaining(&self, wanted_fill_amount: Amount, optimal_ratio: Ratio) -> Amount  {
+        let mut slow = self.clone();
+        slow.fill(wanted_fill_amount, optimal_ratio).expect("off chain ok");
+        self.given.amount - slow.given.amount
     }
 }
 
@@ -203,16 +211,12 @@ pub struct SolutionSubMsg {
     #[serde(skip_serializing_if = "Vec::is_empty", default)]
     pub cows: Vec<OrderSolution>,
     /// all CoWs ensured to be solved against one optimal price
-    pub cow_optional_price: (u64, u64),
+    pub cow_optional_price: Ratio,
     #[serde(skip_serializing_if = "Option::is_none", default)]
     pub route: Option<CrossChainPart>,
 
     /// after some time, solver will not commit to success
     pub timeout: Block,
-}
-
-pub fn to_cw_ratio(ratio: (u64, u64)) -> Ratio {
-    (Uint64::from(ratio.0), Uint64::from(ratio.1))
 }
 
 /// after cows solved, need to route remaining cross chain
@@ -268,7 +272,7 @@ pub enum OrderAmount {
 #[serde(rename_all = "snake_case")]
 pub struct OrderSolution {
     pub order_id: OrderId,
-    /// how much of order to be solved by from bank for all aggregated cows, `want` unit
+    /// how much of order to be solved by from bank for this order, `want` unit
     pub cow_out_amount: Amount,
     pub cross_chain_part: Option<OrderAmount>,
 }
@@ -404,8 +408,6 @@ impl CvmFillResult {
     }
 }
 
-pub type Denom = String;
-pub type DenomPair = OrderedTuple2<String>;
 pub type SolverAddress = String;
 
 pub type CrossChainSolutionKey = (SolverAddress, DenomPair, Block);

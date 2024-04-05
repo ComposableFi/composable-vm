@@ -4,7 +4,6 @@
 mod constants;
 mod errors;
 mod events;
-pub mod ordered_tuple;
 mod prelude;
 mod simulator;
 mod state;
@@ -14,6 +13,7 @@ mod validation;
 use events::order::*;
 use events::solution::*;
 use itertools::Itertools;
+use mantis_cw::DenomPair;
 use prelude::*;
 use simulator::simulate_cows_via_bank;
 use simulator::simulate_route;
@@ -373,7 +373,7 @@ impl OrderContract<'_> {
             transfers,
             ctx.info.sender.to_string(),
             solution_item.block_added,
-            to_cw_ratio(solution_item.msg.cow_optional_price),
+            solution_item.msg.cow_optional_price,
             &mut all_orders,
         )?;
 
