@@ -42,18 +42,30 @@ impl IntentBankInput {
 
     /// given CoW solution and total amount of assets, aggregate remaining to bank for two sides
     pub fn find_intent_amount(cows: &[OrderSolution], orders: &[OrderItem], optimal_ratio: Ratio<u64>, cvm_glt: &GetConfigResponse, pair: DenomPair ) -> (IntentBankInput, IntentBankInput) {
-        let pair = OrderCoinPair::from(pair);
+        // native calculations
+        let mut pair = OrderCoinPair::from(pair);
+        let mut a_to_b = Vec::new();
+        let mut b_to_a = Vec::new();
+        
         for cow in cows {
             match cow.cross_chain_part {
                 Some(OrderAmount::All) => {
                     let order = orders.iter().find(|x| x.order_id == cow.order_id).expect("order").clone();
-                    let remaining = order.remaining(cow.cow_out_amount, optimal_ratio);
-                    
+                    order.fill(cow.cow_out_amount, optimal_ratio).expect("off chain");
+                    pair.add(order.given);
+
+                    if order.given.denom == pair.a.denom {
+                        a_to_b.push((order.owner, order.given.amount));
+                    } else {
+                        b_to_a.push((order.owner, order.given.amount));
+                    }
                 },
                 None => {},
                 _ => panic!("unsupported cross chain part")
             }
         }
+
+        // making MANTIS route request in CVM form 
     }
 }
 
