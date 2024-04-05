@@ -35,8 +35,16 @@ impl IntentBankInput {
     }
 
     /// given CoW solution and total amount of assets, aggregate remaining to bank
-    pub fn find_intent_amount(cows: &[OrderSolution], cvm_glt: &GetConfigResponse, pair: DenomPair ) -> IntentBankInput {
-        todo!()
+    pub fn find_intent_amount(cows: &[OrderSolution], orders: &[OrderItem], cvm_glt: &GetConfigResponse, pair: DenomPair ) -> IntentBankInput {
+        for cow in cows {
+            match cow.cross_chain_part {
+                Some(OrderAmount::All) => {
+                    let cowed = 
+                },
+                None => {},
+                _ => panic!("unsupported cross chain part")
+            }
+        }
     }
 }
 

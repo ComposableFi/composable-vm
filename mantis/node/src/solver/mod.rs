@@ -1,5 +1,5 @@
 pub mod orderbook;
-pub mod router;
+pub mod or;
 pub mod solution;
-pub mod solver;
+pub mod cows;
 pub mod types;
