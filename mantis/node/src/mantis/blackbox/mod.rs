@@ -8,9 +8,9 @@ use cvm_runtime::{
     Amount, AssetId, ExchangeId,
 };
 
-use crate::solver::router::bf;
+use crate::solver::or::bf;
 
-use super::solve::BankInput;
+use super::solve::IntentBankInput;
 
 /// given route and CVM stub with amount, build it to the end
 fn build_next(
@@ -106,7 +106,7 @@ fn new_exchange(exchange: &Exchange) -> CvmInstruction {
 /// `order_accounts` - account of order where to dispatch amounts (part of whole)
 pub async fn get_route(
     route_provider: &str,
-    input: BankInput,
+    input: IntentBankInput,
     cvm_glt: &GetConfigResponse,
     salt: &[u8],
 ) -> CvmProgram {

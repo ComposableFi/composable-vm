@@ -1,9 +1,8 @@
 use cosmrs::tendermint::block::Height;
 use cvm_runtime::{
-    shared::{CvmAddress, Displayed},
-    Amount, AssetId,
+    outpost::GetConfigResponse, shared::{CvmAddress, Displayed}, Amount, AssetId
 };
-use cw_mantis_order::{CrossChainPart, OrderAmount, OrderItem, OrderSolution, OrderSubMsg};
+use cw_mantis_order::{CrossChainPart, DenomPair, OrderAmount, OrderItem, OrderSolution, OrderSubMsg};
 
 use crate::{
     prelude::*,
@@ -13,14 +12,14 @@ use crate::{
 use super::cosmos::client::timeout;
 
 /// input batched summarized from users for routing
-pub struct BankInput {
+pub struct IntentBankInput {
     pub in_asset_id: AssetId,
     pub in_asset_amount: Displayed<u64>,
     pub out_asset_id: AssetId,
     pub order_accounts: Vec<(CvmAddress, Amount)>,
 }
 
-impl BankInput {
+impl IntentBankInput {
     pub fn new(
         in_asset_id: AssetId,
         in_asset_amount: Displayed<u64>,
@@ -33,6 +32,11 @@ impl BankInput {
             out_asset_id,
             order_accounts,
         }
+    }
+
+    /// given CoW solution and total amount of assets, aggregate remaining to bank
+    pub fn find_intent_amount(cows: &[OrderSolution], cvm_glt: &GetConfigResponse, pair: DenomPair ) -> IntentBankInput {
+        todo!()
     }
 }
 
@@ -47,7 +51,7 @@ pub fn find_cows(all_orders: Vec<OrderItem>) -> SolutionsPerPair {
     let mut cows_per_pair = vec![];
     for ((a, b), orders) in all_orders.into_iter() {
         let orders = orders.collect::<Vec<_>>();
-        use crate::solver::solver::*;
+        use crate::solver::cows::*;
         use crate::solver::types::*;
         let orders = orders.iter().map(|x| {
             let side = if x.given.denom == a {
@@ -96,6 +100,7 @@ pub fn find_cows(all_orders: Vec<OrderItem>) -> SolutionsPerPair {
     cows_per_pair
 }
 
+/// TODO: ditch decimals they are useless
 /// convert decimal to normalized fraction
 fn decimal_to_fraction(amount: Decimal) -> (u64, u64) {
     let decimal_string = amount.to_string();
@@ -115,8 +120,4 @@ fn decimal_to_fraction(amount: Decimal) -> (u64, u64) {
             *fraction.denom().expect("denom"),
         )
     }
-}
-
-pub fn find_intent_amount(cows: &[OrderSolution]) -> BankInput {
-    todo!()
 }

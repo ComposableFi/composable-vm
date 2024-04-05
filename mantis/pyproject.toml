@@ -38,7 +38,8 @@ jsonschema = "4.20.0"
 maturin = "1.4.0"
 numpy = "1.23.4"
 pandas = { extras = [], version = "^2.1.4" }
-pendulum = "==2.0.3" # Mac M1 support https://github.com/sdispater/pendulum/issues/454#issuecomment-1847991459
+pendulum = "==2.0.3" 
+
 protobuf = "4.25.1"
 pycryptodome = "3.19.1"
 pydantic = "2.5.3"
@@ -53,7 +54,6 @@ methodtools = "0.4.7"
 tqdm = "^4.66.0"
 orjson="3.9.10"
 typeguard = "2.13.3"
-# pydantic-numpy
 
 deepdiff = "*"
 PySCIPOpt = "5.0.0" # i set it directly to allow override SCIP dep (currently it is goes as binary with this wheel)s
