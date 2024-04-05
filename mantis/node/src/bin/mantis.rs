@@ -17,7 +17,7 @@ use cosmrs::{
     AccountId,
 };
 use cvm_runtime::shared::CvmProgram;
-use cw_mantis_order::{Amount, OrderItem, OrderSolution, OrderSubMsg, SolutionSubMsg};
+use cw_mantis_order::{Amount, OrderItem, OrderSolution, OrderSubMsg, Ratio, SolutionSubMsg};
 use mantis_node::{
     mantis::{
         args::*,
@@ -190,7 +190,7 @@ async fn solve(
     let cows_per_pair = mantis_node::mantis::solve::find_cows(all_orders);
     let cvm_glt = get_cvm_glt(cvm_contact, cosmos_query_client).await;
     for (cows, optimal_price) in cows_per_pair {
-        let bank = mantis_node::mantis::solve::find_intent_amount(cows.as_ref());
+        let bank = mantis_node::mantis::solve::IntentBankInput::find_intent_amount(cows.as_ref());
         let cvm_route = blackbox::get_route(router_api, bank, &cvm_glt, salt.as_ref()).await;
         send_solution(
             cows,
@@ -210,7 +210,7 @@ async fn send_solution(
     cows: Vec<OrderSolution>,
     cvm: CvmProgram,
     tip: &Tip,
-    optimal_price: (u64, u64),
+    optimal_price: Ratio,
     signing_key: &cosmrs::crypto::secp256k1::SigningKey,
     order_contract: &String,
     rpc: &CosmosChainInfo,

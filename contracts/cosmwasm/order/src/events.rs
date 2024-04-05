@@ -77,7 +77,7 @@ pub mod solution {
             .add_attribute("token_b", ab.clone().b)
             .add_attribute("solver_address", ctx.info.sender.to_string())
             .add_attribute("cow_volume", cow_volume.to_string())
-            .add_attribute("cross_chain_volume", cow_volume.to_string())
+            .add_attribute("cross_chain_volume", cross_chain_volume.to_string())
             .add_attribute("total_transfers", transfers.len().to_string())
             .add_attribute("solution_id", hex::encode(solution_id))
             .add_attribute("solution_block_added", block_added.to_string());

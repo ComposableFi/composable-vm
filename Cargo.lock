@@ -771,6 +771,7 @@ dependencies = [
  "ibc-primitives",
  "ibc-proto 0.42.2",
  "num",
+ "num-rational 0.4.1 (git+https://github.com/dzmitry-lahoda-forks/num-rational.git?branch=dz/1)",
  "parity-scale-codec",
  "prost",
  "prost-build",
@@ -1369,16 +1370,6 @@ name = "forward_ref"
 version = "1.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c8cbd1169bd7b4a0a20d92b9af7a7e0422888bd38a6f5ec29c1fd8c1558a272e"
-
-[[package]]
-name = "fraction"
-version = "0.15.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b486ab61634f05b11b591c38c71fb25139cb55e22be4fb6ecf649cc3736c074a"
-dependencies = [
- "lazy_static",
- "num",
-]
 
 [[package]]
 name = "funty"
@@ -2239,12 +2230,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4e28ab1dc35e09d60c2b8c90d12a9a8d9666c876c10a3739a3196db0103b6043"
 
 [[package]]
-name = "lazy_static"
-version = "1.4.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e2abad23fbc42b3700f2f279844dc832adb2b2eb069b2df918f455c4e18cc646"
-
-[[package]]
 name = "libc"
 version = "0.2.150"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2310,7 +2295,6 @@ dependencies = [
  "cw-multi-test",
  "derive_more",
  "env_logger",
- "fraction",
  "itertools 0.12.1",
  "log",
  "mantis-cw",
@@ -2503,7 +2487,7 @@ dependencies = [
 [[package]]
 name = "num-rational"
 version = "0.4.1"
-source = "git+https://github.com/dzmitry-lahoda-forks/num-rational.git?branch=dz/1#2c7947eaa34cd46482349a642152ad5e0aa0ecc7"
+source = "git+https://github.com/dzmitry-lahoda-forks/num-rational.git?branch=dz/1#53416ae7af27b7b51740701d6a9e5c54325bf994"
 dependencies = [
  "cosmwasm-std",
  "num-bigint",

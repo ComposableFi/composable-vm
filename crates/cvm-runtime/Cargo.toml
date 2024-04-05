@@ -20,6 +20,7 @@ ibc-app-transfer-types = { workspace = true, features = [
 ] }
 ibc-core-host-types = { workspace = true, features = ["serde"] }
 num = { workspace = true }
+num-rational = { workspace = true }
 parity-scale-codec = { workspace = true, optional = true }
 prost = { workspace = true, features = ["prost-derive"] }
 scale-info = { workspace = true, features = ["derive"], optional = true }

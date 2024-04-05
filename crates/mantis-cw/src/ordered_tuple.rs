@@ -1,5 +1,3 @@
-use std::vec;
-
 use cosmwasm_schema::cw_serde;
 use cosmwasm_std::{StdError, StdResult};
 use cw_storage_plus::{Key, KeyDeserialize, Prefixer, PrimaryKey};
@@ -39,7 +37,6 @@ impl<'a, T: Clone + Prefixer<'a> + KeyDeserialize + PrimaryKey<'a>> Prefixer<'a>
         res
     }
 }
-
 
 impl<
         'a,

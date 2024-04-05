@@ -12,8 +12,14 @@ impl OrderCoinPair {
     pub fn zero(a: Denom, b: Denom) -> Self {
         let ab = OrderedTuple2::new(a, b);
         Self {
-            a: cosmwasm_std::Coin { denom : ab.a, ..Default::default()},
-            b: cosmwasm_std::Coin { denom : ab.b, ..Default::default()},
+            a: cosmwasm_std::Coin {
+                denom: ab.a,
+                ..Default::default()
+            },
+            b: cosmwasm_std::Coin {
+                denom: ab.b,
+                ..Default::default()
+            },
         }
     }
 
@@ -25,7 +31,7 @@ impl OrderCoinPair {
         self.b.amount += amount;
     }
 
-    pub fn add(&mut self, coin: Coin) {
+    pub fn add(&mut self, coin: &Coin) {
         if coin.denom == self.a.denom {
             self.a.amount += coin.amount;
         } else if coin.denom == self.b.denom {

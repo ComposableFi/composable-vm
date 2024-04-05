@@ -1,7 +1,6 @@
-use cosmwasm_std::{ensure, BankMsg, Event, StdResult, Uint64, WasmMsg};
+use cosmwasm_std::{ensure, BankMsg, Event, StdResult};
 use cvm_runtime::{outpost::ExecuteProgramMsg, shared::CvmProgram, AssetId, ExchangeId, NetworkId};
 use mantis_cw::DenomPair;
-
 
 pub type Ratio = num_rational::Ratio<u64>;
 
@@ -66,9 +65,10 @@ impl OrderItem {
     }
 
     /// remaining after want fill using optimal price
-    pub fn remaining(&self, wanted_fill_amount: Amount, optimal_ratio: Ratio) -> Amount  {
+    pub fn remaining(&self, wanted_fill_amount: Amount, optimal_ratio: Ratio) -> Amount {
         let mut slow = self.clone();
-        slow.fill(wanted_fill_amount, optimal_ratio).expect("off chain ok");
+        slow.fill(wanted_fill_amount, optimal_ratio)
+            .expect("off chain ok");
         self.given.amount - slow.given.amount
     }
 }

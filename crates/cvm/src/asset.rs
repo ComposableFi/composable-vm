@@ -159,6 +159,9 @@ impl From<(u64, u64)> for Amount {
 }
 
 impl Amount {
+    /// idiotic idea fom KO, it should be
+    /// u64/u64 ratio
+    //  with rounding to reduce or reduce down part up to some seven bit parts
     pub const MAX_PARTS: u64 = 1_000_000_000_000_000_000;
 
     pub fn one() -> Self {

@@ -8,7 +8,7 @@ use cvm_runtime::{
     Amount, AssetId, ExchangeId,
 };
 
-use crate::solver::or::bf;
+use crate::solver::router::bf;
 
 use super::solve::IntentBankInput;
 

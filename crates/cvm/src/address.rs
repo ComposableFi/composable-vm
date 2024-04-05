@@ -59,6 +59,10 @@ impl XcAddr {
 
         Ok(api.addr_humanize(&CanonicalAddr(addr))?.to_string())
     }
+    #[cfg(feature = "cosmwasm")]
+    pub fn from_cw_addr(addr: &cosmwasm_std::Addr) -> Self {
+        Self(addr.to_string())
+    }
 
     #[cfg(feature = "cosmwasm")]
     pub fn parse(&self) -> Result<Binary, StdError> {

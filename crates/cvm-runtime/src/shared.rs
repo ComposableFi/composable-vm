@@ -72,6 +72,19 @@ impl CvmInstruction {
         }
     }
 
+    // pub fn transfer_relative_to_account(to: &str, asset_id: u128,  ) -> Self {
+
+    //     let r = num_rational::Ratio<u128>::new(1, 1);
+    //     let amount =  CvmBalanceFilter {
+    //         intercept: <_>::default(),
+    //         slope: ,
+    //     };
+    //     Self::Transfer {
+    //         to: crate::Destination::Account(XcAddr(to.to_owned())),
+    //         assets: vec[amount],
+    //     }
+    // }
+
     pub fn spawn(network_id: NetworkId, program: CvmProgram) -> Self {
         Self::Spawn {
             network_id,

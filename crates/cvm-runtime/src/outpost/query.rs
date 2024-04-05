@@ -121,4 +121,12 @@ impl GetConfigResponse {
             .map(|x| x.network_id)
             .expect("network_id")
     }
+
+    pub fn cvm_asset_by_cw(&self, denom: String) -> AssetId {
+        self.assets
+            .iter()
+            .find(|x| x.denom() == denom)
+            .map(|x| x.asset_id)
+            .expect("cvm_asset_by_cw")
+    }
 }

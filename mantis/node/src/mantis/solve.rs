@@ -2,11 +2,13 @@ use core::num;
 
 use cosmrs::tendermint::block::Height;
 use cvm_runtime::{
-    outpost::GetConfigResponse, shared::{CvmAddress, Displayed}, Amount, AssetId
+    outpost::GetConfigResponse,
+    shared::{CvmAddress, CvmBalanceFilter, CvmFunds, CvmFundsFilter, CvmInstruction, Displayed},
+    Amount, AssetId, Destination,
 };
-use cw_mantis_order::{ordered_tuple::OrderedTuple2, CrossChainPart, Denom, DenomPair, OrderAmount, OrderItem, OrderSolution, OrderSubMsg};
-use mantis_cw::OrderCoinPair;
-use num_rational::Rational64;
+use cw_mantis_order::{CrossChainPart, OrderAmount, OrderItem, OrderSolution, OrderSubMsg};
+use mantis_cw::{DenomPair, OrderCoinPair};
+use num_rational::{Ratio, Rational64};
 
 use crate::{
     prelude::*,
@@ -23,14 +25,12 @@ pub struct IntentBankInput {
     pub order_accounts: Vec<(CvmAddress, Amount)>,
 }
 
-
-
 impl IntentBankInput {
     pub fn new(
         in_asset_id: AssetId,
         in_asset_amount: Displayed<u64>,
         out_asset_id: AssetId,
-        order_accounts: Vec<(CvmAddress, Amount)>,
+        order_accounts: Vec<CvmInstruction>,
     ) -> Self {
         Self {
             in_asset_id,
@@ -41,35 +41,72 @@ impl IntentBankInput {
     }
 
     /// given CoW solution and total amount of assets, aggregate remaining to bank for two sides
-    pub fn find_intent_amount(cows: &[OrderSolution], orders: &[OrderItem], optimal_ratio: Ratio<u64>, cvm_glt: &GetConfigResponse, pair: DenomPair ) -> (IntentBankInput, IntentBankInput) {
+    pub fn find_intent_amount(
+        cows: &[OrderSolution],
+        orders: &[OrderItem],
+        optimal_ratio: Ratio<u64>,
+        cvm_glt: &GetConfigResponse,
+        pair: DenomPair,
+    ) -> (IntentBankInput, IntentBankInput) {
         // native calculations
-        let mut pair = OrderCoinPair::from(pair);
+        let mut pair = OrderCoinPair::zero(pair.a, pair.b);
         let mut a_to_b = Vec::new();
         let mut b_to_a = Vec::new();
-        
+
         for cow in cows {
             match cow.cross_chain_part {
                 Some(OrderAmount::All) => {
-                    let order = orders.iter().find(|x| x.order_id == cow.order_id).expect("order").clone();
-                    order.fill(cow.cow_out_amount, optimal_ratio).expect("off chain");
-                    pair.add(order.given);
+                    let mut order = orders
+                        .iter()
+                        .find(|x| x.order_id == cow.order_id)
+                        .expect("order")
+                        .clone();
+                    order
+                        .fill(cow.cow_out_amount, optimal_ratio)
+                        .expect("off chain");
+                    pair.add(&order.given);
 
                     if order.given.denom == pair.a.denom {
                         a_to_b.push((order.owner, order.given.amount));
                     } else {
                         b_to_a.push((order.owner, order.given.amount));
                     }
-                },
-                None => {},
-                _ => panic!("unsupported cross chain part")
+                }
+                None => {}
+                _ => panic!("unsupported cross chain part"),
             }
         }
 
-        // making MANTIS route request in CVM form 
+        // making MANTIS route request in CVM form
+
+        let a_asset = cvm_glt.cvm_asset_by_cw(pair.a.denom);
+        let b_asset = cvm_glt.cvm_asset_by_cw(pair.b.denom);
+
+        let b_received = a_to_b.iter().map(|x| {
+            let part = Ratio::new(x.1.u128(), pair.a.amount.u128()).msb_limit_unsigned();
+            let part = CvmBalanceFilter::from((*part.numer(), *part.denom()));
+            CvmInstruction::Transfer {
+                to: Destination::Account(CvmAddress::from(x.0.to_string())),
+                assets: CvmFundsFilter::one(a_asset, part),
+            }
+        });
+        let a_received = b_to_a.iter().map(|x| {
+            let part = Ratio::new(x.1.u128(), pair.b.amount.u128()).msb_limit_unsigned();
+            let part = CvmBalanceFilter::from((*part.numer(), *part.denom()));
+            CvmInstruction::Transfer {
+                to: Destination::Account(CvmAddress::from(x.0.to_string())),
+                assets: CvmFundsFilter::one(b_asset, part),
+            }
+        });
+
+        (
+            IntentBankInput::new(a_asset, pair.a.amount, b_asset, b_received.collect()),
+            IntentBankInput::new(b_asset, pair.b.amount, a_asset, a_received.collect()),
+        )
     }
 }
 
-pub type SolutionsPerPair = Vec<(Vec<OrderSolution>, Rational64)>;
+pub type SolutionsPerPair = Vec<(Vec<OrderSolution>, Ratio<u64>)>;
 
 pub fn find_cows(all_orders: Vec<OrderItem>) -> SolutionsPerPair {
     let all_orders = all_orders.into_iter().group_by(|x| {
@@ -131,22 +168,17 @@ pub fn find_cows(all_orders: Vec<OrderItem>) -> SolutionsPerPair {
 
 /// TODO: ditch decimals they are useless
 /// convert decimal to normalized fraction
-fn decimal_to_fraction(amount: Decimal) -> (u64, u64) {
+fn decimal_to_fraction(amount: Decimal) -> Ratio<u64> {
     let decimal_string = amount.to_string();
     let decimal_string: Vec<_> = decimal_string.split('.').collect();
     if decimal_string.len() == 1 {
-        (decimal_string[0].parse().expect("in range"), 1)
+        Ratio::new(decimal_string[0].parse().expect("in range"), 1)
     } else {
         let digits_after_decimal = decimal_string[1].len() as u32;
         let denominator = 10_u128.pow(digits_after_decimal) as u64;
         let numerator = (amount * Decimal::from(denominator))
             .to_u64()
             .expect("integer");
-        let fraction = fraction::Fraction::new(numerator, denominator);
-
-        (
-            *fraction.numer().expect("num"),
-            *fraction.denom().expect("denom"),
-        )
+        Ratio::new(numerator, denominator)
     }
 }
