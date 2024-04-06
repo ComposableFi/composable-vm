@@ -46,6 +46,7 @@ impl IntentBankInput {
         orders: &[OrderItem],
         optimal_ratio: Ratio<u64>,
         cvm_glt: &GetConfigResponse,
+        pair: DenomPair,
     ) -> (IntentBankInput, IntentBankInput) {
         // native calculations
         let mut pair = OrderCoinPair::zero(pair.a, pair.b);
@@ -111,17 +112,17 @@ pub struct PairSolution {
     pub optimal_price: Ratio<u64>,
 }  
 
-pub fn find_cows(all_orders: Vec<OrderItem>) -> Vec<PairSolution> {
+pub fn find_cows(all_orders: &[OrderItem]) -> Vec<PairSolution> {
     let all_orders = all_orders.into_iter().group_by(|x| {
         x.pair()
     });
     let mut cows_per_pair = vec![];
-    for ((a, b), orders) in all_orders.into_iter() {
+    for (ab, orders) in all_orders.into_iter() {
         let orders = orders.collect::<Vec<_>>();
         use crate::solver::cows::*;
         use crate::solver::types::*;
         let orders = orders.iter().map(|x| {
-            let side = if x.given.denom == a {
+            let side = if x.given.denom == ab.a {
                 OrderType::Buy
             } else {
                 OrderType::Sell
@@ -160,7 +161,7 @@ pub fn find_cows(all_orders: Vec<OrderItem>) -> Vec<PairSolution> {
         println!("cows: {:?}", cows);
         if !cows.is_empty() {
             let pair_solution = PairSolution {
-                ab: DenomPair::new(a, b),
+                ab,
                 cows,
                 optimal_price,
             };

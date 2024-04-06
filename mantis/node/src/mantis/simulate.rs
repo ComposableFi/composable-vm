@@ -63,8 +63,8 @@ pub fn randomize_coin(coin_0_amount: u128) -> u128 {
 ///
 /// Also calls `timeout` so old orders are cleaned.
 pub async fn simulate_order(
-    write_client: &mut CosmWasmWriteClient,
-    cosmos_query_client: &mut CosmosQueryClient,
+    _write_client: &mut CosmWasmWriteClient,
+    _cosmos_query_client: &mut CosmosQueryClient,
     order_contract: String,
     coins_pair: &String,
     signing_key: &cosmrs::crypto::secp256k1::SigningKey,

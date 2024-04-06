@@ -537,7 +537,7 @@ impl OrderContract<'_> {
     fn pre_fill_remotely<'a>(
         &self,
         ctx: ExecCtx<'a>,
-        optimal_price: Ratio,
+        _optimal_price: Ratio,
         solver_address: String,
         solution_id: SolutionHash,
         solver_orders: Vec<SolvedOrder>,

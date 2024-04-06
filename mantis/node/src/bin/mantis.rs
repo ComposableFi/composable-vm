@@ -29,7 +29,7 @@ use mantis_node::{
             *,
         },
         indexer::{get_all_orders, get_cvm_glt},
-        simulate,
+        simulate, solve::PairSolution,
     },
     prelude::*,
     solver::{orderbook::OrderList, solution::Solution},
@@ -64,7 +64,7 @@ async fn main() {
 
 async fn solve_orders(solver_args: &SolverArgs) {
     let args = &solver_args.shared;
-    let mut wasm_read_client = create_wasm_query_client(&args.grpc_centauri).await;
+    let wasm_read_client = create_wasm_query_client(&args.grpc_centauri).await;
 
     let signer = mantis_node::mantis::cosmos::signer::from_mnemonic(
         args.wallet.as_str(),
@@ -187,16 +187,16 @@ async fn solve(
     let salt = crate::cvm::get_salt(signing_key, tip);
     log::info!(target: "mantis::solver", "Solving orders");
 
-    let cows_per_pair = mantis_node::mantis::solve::find_cows(all_orders);
+    let cows_per_pair = mantis_node::mantis::solve::find_cows(&all_orders);
     let cvm_glt = get_cvm_glt(cvm_contact, cosmos_query_client).await;
-    for (cows, optimal_price) in cows_per_pair {);
-        let (a, b) = mantis_node::mantis::solve::IntentBankInput::find_intent_amount(cows.as_ref(), &all_orders, optimal_price, &cvm_glt, cvm_glt.pair.clone());
-        let cvm_route = blackbox::get_route(router_api, bank, &cvm_glt, salt.as_ref()).await;
+    for pair_solution in cows_per_pair {;
+        let (a, b) = mantis_node::mantis::solve::IntentBankInput::find_intent_amount(pair_solution.cows.as_ref(), &all_orders, pair_solution.optimal_price, &cvm_glt, pair_solution.ab.clone());
+        let cvm_route = panic!(); //blackbox::get_route(router_api, bank, &cvm_glt, salt.as_ref()).await;
         send_solution(
-            cows,
+            pair_solution.cows,
             cvm_route,
             tip,
-            optimal_price,
+            pair_solution.optimal_price,
             signing_key,
             order_contract,
             rpc,

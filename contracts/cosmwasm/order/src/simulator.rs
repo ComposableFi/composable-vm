@@ -13,7 +13,7 @@ use crate::SolvedOrder;
 /// return filling amounts for all orders from program, which may or may not lead to full fill
 pub fn verify(
     route: CvmProgram,
-    in_asset: &AssetItem,
+    _in_asset: &AssetItem,
     out_asset: &AssetItem,
     predicted_out_amount: u128,
     orders: Vec<SolvedOrder>,
@@ -80,11 +80,11 @@ pub fn simulate_cows_via_bank(
 /// Solve only larger CVM for in volume, assuming other solution will be for other side sent.
 /// Produces remaining each order will receive proportional to what is given.
 pub fn simulate_route(
-    storage: &mut dyn Storage,
-    route: CvmProgram,
-    token_a_remaining: Coin,
-    token_b_remaining: Coin,
-    orders: Vec<SolvedOrder>,
+    _storage: &mut dyn Storage,
+    _route: CvmProgram,
+    _token_a_remaining: Coin,
+    _token_b_remaining: Coin,
+    _orders: Vec<SolvedOrder>,
 ) -> Result<(), StdError> {
     todo!()
 }
