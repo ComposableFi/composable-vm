@@ -11,9 +11,16 @@ cosmwasm-std = { workspace = true, features = [
   "iterator",
 ], default-features = false }
 
+
+serde = {workspace = true}
+
 cosmwasm-schema = { workspace = true, default-features = false }
 cw-storage-plus = { workspace = true, features = [
   "iterator",
 ], default-features = false }
 
 tuples = { workspace = true }
+
+derive_more = { workspace = true, features = [] }
+
+strum_macros = { workspace = true }

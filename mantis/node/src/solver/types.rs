@@ -22,14 +22,6 @@ impl Price {
     }
 }
 
-/// this is buy sell in terms of token1/token2 or A/B. just 2 sides of the orderbook.
-/// not Buy and Sell orders which differ in limit definition(in limit vs out limit).
-#[derive(Debug, PartialEq, Eq, Clone, Copy, AsRefStr, Display)]
-pub enum OrderType {
-    Buy,
-    Sell,
-}
-
 impl OrderType {
     fn is_acceptable_price(&self, price: Amount, limit_price: Amount) -> bool {
         match self {

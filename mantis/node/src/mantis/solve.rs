@@ -107,15 +107,13 @@ impl IntentBankInput {
 }
 
 pub struct PairSolution {
-    pub ab : DenomPair,
+    pub ab: DenomPair,
     pub cows: Vec<OrderSolution>,
     pub optimal_price: Ratio<u64>,
-}  
+}
 
 pub fn find_cows(all_orders: &[OrderItem]) -> Vec<PairSolution> {
-    let all_orders = all_orders.into_iter().group_by(|x| {
-        x.pair()
-    });
+    let all_orders = all_orders.into_iter().group_by(|x| x.pair());
     let mut cows_per_pair = vec![];
     for (ab, orders) in all_orders.into_iter() {
         let orders = orders.collect::<Vec<_>>();

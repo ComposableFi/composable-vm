@@ -37,7 +37,6 @@ pub struct OrderItem {
 }
 
 impl OrderItem {
-
     pub fn pair(&self) -> DenomPair {
         DenomPair::new(self.given.denom.clone(), self.msg.wants.denom.clone())
     }

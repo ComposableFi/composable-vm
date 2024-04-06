@@ -2280,6 +2280,9 @@ dependencies = [
  "cosmwasm-schema",
  "cosmwasm-std",
  "cw-storage-plus 1.2.0",
+ "derive_more",
+ "serde",
+ "strum_macros",
  "tuples",
 ]
 

@@ -29,7 +29,8 @@ use mantis_node::{
             *,
         },
         indexer::{get_all_orders, get_cvm_glt},
-        simulate, solve::PairSolution,
+        simulate,
+        solve::PairSolution,
     },
     prelude::*,
     solver::{orderbook::OrderList, solution::Solution},
@@ -189,8 +190,14 @@ async fn solve(
 
     let cows_per_pair = mantis_node::mantis::solve::find_cows(&all_orders);
     let cvm_glt = get_cvm_glt(cvm_contact, cosmos_query_client).await;
-    for pair_solution in cows_per_pair {;
-        let (a, b) = mantis_node::mantis::solve::IntentBankInput::find_intent_amount(pair_solution.cows.as_ref(), &all_orders, pair_solution.optimal_price, &cvm_glt, pair_solution.ab.clone());
+    for pair_solution in cows_per_pair {
+        let (a, b) = mantis_node::mantis::solve::IntentBankInput::find_intent_amount(
+            pair_solution.cows.as_ref(),
+            &all_orders,
+            pair_solution.optimal_price,
+            &cvm_glt,
+            pair_solution.ab.clone(),
+        );
         let cvm_route = panic!(); //blackbox::get_route(router_api, bank, &cvm_glt, salt.as_ref()).await;
         send_solution(
             pair_solution.cows,
