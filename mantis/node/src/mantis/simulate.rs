@@ -7,7 +7,7 @@ use crate::{
         cosmwasm::to_exec_signed_with_fund,
     },
     prelude::*,
-    solver::{orderbook::OrderList, solution::Solution, types::OrderType},
+    solver::{orderbook::OrderList, solution::Solution},
 };
 
 use super::cosmos::{

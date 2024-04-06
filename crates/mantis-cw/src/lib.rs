@@ -3,6 +3,7 @@ mod ordered_tuple;
 
 pub use ordered_coin_pair::OrderCoinPair;
 pub use ordered_tuple::OrderedTuple2;
+use rust_decimal::Decimal;
 
 pub type Denom = String;
 pub type DenomPair = OrderedTuple2<String>;
@@ -17,7 +18,18 @@ pub type DenomPair = OrderedTuple2<String>;
 #[derive(serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = "snake_case")]
 
-pub enum OrderType {
-    Buy = 0,
-    Sell = 1,
+pub enum OrderSide {
+    A = 0,
+    B = 1,
+}
+
+
+impl OrderSide {
+    // ddo not use decimal, decimal is bad
+    pub fn is_acceptable_price(&self, price: Decimal, limit_price: Decimal) -> bool {
+        match self {
+            OrderSide::B => price >= limit_price,
+            OrderSide::A => price <= limit_price,
+        }
+    }
 }

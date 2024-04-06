@@ -1,6 +1,7 @@
 //! Basic types with simple checks and domain, no heavy math or solving.
 use crate::prelude::*;
 use derive_more::{Display, From};
+use mantis_cw::OrderSide;
 use strum_macros::AsRefStr;
 
 pub type Amount = Decimal;
@@ -22,14 +23,6 @@ impl Price {
     }
 }
 
-impl OrderType {
-    fn is_acceptable_price(&self, price: Amount, limit_price: Amount) -> bool {
-        match self {
-            OrderType::Sell => price >= limit_price,
-            OrderType::Buy => price <= limit_price,
-        }
-    }
-}
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy, AsRefStr, Display)]
 pub enum OrderStatus {
@@ -48,7 +41,7 @@ pub enum OrderBookStatus {
 pub struct Order<Id> {
     pub amount_in: Amount,
     pub filled_price: Amount,
-    pub order_type: OrderType,
+    pub order_type: OrderSide,
     pub amount_out: Amount,
     pub amount_filled: Amount,
     pub status: OrderStatus,
@@ -72,7 +65,7 @@ impl<Id: Copy + PartialEq> Order<Id> {
     pub fn new_decimal(
         amount_in: Amount,
         limit_price: Price,
-        order_type: OrderType,
+        order_type: OrderSide,
         id: Id,
     ) -> Self {
         Order {
@@ -87,12 +80,12 @@ impl<Id: Copy + PartialEq> Order<Id> {
         }
     }
 
-    pub fn new_integer(amount_in: u128, min_want: u128, order_type: OrderType, id: Id) -> Self {
+    pub fn new_integer(amount_in: u128, min_want: u128, order_type: OrderSide, id: Id) -> Self {
         let amount_in: Amount = amount_in.try_into().expect("smaller");
         let min_want: Amount = min_want.try_into().expect("smaller");
         let limit_price = match order_type {
-            OrderType::Buy => amount_in / min_want,
-            OrderType::Sell => min_want / amount_in,
+            OrderSide::A => amount_in / min_want,
+            OrderSide::B => min_want / amount_in,
         };
         Order {
             amount_in,
@@ -108,7 +101,7 @@ impl<Id: Copy + PartialEq> Order<Id> {
 
     pub fn filled_price(&self) -> Amount {
         match self.order_type {
-            OrderType::Buy => dec!(1.0) / self.filled_price,
+            OrderSide::A => dec!(1.0) / self.filled_price,
             _ => self.filled_price,
         }
     }
@@ -127,7 +120,7 @@ impl<Id: Copy + PartialEq> Order<Id> {
     }
 
     pub fn token1_at_price(&self, price: Amount) -> Amount {
-        if self.order_type == OrderType::Sell {
+        if self.order_type == OrderSide::B {
             self.amount_in * price
         } else {
             self.amount_in
@@ -201,9 +194,9 @@ impl<Id: Copy + PartialEq> Order<Id> {
         let limit_price = normal.sample(&mut rand::thread_rng());
 
         let order_type = if rand::thread_rng().gen::<bool>() {
-            OrderType::Buy
+            OrderSide::A
         } else {
-            OrderType::Sell
+            OrderSide::B
         };
 
         Order::new_decimal(

@@ -7,12 +7,12 @@ use cvm_runtime::{
     Amount, AssetId, Destination,
 };
 use cw_mantis_order::{CrossChainPart, OrderAmount, OrderItem, OrderSolution, OrderSubMsg};
-use mantis_cw::{DenomPair, OrderCoinPair, OrderedTuple2};
+use mantis_cw::{DenomPair, OrderCoinPair, OrderSide, OrderedTuple2};
 use num_rational::{Ratio, Rational64};
 
 use crate::{
     prelude::*,
-    solver::{orderbook::OrderList, solution::Solution, types::OrderType},
+    solver::{orderbook::OrderList, solution::Solution},
 };
 
 use super::cosmos::client::timeout;
@@ -120,16 +120,11 @@ pub fn find_cows(all_orders: &[OrderItem]) -> Vec<PairSolution> {
         use crate::solver::cows::*;
         use crate::solver::types::*;
         let orders = orders.iter().map(|x| {
-            let side = if x.given.denom == ab.a {
-                OrderType::Buy
-            } else {
-                OrderType::Sell
-            };
-
+            
             crate::solver::types::Order::new_integer(
                 x.given.amount.u128(),
                 x.msg.wants.amount.u128(),
-                side,
+                x.side(),
                 x.order_id,
             )
         });

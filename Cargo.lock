@@ -2281,6 +2281,7 @@ dependencies = [
  "cosmwasm-std",
  "cw-storage-plus 1.2.0",
  "derive_more",
+ "rust_decimal",
  "serde",
  "strum_macros",
  "tuples",

@@ -1,3 +1,4 @@
+use mantis_cw::OrderSide;
 use rand_distr::num_traits::FromPrimitive;
 
 use crate::prelude::*;
@@ -28,7 +29,7 @@ impl<Id: Copy + PartialEq + Debug> Solver<Id> {
             target_price,
             buy_token,
             sell_token,
-            order: Order::new_decimal(dec!(0.0), Price(dec!(0.0)), OrderType::Buy, solver_order_id),
+            order: Order::new_decimal(dec!(0.0), Price(dec!(0.0)), OrderSide::A, solver_order_id),
         }
     }
 
@@ -37,16 +38,17 @@ impl<Id: Copy + PartialEq + Debug> Solver<Id> {
     }
 
     fn f_maximize(&self, order: &Order<Id>) -> Amount {
-        match order.order_type {
-            OrderType::Buy => {
+        let decimal = match order.order_type {
+            OrderSide::A => {
                 self.buy_token.0 - order.amount_filled
                     + (self.sell_token.0 + order.amount_out) * self.target_price.0
             }
-            OrderType::Sell => {
+            OrderSide::B => {
                 (self.buy_token.0 + order.amount_out) / self.target_price.0 + self.sell_token.0
                     - order.amount_filled
             }
-        }
+        };
+        decimal
     }
 
     /// next_id - is used to generate solver order to match remaining amount via CFMM later
@@ -64,9 +66,9 @@ impl<Id: Copy + PartialEq + Debug> Solver<Id> {
         };
 
         let side = if is_buy {
-            OrderType::Buy
+            OrderSide::A
         } else {
-            OrderType::Sell
+            OrderSide::B
         };
 
         let orders: Vec<Order<_>> = (0..=num_orders)
@@ -111,7 +113,7 @@ impl<Id: Copy + PartialEq + Debug> Solver<Id> {
         Ok(Solution::new(orderbook.value).match_orders(optimal_price))
     }
 
-    fn order_for(&self, amount: Decimal, order_type: OrderType, id: Id) -> Order<Id> {
+    fn order_for(&self, amount: Decimal, order_type: OrderSide, id: Id) -> Order<Id> {
         Order::new_decimal(amount, self.limit_price(), order_type, id)
     }
 }

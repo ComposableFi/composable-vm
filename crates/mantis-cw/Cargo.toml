@@ -24,3 +24,6 @@ tuples = { workspace = true }
 derive_more = { workspace = true, features = [] }
 
 strum_macros = { workspace = true }
+
+
+rust_decimal = { workspace = true }

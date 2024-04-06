@@ -78,6 +78,10 @@ async fn solve_orders(solver_args: &SolverArgs) {
     let mut wasm_read_client = create_wasm_query_client(&args.grpc_centauri).await;
     let gas = args.gas;
 
+    let cosmos_chain_info = CosmosChainInfo {
+        rpc: args.rpc_centauri.clone(),
+        chain_id: args.main_chain_id.clone(),
+    };
     loop {
         let tip =
             get_latest_block_and_account_by_key(&args.rpc_centauri, &args.grpc_centauri, &signer)
@@ -94,7 +98,7 @@ async fn solve_orders(solver_args: &SolverArgs) {
                 &mut cosmos_query_client,
                 args.order_contract.clone(),
                 &signer,
-                &args.rpc_centauri,
+                &cosmos_chain_info,
                 &tip,
                 gas,
             )

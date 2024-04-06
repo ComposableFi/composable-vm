@@ -1,4 +1,6 @@
 //! Solving just order book without cross chain routing.
+use mantis_cw::OrderSide;
+
 use crate::prelude::*;
 use crate::solver::types::*;
 
@@ -21,11 +23,11 @@ impl<Id: Copy + PartialEq + Debug> OrderList<Id> {
     }
 
     pub fn buy(&self) -> Self {
-        self.apply_filter(|order| order.order_type == OrderType::Buy)
+        self.apply_filter(|order| order.order_type == OrderSide::A)
     }
 
     pub fn sell(&self) -> Self {
-        self.apply_filter(|order| order.order_type == OrderType::Sell)
+        self.apply_filter(|order| order.order_type == OrderSide::B)
     }
 
     pub fn pending(&self) -> Self {

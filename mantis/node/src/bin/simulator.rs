@@ -1,11 +1,11 @@
-use mantis_node::solver::types::OrderType;
+use mantis_cw::OrderSide;
 use mantis_node::solver::{orderbook::OrderList, solution::Solution, types::Order};
 use mantis_node::{prelude::*, solver::types::Price};
 
 fn main() {
     // decide on basics
-    let order_a = Order::new_integer(100_000, 3, OrderType::Sell, 1);
-    let order_b = Order::new_integer(3, 100_000, OrderType::Buy, 2);
+    let order_a = Order::new_integer(100_000, 3, OrderSide::B, 1);
+    let order_b = Order::new_integer(3, 100_000, OrderSide::A, 2);
     assert!(order_a.is_acceptable_price(order_b.limit_price));
     assert!(order_b.is_acceptable_price(order_a.limit_price));
 

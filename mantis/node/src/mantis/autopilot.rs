@@ -8,14 +8,14 @@ use crate::{
     prelude::*,
 };
 
-use super::cosmos::client::{CosmWasmWriteClient, CosmosQueryClient, Tip};
+use super::cosmos::client::{CosmWasmWriteClient, CosmosChainInfo, CosmosQueryClient, Tip};
 
 pub async fn cleanup(
     write_client: &mut CosmWasmWriteClient,
     cosmos_query_client: &mut CosmosQueryClient,
     order_contract: String,
     signing_key: &cosmrs::crypto::secp256k1::SigningKey,
-    rpc: &str,
+    rpc: &CosmosChainInfo,
     tip: &Tip,
     gas: Gas,
 ) {
@@ -29,7 +29,7 @@ pub async fn cleanup(
     tx_broadcast_single_signed_msg(
         msg.to_any().expect("proto"),
         auth_info,
-        panic!(),
+        rpc,
         signing_key,
         tip,
     )

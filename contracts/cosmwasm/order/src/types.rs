@@ -1,6 +1,6 @@
 use cosmwasm_std::{ensure, BankMsg, Event, StdResult};
 use cvm_runtime::{outpost::ExecuteProgramMsg, shared::CvmProgram, AssetId, ExchangeId, NetworkId};
-use mantis_cw::DenomPair;
+use mantis_cw::{DenomPair, OrderSide};
 
 pub type Ratio = num_rational::Ratio<u64>;
 
@@ -37,6 +37,15 @@ pub struct OrderItem {
 }
 
 impl OrderItem {
+    
+    pub fn side(&self) -> OrderSide {
+        if self.msg.wants.denom == self.given.denom {
+            OrderSide::A
+        } else {
+            OrderSide::B
+        }
+    }
+
     pub fn pair(&self) -> DenomPair {
         DenomPair::new(self.given.denom.clone(), self.msg.wants.denom.clone())
     }
