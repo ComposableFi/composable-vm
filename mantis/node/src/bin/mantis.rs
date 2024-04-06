@@ -12,7 +12,6 @@ use cosmrs::{
 
 use cosmrs::{
     cosmwasm::MsgExecuteContract,
-    rpc::Client,
     tx::{self, Fee, SignerInfo},
     AccountId,
 };
@@ -128,7 +127,7 @@ async fn solve_orders(solver_args: &SolverArgs) {
 
 async fn simulate_orders(simulate_args: &SimulateArgs) {
     let args = &simulate_args.shared;
-    let mut wasm_read_client = create_wasm_query_client(&args.grpc_centauri).await;
+    let _wasm_read_client = create_wasm_query_client(&args.grpc_centauri).await;
 
     let signer = mantis_node::mantis::cosmos::signer::from_mnemonic(
         args.wallet.as_str(),
@@ -208,7 +207,7 @@ async fn solve(
 
 async fn send_solution(
     cows: Vec<OrderSolution>,
-    cvm: CvmProgram,
+    _cvm: CvmProgram,
     tip: &Tip,
     optimal_price: Ratio,
     signing_key: &cosmrs::crypto::secp256k1::SigningKey,

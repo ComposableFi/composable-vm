@@ -20,15 +20,15 @@ use super::cosmos::client::timeout;
 /// input batched summarized from users for routing
 pub struct IntentBankInput {
     pub in_asset_id: AssetId,
-    pub in_asset_amount: Displayed<u64>,
+    pub in_asset_amount: Displayed<u128>,
     pub out_asset_id: AssetId,
-    pub order_accounts: Vec<(CvmAddress, Amount)>,
+    pub order_accounts: Vec<CvmInstruction>,
 }
 
 impl IntentBankInput {
     pub fn new(
         in_asset_id: AssetId,
-        in_asset_amount: Displayed<u64>,
+        in_asset_amount: Displayed<u128>,
         out_asset_id: AssetId,
         order_accounts: Vec<CvmInstruction>,
     ) -> Self {
@@ -100,8 +100,8 @@ impl IntentBankInput {
         });
 
         (
-            IntentBankInput::new(a_asset, pair.a.amount, b_asset, b_received.collect()),
-            IntentBankInput::new(b_asset, pair.b.amount, a_asset, a_received.collect()),
+            IntentBankInput::new(a_asset, pair.a.amount.into(), b_asset, b_received.collect()),
+            IntentBankInput::new(b_asset, pair.b.amount.into(), a_asset, a_received.collect()),
         )
     }
 }
