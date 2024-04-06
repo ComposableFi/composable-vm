@@ -7,7 +7,7 @@ use cvm_runtime::{
     Amount, AssetId, Destination,
 };
 use cw_mantis_order::{CrossChainPart, OrderAmount, OrderItem, OrderSolution, OrderSubMsg};
-use mantis_cw::{DenomPair, OrderCoinPair};
+use mantis_cw::{DenomPair, OrderCoinPair, OrderedTuple2};
 use num_rational::{Ratio, Rational64};
 
 use crate::{
@@ -46,7 +46,6 @@ impl IntentBankInput {
         orders: &[OrderItem],
         optimal_ratio: Ratio<u64>,
         cvm_glt: &GetConfigResponse,
-        pair: DenomPair,
     ) -> (IntentBankInput, IntentBankInput) {
         // native calculations
         let mut pair = OrderCoinPair::zero(pair.a, pair.b);
@@ -106,13 +105,15 @@ impl IntentBankInput {
     }
 }
 
-pub type SolutionsPerPair = Vec<(Vec<OrderSolution>, Ratio<u64>)>;
+pub struct PairSolution {
+    pub ab : DenomPair,
+    pub cows: Vec<OrderSolution>,
+    pub optimal_price: Ratio<u64>,
+}  
 
-pub fn find_cows(all_orders: Vec<OrderItem>) -> SolutionsPerPair {
+pub fn find_cows(all_orders: Vec<OrderItem>) -> Vec<PairSolution> {
     let all_orders = all_orders.into_iter().group_by(|x| {
-        let mut ab = [x.given.denom.clone(), x.msg.wants.denom.clone()];
-        ab.sort();
-        (ab[0].clone(), ab[1].clone())
+        x.pair()
     });
     let mut cows_per_pair = vec![];
     for ((a, b), orders) in all_orders.into_iter() {
@@ -136,12 +137,10 @@ pub fn find_cows(all_orders: Vec<OrderItem>) -> SolutionsPerPair {
         let orders = OrderList {
             value: orders.collect(),
         };
-        orders.print();
         let optimal_price = orders.compute_optimal_price(1000);
         println!("optimal_price: {:?}", optimal_price);
         let mut solution = Solution::new(orders.value.clone());
         solution = solution.match_orders(optimal_price);
-        solution.print();
         let cows = solution
             .orders
             .value
@@ -160,7 +159,12 @@ pub fn find_cows(all_orders: Vec<OrderItem>) -> SolutionsPerPair {
         let optimal_price = decimal_to_fraction(optimal_price.0);
         println!("cows: {:?}", cows);
         if !cows.is_empty() {
-            cows_per_pair.push((cows, optimal_price));
+            let pair_solution = PairSolution {
+                ab: DenomPair::new(a, b),
+                cows,
+                optimal_price,
+            };
+            cows_per_pair.push(pair_solution);
         }
     }
     cows_per_pair

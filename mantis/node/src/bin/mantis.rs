@@ -17,6 +17,7 @@ use cosmrs::{
 };
 use cvm_runtime::shared::CvmProgram;
 use cw_mantis_order::{Amount, OrderItem, OrderSolution, OrderSubMsg, Ratio, SolutionSubMsg};
+use mantis_cw::OrderedTuple2;
 use mantis_node::{
     mantis::{
         args::*,
@@ -188,8 +189,8 @@ async fn solve(
 
     let cows_per_pair = mantis_node::mantis::solve::find_cows(all_orders);
     let cvm_glt = get_cvm_glt(cvm_contact, cosmos_query_client).await;
-    for (cows, optimal_price) in cows_per_pair {
-        let bank = mantis_node::mantis::solve::IntentBankInput::find_intent_amount(cows.as_ref());
+    for (cows, optimal_price) in cows_per_pair {);
+        let (a, b) = mantis_node::mantis::solve::IntentBankInput::find_intent_amount(cows.as_ref(), &all_orders, optimal_price, &cvm_glt, cvm_glt.pair.clone());
         let cvm_route = blackbox::get_route(router_api, bank, &cvm_glt, salt.as_ref()).await;
         send_solution(
             cows,

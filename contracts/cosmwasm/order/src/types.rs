@@ -37,6 +37,11 @@ pub struct OrderItem {
 }
 
 impl OrderItem {
+
+    pub fn pair(&self) -> DenomPair {
+        DenomPair::new(self.given.denom.clone(), self.msg.wants.denom.clone())
+    }
+
     /// `wanted_fill_amount` - amount to fill in `wants` amounts
     /// Reduces given amount
     /// `optimal_price` - the price to solve against, should be same or better than user limit.
