@@ -129,4 +129,8 @@ impl GetConfigResponse {
             .map(|x| x.asset_id)
             .expect("cvm_asset_by_cw")
     }
+
+    pub fn get_all_asset_ids(&self) -> Vec<AssetId> {
+        self.assets.iter().map(|x| x.asset_id).collect()
+    } 
 }
