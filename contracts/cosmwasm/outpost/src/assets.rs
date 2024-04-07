@@ -69,7 +69,7 @@ pub(crate) fn force_asset_to_network_map(
     other_asset: AssetId,
 ) -> Result<BatchResponse> {
     let item = NetworkAssetItem {
-        asset_id: this_asset,
+        from_asset_id: this_asset,
         to_network_id: other_network,
         to_asset_id: other_asset,
     };

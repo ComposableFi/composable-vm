@@ -46,7 +46,7 @@ pub struct AssetItem {
 )]
 pub struct NetworkAssetItem {
     pub to_network_id: NetworkId,
-    pub asset_id: AssetId,
+    pub from_asset_id: AssetId,
     pub to_asset_id: AssetId,
 }
 
