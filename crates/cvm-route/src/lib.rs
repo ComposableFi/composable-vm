@@ -6,6 +6,7 @@ pub mod asset;
 pub mod exchange;
 mod prelude;
 pub mod transport;
+pub mod venue;
 use cvm::asset::*;
 use cvm::exchange::*;
 use cvm::network::*;

@@ -111,7 +111,7 @@ pub async fn get_route(
     salt: &[u8],
 ) -> CvmProgram {
     if route_provider == "solver" {
-        panic!();
+        panic!()
         bf::route(input, cvm_glt, salt);
     } else {
         let blackbox: Client = Client::new(route_provider);

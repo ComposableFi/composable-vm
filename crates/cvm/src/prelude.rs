@@ -7,6 +7,8 @@ pub use alloc::{
 };
 
 pub use core::{fmt::Display, str::FromStr};
+
+#[cfg(feature = "cosmwasm")]
 pub use cosmwasm_std::{Addr, Binary, Coin, Uint128};
 pub use serde::{Deserialize, Serialize};
 

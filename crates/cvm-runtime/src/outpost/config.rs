@@ -1,6 +1,8 @@
+#[cfg(feature = "cosmwasm")]
 use cosmwasm_std::{BlockInfo, IbcTimeout};
+
 use cvm_route::{
-    asset::AssetToNetwork, exchange::ExchangeItem, transport::NetworkToNetworkItem, *,
+    asset::AssetToNetwork, exchange::ExchangeItem, transport::NetworkToNetworkItem, venue::AssetsVenueItem, *
 };
 use ibc_core_host_types::identifiers::ChannelId;
 
@@ -126,6 +128,8 @@ pub enum ConfigSubMsg {
         #[serde(skip_serializing_if = "String::is_empty", default)]
         salt: String,
     },
+
+    ForceAssetsVenue(AssetsVenueItem),
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
