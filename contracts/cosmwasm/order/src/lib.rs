@@ -300,7 +300,7 @@ impl OrderContract<'_> {
             .api
             .debug(&format!("mantis::solutions::current {:?}", all_solutions));
 
-        /// wait before solve
+        // wait before solve
         let started = self
             .pair_to_block
             .load(ctx.deps.storage, ab.clone())
@@ -453,7 +453,7 @@ impl OrderContract<'_> {
     }
 
     #[msg(query)]
-    pub fn solution_id(&self, ctx: QueryCtx, id: CrossChainSolutionKey) -> StdResult<String> {
+    pub fn solution_id(&self, _ctx: QueryCtx, id: CrossChainSolutionKey) -> StdResult<String> {
         Ok(hex::encode(solution_id(&id)))
     }
 

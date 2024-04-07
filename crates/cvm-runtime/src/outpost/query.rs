@@ -130,19 +130,5 @@ impl GetConfigResponse {
 
     pub fn get_all_asset_ids(&self) -> Vec<AssetId> {
         self.assets.iter().map(|x| x.asset_id).collect()
-    } 
-
-    pub fn get_all_asset_maps(&self) -> Vec<(AssetId, AssetId)> {
-        let transfers = self
-            .network_assets
-            .iter()
-            // CVM GLT has 2 entires for each direction for bidirectional transfers
-            .map(|x| (x.asset_id, x.to_asset_id));
-        let exchanges = self
-            .asset_venue_items
-            .iter()
-            .map(|x| (x.from_asset_id, x.to_asset_id));
-
-        transfers.chain(exchanges).collect()
     }
 }
