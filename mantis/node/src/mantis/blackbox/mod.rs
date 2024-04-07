@@ -106,24 +106,25 @@ fn new_exchange(exchange: &Exchange) -> CvmInstruction {
 /// `order_accounts` - account of order where to dispatch amounts (part of whole)
 pub async fn get_route(
     route_provider: &str,
-    input: IntentBankInput,
+    a: IntentBankInput,
+    b: IntentBankInput,
     cvm_glt: &GetConfigResponse,
     salt: &[u8],
 ) -> CvmProgram {
-    if route_provider == "solver" {
+    if route_provider == "priceless" {
         panic!()
-        bf::route(input, cvm_glt, salt);
+        //bf::route(input, cvm_glt, salt);
     } else {
         let blackbox: Client = Client::new(route_provider);
         let mut route = blackbox
             .simulator_router_simulator_router_get(
                 &InAssetAmount::Variant0(
-                    input.in_asset_amount.0.try_into().expect("in_asset_amount"),
+                    a.in_asset_amount.0.try_into().expect("in_asset_amount"),
                 ),
-                &InAssetId::Variant1(input.in_asset_id.to_string()),
+                &InAssetId::Variant1(a.in_asset_id.to_string()),
                 true,
                 &OutAssetAmount::Variant0(10),
-                &OutAssetId::Variant1(input.out_asset_id.to_string().into()),
+                &OutAssetId::Variant1(a.out_asset_id.to_string().into()),
             )
             .await
             .expect("route found")

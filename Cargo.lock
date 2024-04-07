@@ -2298,6 +2298,7 @@ dependencies = [
  "cosmos-sdk-proto",
  "cosmrs",
  "cosmwasm-std",
+ "cvm-route",
  "cvm-runtime",
  "cw-mantis-order",
  "cw-multi-test",

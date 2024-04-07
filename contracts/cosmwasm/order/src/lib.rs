@@ -16,7 +16,6 @@ use itertools::Itertools;
 use mantis_cw::DenomPair;
 use prelude::*;
 use simulator::simulate_cows_via_bank;
-use simulator::simulate_route;
 use state::*;
 pub use types::*;
 
@@ -240,7 +239,7 @@ impl OrderContract<'_> {
         &self,
         ctx: ExecCtx,
         order_id: OrderId,
-        mut cvm_program: CvmProgram,
+        cvm_program: CvmProgram,
     ) -> StdResult<Response> {
         let order: OrderItem = self.orders.load(ctx.deps.storage, order_id.u128())?;
         validation::validate_solver(ctx.deps.as_ref(), &ctx.info.sender, &order)?;
@@ -484,7 +483,7 @@ impl OrderContract<'_> {
             order.fill(transfer.amount, optimal_price)?;
             let (event, remaining) = if order.given.amount.is_zero() {
                 // hey, need some other data structure for this
-                let (idx, solver_order) = solver_orders
+                let (_idx, solver_order) = solver_orders
                     .iter()
                     .find_position(|x| x.order.order_id == order.order_id)
                     .expect("solver order");

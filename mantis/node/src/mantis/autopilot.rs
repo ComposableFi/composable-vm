@@ -12,7 +12,7 @@ use super::cosmos::client::{CosmWasmWriteClient, CosmosChainInfo, CosmosQueryCli
 
 pub async fn cleanup(
     write_client: &mut CosmWasmWriteClient,
-    cosmos_query_client: &mut CosmosQueryClient,
+    _cosmos_query_client: &mut CosmosQueryClient,
     order_contract: String,
     signing_key: &cosmrs::crypto::secp256k1::SigningKey,
     rpc: &CosmosChainInfo,

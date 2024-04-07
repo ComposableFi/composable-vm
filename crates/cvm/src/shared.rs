@@ -1,5 +1,4 @@
 use crate::{prelude::*, AssetId};
-use serde::{de::DeserializeOwned, Serialize};
 
 /// A wrapper around a type which is serde-serialised as a string.
 ///

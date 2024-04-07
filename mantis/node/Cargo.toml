@@ -42,6 +42,7 @@ tokio = { workspace = true, features = ["full"] }
 tonic = { workspace = true }
 tuples = { workspace = true }
 cvm-runtime = { workspace = true, features = ["std"] }
+cvm-route ={ workspace = true}
 ndarray ={ workspace = true, features = ["std", "serde"]}
 env_logger = {workspace = true}
 cw-multi-test = { workspace = true }
