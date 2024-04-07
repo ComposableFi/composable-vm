@@ -202,7 +202,7 @@ async fn solve(
             &cvm_glt,
             pair_solution.ab.clone(),
         );
-        let cvm_route = panic!(); //blackbox::get_route(router_api, bank, &cvm_glt, salt.as_ref()).await;
+        let cvm_route =  blackbox::get_route(router_api, bank, &cvm_glt, salt.as_ref()).await;
         send_solution(
             pair_solution.cows,
             cvm_route,
