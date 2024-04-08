@@ -1,7 +1,9 @@
+use std::collections::BTreeMap;
+
 use blackbox_rs::types::SingleInputAssetCvmRoute;
 use cvm_route::venue::VenueId;
 use cvm_runtime::proto::pb::program::{Exchange, Transfer};
-use cvm_runtime::shared::CvmProgram;
+use cvm_runtime::shared::{CvmInstruction, CvmProgram};
 use cvm_runtime::{exchange, AssetId, ExchangeId};
 use petgraph::algo::{bellman_ford, min_spanning_tree};
 use petgraph::data::FromElements;
@@ -31,7 +33,8 @@ pub fn get_all_asset_maps(cvm_glt: &cvm_runtime::outpost::GetConfigResponse) -> 
 pub fn route(
     cvm_glt: &cvm_runtime::outpost::GetConfigResponse,
     input: crate::mantis::solve::IntentBankInput,
-) -> CvmProgram {
+    salt: &[u8],
+) -> CvmInstruction {
     let mut graph = petgraph::graph::DiGraph::new();
     let mut assets_global_to_local = std::collections::BTreeMap::new();
     for asset_id in cvm_glt.get_all_asset_ids() {
@@ -39,17 +42,20 @@ pub fn route(
         assets_global_to_local.insert(asset_id, node);
     }
 
+    let mut venue_local_to_global = BTreeMap::new();
     for venue in get_all_asset_maps(cvm_glt) {
         match venue {
             Venue::Transfer(from, to) => {
                 let from_node = assets_global_to_local.get(&from).unwrap();
                 let to_node = assets_global_to_local.get(&to).unwrap();
-                graph.add_edge(*from_node, *to_node, 1.0);
+                let local_venue = graph.add_edge(*from_node, *to_node, 1.0);
+                venue_local_to_global.insert(local_venue, venue.clone());
             }
             Venue::Exchange(exchange_id, from, to) => {
                 let from_node = assets_global_to_local.get(&from).unwrap();
                 let to_node = assets_global_to_local.get(&to).unwrap();
-                graph.add_edge(*from_node, *to_node, 1.0);
+                let local_venue = graph.add_edge(*from_node, *to_node, 1.0);
+                venue_local_to_global.insert(local_venue, venue.clone());
             }
         }
     }
@@ -58,7 +64,14 @@ pub fn route(
     let routes =
         bellman_ford::bellman_ford(&graph, *in_node_index)
             .expect("bf");
-    let out_node_index = assets_global_to_local.get(&input.out_asset_id).unwrap();
-    let path = routes.predecessors[out_node_index.index()];
+    let out_node_index = assets_global_to_local.get(&input.out_asset_id).expect("node");
+    
+    
+    let mut out_node_index = out_node_index.index();
+    let mut in_node_index = routes.predecessors[out_node_index].expect("routable");
+    while true {
+
+    }
+
     panic!()
 }

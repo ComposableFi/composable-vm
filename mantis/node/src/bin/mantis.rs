@@ -202,10 +202,12 @@ async fn solve(
             &cvm_glt,
             pair_solution.ab.clone(),
         );
-        let cvm_route =  blackbox::get_route(router_api, a, b, &cvm_glt, salt.as_ref()).await;
+        let a_cvm_route =  blackbox::get_route(router_api, a, &cvm_glt, salt.as_ref()).await;
+        let b_cvm_route =  blackbox::get_route(router_api, b, &cvm_glt, salt.as_ref()).await;
+        let program = CvmProgram::ins
         send_solution(
             pair_solution.cows,
-            cvm_route,
+            vec![a_cvm_route, b_cvm_route],
             tip,
             pair_solution.optimal_price,
             signing_key,
@@ -219,7 +221,7 @@ async fn solve(
 
 async fn send_solution(
     cows: Vec<OrderSolution>,
-    _cvm: CvmProgram,
+    cvm: Vec<CvmProgram>,
     tip: &Tip,
     optimal_price: Ratio,
     signing_key: &cosmrs::crypto::secp256k1::SigningKey,
