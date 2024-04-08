@@ -156,14 +156,14 @@ impl OrderContract<'_> {
         Ok(Response::default().add_message(msg))
     }
 
-    /// until order/solution in execution can cancel
-    /// cancellation of order is delayed so solvers can observe it
-    /// can remove up only my orders and solution
+    /// Until order/solution in execution can cancel.
+    /// Cancellation of order is delayed so solvers can observe it.
+    /// Can remove up only my orders and solution.
     #[msg(exec)]
     pub fn cancel(
         &self,
         _ctx: ExecCtx,
-        orders: Vec<OrderId>,
+        _orders: Vec<OrderId>,
         solution: Option<Addr>,
     ) -> StdResult<Response> {
         todo!("remove order and send event")

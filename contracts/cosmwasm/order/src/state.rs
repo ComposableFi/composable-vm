@@ -1,5 +1,5 @@
 //! simple operation without constraint checks and calculations
-use cw_storage_plus::{KeyDeserialize, MultiIndex, PrimaryKey};
+use cw_storage_plus::MultiIndex;
 
 use crate::*;
 
