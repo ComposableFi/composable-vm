@@ -53,7 +53,7 @@ impl OrderItem {
     /// `wanted_fill_amount` - amount to fill in `wants` amounts
     /// Reduces given amount
     /// `optimal_price` - the price to solve against, should be same or better than user limit.
-    pub fn fill(&mut self, wanted_fill_amount: Amount, optimal_ratio: Ratio) -> StdResult<()> {
+    pub fn fill(&mut self, wanted_fill_amount: Amount, _optimal_ratio: Ratio) -> StdResult<()> {
         // was given more or exact wanted - user happy or user was given all before, do not give more
         if wanted_fill_amount >= self.msg.wants.amount
             || self.msg.wants.amount.u128() == <_>::default()
@@ -88,8 +88,8 @@ impl OrderItem {
 
 /// simple structure which can be applied to order to fill or partial fill it
 pub struct Filling {
-    order_id: u64,
-    amount: Uint128,
+    pub order_id: u64,
+    pub amount: Uint128,
 }
 
 #[cfg(test)]

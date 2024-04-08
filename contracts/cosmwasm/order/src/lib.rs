@@ -540,7 +540,7 @@ impl OrderContract<'_> {
         solver_address: String,
         solution_id: SolutionHash,
         solver_orders: Vec<SolvedOrder>,
-        pair: DenomPair,
+        _pair: DenomPair,
     ) -> Result<Vec<CvmFillResult>, StdError> {
         let mut result = vec![];
         for order in solver_orders.iter() {

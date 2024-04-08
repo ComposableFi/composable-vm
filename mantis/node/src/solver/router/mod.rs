@@ -1,1 +1,1 @@
-pub mod bf;
+pub mod shortest_path;

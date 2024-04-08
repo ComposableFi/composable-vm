@@ -1,8 +1,4 @@
 use bip32::secp256k1::elliptic_curve::rand_core::block;
-use cosmos_sdk_proto::{
-    cosmos::{auth::v1beta1::BaseAccount, base::v1beta1::Coin},
-    cosmwasm::{self, wasm::v1::QuerySmartContractStateRequest},
-};
 use cosmos_sdk_proto::{traits::Message, Any};
 use cosmrs::{
     tendermint::{block::Height, chain},
@@ -204,7 +200,7 @@ async fn solve(
         );
         let a_cvm_route =  blackbox::get_route(router_api, a, &cvm_glt, salt.as_ref()).await;
         let b_cvm_route =  blackbox::get_route(router_api, b, &cvm_glt, salt.as_ref()).await;
-        let program = CvmProgram::ins
+        panic!();
         send_solution(
             pair_solution.cows,
             vec![a_cvm_route, b_cvm_route],

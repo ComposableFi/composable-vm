@@ -4,10 +4,10 @@ use crate::{
     shared::CvmPacket,
     AssetId, NetworkId,
 };
-use cosmwasm_std::{Api, BlockInfo, CosmosMsg, Deps, IbcEndpoint, StdResult};
+use cosmwasm_std::{Api, BlockInfo, CosmosMsg, Deps, StdResult};
 
 use cvm_route::transport::RelativeTimeout;
-use ibc_core_host_types::identifiers::{ChannelId, ConnectionId, PortId};
+use ibc_core_host_types::identifiers::{ChannelId, PortId};
 
 use ibc_apps_more::types::hook::Callback;
 //, HookMemo};

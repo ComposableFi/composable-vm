@@ -6,7 +6,7 @@ use cw_storage_plus::{Key, Prefixer};
 use crate::shared::Displayed;
 use core::ops::Add;
 use cosmwasm_std::{Uint128, Uint256};
-use num::Zero;
+use num::{One, Zero};
 use serde::{Deserialize, Serialize};
 
 /// Newtype for CVM assets ID. Must be unique for each asset and must never change.
@@ -102,6 +102,13 @@ pub struct Amount {
     pub slope: Displayed<u64>,
 }
 
+
+pub trait AmountBuilder {
+    fn everything() -> Self;
+    fn one() -> Self;
+}
+
+
 impl TryFrom<i64> for Amount {
     type Error = ArithmeticError;
 
@@ -158,15 +165,21 @@ impl From<(u64, u64)> for Amount {
     }
 }
 
+impl AmountBuilder for Amount {
+    /// Everything mean that we move 100% of whats left.
+    fn everything() -> Self {
+        Self::ratio(Self::MAX_PARTS)
+    }
+    fn one() -> Self {
+        Self::absolute(1)
+    }    
+}
+
 impl Amount {
     /// idiotic idea fom KO, it should be
     /// u64/u64 ratio
     //  with rounding to reduce or reduce down part up to some seven bit parts
     pub const MAX_PARTS: u64 = 1_000_000_000_000_000_000;
-
-    pub fn one() -> Self {
-        Self::absolute(1)
-    }
 
     pub fn try_floor_f64(value: f64) -> Result<Self, ArithmeticError> {
         if value < 0.0 || value.is_nan() {
@@ -209,11 +222,6 @@ impl Amount {
     /// Helper function to see if the amount is ratio
     pub const fn is_ratio(&self) -> bool {
         self.intercept.0 == 0
-    }
-
-    /// Everything mean that we move 100% of whats left.
-    pub const fn everything() -> Self {
-        Self::ratio(Self::MAX_PARTS)
     }
 
     /// `f(x) = a(x - b) + b where a = slope / MAX_PARTS, b = intercept`
@@ -327,10 +335,21 @@ impl From<u128> for Amount {
 pub struct Funds<T = Amount>(pub Vec<(AssetId, T)>);
 
 impl<T> Funds<T> {
-    pub fn one<A: Into<T>>(id: AssetId, amount: A) -> Self {
+    pub fn of<A: Into<T>>(id: AssetId, amount: A) -> Self {
         Self(vec![(id, amount.into())])
     }
 }
+
+impl<T: AmountBuilder> Funds<T> {
+    pub fn all_of(asset_id: AssetId) -> Self {
+        Self(vec![(asset_id, T::everything())])
+    }
+
+    pub fn one_of(asset_id: AssetId) -> Self {
+        Self(vec![(asset_id, T::one())])
+    }
+}
+
 
 impl<T> Default for Funds<T> {
     fn default() -> Self {

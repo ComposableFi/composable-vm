@@ -7,18 +7,18 @@ use crate::{OrderItem, SolvedOrder};
 /// Validate solver can solve order he tells.
 /// Minimal requirement is that CVM salt is unique to solver
 pub fn validate_solver(
-    as_ref: cosmwasm_std::Deps<'_>,
+    _as_ref: cosmwasm_std::Deps<'_>,
     _sender: &Addr,
-    order: &OrderItem,
+    _order: &OrderItem,
 ) -> StdResult<()> {
     Ok(())
 }
 
 /// Validate solver can solver amount he claimed
 pub(crate) fn validate_solvers(
-    deps: &cosmwasm_std::DepsMut<'_>,
-    solution: &crate::SolutionItem,
-    all_orders: &[SolvedOrder],
+    _deps: &cosmwasm_std::DepsMut<'_>,
+    _solution: &crate::SolutionItem,
+    _all_orders: &[SolvedOrder],
 ) -> StdResult<()> {
     Ok(())
 }
@@ -27,8 +27,8 @@ pub(crate) fn validate_solvers(
 /// Minimal requirement is that CVM salt is unique to solver
 pub(crate) fn validate_routes(
     _deps: &cosmwasm_std::DepsMut<'_>,
-    solution: &crate::SolutionItem,
-    all_orders: &[SolvedOrder],
+    _solution: &crate::SolutionItem,
+    _all_orders: &[SolvedOrder],
 ) -> StdResult<()> {
     Ok(())
 }

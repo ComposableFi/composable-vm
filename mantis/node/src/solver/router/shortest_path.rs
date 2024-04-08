@@ -1,16 +1,14 @@
 use std::collections::BTreeMap;
-
-use blackbox_rs::types::SingleInputAssetCvmRoute;
 use cvm_route::venue::VenueId;
-use cvm_runtime::proto::pb::program::{Exchange, Transfer};
 use cvm_runtime::shared::{CvmFundsFilter, CvmInstruction, CvmProgram};
 use cvm_runtime::{exchange, AssetId, ExchangeId};
-use petgraph::algo::{bellman_ford, min_spanning_tree};
+use petgraph::algo::bellman_ford;
 use petgraph::data::FromElements;
 use petgraph::dot::{Config, Dot};
 use petgraph::graph::{NodeIndex, UnGraph};
 
 // need some how unify with python
+#[derive(Debug, Clone)]
 pub enum Venue {
     Transfer(AssetId, AssetId),
     Exchange(ExchangeId, AssetId, AssetId),
@@ -36,7 +34,7 @@ pub fn route(
     cvm_glt: &cvm_runtime::outpost::GetConfigResponse,
     input: crate::mantis::solve::IntentBankInput,
     salt: &[u8],
-) -> vec![CvmInstruction] {
+) -> Vec<CvmInstruction> {
     let mut graph = petgraph::graph::DiGraph::new();
     let mut assets_global_to_local = std::collections::BTreeMap::new();
     for asset_id in cvm_glt.get_all_asset_ids() {
@@ -62,25 +60,29 @@ pub fn route(
         }
     }
 
-    let routes = bellman_ford::bellman_ford(&graph, *in_node_index).expect("bf");
+    let start_node_index = assets_global_to_local
+        .get(&input.in_asset_id)
+        .expect("node")
+        .clone();
+    let routes = bellman_ford::bellman_ford(&graph, start_node_index).expect("bf");
 
     let mut out_node_index = assets_global_to_local
         .get(&input.out_asset_id)
         .expect("node")
         .clone();
-    let mut in_node_index = routes.predecessors[out_node_index];
+    let mut in_node_index = routes.predecessors[out_node_index.index()];
     let mut instructions = input.order_accounts.clone();
-    while let Some(in_node_index) = in_node_index {
+    while let Some(in_node_index_value) = in_node_index {
         let venue_index = graph
-            .find_edge(out_node_index, in_node_index)
+            .find_edge(out_node_index,in_node_index_value)
             .expect("edge");
-        let venue: Venue = venue_local_to_global.get(&venue_index).expect("venue");
+        let venue = venue_local_to_global.get(&venue_index).expect("venue").clone();
         match venue {
             Venue::Transfer(from_asset_id, to_asset_id) => {
                 let spawn = CvmInstruction::Spawn {
                     network_id: cvm_glt.get_network_for_asset(from_asset_id),
                     salt: salt.to_vec(),
-                    assets: CvmFundsFilter::all_of(id),
+                    assets: CvmFundsFilter::all_of(from_asset_id),
                     program: CvmProgram {
                         tag: salt.to_vec(),
                         instructions,
@@ -92,13 +94,13 @@ pub fn route(
                 let exchange = CvmInstruction::Exchange {
                     exchange_id,
                     give: CvmFundsFilter::all_of(from_asset_id),
-                    want: CvmFundsFilter::one(to_asset_id),
+                    want: CvmFundsFilter::one_of(to_asset_id),
                 };
 
-                instructions = [[exchange], instructions].concat();
+                instructions = [[exchange].as_ref(), instructions.as_ref()].concat();
             }
         }
-        (in_node_index, out_node_index) = (routes.predecessors[in_node_index], in_node_index);
+        (in_node_index, out_node_index) = (routes.predecessors[in_node_index_value.index()], in_node_index_value);
     }
     instructions
 }

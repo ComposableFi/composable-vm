@@ -8,7 +8,7 @@ use cvm_runtime::{
     Amount, AssetId, ExchangeId,
 };
 
-use crate::solver::router::bf;
+use crate::solver::router::shortest_path;
 
 use super::solve::IntentBankInput;
 
@@ -71,7 +71,7 @@ fn new_spawn(
         program,
         network_id,
         salt: salt.to_vec(),
-        assets: CvmFundsFilter::one(in_asset_id, in_amount),
+        assets: CvmFundsFilter::of(in_asset_id, in_amount),
     }
 }
 
@@ -98,8 +98,8 @@ fn new_exchange(exchange: &Exchange) -> CvmInstruction {
 
     CvmInstruction::Exchange {
         exchange_id,
-        give: CvmFundsFilter::one(in_asset_id, in_amount),
-        want: CvmFundsFilter::one(out_asset_id, Amount::one()),
+        give: CvmFundsFilter::of(in_asset_id, in_amount),
+        want: CvmFundsFilter::one_of(out_asset_id),
     }
 }
 
@@ -108,9 +108,9 @@ pub async fn get_route(
     input: IntentBankInput,
     cvm_glt: &GetConfigResponse,
     salt: &[u8],
-) -> CvmInstruction {
+) -> Vec<CvmInstruction> {
     if route_provider == "priceless" {        
-        return bf::route(cvm_glt, input, salt);
+        return shortest_path::route(cvm_glt, input, salt);
     } else {
         let blackbox: Client = Client::new(route_provider);
         let mut route = blackbox

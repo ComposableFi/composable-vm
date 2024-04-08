@@ -12,11 +12,11 @@ use crate::SolvedOrder;
 /// given expected output amount and list of orders and CVM program, produce fill in of orders
 /// return filling amounts for all orders from program, which may or may not lead to full fill
 pub fn verify(
-    route: CvmProgram,
+    _route: CvmProgram,
     _in_asset: &AssetItem,
-    out_asset: &AssetItem,
-    predicted_out_amount: u128,
-    orders: Vec<SolvedOrder>,
+    _out_asset: &AssetItem,
+    _predicted_out_amount: u128,
+    _orders: Vec<SolvedOrder>,
 ) -> Result<Vec<Filling>, StdError> {
     panic!()
 }

@@ -185,12 +185,12 @@ pub fn get_this_route(
     let asset: AssetItem = crate::state::assets::ASSETS
         .load(storage, this_asset_id)
         .map_err(|_| ContractError::AssetNotFoundById(this_asset_id))?;
-    let to_asset: AssetId = crate::state::assets::NETWORK_ASSET
+    let to_asset_id: AssetId = crate::state::assets::NETWORK_ASSET
         .load(storage, (to_network_id, this_asset_id))
         .map_err(|_| {
             ContractError::AssetCannotBeTransferredToNetwork(this_asset_id, to_network_id)
         })?
-        .asset_id;
+        .to_asset_id;
     let to_outpost = other
         .network
         .outpost
@@ -224,7 +224,7 @@ pub fn get_this_route(
             .ics20
             .ok_or(ContractError::ICS20NotFound)?
             .sender,
-        on_remote_asset: to_asset,
+        on_remote_asset: to_asset_id,
     })
 }
 

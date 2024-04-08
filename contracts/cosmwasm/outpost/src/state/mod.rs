@@ -4,6 +4,7 @@ pub mod executors;
 pub mod ics27;
 pub mod network;
 pub mod tracking;
+pub mod venues;
 use crate::{error::ContractError, prelude::*};
 
 use cosmwasm_std::{StdResult, Storage};
@@ -32,5 +33,6 @@ pub(crate) fn get_config(deps: cosmwasm_std::Deps<'_>) -> Result<GetConfigRespon
         exchanges,
         networks: network::get_all_networks(deps)?,
         network_assets: assets::get_all_network_assets(deps)?,
+        asset_venue_items: vec![],
     })
 }

@@ -87,7 +87,7 @@ impl IntentBankInput {
             let part = CvmBalanceFilter::from((*part.numer(), *part.denom()));
             CvmInstruction::Transfer {
                 to: Destination::Account(CvmAddress::from(x.0.to_string())),
-                assets: CvmFundsFilter::one(a_asset, part),
+                assets: CvmFundsFilter::of(a_asset, part),
             }
         });
         let a_received = b_to_a.iter().map(|x| {
@@ -95,7 +95,7 @@ impl IntentBankInput {
             let part = CvmBalanceFilter::from((*part.numer(), *part.denom()));
             CvmInstruction::Transfer {
                 to: Destination::Account(CvmAddress::from(x.0.to_string())),
-                assets: CvmFundsFilter::one(b_asset, part),
+                assets: CvmFundsFilter::of(b_asset, part),
             }
         });
 

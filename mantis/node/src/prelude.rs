@@ -16,6 +16,7 @@ pub use std::fmt::format;
 pub use std::fmt::Debug;
 pub use std::str::FromStr;
 pub use tuples::*;
+pub use std::vec;
 
 #[cfg(test)]
 pub use cosmwasm_std::testing::*;

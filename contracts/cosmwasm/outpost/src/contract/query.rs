@@ -1,8 +1,5 @@
 use crate::{assets, error::Result, msg};
-
 use cosmwasm_std::{to_json_binary, Binary, Deps, Env};
-use cvm_runtime::outpost::GetConfigResponse;
-
 use super::ibc::ics20::get_this_route;
 
 #[cfg_attr(not(feature = "library"), cosmwasm_std::entry_point)]

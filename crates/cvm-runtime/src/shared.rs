@@ -1,7 +1,5 @@
-use core::panic;
-
 use crate::{prelude::*, AssetId};
-use cosmwasm_std::{from_json, to_json_binary, Api, Binary, CanonicalAddr, StdError, StdResult};
+use cosmwasm_std::{from_json, to_json_binary,  Binary, StdResult};
 use cvm::{NetworkId, XcAddr};
 use serde::{de::DeserializeOwned, Serialize};
 
@@ -64,11 +62,12 @@ impl CvmProgram {
     }
 }
 
+
 impl CvmInstruction {
     pub fn transfer_absolute_to_account(to: &str, asset_id: u128, amount: u128) -> Self {
         Self::Transfer {
             to: crate::Destination::Account(XcAddr(to.to_owned())),
-            assets: CvmFundsFilter::one(asset_id.into(), crate::Amount::new(amount, 0)),
+            assets: CvmFundsFilter::of(asset_id.into(), crate::Amount::new(amount, 0)),
         }
     }
 

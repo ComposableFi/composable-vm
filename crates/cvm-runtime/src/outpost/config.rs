@@ -1,6 +1,3 @@
-#[cfg(feature = "cosmwasm")]
-use cosmwasm_std::{BlockInfo, IbcTimeout};
-
 use cvm_route::{
     asset::AssetToNetwork, exchange::ExchangeItem, transport::NetworkToNetworkItem, venue::AssetsVenueItem, *
 };
@@ -8,10 +5,8 @@ use ibc_core_host_types::identifiers::ChannelId;
 
 use crate::{prelude::*, transport::ibc::IbcEnabled, AssetId, NetworkId};
 
-type EthAddress = [u8; 20]; // primitive_types::H160;
-
 /// Version of IBC channels used by the gateway.
-pub const IBC_VERSION: &str = "xcvm-v0";
+pub const IBC_VERSION: &str = "cvm-v0";
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "snake_case")]
