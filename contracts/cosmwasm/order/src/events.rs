@@ -58,7 +58,7 @@ pub mod order {
 }
 
 pub mod solution {
-    use crate::{prelude::*, Block, CowFillResult, DenomPair, SolutionItem};
+    use crate::{prelude::*, Block, CowFillResult, DenomPair};
     use cosmwasm_std::Event;
     use sylvia::types::ExecCtx;
 
@@ -72,7 +72,8 @@ pub mod solution {
         block_added: Block,
     ) -> Event {
         let solution_id = crate::types::solution_id(&(owner.to_string(), ab.clone(), block_added));
-        let solution_chosen = Event::new("mantis-solution-chosen")
+        
+        Event::new("mantis-solution-chosen")
             .add_attribute("token_a", ab.clone().a)
             .add_attribute("token_b", ab.clone().b)
             .add_attribute("solver_address", ctx.info.sender.to_string())
@@ -80,15 +81,14 @@ pub mod solution {
             .add_attribute("cross_chain_volume", cross_chain_volume.to_string())
             .add_attribute("total_transfers", transfers.len().to_string())
             .add_attribute("solution_id", hex::encode(solution_id))
-            .add_attribute("solution_block_added", block_added.to_string());
-        solution_chosen
+            .add_attribute("solution_block_added", block_added.to_string())
     }
 
     pub fn mantis_solution_upserted(ab: &DenomPair, ctx: &ExecCtx<'_>) -> Event {
-        let solution_upserted = Event::new("mantis-solution-upserted")
+        
+        Event::new("mantis-solution-upserted")
             .add_attribute("token_a", ab.clone().a)
             .add_attribute("token_b", ab.clone().b)
-            .add_attribute("solver_address", ctx.info.sender.to_string());
-        solution_upserted
+            .add_attribute("solver_address", ctx.info.sender.to_string())
     }
 }

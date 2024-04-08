@@ -22,7 +22,7 @@ pub use types::*;
 pub use crate::sv::{ExecMsg, QueryMsg};
 
 use cosmwasm_std::{wasm_execute, Addr, BankMsg, Coin, Event, Order, StdError, Storage};
-use cvm_runtime::shared::{CvmInstruction, CvmProgram};
+use cvm_runtime::shared::{CvmProgram};
 use cw_storage_plus::{Index, IndexList, IndexedMap, Item, Map};
 use sylvia::{
     contract,
@@ -117,8 +117,8 @@ impl OrderContract<'_> {
     pub fn timeout(
         &self,
         ctx: ExecCtx,
-        orders: Vec<OrderId>,
-        solutions: Vec<Addr>,
+        _orders: Vec<OrderId>,
+        _solutions: Vec<Addr>,
     ) -> StdResult<Response> {
         let orders: Result<Vec<(u128, OrderItem)>, _> = self
             .orders
@@ -164,7 +164,7 @@ impl OrderContract<'_> {
         &self,
         _ctx: ExecCtx,
         _orders: Vec<OrderId>,
-        solution: Option<Addr>,
+        _solution: Option<Addr>,
     ) -> StdResult<Response> {
         todo!("remove order and send event")
     }
@@ -261,7 +261,7 @@ impl OrderContract<'_> {
         let at_least_one = all_orders.first().expect("at least one");
 
         // normalize pair
-        let mut ab = DenomPair::new(
+        let ab = DenomPair::new(
             at_least_one.given().denom.clone(),
             at_least_one.wants().denom.clone(),
         );
@@ -290,7 +290,7 @@ impl OrderContract<'_> {
         // get all solution for pair
         let all_solutions: Result<Vec<SolutionItem>, _> = self
             .solutions
-            .prefix(ab.clone().into())
+            .prefix(ab.clone())
             .range(ctx.deps.storage, None, None, Order::Ascending)
             .map(|r| r.map(|(_, solution)| solution))
             .collect();
@@ -424,16 +424,17 @@ impl OrderContract<'_> {
             .add_event(solution_chosen))
     }
 
-    fn start_solution(&self, mut ctx: ExecCtx<'_>, ab: DenomPair) -> Result<(), StdError> {
+    fn start_solution(&self, ctx: ExecCtx<'_>, ab: DenomPair) -> Result<(), StdError> {
+        if self
+            .pair_to_block
+            .load(ctx.deps.storage, ab.clone())
+            .is_err()
+        {
+            self.pair_to_block
+                .save(ctx.deps.storage, ab, &ctx.env.block.height)?;
+        };
         Ok(
-            if self
-                .pair_to_block
-                .load(ctx.deps.storage, ab.clone())
-                .is_err()
-            {
-                self.pair_to_block
-                    .save(ctx.deps.storage, ab, &ctx.env.block.height)?;
-            },
+            (),
         )
     }
 
@@ -533,9 +534,9 @@ impl OrderContract<'_> {
     /// similar to `fill_local`, but instead of transfers via bank,
     /// produced movement of movement funds to tracking,
     /// but eventing and cleanup has same behavior
-    fn pre_fill_remotely<'a>(
+    fn pre_fill_remotely(
         &self,
-        ctx: ExecCtx<'a>,
+        ctx: ExecCtx<'_>,
         _optimal_price: Ratio,
         solver_address: String,
         solution_id: SolutionHash,

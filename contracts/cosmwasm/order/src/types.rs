@@ -1,5 +1,5 @@
 use cosmwasm_std::{ensure, BankMsg, Event, StdResult};
-use cvm_runtime::{outpost::ExecuteProgramMsg, shared::CvmProgram, AssetId, ExchangeId, NetworkId};
+use cvm_runtime::{outpost::ExecuteProgramMsg, AssetId};
 use mantis_cw::{DenomPair, OrderSide};
 
 pub type Ratio = num_rational::Ratio<u64>;
@@ -95,7 +95,7 @@ pub struct Filling {
 #[cfg(test)]
 mod test {
     use cosmwasm_std::Coin;
-
+    
     use crate::prelude::*;
     use crate::types::*;
 
@@ -314,8 +314,8 @@ impl SolvedOrder {
     pub fn given_cross_chain(&self) -> Amount {
         match self.solution.cross_chain_part {
             Some(x) => match x {
-                OrderAmount::All => self.order.given.amount.into(),
-                OrderAmount::Part(x, _) => x.into(),
+                OrderAmount::All => self.order.given.amount,
+                OrderAmount::Part(x, _) => x,
             },
             None => 0u128.into(),
         }
@@ -324,8 +324,8 @@ impl SolvedOrder {
     pub fn wants_cross_chain(&self) -> Amount {
         match self.solution.cross_chain_part {
             Some(x) => match x {
-                OrderAmount::All => self.order.msg.wants.amount.into(),
-                OrderAmount::Part(_, x) => x.into(),
+                OrderAmount::All => self.order.msg.wants.amount,
+                OrderAmount::Part(_, x) => x,
             },
             None => 0u128.into(),
         }
