@@ -3,7 +3,7 @@ use std::collections::BTreeMap;
 use blackbox_rs::types::SingleInputAssetCvmRoute;
 use cvm_route::venue::VenueId;
 use cvm_runtime::proto::pb::program::{Exchange, Transfer};
-use cvm_runtime::shared::{CvmInstruction, CvmProgram};
+use cvm_runtime::shared::{CvmFundsFilter, CvmInstruction, CvmProgram};
 use cvm_runtime::{exchange, AssetId, ExchangeId};
 use petgraph::algo::{bellman_ford, min_spanning_tree};
 use petgraph::data::FromElements;
@@ -60,18 +60,31 @@ pub fn route(
         }
     }
 
-    let in_node_index = assets_global_to_local.get(&input.in_asset_id).unwrap();
     let routes =
-        bellman_ford::bellman_ford(&graph, *in_node_index)
-            .expect("bf");
-    let out_node_index = assets_global_to_local.get(&input.out_asset_id).expect("node");
-    
-    
-    let mut out_node_index = out_node_index.index();
+    bellman_ford::bellman_ford(&graph, *in_node_index)
+    .expect("bf");
+
+    let mut out_node_index = assets_global_to_local.get(&input.out_asset_id).expect("node");    
     let mut in_node_index = routes.predecessors[out_node_index].expect("routable");
     while true {
-
+        let venue_index = graph.find_edge(out_node_index, in_node_index).expect("edge");
+        let venue : Venue = venue_local_to_global.get(&venue_index).expect("venue");
+        match venue {
+            Venue::Transfer(from_asset_id, to_asset_id) => {
+                let spawn = CvmInstruction::Spawn {
+                    network_id: cvm_glt.get_network_for_asset(from_asset_id),
+                    salt: salt.to_vec(),
+                    assets: CvmFundsFilter::all_of(id),
+                    program: CvmProgram {
+                        tag: salt.to_vec(),
+                        instructions: input.order_accounts.clone(),
+                    },
+                };
+            },
+            Venue::Exchange(exchange_id, from_asset_id, to_asset_id) => todo!(),
+        }
     }
+    // let mut out_node_index = out_node_index.index();
 
     panic!()
 }

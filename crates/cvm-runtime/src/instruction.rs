@@ -109,6 +109,13 @@ pub enum Instruction<Payload, Account, Assets> {
     },
 }
 
+impl<Payload, Account, Assets> Instruction<Payload, Account, Assets> {
+    /// asynchronous instruction with sub instruction inside
+    pub fn is_async_with_sub(&self) -> bool {
+        matches!(&self, Instruction::Spawn { .. })
+    }
+} 
+
 /// Error types for late binding operation
 #[derive(Clone, Debug, PartialEq)]
 pub enum LateBindingError<E> {
