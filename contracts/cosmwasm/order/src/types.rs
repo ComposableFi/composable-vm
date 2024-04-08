@@ -95,13 +95,14 @@ pub struct Filling {
 #[cfg(test)]
 mod test {
     use cosmwasm_std::Coin;
+    use num_rational::Ratio;
     
     use crate::prelude::*;
     use crate::types::*;
 
     #[test]
     pub fn fill() {
-        let optimal_price = (Uint64::from(1u64), Uint64::from(1u64));
+        let optimal_price = Ratio::new(1u64, 1u64);
         let mut order = OrderItem {
             owner: Addr::unchecked("owner".to_string()),
             msg: OrderSubMsg {

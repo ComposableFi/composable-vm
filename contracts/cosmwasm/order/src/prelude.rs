@@ -1,6 +1,6 @@
 pub use cosmwasm_schema::cw_serde;
 pub use cosmwasm_std::{Addr, Coin};
-pub use cosmwasm_std::{StdError, Uint128, Uint64};
+pub use cosmwasm_std::{StdError, Uint128};
 pub use tuples::*;
 
 pub use serde::{Deserialize, Serialize};
