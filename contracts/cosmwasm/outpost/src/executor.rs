@@ -23,7 +23,7 @@ pub(crate) fn force_instantiate(
     let config = load_this(deps.storage)?;
     let executor_code_id = match config.outpost.expect("expected setup") {
         OutpostId::CosmWasm {
-            executor_code_id: executor_code_id,
+            executor_code_id,
             ..
         } => executor_code_id,
         //OutpostId::Evm { .. } => Err(ContractError::RuntimeUnsupportedOnNetwork)?,

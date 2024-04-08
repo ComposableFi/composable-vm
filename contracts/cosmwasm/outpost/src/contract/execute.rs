@@ -114,7 +114,7 @@ fn handle_config_msg(
             }
             Ok(aggregated)
         }
-        ConfigSubMsg::ForceAssetsVenue(msg) => state::venues::force_assets_venue(auth, deps, msg),
+        ConfigSubMsg::ForceAssetsVenue(msg) => state::exchange::force_assets_venue(auth, deps, msg),
     }
 }
 
@@ -158,7 +158,7 @@ fn transfer_from_user(
                             *asset_id, denom,
                         ))?;
                     if *program_amount != u128::from(*host_amount) {
-                        return Err(ContractError::ProgramAmountNotEqualToHostAmount)?;
+                        Err(ContractError::ProgramAmountNotEqualToHostAmount)?;
                     }
                 }
                 cvm_route::asset::AssetReference::Cw20 { contract } => {

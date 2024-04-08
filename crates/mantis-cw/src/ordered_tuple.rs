@@ -3,6 +3,7 @@ use cosmwasm_std::{StdError, StdResult};
 use cw_storage_plus::{Key, KeyDeserialize, Prefixer, PrimaryKey};
 pub use tuples::*;
 
+/// Ordered tuple can be considered as edge of undirected graph
 #[cw_serde]
 #[derive(Eq)]
 pub struct OrderedTuple2<T> {

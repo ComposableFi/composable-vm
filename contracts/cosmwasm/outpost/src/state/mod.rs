@@ -4,15 +4,14 @@ pub mod executors;
 pub mod ics27;
 pub mod network;
 pub mod tracking;
-pub mod venues;
 use crate::{error::ContractError, prelude::*};
 
 use cosmwasm_std::{StdResult, Storage};
-use cvm_route::transport::OtherNetworkItem;
-use cvm_runtime::outpost::{GetConfigResponse, NetworkItem};
+
+use cvm_runtime::outpost::{GetConfigResponse};
 use cw_storage_plus::Item;
 
-use cvm_runtime::NetworkId;
+
 
 const CONFIG: Item<HereItem> = Item::new("this");
 
@@ -33,6 +32,6 @@ pub(crate) fn get_config(deps: cosmwasm_std::Deps<'_>) -> Result<GetConfigRespon
         exchanges,
         networks: network::get_all_networks(deps)?,
         network_assets: assets::get_all_network_assets(deps)?,
-        asset_venue_items: vec![],
+        asset_venue_items: exchange::get_all_exchange_venues(deps)?,
     })
 }
