@@ -7,7 +7,7 @@ use cosmwasm_std::{
 use cvm_route::exchange::ExchangeItem;
 use cvm_runtime::{Amount, ExchangeId, Funds};
 use error::ContractError;
-use osmosis_std::types::osmosis::poolmanager::v1beta1::MsgSwapExactAmountIn;
+
 
 pub fn exchange(
     give: Funds,
@@ -88,8 +88,8 @@ pub fn exchange(
         }
         AstroportRouterContract {
             address,
-            token_a,
-            token_b,
+            token_a: _,
+            token_b: _,
         } => {
             use astroport::{asset::*, router::*};
             let (minimum_receive, max_spread) = if want.1.is_absolute() {

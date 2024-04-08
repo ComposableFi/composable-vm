@@ -67,13 +67,25 @@ impl XcAddr {
     pub fn parse(&self) -> Result<Binary, StdError> {
         use bech32::{primitives::decode::CheckedHrpstring, Bech32};
         let addr = if let Ok(addr) = CheckedHrpstring::new::<Bech32>(&self.0) {
-            Binary(addr.byte_iter().into_iter().collect())
+            Binary(addr.byte_iter().collect())
         } else if let Ok(addr) = Binary::from_base64(&self.0) {
             addr
         } else {
-            return Err(StdError::generic_err("Failed to ensure XcAddr encoding")).into();
+            return Err(StdError::generic_err("Failed to ensure XcAddr encoding"));
         };
         Ok(addr)
+    }
+}
+
+impl core::fmt::Display for XcAddr {
+    fn fmt(&self, fmtr: &mut core::fmt::Formatter) -> core::fmt::Result {
+        core::fmt::Display::fmt(&self.0, fmtr)
+    }
+}
+
+impl core::fmt::Debug for XcAddr {
+    fn fmt(&self, fmtr: &mut core::fmt::Formatter) -> core::fmt::Result {
+        core::fmt::Debug::fmt(&self.0, fmtr)
     }
 }
 
@@ -92,24 +104,12 @@ mod tests {
         let xcaddr_a = super::XcAddr(addr_a.to_string());
         let xcaddr_b = super::XcAddr(addr_b.to_string());
         let xcaddr_c = super::XcAddr(addr_c.to_string());
-        let xcaddr_d = super::XcAddr(addr_d.to_string());
+        let _xcaddr_d = super::XcAddr(addr_d.to_string());
         assert_eq!(addr_b, xcaddr_a.parse().unwrap().to_base64());
         assert_eq!(addr_b, xcaddr_b.parse().unwrap().to_base64());
         assert_eq!(addr_b, xcaddr_c.parse().unwrap().to_base64());
 
         // next fails
         // assert_eq!(addr_b, xcaddr_d.parse().unwrap().to_base64());
-    }
-}
-
-impl core::fmt::Display for XcAddr {
-    fn fmt(&self, fmtr: &mut core::fmt::Formatter) -> core::fmt::Result {
-        core::fmt::Display::fmt(&self.0, fmtr)
-    }
-}
-
-impl core::fmt::Debug for XcAddr {
-    fn fmt(&self, fmtr: &mut core::fmt::Formatter) -> core::fmt::Result {
-        core::fmt::Debug::fmt(&self.0, fmtr)
     }
 }

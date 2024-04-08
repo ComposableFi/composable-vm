@@ -76,9 +76,9 @@ impl<T> Tuple2 for OrderedTuple2<T> {
     type Item1 = T;
 }
 
-impl<T: PartialOrd + Clone + PartialOrd + PartialEq> Into<(T, T)> for OrderedTuple2<T> {
-    fn into(self) -> (T, T) {
-        (self.a, self.b)
+impl<T: PartialOrd + Clone + PartialOrd + PartialEq> From<OrderedTuple2<T>> for (T, T) {
+    fn from(val: OrderedTuple2<T>) -> Self {
+        (val.a, val.b)
     }
 }
 

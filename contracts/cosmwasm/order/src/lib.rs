@@ -117,9 +117,13 @@ impl OrderContract<'_> {
     pub fn timeout(
         &self,
         ctx: ExecCtx,
-        _orders: Vec<OrderId>,
-        _solutions: Vec<Addr>,
+        orders: Vec<OrderId>,
+        solutions: Vec<Addr>,
     ) -> StdResult<Response> {
+        ctx.deps.api.debug(&format!(
+            "mantis::timeout::cleaning orders {:?} and solutions {:?}",
+            orders, solutions
+        ));
         let orders: Result<Vec<(u128, OrderItem)>, _> = self
             .orders
             .range(ctx.deps.storage, None, None, Order::Ascending)

@@ -171,35 +171,6 @@ impl Network for Centauri {
     type EncodedCall = Vec<u8>;
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn network_ids() {
-        assert_eq!(Picasso::ID, NetworkId(1));
-        assert_eq!(Centauri::ID, NetworkId(2));
-        assert_eq!(Ethereum::ID, NetworkId(7));
-    }
-
-    #[test]
-    fn test_serialisation() {
-        #[track_caller]
-        fn check<T>(want: &str, value: T)
-        where
-            T: for<'a> Deserialize<'a> + Serialize + core::fmt::Debug + PartialEq,
-        {
-            let serialised = serde_json_wasm::to_string(&value).unwrap();
-            assert_eq!(want, serialised);
-            let deserialised = serde_json_wasm::from_str::<T>(&serialised).unwrap();
-            assert_eq!(value, deserialised);
-        }
-
-        check("42", NetworkId(42));
-        check("\"616c696365\"", UserId(b"alice".to_vec()));
-    }
-}
-
 #[cfg(feature = "cosmwasm")]
 impl<'a> PrimaryKey<'a> for NetworkId {
     type Prefix = ();
@@ -316,5 +287,34 @@ impl KeyDeserialize for UserId {
 
     fn from_vec(value: Vec<u8>) -> StdResult<Self::Output> {
         <Vec<u8> as KeyDeserialize>::from_vec(value)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn network_ids() {
+        assert_eq!(Picasso::ID, NetworkId(1));
+        assert_eq!(Centauri::ID, NetworkId(2));
+        assert_eq!(Ethereum::ID, NetworkId(7));
+    }
+
+    #[test]
+    fn test_serialisation() {
+        #[track_caller]
+        fn check<T>(want: &str, value: T)
+        where
+            T: for<'a> Deserialize<'a> + Serialize + core::fmt::Debug + PartialEq,
+        {
+            let serialised = serde_json_wasm::to_string(&value).unwrap();
+            assert_eq!(want, serialised);
+            let deserialised = serde_json_wasm::from_str::<T>(&serialised).unwrap();
+            assert_eq!(value, deserialised);
+        }
+
+        check("42", NetworkId(42));
+        check("\"616c696365\"", UserId(b"alice".to_vec()));
     }
 }

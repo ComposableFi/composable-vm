@@ -15,8 +15,7 @@ pub use parity_scale_codec::{Decode, Encode};
 #[cfg(feature = "parity-scale-codec")]
 pub use scale_info::TypeInfo;
 
-#[cfg(all(feature = "json-schema", not(target_arch = "wasm32")))]
-pub use cosmwasm_schema::QueryResponses;
+
 
 #[cfg(all(feature = "json-schema", not(target_arch = "wasm32")))]
 pub use schemars::JsonSchema;

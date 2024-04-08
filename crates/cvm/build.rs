@@ -13,7 +13,7 @@ fn main() -> std::io::Result<()> {
             }
         }
     }
-    if files.len() == 0 {
+    if files.is_empty() {
         println!("No proto files found in {:?}.", path);
     }
     prost_build::compile_protos(&files, &[PROTOS_DIR])

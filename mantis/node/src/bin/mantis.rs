@@ -1,20 +1,15 @@
 use std::panic;
 
-use bip32::secp256k1::elliptic_curve::rand_core::block;
-use cosmos_sdk_proto::{traits::Message, Any};
+
+
 use cosmrs::{
-    tendermint::{block::Height, chain},
-    tx::{Msg, SignDoc},
+    tx::{Msg},
     Gas,
 };
 
-use cosmrs::{
-    cosmwasm::MsgExecuteContract,
-    tx::{self, Fee, SignerInfo},
-    AccountId,
-};
+
 use cvm_runtime::shared::CvmProgram;
-use cw_mantis_order::{Amount, CrossChainPart, OrderItem, OrderSolution, OrderSubMsg, Ratio, SolutionSubMsg};
+use cw_mantis_order::{CrossChainPart, OrderItem, OrderSolution, Ratio, SolutionSubMsg};
 use mantis_node::{
     mantis::{
         args::*,
@@ -22,15 +17,12 @@ use mantis_node::{
         cosmos::{
             client::*,
             cosmwasm::to_exec_signed,
-            cvm::get_salt,
             *,
         },
         indexer::{get_all_orders, get_cvm_glt},
         simulate,
-        solve::PairSolution,
     },
     prelude::*,
-    solver::{orderbook::OrderList, solution::Solution},
 };
 
 #[tokio::main]
@@ -51,7 +43,7 @@ async fn main() {
                 } => {
                     println!(
                         "{}",
-                        cvm_runtime::generate_asset_id(network_id.into(), 0, asset_id.into())
+                        cvm_runtime::generate_asset_id(network_id.into(), 0, asset_id)
                     );
                 }
             },
@@ -62,14 +54,14 @@ async fn main() {
 
 async fn solve_orders(solver_args: &SolverArgs) {
     let args = &solver_args.shared;
-    let wasm_read_client = create_wasm_query_client(&args.grpc_centauri).await;
+    let _wasm_read_client = create_wasm_query_client(&args.grpc_centauri).await;
 
     let signer = mantis_node::mantis::cosmos::signer::from_mnemonic(
         args.wallet.as_str(),
         "m/44'/118'/0'/0/0",
     )
     .expect("mnemonic");
-    let gas = args.gas;
+    let _gas = args.gas;
     let mut cosmos_query_client = create_cosmos_query_client(&args.rpc_centauri).await;
     let mut write_client = create_wasm_write_client(&args.rpc_centauri).await;
     let mut wasm_read_client = create_wasm_query_client(&args.grpc_centauri).await;
@@ -174,7 +166,7 @@ async fn simulate_orders(simulate_args: &SimulateArgs) {
 /// gets CVM routing data
 /// uses cfmm algorithm
 async fn solve(
-    write_client: &mut CosmWasmWriteClient,
+    _write_client: &mut CosmWasmWriteClient,
     cosmos_query_client: &mut CosmWasmReadClient,
     // really this should query Python Blackbox
     cvm_contact: &String,
@@ -253,7 +245,7 @@ async fn send_solution(
         cows,
         route,
         timeout: tip.timeout(12),
-        cow_optional_price: optimal_price.into(),
+        cow_optional_price: optimal_price,
     };
 
     let auth_info = simulate_and_set_fee(signing_key, &tip.account, gas).await;

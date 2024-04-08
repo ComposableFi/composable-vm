@@ -21,7 +21,7 @@ fn main() {
 
     let path = out_dir.join(concat!("events", ".json"));
 
-    write(&path, serde_json_wasm::to_string(&events).unwrap()).unwrap();
+    write(path, serde_json_wasm::to_string(&events).unwrap()).unwrap();
 }
 
 #[cfg(not(all(feature = "json-schema", not(target_arch = "wasm32"))))]
