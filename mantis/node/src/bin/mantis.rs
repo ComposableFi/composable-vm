@@ -1,3 +1,5 @@
+use std::panic;
+
 use bip32::secp256k1::elliptic_curve::rand_core::block;
 use cosmos_sdk_proto::{traits::Message, Any};
 use cosmrs::{
@@ -12,15 +14,14 @@ use cosmrs::{
     AccountId,
 };
 use cvm_runtime::shared::CvmProgram;
-use cw_mantis_order::{Amount, OrderItem, OrderSolution, OrderSubMsg, Ratio, SolutionSubMsg};
-use mantis_cw::OrderedTuple2;
+use cw_mantis_order::{Amount, CrossChainPart, OrderItem, OrderSolution, OrderSubMsg, Ratio, SolutionSubMsg};
 use mantis_node::{
     mantis::{
         args::*,
         autopilot, blackbox,
         cosmos::{
             client::*,
-            cosmwasm::{smart_query, to_exec_signed, to_exec_signed_with_fund},
+            cosmwasm::to_exec_signed,
             cvm::get_salt,
             *,
         },
@@ -198,18 +199,25 @@ async fn solve(
             &cvm_glt,
             pair_solution.ab.clone(),
         );
+
+        
         let a_cvm_route =  blackbox::get_route(router_api, a, &cvm_glt, salt.as_ref()).await;
         let b_cvm_route =  blackbox::get_route(router_api, b, &cvm_glt, salt.as_ref()).await;
-        panic!();
+
+        let cvm_program = CvmProgram {
+            tag: salt.to_vec(),
+            instructions: [a_cvm_route, b_cvm_route].concat().to_vec(),
+        };
         send_solution(
             pair_solution.cows,
-            vec![a_cvm_route, b_cvm_route],
+            cvm_program,
             tip,
             pair_solution.optimal_price,
             signing_key,
             order_contract,
             rpc,
             gas,
+            salt.to_vec(),
         )
         .await;
     }
@@ -217,18 +225,33 @@ async fn solve(
 
 async fn send_solution(
     cows: Vec<OrderSolution>,
-    cvm: Vec<CvmProgram>,
+    program: CvmProgram,
     tip: &Tip,
     optimal_price: Ratio,
     signing_key: &cosmrs::crypto::secp256k1::SigningKey,
     order_contract: &String,
     rpc: &CosmosChainInfo,
     gas: Gas,
+    salt : Vec<u8>,
 ) {
     println!("========================= settle =========================");
+    // would be reasonable to do do cross chain if it solves some % of whole trade        
+    let route = if random::<bool>() {
+        None
+    } else {
+        Some(CrossChainPart {
+            msg: cvm_runtime::outpost::ExecuteProgramMsg { 
+                salt, 
+                program, 
+                assets: None, 
+                tip: None 
+            },
+            optimal_price,
+        })
+    };
     let solution = SolutionSubMsg {
         cows,
-        route: None,
+        route,
         timeout: tip.timeout(12),
         cow_optional_price: optimal_price.into(),
     };
@@ -244,5 +267,13 @@ async fn send_solution(
         tip,
     )
     .await;
-    log::info!("result: {:?}", result);
+    match &result.tx_result.code {
+        cosmrs::tendermint::abci::Code::Err(err) => {
+            log::info!("result: {:?}", result);
+            panic!("Error: {:?}", err)
+        }
+        cosmrs::tendermint::abci::Code::Ok => {
+            log::info!("ok: {:?}", result);
+        },
+    }
 }

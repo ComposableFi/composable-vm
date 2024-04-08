@@ -176,7 +176,7 @@ pub struct ExecuteProgramMsg<Assets = Option<Funds<crate::shared::Displayed<u128
     pub program: crate::shared::CvmProgram,
     /// Assets to fund the CVM executor instance.
     /// The executor is funded prior to execution.
-    /// If None, 100% of received funds go to executor.
+    /// If None, 100% of CosmWasm native received funds go to executor.
     pub assets: Assets,
 
     #[serde(skip_serializing_if = "Option::is_none")]
