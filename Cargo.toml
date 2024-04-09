@@ -136,6 +136,7 @@ thiserror = { version = "^1.0.50", default-features = false, package = "thiserro
 cw-utils = { version = "^1.0.3", default-features = false }
 cw2 = { version = "^1.1.2", default-features = false }
 
+# upgrade leads to float issue, fix it via  https://medium.com/cosmwasm/debugging-floating-point-generation-in-rust-wasm-smart-contract-f47d833b5fba
 ibc-apps-more = { git = "https://github.com/ComposableFi/ibc-apps-more-rs.git", rev = "2e665779e1abe316e263633b5470104807605b17", default-features = false }
 ibc-app-transfer-types = { git = "https://github.com/dzmitry-lahoda-forks/ibc-rs.git", branch = "dz/14", default-features = false, features = [
     "serde",
