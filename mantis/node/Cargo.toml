@@ -16,7 +16,7 @@ bip32 = { workspace = true, default-features = false, features = [
 ] }
 bip39 = {version = "2.0.0", features = ["std"]}
 clap = { workspace = true, features = ["derive", "std"] }
-cosmos-sdk-proto = { workspace = true, features = ["grpc-transport"] }
+cosmos-sdk-proto = { workspace = true, features = ["grpc-transport", "cosmwasm", "grpc"] }
 cosmrs = { workspace = true, features = []}
 cosmwasm-std = { workspace = true, features = []}
 cw-mantis-order = { workspace = true, features = [

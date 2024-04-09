@@ -1,4 +1,4 @@
-pub use alloc::{boxed::Box, string::String, vec, vec::Vec};
+pub use alloc::{string::String, vec, vec::Vec};
 
 pub use serde::{Deserialize, Serialize};
 
