@@ -51,8 +51,8 @@ pub enum ContractError {
     AlreadyRegistered,
     #[error("Route not found.")]
     RouteNotFound,
-    #[error("{0}")]
-    Bech32(bech32::EncodeError),
+    // #[error("{0}")]
+    // Bech32(bech32::EncodeError),
     #[error("{0}")]
     Serde(#[from] serde_json_wasm::ser::Error),
     #[error("Assets non transferrable")]
@@ -88,11 +88,19 @@ pub enum ContractError {
     AccountInProgramIsNotMappableToThisChain,
     #[error("Hook error: {0}")]
     HookError(String),
+    #[error("bech32")]
+    Bech32
 }
 
-impl From<ibc_apps_more::types::error::HookError> for ContractError {
-    fn from(value: ibc_apps_more::types::error::HookError) -> Self {
-        Self::HookError("value".to_string())
+// impl From<ibc_apps_more::types::error::HookError> for ContractError {
+//     fn from(value: ibc_apps_more::types::error::HookError) -> Self {
+//         Self::HookError("value".to_string())
+//     }
+// }
+
+impl From<bech32::Error> for ContractError {
+    fn from(_value: bech32::Error) -> Self {
+        Self::Bech32
     }
 }
 
@@ -102,11 +110,11 @@ impl From<cvm_runtime::proto::DecodeError> for ContractError {
     }
 }
 
-impl From<bech32::EncodeError> for ContractError {
-    fn from(value: bech32::EncodeError) -> Self {
-        Self::Bech32(value)
-    }
-}
+// impl From<bech32::EncodeError> for ContractError {
+//     fn from(value: bech32::EncodeError) -> Self {
+//         Self::Bech32(value)
+//     }
+// }
 
 impl From<IdentifierError> for ContractError {
     fn from(value: IdentifierError) -> Self {

@@ -652,7 +652,7 @@ dependencies = [
 name = "cvm"
 version = "0.1.0"
 dependencies = [
- "bech32 0.11.0",
+ "bech32 0.9.1",
  "cosmwasm-schema",
  "cosmwasm-std",
  "cw-storage-plus 1.2.0",
@@ -690,7 +690,7 @@ dependencies = [
 name = "cvm-runtime"
 version = "0.1.0"
 dependencies = [
- "bech32 0.11.0",
+ "bech32 0.9.1",
  "cosmwasm-schema",
  "cosmwasm-std",
  "cvm",
@@ -778,7 +778,7 @@ dependencies = [
 name = "cw-cvm-outpost"
 version = "0.4.0"
 dependencies = [
- "bech32 0.11.0",
+ "bech32 0.9.1",
  "cosmwasm-std",
  "cvm",
  "cvm-route",
@@ -1589,6 +1589,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "ibc-app-transfer"
+version = "0.48.1"
+source = "git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14#1f7bdc66c02299266bc140d5b17eb30722afa6c2"
+dependencies = [
+ "ibc-app-transfer-types",
+ "ibc-core",
+ "serde-json-wasm 1.0.1",
+]
+
+[[package]]
 name = "ibc-app-transfer-types"
 version = "0.48.1"
 source = "git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14#1f7bdc66c02299266bc140d5b17eb30722afa6c2"
@@ -1606,15 +1616,23 @@ dependencies = [
 ]
 
 [[package]]
-name = "ibc-apps-more"
-version = "0.3.0"
-source = "git+https://github.com/ComposableFi/ibc-apps-more-rs.git?rev=3d24972f89426d1ce06d3189c43ab128a4ff3644#3d24972f89426d1ce06d3189c43ab128a4ff3644"
+name = "ibc-apps"
+version = "0.48.1"
+source = "git+https://github.com/dzmitry-lahoda-forks/ibc-rs.git?branch=dz/14#1f7bdc66c02299266bc140d5b17eb30722afa6c2"
 dependencies = [
- "bech32 0.11.0",
+ "ibc-app-transfer",
+]
+
+[[package]]
+name = "ibc-apps-more"
+version = "0.1.0"
+source = "git+https://github.com/ComposableFi/ibc-apps-more-rs.git?rev=2e665779e1abe316e263633b5470104807605b17#2e665779e1abe316e263633b5470104807605b17"
+dependencies = [
+ "bech32 0.9.1",
  "cosmwasm-std",
  "hex",
- "ibc-app-transfer-types",
- "ibc-core-host-types",
+ "ibc-apps",
+ "ibc-core",
  "ibc-primitives",
  "prost",
  "schemars",

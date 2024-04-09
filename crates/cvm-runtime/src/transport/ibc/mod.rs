@@ -9,9 +9,6 @@ use cosmwasm_std::{Api, BlockInfo, CosmosMsg, Deps, StdResult};
 use cvm_route::transport::RelativeTimeout;
 use ibc_core_host_types::identifiers::{ChannelId, PortId};
 
-use ibc_apps_more::types::hook::Callback;
-//, HookMemo};
-// use ibc_apps_more::types::memo::Memo;
 
 /// This message should be send as part of wasm termination memo.
 /// So that can match it to sender hash and know what channel and origin was used to send message.
@@ -71,14 +68,17 @@ pub fn to_cosmwasm_message<T>(
     block: BlockInfo,
     to_outpost: Addr,
 ) -> StdResult<CosmosMsg<T>> {
-    use ibc_apps_more::types::{hook::LazyHookMemo, memo::Memo};
-
+    // use ibc_apps_more::types::{hook::LazyHookMemo, memo::Memo};
+    use ibc_apps_more::{
+        hook::{Callback, SendMemo},
+        memo::Memo,
+    };
     let msg = outpost::ExecuteMsg::MessageHook(XcMessageData {
         from_network_id: route.from_network,
         packet,
     });
-    let memo = LazyHookMemo {
-        base: Memo {
+    let memo = SendMemo {
+        inner: Memo {
             wasm: Some(Callback::new_cosmwasm(
                 to_outpost.clone(),
                 serde_cw_value::to_value(msg).expect("can always serde"),

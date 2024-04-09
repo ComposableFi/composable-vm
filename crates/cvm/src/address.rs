@@ -65,15 +65,28 @@ impl XcAddr {
 
     #[cfg(feature = "cosmwasm")]
     pub fn parse(&self) -> Result<Binary, StdError> {
-        use bech32::{primitives::decode::CheckedHrpstring, Bech32};
-        let addr = if let Ok(addr) = CheckedHrpstring::new::<Bech32>(&self.0) {
-            Binary(addr.byte_iter().collect())
-        } else if let Ok(addr) = Binary::from_base64(&self.0) {
-            addr
-        } else {
-            return Err(StdError::generic_err("Failed to ensure XcAddr encoding"));
-        };
-        Ok(addr)
+        if let Ok(addr) = Binary::from_base64(&self.0) {
+            return Ok(addr);
+        }
+        else if let Ok((_, addr, _)) = bech32::decode(&self.0) {
+            use bech32::FromBase32;
+            if let Ok(addr) = Vec::from_base32(&addr) {
+                    return Ok(Binary(addr));
+            }
+        }
+
+        // here we will do CW on Substrate if that will be needed, but not prio
+        Err(StdError::generic_err("Failed to ensure XcAddr encoding"))
+
+        // use bech32::{primitives::decode::CheckedHrpstring, Bech32};
+        // let addr = if let Ok(addr) = CheckedHrpstring::new::<Bech32>(&self.0) {
+        //     Binary(addr.byte_iter().collect())
+        // } else if let Ok(addr) = Binary::from_base64(&self.0) {
+        //     addr
+        // } else {
+        //     return Err(StdError::generic_err("Failed to ensure XcAddr encoding"));
+        // };
+        // Ok(addr)
     }
 }
 
