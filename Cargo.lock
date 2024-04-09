@@ -1006,12 +1006,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "data-encoding"
-version = "2.5.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7e962a19be5cfc3f3bf6dd8f61eb50107f356ad6270fbb3ed41476571db78be5"
-
-[[package]]
 name = "der"
 version = "0.7.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1614,12 +1608,10 @@ dependencies = [
 [[package]]
 name = "ibc-apps-more"
 version = "0.3.0"
-source = "git+https://github.com/ComposableFi/ibc-apps-more-rs.git?rev=bf01a0ba3ff4af816974d27456efc9751f188dac#bf01a0ba3ff4af816974d27456efc9751f188dac"
+source = "git+https://github.com/ComposableFi/ibc-apps-more-rs.git?rev=3d24972f89426d1ce06d3189c43ab128a4ff3644#3d24972f89426d1ce06d3189c43ab128a4ff3644"
 dependencies = [
  "bech32 0.11.0",
  "cosmwasm-std",
- "data-encoding",
- "displaydoc",
  "hex",
  "ibc-app-transfer-types",
  "ibc-core-host-types",

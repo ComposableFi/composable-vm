@@ -135,7 +135,7 @@ thiserror = { version = "^1.0.50", default-features = false, package = "thiserro
 # xcm = { version = "^5.0.0", default-features = false, package = "staging-xcm" }
 cw-utils = { version = "^1.0.3", default-features = false }
 cw2 = { version = "^1.1.2", default-features = false }
-ibc-apps-more = { git = "https://github.com/ComposableFi/ibc-apps-more-rs.git", rev = "bf01a0ba3ff4af816974d27456efc9751f188dac", default-features = false }
+ibc-apps-more = { git = "https://github.com/ComposableFi/ibc-apps-more-rs.git", rev = "3d24972f89426d1ce06d3189c43ab128a4ff3644", default-features = false }
 ibc-app-transfer-types = { git = "https://github.com/dzmitry-lahoda-forks/ibc-rs.git", branch = "dz/14", default-features = false, features = [
     "serde",
 ] }
