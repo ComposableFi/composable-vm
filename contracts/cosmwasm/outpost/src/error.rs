@@ -87,12 +87,12 @@ pub enum ContractError {
     #[error("Account in program is not mappable to this chain")]
     AccountInProgramIsNotMappableToThisChain,
     #[error("Hook error: {0}")]
-    HookError(ibc_apps_more::types::error::HookError),
+    HookError(String),
 }
 
 impl From<ibc_apps_more::types::error::HookError> for ContractError {
     fn from(value: ibc_apps_more::types::error::HookError) -> Self {
-        Self::HookError(value)
+        Self::HookError("value".to_string())
     }
 }
 
