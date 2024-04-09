@@ -53,7 +53,9 @@ fn new_spawn(
     let in_amount: Amount = match spawn.in_asset_amount.as_ref().expect("in_asset_amount") {
         InAssetAmount::Variant0(x) => (*x).try_into().expect("in_asset_amount"),
         InAssetAmount::Variant1(x) => x.parse().expect("in_asset_amount"),
-        InAssetAmount::Variant2(x) => Amount::try_floor_f64(*x).expect("in_asset_amount"),
+        InAssetAmount::Variant2(x) => {
+        Amount::try_floor_f64(*x).expect("in_asset_amount")
+        }
     };
 
     let out_asset_id = match &spawn.out_asset_id {
@@ -88,7 +90,7 @@ fn new_exchange(exchange: &Exchange) -> CvmInstruction {
     let in_amount: Amount = match &exchange.in_asset_amount {
         InAssetAmount::Variant0(x) => (*x).try_into().expect("in_asset_amount"),
         InAssetAmount::Variant1(x) => x.parse().expect("in_asset_amount"),
-        InAssetAmount::Variant2(x) => Amount::try_floor_f64(*x).expect("in_asset_amount"),
+        InAssetAmount::Variant2(x) => panic!("covert f64 to fraction, but really just fix python to give strings"), // Amount::try_floor_f64(*x).expect("in_asset_amount"),
     };
 
     let out_asset_id = match &exchange.out_asset_id {

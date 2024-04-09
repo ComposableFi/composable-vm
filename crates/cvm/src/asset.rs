@@ -181,6 +181,7 @@ impl Amount {
     //  with rounding to reduce or reduce down part up to some seven bit parts
     pub const MAX_PARTS: u64 = 1_000_000_000_000_000_000;
 
+    #[cfg(not(feature="cosmwasm"))]
     pub fn try_floor_f64(value: f64) -> Result<Self, ArithmeticError> {
         if value < 0.0 || value.is_nan() {
             Err(ArithmeticError::Underflow)

@@ -65,7 +65,7 @@ pub mod solution {
     pub fn mantis_solution_chosen(
         ab: DenomPair,
         ctx: &ExecCtx<'_>,
-        transfers: &Vec<CowFillResult>,
+        transfers: &[CowFillResult],
         cow_volume: u128,
         cross_chain_volume: u128,
         owner: Addr,

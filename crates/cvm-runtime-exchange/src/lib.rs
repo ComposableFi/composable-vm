@@ -20,7 +20,6 @@ pub fn exchange(
     response_id: u64,
 ) -> Result<Response, ContractError> {
     use cvm_route::exchange::ExchangeType::*;
-    use prost::Message;
     ensure_eq!(
         give.0.len(),
         1,
@@ -65,7 +64,6 @@ pub fn exchange(
             };
 
             use crate::osmosis_std::types::osmosis::poolmanager::v1beta1::*;
-            use prost::Message;
             let msg = MsgSwapExactAmountIn {
                 routes: vec![SwapAmountInRoute {
                     pool_id,

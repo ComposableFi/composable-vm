@@ -1,3 +1,4 @@
+#![allow(clippy::new_ret_no_self)]
 use cosmwasm_std::{Addr, Event};
 use cvm_runtime::{
     exchange::ExchangeId, executor::CvmExecutorInstantiated,  NetworkId,

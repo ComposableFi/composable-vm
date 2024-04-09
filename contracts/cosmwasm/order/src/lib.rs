@@ -10,6 +10,7 @@ mod state;
 mod types;
 mod validation;
 
+use constants::MIN_SOLUTION_COUNT;
 use events::order::*;
 use events::solution::*;
 use itertools::Itertools;
@@ -321,6 +322,10 @@ impl OrderContract<'_> {
         let mut transfers = vec![];
         let mut solution_item: SolutionItem = possible_solution;
         let mut volume = 0u128;
+        if all_solutions.len() < MIN_SOLUTION_COUNT as usize {
+            return Ok(Response::default());
+        }
+        
         for solution in all_solutions {
             if validation::validate_solvers(&ctx.deps, &solution, &all_orders).is_err() {
                 continue;
@@ -480,7 +485,7 @@ impl OrderContract<'_> {
         solver_address: String,
         solution_block_added: u64,
         optimal_price: Ratio,
-        solver_orders: &mut Vec<SolvedOrder>,
+        solver_orders: &mut [SolvedOrder],
     ) -> StdResult<Vec<CowFillResult>> {
         let mut results = vec![];
         for (transfer, order) in cows.into_iter() {

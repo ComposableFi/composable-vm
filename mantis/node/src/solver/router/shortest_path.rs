@@ -1,3 +1,6 @@
+//! cannot be used as the only production solver
+//! used in tests when hard to get data from apis
+//! and/or need to fund some possible route (still needs simulation of this route possible)
 use std::collections::BTreeMap;
 use cvm_route::venue::VenueId;
 use cvm_runtime::shared::{CvmFundsFilter, CvmInstruction, CvmProgram};

@@ -27,7 +27,7 @@ pub fn verify(
 /// `a_total_from_orders` - total amount of `a`  given by `orders`
 /// `b_total_from_orders` - total amount of `b`  given by `orders`
 pub fn simulate_cows_via_bank(
-    orders: &Vec<SolvedOrder>,
+    orders: &[SolvedOrder],
     mut a_total_from_orders: u128,
     mut b_total_from_orders: u128,
 ) -> Result<CowSolutionCalculation, StdError> {
