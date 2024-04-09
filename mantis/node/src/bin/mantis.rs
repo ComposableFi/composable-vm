@@ -103,7 +103,7 @@ async fn solve_orders(solver_args: &SolverArgs) {
                 &tip,
                 gas,
                 all_orders,
-                solver_args.cross_chain_solution_provider.as_ref(),
+                solver_args.router.as_ref(),
             )
             .await;
         };
@@ -159,36 +159,44 @@ async fn solve(
     _write_client: &mut CosmWasmWriteClient,
     cosmos_query_client: &mut CosmWasmReadClient,
     // really this should query Python Blackbox
-    cvm_contact: &String,
+    cvm_contact: &Option<String>,
     order_contract: &String,
     signing_key: &cosmrs::crypto::secp256k1::SigningKey,
     rpc: &CosmosChainInfo,
     tip: &Tip,
     gas: Gas,
     all_orders: Vec<OrderItem>,
-    router_api: &str,
+    router_api: &Option<String>,
 ) {
-    let salt = crate::cvm::get_salt(signing_key, tip);
     log::info!(target: "mantis::solver", "Solving orders");
-
+    
     let cows_per_pair = mantis_node::mantis::solve::find_cows(&all_orders);
-    let cvm_glt = get_cvm_glt(cvm_contact, cosmos_query_client).await;
     for pair_solution in cows_per_pair {
-        let (a, b) = mantis_node::mantis::solve::IntentBankInput::find_intent_amount(
-            pair_solution.cows.as_ref(),
-            &all_orders,
-            pair_solution.optimal_price,
-            &cvm_glt,
-            pair_solution.ab.clone(),
-        );
-
-        let a_cvm_route = blackbox::get_route(router_api, a, &cvm_glt, salt.as_ref()).await;
-        let b_cvm_route = blackbox::get_route(router_api, b, &cvm_glt, salt.as_ref()).await;
-
-        let cvm_program = CvmProgram {
-            tag: salt.to_vec(),
-            instructions: [a_cvm_route, b_cvm_route].concat().to_vec(),
-        };
+        
+        
+        let salt = crate::cvm::get_salt(signing_key, tip);
+        let program = if let Some(order_contract) = order_contract {
+            let cvm_glt = get_cvm_glt(order_contract, cosmos_query_client).await;
+            let (a, b) = mantis_node::mantis::solve::IntentBankInput::find_intent_amount(
+                pair_solution.cows.as_ref(),
+                &all_orders,
+                pair_solution.optimal_price,
+                &cvm_glt,
+                pair_solution.ab.clone(),
+            );
+    
+    
+            let a_cvm_route = blackbox::get_route(router_api, a, &cvm_glt, salt.as_ref()).await;
+            let b_cvm_route = blackbox::get_route(router_api, b, &cvm_glt, salt.as_ref()).await;
+    
+            let cvm_program = CvmProgram {
+                tag: salt.to_vec(),
+                instructions: [a_cvm_route, b_cvm_route].concat().to_vec(),
+            };    
+        }
+         else {
+            None
+         };
         send_solution(
             pair_solution.cows,
             cvm_program,
@@ -206,7 +214,7 @@ async fn solve(
 
 async fn send_solution(
     cows: Vec<OrderSolution>,
-    program: CvmProgram,
+    program: Option<CvmProgram>,
     tip: &Tip,
     optimal_price: Ratio,
     signing_key: &cosmrs::crypto::secp256k1::SigningKey,
@@ -215,11 +223,9 @@ async fn send_solution(
     gas: Gas,
     salt: Vec<u8>,
 ) {
-    println!("========================= settle =========================");
+    log::info!("========================= settle =========================");
     // would be reasonable to do do cross chain if it solves some % of whole trade
-    let route = if random::<bool>() {
-        None
-    } else {
+    let route = if let Some(program) = program && random::<bool>() {
         Some(CrossChainPart {
             msg: cvm_runtime::outpost::ExecuteProgramMsg {
                 salt,
@@ -229,6 +235,8 @@ async fn send_solution(
             },
             optimal_price,
         })
+    } else {
+        None
     };
     let solution = SolutionSubMsg {
         cows,

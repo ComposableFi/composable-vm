@@ -102,7 +102,7 @@ pub struct SolverArgs {
 
     /// CVM contract if interchain solving via CVM enabled
     #[arg(long)]
-    pub cvm_contract: Optional<String>,
+    pub cvm_contract: Option<String>,
     
     /// HTTP url to call with parameters to obtain route or built in shortest pass router
     #[arg(long)]
