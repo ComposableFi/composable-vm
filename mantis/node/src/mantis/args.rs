@@ -100,12 +100,13 @@ pub struct SolverArgs {
     #[command(flatten)]
     pub shared: SharedArgs,
 
-    /// CVM
+    /// CVM contract if interchain solving via CVM enabled
     #[arg(long)]
-    pub cvm_contract: String,
-
-    /// http url to call with parameters to obtain route
-    pub solution_provider: String,
+    pub cvm_contract: Optional<String>,
+    
+    /// HTTP url to call with parameters to obtain route or built in shortest pass router
+    #[arg(long)]
+    pub router: Option<String>,
 }
 
 impl MantisArgs {

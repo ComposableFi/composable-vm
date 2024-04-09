@@ -103,7 +103,7 @@ async fn solve_orders(solver_args: &SolverArgs) {
                 &tip,
                 gas,
                 all_orders,
-                solver_args.solution_provider.as_ref(),
+                solver_args.cross_chain_solution_provider.as_ref(),
             )
             .await;
         };
