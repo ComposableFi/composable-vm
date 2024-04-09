@@ -101,7 +101,9 @@ fn handle_config_msg(
             this_asset,
             other_network,
             other_asset,
-        }) => assets::force_asset_to_network_map(auth, deps, this_asset, other_network, other_asset),
+        }) => {
+            assets::force_asset_to_network_map(auth, deps, this_asset, other_network, other_asset)
+        }
         ConfigSubMsg::ForceNetwork(msg) => network::force_network(auth, deps, msg),
         ConfigSubMsg::ForceInstantiate { user_origin, salt } => {
             executor::force_instantiate(auth, env.contract.address.clone(), deps, user_origin, salt)

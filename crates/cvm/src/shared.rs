@@ -1,4 +1,4 @@
-use crate::{prelude::*};
+use crate::prelude::*;
 
 /// A wrapper around a type which is serde-serialised as a string.
 ///

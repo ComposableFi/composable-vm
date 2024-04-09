@@ -23,7 +23,6 @@ impl Price {
     }
 }
 
-
 #[derive(Debug, PartialEq, Eq, Clone, Copy, AsRefStr, Display)]
 pub enum OrderStatus {
     Pending,

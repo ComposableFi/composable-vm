@@ -65,11 +65,7 @@ impl<Id: Copy + PartialEq + Debug> Solver<Id> {
             self.sell_token.0
         };
 
-        let side = if is_buy {
-            OrderSide::A
-        } else {
-            OrderSide::B
-        };
+        let side = if is_buy { OrderSide::A } else { OrderSide::B };
 
         let orders: Vec<Order<_>> = (0..=num_orders)
             .map(|i| {

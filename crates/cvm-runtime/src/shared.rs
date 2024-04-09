@@ -1,5 +1,5 @@
 use crate::{prelude::*, AssetId};
-use cosmwasm_std::{from_json, to_json_binary,  Binary, StdResult};
+use cosmwasm_std::{from_json, to_json_binary, Binary, StdResult};
 use cvm::{NetworkId, XcAddr};
 use serde::{de::DeserializeOwned, Serialize};
 
@@ -61,7 +61,6 @@ impl CvmProgram {
             .collect()
     }
 }
-
 
 impl CvmInstruction {
     pub fn transfer_absolute_to_account(to: &str, asset_id: u128, amount: u128) -> Self {

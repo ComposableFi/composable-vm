@@ -8,7 +8,6 @@ use cvm_route::exchange::ExchangeItem;
 use cvm_runtime::{Amount, ExchangeId, Funds};
 use error::ContractError;
 
-
 pub fn exchange(
     give: Funds,
     want: Funds,

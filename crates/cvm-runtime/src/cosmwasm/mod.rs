@@ -64,7 +64,7 @@
 //! variants of both of them.
 
 use super::{BindingValue, Bindings};
-use crate::{OrderedBindings};
+use crate::OrderedBindings;
 use alloc::{fmt::Debug, string::String, vec, vec::Vec};
 use cosmwasm_std::{BankMsg, Coin, CosmosMsg, Uint64};
 use serde::{Deserialize, Serialize};

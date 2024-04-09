@@ -24,5 +24,5 @@ pub enum VenueId {
 pub struct AssetsVenueItem {
     pub venue_id: VenueId,
     pub from_asset_id: AssetId,
-    pub to_asset_id : AssetId,
+    pub to_asset_id: AssetId,
 }

@@ -8,10 +8,8 @@ use crate::{error::ContractError, prelude::*};
 
 use cosmwasm_std::{StdResult, Storage};
 
-use cvm_runtime::outpost::{GetConfigResponse};
+use cvm_runtime::outpost::GetConfigResponse;
 use cw_storage_plus::Item;
-
-
 
 const CONFIG: Item<HereItem> = Item::new("this");
 

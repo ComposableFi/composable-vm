@@ -72,7 +72,7 @@ pub mod solution {
         block_added: Block,
     ) -> Event {
         let solution_id = crate::types::solution_id(&(owner.to_string(), ab.clone(), block_added));
-        
+
         Event::new("mantis-solution-chosen")
             .add_attribute("token_a", ab.clone().a)
             .add_attribute("token_b", ab.clone().b)
@@ -85,7 +85,6 @@ pub mod solution {
     }
 
     pub fn mantis_solution_upserted(ab: &DenomPair, ctx: &ExecCtx<'_>) -> Event {
-        
         Event::new("mantis-solution-upserted")
             .add_attribute("token_a", ab.clone().a)
             .add_attribute("token_b", ab.clone().b)

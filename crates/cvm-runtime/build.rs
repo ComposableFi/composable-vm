@@ -22,6 +22,6 @@ fn add_files(dir: std::fs::ReadDir, files: &mut Vec<String>) -> Result<(), std::
                 files.push([PROTOS_DIR, "/", name.as_str()].concat())
             }
         }
-    };
+    }
     Ok(())
 }

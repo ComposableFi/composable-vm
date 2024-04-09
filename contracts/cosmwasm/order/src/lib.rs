@@ -23,7 +23,7 @@ pub use types::*;
 pub use crate::sv::{ExecMsg, QueryMsg};
 
 use cosmwasm_std::{wasm_execute, Addr, BankMsg, Coin, Event, Order, StdError, Storage};
-use cvm_runtime::shared::{CvmProgram};
+use cvm_runtime::shared::CvmProgram;
 use cw_storage_plus::{Index, IndexList, IndexedMap, Item, Map};
 use sylvia::{
     contract,
@@ -325,7 +325,7 @@ impl OrderContract<'_> {
         if all_solutions.len() < MIN_SOLUTION_COUNT as usize {
             return Ok(Response::default());
         }
-        
+
         for solution in all_solutions {
             if validation::validate_solvers(&ctx.deps, &solution, &all_orders).is_err() {
                 continue;
@@ -442,9 +442,7 @@ impl OrderContract<'_> {
             self.pair_to_block
                 .save(ctx.deps.storage, ab, &ctx.env.block.height)?;
         };
-        Ok(
-            (),
-        )
+        Ok(())
     }
 
     /// Simple get all orders

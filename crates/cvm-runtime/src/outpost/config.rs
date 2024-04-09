@@ -1,7 +1,7 @@
 use cvm_route::{
-    asset::AssetToNetwork, exchange::ExchangeItem, transport::NetworkToNetworkItem, venue::AssetsVenueItem
+    asset::AssetToNetwork, exchange::ExchangeItem, transport::NetworkToNetworkItem,
+    venue::AssetsVenueItem,
 };
-
 
 use crate::{prelude::*, transport::ibc::IbcEnabled, AssetId, NetworkId};
 

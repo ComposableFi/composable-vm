@@ -1,7 +1,6 @@
 //! cannot be used as the only production solver
 //! used in tests when hard to get data from apis
 //! and/or need to fund some possible route (still needs simulation of this route possible)
-use std::collections::BTreeMap;
 use cvm_route::venue::VenueId;
 use cvm_runtime::shared::{CvmFundsFilter, CvmInstruction, CvmProgram};
 use cvm_runtime::{exchange, AssetId, ExchangeId};
@@ -9,6 +8,7 @@ use petgraph::algo::bellman_ford;
 use petgraph::data::FromElements;
 use petgraph::dot::{Config, Dot};
 use petgraph::graph::{NodeIndex, UnGraph};
+use std::collections::BTreeMap;
 
 // need some how unify with python
 #[derive(Debug, Clone)]
@@ -77,9 +77,12 @@ pub fn route(
     let mut instructions = input.order_accounts.clone();
     while let Some(in_node_index_value) = in_node_index {
         let venue_index = graph
-            .find_edge(out_node_index,in_node_index_value)
+            .find_edge(out_node_index, in_node_index_value)
             .expect("edge");
-        let venue = venue_local_to_global.get(&venue_index).expect("venue").clone();
+        let venue = venue_local_to_global
+            .get(&venue_index)
+            .expect("venue")
+            .clone();
         match venue {
             Venue::Transfer(from_asset_id, to_asset_id) => {
                 let spawn = CvmInstruction::Spawn {
@@ -103,7 +106,10 @@ pub fn route(
                 instructions = [[exchange].as_ref(), instructions.as_ref()].concat();
             }
         }
-        (in_node_index, out_node_index) = (routes.predecessors[in_node_index_value.index()], in_node_index_value);
+        (in_node_index, out_node_index) = (
+            routes.predecessors[in_node_index_value.index()],
+            in_node_index_value,
+        );
     }
     instructions
 }

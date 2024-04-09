@@ -120,7 +120,6 @@ pub fn find_cows(all_orders: &[OrderItem]) -> Vec<PairSolution> {
         use crate::solver::cows::*;
         use crate::solver::types::*;
         let orders = orders.iter().map(|x| {
-            
             crate::solver::types::Order::new_integer(
                 x.given.amount.u128(),
                 x.msg.wants.amount.u128(),

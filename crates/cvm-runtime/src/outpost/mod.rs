@@ -1,7 +1,6 @@
 pub mod config;
 mod query;
 
-
 pub use config::*;
 use cosmwasm_std::{ensure, StdError};
 use cvm_route::{
@@ -113,7 +112,6 @@ impl ExecutePacketICS20Msg {
 
 #[cfg(test)]
 pub mod test {
-    
 
     use super::ExecutePacketICS20Msg;
 

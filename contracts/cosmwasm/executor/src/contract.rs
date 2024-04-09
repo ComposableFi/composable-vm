@@ -11,15 +11,15 @@ use alloc::borrow::Cow;
 #[cfg(not(feature = "library"))]
 use cosmwasm_std::entry_point;
 use cosmwasm_std::{
-    ensure, to_json_binary, wasm_execute, Addr, BankMsg, Binary, Coin, CosmosMsg, Deps,
-    DepsMut, Env, MessageInfo, QueryRequest, Reply, Response, StdError, StdResult, SubMsg,
-    SubMsgResult, WasmQuery,
+    ensure, to_json_binary, wasm_execute, Addr, BankMsg, Binary, Coin, CosmosMsg, Deps, DepsMut,
+    Env, MessageInfo, QueryRequest, Reply, Response, StdError, StdResult, SubMsg, SubMsgResult,
+    WasmQuery,
 };
 use cvm_route::{asset::AssetReference, exchange::ExchangeItem};
 use cvm_runtime::{
     apply_bindings,
     exchange::*,
-    executor::{CvmExecutorInstantiated},
+    executor::CvmExecutorInstantiated,
     outpost::{BridgeExecuteProgramMsg, BridgeForwardMsg},
     shared, Amount, BindingValue, Destination, Funds, Instruction, NetworkId, Register,
 };

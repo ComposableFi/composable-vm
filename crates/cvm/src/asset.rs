@@ -102,12 +102,10 @@ pub struct Amount {
     pub slope: Displayed<u64>,
 }
 
-
 pub trait AmountBuilder {
     fn everything() -> Self;
     fn one() -> Self;
 }
-
 
 impl TryFrom<i64> for Amount {
     type Error = ArithmeticError;
@@ -172,7 +170,7 @@ impl AmountBuilder for Amount {
     }
     fn one() -> Self {
         Self::absolute(1)
-    }    
+    }
 }
 
 impl Amount {
@@ -181,7 +179,7 @@ impl Amount {
     //  with rounding to reduce or reduce down part up to some seven bit parts
     pub const MAX_PARTS: u64 = 1_000_000_000_000_000_000;
 
-    #[cfg(not(feature="cosmwasm"))]
+    #[cfg(not(feature = "cosmwasm"))]
     pub fn try_floor_f64(value: f64) -> Result<Self, ArithmeticError> {
         if value < 0.0 || value.is_nan() {
             Err(ArithmeticError::Underflow)
@@ -350,7 +348,6 @@ impl<T: AmountBuilder> Funds<T> {
         Self(vec![(asset_id, T::one())])
     }
 }
-
 
 impl<T> Default for Funds<T> {
     fn default() -> Self {

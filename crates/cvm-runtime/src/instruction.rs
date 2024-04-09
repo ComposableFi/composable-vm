@@ -114,7 +114,7 @@ impl<Payload, Account, Assets> Instruction<Payload, Account, Assets> {
     pub fn is_async_with_sub(&self) -> bool {
         matches!(&self, Instruction::Spawn { .. })
     }
-} 
+}
 
 /// Error types for late binding operation
 #[derive(Clone, Debug, PartialEq)]

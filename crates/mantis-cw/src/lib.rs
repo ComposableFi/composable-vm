@@ -23,7 +23,6 @@ pub enum OrderSide {
     B = 1,
 }
 
-
 impl OrderSide {
     // ddo not use decimal, decimal is bad
     pub fn is_acceptable_price(&self, price: Decimal, limit_price: Decimal) -> bool {

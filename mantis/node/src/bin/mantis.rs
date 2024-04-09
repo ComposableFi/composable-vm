@@ -1,12 +1,6 @@
 use std::panic;
 
-
-
-use cosmrs::{
-    tx::{Msg},
-    Gas,
-};
-
+use cosmrs::{tx::Msg, Gas};
 
 use cvm_runtime::shared::CvmProgram;
 use cw_mantis_order::{CrossChainPart, OrderItem, OrderSolution, Ratio, SolutionSubMsg};
@@ -14,11 +8,7 @@ use mantis_node::{
     mantis::{
         args::*,
         autopilot, blackbox,
-        cosmos::{
-            client::*,
-            cosmwasm::to_exec_signed,
-            *,
-        },
+        cosmos::{client::*, cosmwasm::to_exec_signed, *},
         indexer::{get_all_orders, get_cvm_glt},
         simulate,
     },
@@ -192,9 +182,8 @@ async fn solve(
             pair_solution.ab.clone(),
         );
 
-        
-        let a_cvm_route =  blackbox::get_route(router_api, a, &cvm_glt, salt.as_ref()).await;
-        let b_cvm_route =  blackbox::get_route(router_api, b, &cvm_glt, salt.as_ref()).await;
+        let a_cvm_route = blackbox::get_route(router_api, a, &cvm_glt, salt.as_ref()).await;
+        let b_cvm_route = blackbox::get_route(router_api, b, &cvm_glt, salt.as_ref()).await;
 
         let cvm_program = CvmProgram {
             tag: salt.to_vec(),
@@ -224,19 +213,19 @@ async fn send_solution(
     order_contract: &String,
     rpc: &CosmosChainInfo,
     gas: Gas,
-    salt : Vec<u8>,
+    salt: Vec<u8>,
 ) {
     println!("========================= settle =========================");
-    // would be reasonable to do do cross chain if it solves some % of whole trade        
+    // would be reasonable to do do cross chain if it solves some % of whole trade
     let route = if random::<bool>() {
         None
     } else {
         Some(CrossChainPart {
-            msg: cvm_runtime::outpost::ExecuteProgramMsg { 
-                salt, 
-                program, 
-                assets: None, 
-                tip: None 
+            msg: cvm_runtime::outpost::ExecuteProgramMsg {
+                salt,
+                program,
+                assets: None,
+                tip: None,
             },
             optimal_price,
         })
@@ -266,6 +255,6 @@ async fn send_solution(
         }
         cosmrs::tendermint::abci::Code::Ok => {
             log::info!("ok: {:?}", result);
-        },
+        }
     }
 }

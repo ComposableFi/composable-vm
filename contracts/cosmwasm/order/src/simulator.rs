@@ -2,7 +2,6 @@ use cosmwasm_std::Storage;
 use cvm_route::asset::AssetItem;
 use cvm_runtime::shared::CvmProgram;
 
-
 use crate::prelude::*;
 
 use crate::CowSolutionCalculation;

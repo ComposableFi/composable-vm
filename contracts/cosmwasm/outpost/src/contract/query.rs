@@ -1,6 +1,6 @@
+use super::ibc::ics20::get_this_route;
 use crate::{assets, error::Result, msg};
 use cosmwasm_std::{to_json_binary, Binary, Deps, Env};
-use super::ibc::ics20::get_this_route;
 
 #[cfg_attr(not(feature = "library"), cosmwasm_std::entry_point)]
 pub fn query(deps: Deps, _env: Env, msg: msg::QueryMsg) -> Result<Binary> {

@@ -3,7 +3,6 @@ use cosmwasm_std::{entry_point, wasm_execute, Coin, DepsMut, Env, Event, Respons
 
 use ibc_apps_more::types::hook::{IBCLifecycleComplete, SudoMsg};
 
-
 #[cfg_attr(not(feature = "library"), entry_point)]
 pub fn sudo(deps: DepsMut, env: Env, msg: SudoMsg) -> crate::error::Result {
     deps.api.debug(&format!(

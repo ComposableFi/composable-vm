@@ -37,7 +37,6 @@ pub struct OrderItem {
 }
 
 impl OrderItem {
-    
     pub fn side(&self) -> OrderSide {
         if self.msg.wants.denom == self.given.denom {
             OrderSide::A
@@ -96,7 +95,7 @@ pub struct Filling {
 mod test {
     use cosmwasm_std::Coin;
     use num_rational::Ratio;
-    
+
     use crate::prelude::*;
     use crate::types::*;
 
