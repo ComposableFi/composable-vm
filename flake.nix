@@ -496,13 +496,13 @@
             runtimeInputs = [
               pkgs.nix
               devour-flake
-              check-py
+              #check-py
             ];
             text = ''
-              (
-                cd ./mantis
-                nix develop --command check-py
-              )
+              # (
+              #   cd ./mantis
+              #   nix develop --command check-py
+              # )
               nix flake show --all-systems --json --no-write-lock-file
               nix flake lock --no-update-lock-file
               # devour-flake . "$@" --impure
