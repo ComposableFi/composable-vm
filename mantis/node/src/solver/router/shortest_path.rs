@@ -5,9 +5,7 @@ use cvm_route::venue::VenueId;
 use cvm_runtime::shared::{CvmFundsFilter, CvmInstruction, CvmProgram};
 use cvm_runtime::{exchange, AssetId, ExchangeId};
 use petgraph::algo::bellman_ford;
-use petgraph::data::FromElements;
 use petgraph::dot::{Config, Dot};
-use petgraph::graph::{NodeIndex, UnGraph};
 use std::collections::BTreeMap;
 use std::ops::Deref;
 
@@ -55,7 +53,7 @@ pub fn route(
                 let local_venue = graph.add_edge(*from_node, *to_node, 1.0);
                 venue_local_to_global.insert(local_venue, venue.clone());
             }
-            Venue::Exchange(exchange_id, from, to) => {
+            Venue::Exchange(_exchange_id, from, to) => {
                 let from_node = assets_global_to_local.get(&from).unwrap();
                 let to_node = assets_global_to_local.get(&to).unwrap();
                 let local_venue = graph.add_edge(*from_node, *to_node, 1.0);
@@ -71,9 +69,8 @@ pub fn route(
     let routes = bellman_ford::bellman_ford(&graph, start_node_index).expect("bf");
 
     let mut out_node_index = *assets_global_to_local
-                .get(&input.out_asset_id)
-                .expect("node")
-        ;
+        .get(&input.out_asset_id)
+        .expect("node");
     let mut in_node_index = routes.predecessors[out_node_index.index()];
     let mut instructions = input.order_accounts.clone();
     while let Some(in_node_index_value) = in_node_index {
@@ -85,7 +82,7 @@ pub fn route(
             .expect("venue")
             .clone();
         match venue {
-            Venue::Transfer(from_asset_id, to_asset_id) => {
+            Venue::Transfer(from_asset_id, _to_asset_id) => {
                 let spawn = CvmInstruction::Spawn {
                     network_id: cvm_glt.get_network_for_asset(from_asset_id),
                     salt: salt.to_vec(),

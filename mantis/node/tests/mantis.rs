@@ -2,7 +2,10 @@
 use cosmrs::tendermint::block::Height;
 use cosmwasm_std::{testing::*, Addr, Binary, Coin, MessageInfo};
 use cw_mantis_order::{sv::*, OrderItem, OrderSubMsg, SolutionSubMsg};
-use mantis_node::{mantis::{simulate::randomize_order, solve::PairSolution}, prelude::*};
+use mantis_node::{
+    mantis::{simulate::randomize_order, solve::PairSolution},
+    prelude::*,
+};
 
 #[test]
 fn cows_scenarios() {
@@ -228,7 +231,12 @@ fn do_solve(
     info: MessageInfo,
 ) -> Vec<cosmwasm_std::Response> {
     let mut responses = vec![];
-    for PairSolution {cows, optimal_price, ..} in cows_per_pair {
+    for PairSolution {
+        cows,
+        optimal_price,
+        ..
+    } in cows_per_pair
+    {
         let msg = ExecMsg::Solve {
             msg: SolutionSubMsg {
                 cows,

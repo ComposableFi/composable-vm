@@ -3,7 +3,7 @@ use blackbox_rs::{types::*, Client};
 use cvm_runtime::{
     outpost::GetConfigResponse,
     shared::{CvmAddress, CvmFundsFilter, CvmInstruction, CvmProgram, Displayed},
-    Amount, 
+    Amount,
 };
 
 use crate::solver::router::shortest_path;
@@ -51,7 +51,9 @@ fn new_spawn(
     let in_amount: Amount = match spawn.in_asset_amount.as_ref().expect("in_asset_amount") {
         InAssetAmount::Variant0(x) => (*x).try_into().expect("in_asset_amount"),
         InAssetAmount::Variant1(x) => x.parse().expect("in_asset_amount"),
-        InAssetAmount::Variant2(x) => panic!("fix python not to have float or use to fixed point/fraction first"), // Amount::try_floor_f64(*x).expect("in_asset_amount"),
+        InAssetAmount::Variant2(x) => {
+            panic!("fix python not to have float or use to fixed point/fraction first")
+        } // Amount::try_floor_f64(*x).expect("in_asset_amount"),
     };
 
     let out_asset_id = match &spawn.out_asset_id {

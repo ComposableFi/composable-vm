@@ -1,6 +1,4 @@
 use core::num;
-
-use cosmrs::tendermint::block::Height;
 use cvm_runtime::{
     outpost::GetConfigResponse,
     shared::{CvmAddress, CvmBalanceFilter, CvmFunds, CvmFundsFilter, CvmInstruction, Displayed},
@@ -8,14 +6,12 @@ use cvm_runtime::{
 };
 use cw_mantis_order::{CrossChainPart, OrderAmount, OrderItem, OrderSolution, OrderSubMsg};
 use mantis_cw::{DenomPair, OrderCoinPair, OrderSide, OrderedTuple2};
-use num_rational::{Ratio, Rational64};
+use num_rational::Ratio;
 
 use crate::{
     prelude::*,
     solver::{orderbook::OrderList, solution::Solution},
 };
-
-use super::cosmos::client::timeout;
 
 /// input batched summarized from users for routing
 pub struct IntentBankInput {
@@ -117,8 +113,6 @@ pub fn find_cows(all_orders: &[OrderItem]) -> Vec<PairSolution> {
     let mut cows_per_pair = vec![];
     for (ab, orders) in all_orders.into_iter() {
         let orders = orders.collect::<Vec<_>>();
-        use crate::solver::cows::*;
-        use crate::solver::types::*;
         let orders = orders.iter().map(|x| {
             crate::solver::types::Order::new_integer(
                 x.given.amount.u128(),
