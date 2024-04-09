@@ -1,5 +1,5 @@
 use cosmrs::{tendermint::block::Height, tx::Msg, Gas};
-use cw_mantis_order::{OrderItem, OrderSolution, OrderSubMsg};
+use cw_mantis_order::OrderSubMsg;
 
 use crate::{
     mantis::cosmos::{
@@ -7,7 +7,6 @@ use crate::{
         cosmwasm::to_exec_signed_with_fund,
     },
     prelude::*,
-    solver::{orderbook::OrderList, solution::Solution},
 };
 
 use super::cosmos::{

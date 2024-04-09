@@ -381,7 +381,7 @@ impl OrderContract<'_> {
             transfers,
             ctx.info.sender.to_string(),
             solution_item.block_added,
-            solution_item.msg.cow_optional_price,
+            solution_item.msg.optimal_price,
             &mut all_orders,
         )?;
 

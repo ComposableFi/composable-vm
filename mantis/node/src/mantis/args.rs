@@ -110,8 +110,6 @@ pub struct SolverArgs {
 
 impl MantisArgs {
     pub fn parsed() -> Self {
-        use clap::Parser;
-
         Self::parse()
     }
 }

@@ -10,7 +10,7 @@ use crate::SolvedOrder;
 
 /// given expected output amount and list of orders and CVM program, produce fill in of orders
 /// return filling amounts for all orders from program, which may or may not lead to full fill
-pub fn verify(
+pub fn _verify(
     _route: CvmProgram,
     _in_asset: &AssetItem,
     _out_asset: &AssetItem,
@@ -78,7 +78,7 @@ pub fn simulate_cows_via_bank(
 /// And checks that amounts out (a or b) is more than remaining.
 /// Solve only larger CVM for in volume, assuming other solution will be for other side sent.
 /// Produces remaining each order will receive proportional to what is given.
-pub fn simulate_route(
+pub fn _simulate_route(
     _storage: &mut dyn Storage,
     _route: CvmProgram,
     _token_a_remaining: Coin,

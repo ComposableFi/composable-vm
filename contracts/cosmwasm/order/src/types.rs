@@ -224,7 +224,7 @@ pub struct SolutionSubMsg {
     #[serde(skip_serializing_if = "Vec::is_empty", default)]
     pub cows: Vec<OrderSolution>,
     /// all CoWs ensured to be solved against one optimal price
-    pub cow_optional_price: Ratio,
+    pub optimal_price: Ratio,
     #[serde(skip_serializing_if = "Option::is_none", default)]
     pub route: Option<CrossChainPart>,
 

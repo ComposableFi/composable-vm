@@ -234,7 +234,7 @@ async fn send_solution(
         cows,
         route,
         timeout: tip.timeout(12),
-        cow_optional_price: optimal_price,
+        optimal_price,
     };
 
     let auth_info = simulate_and_set_fee(signing_key, &tip.account, gas).await;

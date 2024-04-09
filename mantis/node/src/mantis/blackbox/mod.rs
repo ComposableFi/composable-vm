@@ -1,11 +1,9 @@
-use blackbox_rs::{prelude::*, types::*, Client};
+use blackbox_rs::{types::*, Client};
 /// Given total amount it, order owners and desired out, produce CVM program from and by requesting route
 use cvm_runtime::{
-    network,
     outpost::GetConfigResponse,
-    proto::cvm,
     shared::{CvmAddress, CvmFundsFilter, CvmInstruction, CvmProgram, Displayed},
-    Amount, AssetId, ExchangeId,
+    Amount, 
 };
 
 use crate::solver::router::shortest_path;
@@ -53,7 +51,7 @@ fn new_spawn(
     let in_amount: Amount = match spawn.in_asset_amount.as_ref().expect("in_asset_amount") {
         InAssetAmount::Variant0(x) => (*x).try_into().expect("in_asset_amount"),
         InAssetAmount::Variant1(x) => x.parse().expect("in_asset_amount"),
-        InAssetAmount::Variant2(x) => Amount::try_floor_f64(*x).expect("in_asset_amount"),
+        InAssetAmount::Variant2(x) => panic!("fix python not to have float or use to fixed point/fraction first"), // Amount::try_floor_f64(*x).expect("in_asset_amount"),
     };
 
     let out_asset_id = match &spawn.out_asset_id {

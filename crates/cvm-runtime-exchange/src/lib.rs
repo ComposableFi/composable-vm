@@ -76,6 +76,7 @@ pub fn exchange(
 
             deps.api
                 .debug(&format!("cvm::executor::execute::exchange {:?}", &msg));
+            use prost::Message;
             let msg = CosmosMsg::Stargate {
                 type_url: MsgSwapExactAmountIn::TYPE_URL.to_string(),
                 value: Binary::from(msg.encode_to_vec()),

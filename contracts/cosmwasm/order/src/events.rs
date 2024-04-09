@@ -24,18 +24,18 @@ pub mod order {
         Event::new("mantis-order-filled-parts")
             .add_attribute("order_id", order.order_id.to_string())
             .add_attribute("amount", transfer.amount.to_string())
-            .add_attribute("solver_address", solver_address.clone())
+            .add_attribute("solver_address", solver_address.to_owned())
             .add_attribute("solution_block_added", solution_block_added.to_string())
     }
 
     pub fn mantis_order_filled_full(
         order: &OrderItem,
-        solver_address: &String,
+        solver_address: &str,
         solution_block_added: u64,
     ) -> Event {
         Event::new("mantis-order-filled-full")
             .add_attribute("order_id", order.order_id.to_string())
-            .add_attribute("solver_address", solver_address.clone())
+            .add_attribute("solver_address", solver_address)
             .add_attribute("solution_block_added", solution_block_added.to_string())
     }
 

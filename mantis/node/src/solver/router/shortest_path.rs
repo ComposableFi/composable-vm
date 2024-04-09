@@ -9,6 +9,7 @@ use petgraph::data::FromElements;
 use petgraph::dot::{Config, Dot};
 use petgraph::graph::{NodeIndex, UnGraph};
 use std::collections::BTreeMap;
+use std::ops::Deref;
 
 // need some how unify with python
 #[derive(Debug, Clone)]
@@ -69,10 +70,10 @@ pub fn route(
         .clone();
     let routes = bellman_ford::bellman_ford(&graph, start_node_index).expect("bf");
 
-    let mut out_node_index = assets_global_to_local
-        .get(&input.out_asset_id)
-        .expect("node")
-        .clone();
+    let mut out_node_index = *assets_global_to_local
+                .get(&input.out_asset_id)
+                .expect("node")
+        ;
     let mut in_node_index = routes.predecessors[out_node_index.index()];
     let mut instructions = input.order_accounts.clone();
     while let Some(in_node_index_value) = in_node_index {

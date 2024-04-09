@@ -1,8 +1,7 @@
 use crate::prelude::*;
 
 use cosmos_sdk_proto::cosmos::{
-    auth::v1beta1::{BaseAccount, QueryAccountRequest},
-    base::tendermint,
+    auth::v1beta1::BaseAccount,
 };
 use cosmrs::{
     rpc::Client,
