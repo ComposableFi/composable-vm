@@ -771,7 +771,7 @@ dependencies = [
  "ibc-primitives",
  "ibc-proto 0.42.2",
  "num",
- "num-rational 0.4.1 (git+https://github.com/dzmitry-lahoda-forks/num-rational.git?branch=dz/1)",
+ "num-rational 0.4.1 (git+https://github.com/dzmitry-lahoda-forks/num-rational.git?rev=719b4dbe0afd69b98f5875e3bdf936b9df822522)",
  "parity-scale-codec",
  "prost",
  "prost-build",
@@ -880,7 +880,7 @@ dependencies = [
  "mantis-cw",
  "no-panic",
  "num-integer",
- "num-rational 0.4.1 (git+https://github.com/dzmitry-lahoda-forks/num-rational.git?branch=dz/1)",
+ "num-rational 0.4.1 (git+https://github.com/dzmitry-lahoda-forks/num-rational.git?rev=719b4dbe0afd69b98f5875e3bdf936b9df822522)",
  "schemars",
  "serde",
  "sha2 0.10.8",
@@ -2308,7 +2308,7 @@ dependencies = [
  "log",
  "mantis-cw",
  "ndarray",
- "num-rational 0.4.1 (git+https://github.com/dzmitry-lahoda-forks/num-rational.git?branch=dz/1)",
+ "num-rational 0.4.1 (git+https://github.com/dzmitry-lahoda-forks/num-rational.git?rev=719b4dbe0afd69b98f5875e3bdf936b9df822522)",
  "num-traits",
  "petgraph",
  "prost-types",
@@ -2496,7 +2496,7 @@ dependencies = [
 [[package]]
 name = "num-rational"
 version = "0.4.1"
-source = "git+https://github.com/dzmitry-lahoda-forks/num-rational.git?branch=dz/1#53416ae7af27b7b51740701d6a9e5c54325bf994"
+source = "git+https://github.com/dzmitry-lahoda-forks/num-rational.git?rev=719b4dbe0afd69b98f5875e3bdf936b9df822522#719b4dbe0afd69b98f5875e3bdf936b9df822522"
 dependencies = [
  "cosmwasm-std",
  "num-bigint",
@@ -2508,9 +2508,9 @@ dependencies = [
 
 [[package]]
 name = "num-traits"
-version = "0.2.17"
+version = "0.2.18"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "39e3200413f237f41ab11ad6d161bc7239c84dcb631773ccd7de3dfe4b5c267c"
+checksum = "da0df0e5185db44f69b44f26786fe401b6c293d1907744beaa7fa62b2e5a517a"
 dependencies = [
  "autocfg",
  "libm",

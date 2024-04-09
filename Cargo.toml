@@ -67,7 +67,6 @@ env_logger = { version = "0.11.3", default-features = false, features = [
     "unstable-kv",
 ] }
 hex = { version = "^0.4.3", default-features = false }
-num = { version = "^0.4.1", default-features = false }
 enumn = { version = "0.1.13" }
 prost-build = { version = "^0.12.2" }
 bech32 = { version = "^0.11.0", default-features = false }
@@ -86,9 +85,13 @@ cw-storage-plus = { version = "^1.2.0", features = [
     "iterator",
 ], default-features = false }
 itertools = { version = "^0.12.1", default-features = false }
-num-integer = { version = "^0.1.46", default-features = false }
 cw-multi-test  = {version = "^1.0.0", default-features = false}
-num-rational = {git = "https://github.com/dzmitry-lahoda-forks/num-rational.git", branch = "dz/1", default-features = false}
+
+num-integer = { version = "^0.1.46", default-features = false }
+num-rational = {git = "https://github.com/dzmitry-lahoda-forks/num-rational.git", rev = "719b4dbe0afd69b98f5875e3bdf936b9df822522", default-features = false}
+num-traits = { version = "^0.2.18", default-features = false }
+num = { version = "^0.4.1", default-features = false }
+
 
 ibc-proto = { version = "^0.42.2", default-features = false }
 serde-json-wasm = { version = "^1.0.1", default-features = false }
@@ -126,7 +129,7 @@ bip32 = { version = "^0.5.1", default-features = false, features = [
 ] }
 prost-types = { version = "^0.12.3", default-features = false }
 sha2 = { version = "^0.10.8", default-features = false }
-num-traits = { version = "^0.2.17", default-features = false }
+
 thiserror = { version = "^1.0.50", default-features = false, package = "thiserror-core" }
 # no XCM until it has decent support for cosmwasm and wasm32 std https://github.com/paritytech/polkadot-sdk/pull/1454
 # xcm = { version = "^5.0.0", default-features = false, package = "staging-xcm" }

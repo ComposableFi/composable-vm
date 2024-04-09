@@ -179,17 +179,6 @@ impl Amount {
     //  with rounding to reduce or reduce down part up to some seven bit parts
     pub const MAX_PARTS: u64 = 1_000_000_000_000_000_000;
 
-    #[cfg(feature = "native")]
-    pub fn try_floor_ratio(value: Ratio<u128>) -> Result<Self, ArithmeticError> {
-        if value < 0.0 || value.is_nan() {
-            Err(ArithmeticError::Underflow)
-        } else if value > u128::MAX {
-            Err(ArithmeticError::Underflow)
-        } else {
-            Ok((value as u128).into())
-        }
-    }
-
     pub const fn new(intercept: u128, slope: u64) -> Self {
         Self {
             intercept: Displayed(intercept),
