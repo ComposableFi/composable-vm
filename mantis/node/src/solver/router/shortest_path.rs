@@ -5,9 +5,7 @@ use cvm_route::venue::VenueId;
 use cvm_runtime::shared::{CvmFundsFilter, CvmInstruction, CvmProgram};
 use cvm_runtime::{exchange, AssetId, ExchangeId};
 use petgraph::algo::bellman_ford;
-use petgraph::dot::{Config, Dot};
 use std::collections::BTreeMap;
-use std::ops::Deref;
 
 // need some how unify with python
 #[derive(Debug, Clone)]

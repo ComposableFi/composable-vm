@@ -1,11 +1,10 @@
-use core::num;
 use cvm_runtime::{
     outpost::GetConfigResponse,
-    shared::{CvmAddress, CvmBalanceFilter, CvmFunds, CvmFundsFilter, CvmInstruction, Displayed},
-    Amount, AssetId, Destination,
+    shared::{CvmAddress, CvmBalanceFilter, CvmFundsFilter, CvmInstruction, Displayed},
+    AssetId, Destination,
 };
-use cw_mantis_order::{CrossChainPart, OrderAmount, OrderItem, OrderSolution, OrderSubMsg};
-use mantis_cw::{DenomPair, OrderCoinPair, OrderSide, OrderedTuple2};
+use cw_mantis_order::{OrderAmount, OrderItem, OrderSolution,};
+use mantis_cw::{DenomPair, OrderCoinPair,};
 use num_rational::Ratio;
 
 use crate::{

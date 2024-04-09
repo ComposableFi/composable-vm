@@ -10,16 +10,15 @@ cosmwasm-schema = { workspace = true, optional = true }
 cosmwasm-std = { workspace = true, no-default-features = true, optional = true}
 cw-storage-plus = { workspace = true, optional = true}
 
-# num = { workspace = true, optional = false}
 parity-scale-codec = { workspace = true, optional = true }
 prost = { workspace = true, features = ["prost-derive"] }
 scale-info = { workspace = true, features = ["derive"], optional = true }
 schemars = { workspace = true, optional = true }
 serde = { workspace = true, features = ["alloc", "derive"] }
-num = { workspace = true, default-features = false}
 hex ={ workspace = true, default-features = false, features = ["serde"]}
 bech32 = { workspace = true, default-features = false}
 derive_more = { workspace = true, default-features = false}
+num-traits  = { workspace = true, default-features = false}
 
 [dev-dependencies]
 serde-json-wasm = { workspace = true, default-features = false }
@@ -42,5 +41,4 @@ json-schema = [
 ]
 
 std = [
-  "num/std",
 ]

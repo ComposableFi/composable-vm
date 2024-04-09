@@ -26,7 +26,7 @@ use cvm_runtime::{
 use cvm_runtime::{executor::*, shared::CvmAddress};
 use cw2::{ensure_from_older_version, set_contract_version};
 use cw20::{BalanceResponse, Cw20Contract, Cw20ExecuteMsg, Cw20QueryMsg};
-use num::Zero;
+use num_traits::Zero;
 
 const CONTRACT_NAME: &str = include_str!("contract_name.txt");
 const CONTRACT_VERSION: &str = env!("CARGO_PKG_VERSION");

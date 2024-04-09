@@ -43,7 +43,6 @@ sha2 = {workspace = true, default-features = false, features = ["std"] }
 no-panic = { workspace = true }
 tuples = { workspace = true }
 num-rational = { workspace = true, default-features = false, features = [
-  "num-bigint-std",
   "serde",
 ] }
 

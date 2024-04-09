@@ -11,7 +11,7 @@ use crate::{
 use super::cosmos::client::{CosmWasmWriteClient, CosmosChainInfo, CosmosQueryClient, Tip};
 
 pub async fn cleanup(
-    write_client: &mut CosmWasmWriteClient,
+    _write_client: &mut CosmWasmWriteClient,
     _cosmos_query_client: &mut CosmosQueryClient,
     order_contract: String,
     signing_key: &cosmrs::crypto::secp256k1::SigningKey,

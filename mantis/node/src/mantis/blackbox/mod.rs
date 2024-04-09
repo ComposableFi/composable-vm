@@ -2,7 +2,7 @@ use blackbox_rs::{types::*, Client};
 /// Given total amount it, order owners and desired out, produce CVM program from and by requesting route
 use cvm_runtime::{
     outpost::GetConfigResponse,
-    shared::{CvmAddress, CvmFundsFilter, CvmInstruction, CvmProgram, Displayed},
+    shared::{CvmFundsFilter, CvmInstruction, CvmProgram,},
     Amount,
 };
 
@@ -22,7 +22,7 @@ fn build_next(
             NextItem::Exchange(exchange) => {
                 let exchange = new_exchange(exchange);
                 current.instructions.push(exchange);
-                build_next(current, rest, &glt, salt);
+                build_next(current, rest, glt, salt);
             }
             NextItem::Spawn(spawn) => {
                 let mut program = CvmProgram::default();

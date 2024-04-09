@@ -47,7 +47,7 @@ ndarray ={ workspace = true, features = ["std", "serde"]}
 env_logger = {workspace = true}
 cw-multi-test = { workspace = true }
 petgraph = {workspace = true}
-num-rational = {workspace = true, features = ["cosmwasm", "serde", "json-schema"]}
+num-rational = {workspace = true, features = ["cosmwasm", "serde", "json-schema"], default-features = false}
 
 
 [dev-dependencies]

@@ -19,8 +19,7 @@ ibc-app-transfer-types = { workspace = true, features = [
   "parity-scale-codec",
 ] }
 ibc-core-host-types = { workspace = true, features = ["serde"] }
-num = { workspace = true }
-num-rational = { workspace = true }
+num-rational = { workspace = true, default-features = false}
 parity-scale-codec = { workspace = true, optional = true }
 prost = { workspace = true, features = ["prost-derive"] }
 scale-info = { workspace = true, features = ["derive"], optional = true }
@@ -86,6 +85,5 @@ std = [
   "ibc-app-transfer-types/schema",
   "ibc-core-host-types/schema",
   "ibc-primitives/schema",
-  "num/std",
   "thiserror/std",
 ]

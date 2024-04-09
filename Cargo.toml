@@ -90,7 +90,6 @@ cw-multi-test  = {version = "^1.0.0", default-features = false}
 num-integer = { version = "^0.1.46", default-features = false }
 num-rational = {git = "https://github.com/dzmitry-lahoda-forks/num-rational.git", rev = "719b4dbe0afd69b98f5875e3bdf936b9df822522", default-features = false}
 num-traits = { version = "^0.2.18", default-features = false }
-num = { version = "^0.4.1", default-features = false }
 
 
 ibc-proto = { version = "^0.42.2", default-features = false }

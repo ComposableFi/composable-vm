@@ -6,7 +6,7 @@ use cw_storage_plus::{Key, Prefixer};
 use crate::shared::Displayed;
 use core::ops::Add;
 use cosmwasm_std::{Uint128, Uint256};
-use num::Zero;
+use num_traits::Zero;
 use serde::{Deserialize, Serialize};
 
 /// Newtype for CVM assets ID. Must be unique for each asset and must never change.

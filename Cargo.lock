@@ -724,7 +724,7 @@ dependencies = [
  "cw-storage-plus 1.2.0",
  "derive_more",
  "hex",
- "num",
+ "num-traits",
  "parity-scale-codec",
  "prost",
  "prost-build",
@@ -770,8 +770,7 @@ dependencies = [
  "ibc-core-host-types",
  "ibc-primitives",
  "ibc-proto 0.42.2",
- "num",
- "num-rational 0.4.1 (git+https://github.com/dzmitry-lahoda-forks/num-rational.git?rev=719b4dbe0afd69b98f5875e3bdf936b9df822522)",
+ "num-rational",
  "parity-scale-codec",
  "prost",
  "prost-build",
@@ -832,7 +831,7 @@ dependencies = [
  "cw20 1.1.2",
  "hex",
  "ibc-apps-more",
- "num",
+ "num-traits",
  "prost",
  "schemars",
  "serde",
@@ -880,7 +879,7 @@ dependencies = [
  "mantis-cw",
  "no-panic",
  "num-integer",
- "num-rational 0.4.1 (git+https://github.com/dzmitry-lahoda-forks/num-rational.git?rev=719b4dbe0afd69b98f5875e3bdf936b9df822522)",
+ "num-rational",
  "schemars",
  "serde",
  "sha2 0.10.8",
@@ -2308,7 +2307,7 @@ dependencies = [
  "log",
  "mantis-cw",
  "ndarray",
- "num-rational 0.4.1 (git+https://github.com/dzmitry-lahoda-forks/num-rational.git?rev=719b4dbe0afd69b98f5875e3bdf936b9df822522)",
+ "num-rational",
  "num-traits",
  "petgraph",
  "prost-types",
@@ -2406,20 +2405,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "num"
-version = "0.4.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b05180d69e3da0e530ba2a1dae5110317e49e3b7f3d41be227dc5f92e49ee7af"
-dependencies = [
- "num-bigint",
- "num-complex",
- "num-integer",
- "num-iter",
- "num-rational 0.4.1 (registry+https://github.com/rust-lang/crates.io-index)",
- "num-traits",
-]
-
-[[package]]
 name = "num-bigint"
 version = "0.4.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2467,29 +2452,6 @@ version = "0.1.46"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7969661fd2958a5cb096e56c8e1ad0444ac2bbcd0061bd28660485a44879858f"
 dependencies = [
- "num-traits",
-]
-
-[[package]]
-name = "num-iter"
-version = "0.1.43"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7d03e6c028c5dc5cac6e2dec0efda81fc887605bb3d884578bb6d6bf7514e252"
-dependencies = [
- "autocfg",
- "num-integer",
- "num-traits",
-]
-
-[[package]]
-name = "num-rational"
-version = "0.4.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0638a1c9d0a3c0914158145bc76cff373a75a627e6ecbfb71cbe6f453a5a19b0"
-dependencies = [
- "autocfg",
- "num-bigint",
- "num-integer",
  "num-traits",
 ]
 

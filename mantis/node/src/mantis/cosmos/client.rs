@@ -105,13 +105,12 @@ pub async fn get_latest_block_and_account_by_key(
 /// latest chain state
 pub async fn get_latest_block(rpc: &str) -> cosmrs::tendermint::block::Height {
     let rpc_client: cosmrs::rpc::HttpClient = cosmrs::rpc::HttpClient::new(rpc).unwrap();
-    let status = rpc_client
+    rpc_client
         .status()
         .await
         .expect("status")
         .sync_info
-        .latest_block_height;
-    status
+        .latest_block_height
 }
 
 pub async fn sign_and_tx_tendermint(
