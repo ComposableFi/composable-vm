@@ -38,11 +38,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # maturin-src = {
-    #   url = "github:PyO3/maturin";
-    #   flake = false;
-    # };
-
     pydantic-src = {
       url = "github:pydantic/pydantic/v2.5.3";
       flake = false;
