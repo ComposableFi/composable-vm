@@ -415,6 +415,8 @@
               pkgs.zlib.out
               rust.cargo
               rust.rustc
+              pkgs.cargo-expand # TODO: assert no f32/f64 in contracts cargo expand --target=wasm32-unknown-unknown --package=cw-cvm-outpost > expanded.rs
+              pkgs.wabt # TODO: val contract no f32/f64  wasm2wat  ../../target/wasm32-unknown-unknown/release/cw1_whitelist_ng.wasm > ./ng.wat
               # pkgs.vscode-extensions.yzhang.markdown-all-in-one
               # pkgs.vscode-extensions.ms-python.python
               # pkgs.vscode-extensions.ms-python.vscode-pylance
