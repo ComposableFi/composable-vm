@@ -1,3 +1,5 @@
+#![feature(let_chains)]
+
 use std::panic;
 
 use cosmrs::{tx::Msg, Gas};
@@ -103,7 +105,7 @@ async fn solve_orders(solver_args: &SolverArgs) {
                 &tip,
                 gas,
                 all_orders,
-                solver_args.router.as_ref(),
+                &solver_args.router,
             )
             .await;
         };
@@ -166,17 +168,15 @@ async fn solve(
     tip: &Tip,
     gas: Gas,
     all_orders: Vec<OrderItem>,
-    router_api: &Option<String>,
+    router_api: &String,
 ) {
     log::info!(target: "mantis::solver", "Solving orders");
-    
+
     let cows_per_pair = mantis_node::mantis::solve::find_cows(&all_orders);
     for pair_solution in cows_per_pair {
-        
-        
         let salt = crate::cvm::get_salt(signing_key, tip);
-        let program = if let Some(order_contract) = order_contract {
-            let cvm_glt = get_cvm_glt(order_contract, cosmos_query_client).await;
+        let cvm_program = if let Some(cvm_contact) = cvm_contact {
+            let cvm_glt = get_cvm_glt(cvm_contact, cosmos_query_client).await;
             let (a, b) = mantis_node::mantis::solve::IntentBankInput::find_intent_amount(
                 pair_solution.cows.as_ref(),
                 &all_orders,
@@ -184,19 +184,17 @@ async fn solve(
                 &cvm_glt,
                 pair_solution.ab.clone(),
             );
-    
-    
+
             let a_cvm_route = blackbox::get_route(router_api, a, &cvm_glt, salt.as_ref()).await;
             let b_cvm_route = blackbox::get_route(router_api, b, &cvm_glt, salt.as_ref()).await;
-    
-            let cvm_program = CvmProgram {
+
+            Some(CvmProgram {
                 tag: salt.to_vec(),
                 instructions: [a_cvm_route, b_cvm_route].concat().to_vec(),
-            };    
-        }
-         else {
+            })
+        } else {
             None
-         };
+        };
         send_solution(
             pair_solution.cows,
             cvm_program,
@@ -225,7 +223,9 @@ async fn send_solution(
 ) {
     log::info!("========================= settle =========================");
     // would be reasonable to do do cross chain if it solves some % of whole trade
-    let route = if let Some(program) = program && random::<bool>() {
+    let route = if let Some(program) = program
+        && random::<bool>()
+    {
         Some(CrossChainPart {
             msg: cvm_runtime::outpost::ExecuteProgramMsg {
                 salt,

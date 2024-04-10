@@ -3,8 +3,8 @@ use cvm_runtime::{
     shared::{CvmAddress, CvmBalanceFilter, CvmFundsFilter, CvmInstruction, Displayed},
     AssetId, Destination,
 };
-use cw_mantis_order::{OrderAmount, OrderItem, OrderSolution,};
-use mantis_cw::{DenomPair, OrderCoinPair,};
+use cw_mantis_order::{OrderAmount, OrderItem, OrderSolution};
+use mantis_cw::{DenomPair, OrderCoinPair};
 use num_rational::Ratio;
 
 use crate::{

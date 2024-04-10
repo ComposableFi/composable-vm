@@ -9,7 +9,6 @@ use cosmwasm_std::{Api, BlockInfo, CosmosMsg, Deps, StdResult};
 use cvm_route::transport::RelativeTimeout;
 use ibc_core_host_types::identifiers::{ChannelId, PortId};
 
-
 /// This message should be send as part of wasm termination memo.
 /// So that can match it to sender hash and know what channel and origin was used to send message.
 /// All information here is not secured until compared with existing secured data.

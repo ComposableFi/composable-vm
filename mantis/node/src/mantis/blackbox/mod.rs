@@ -2,7 +2,7 @@ use blackbox_rs::{types::*, Client};
 /// Given total amount it, order owners and desired out, produce CVM program from and by requesting route
 use cvm_runtime::{
     outpost::GetConfigResponse,
-    shared::{CvmFundsFilter, CvmInstruction, CvmProgram,},
+    shared::{CvmFundsFilter, CvmInstruction, CvmProgram},
     Amount,
 };
 
@@ -111,7 +111,7 @@ pub async fn get_route(
     cvm_glt: &GetConfigResponse,
     salt: &[u8],
 ) -> Vec<CvmInstruction> {
-    if route_provider == "priceless" {
+    if route_provider == "shortest_path" {
         return shortest_path::route(cvm_glt, input, salt);
     } else {
         let blackbox: Client = Client::new(route_provider);

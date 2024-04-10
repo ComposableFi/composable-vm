@@ -93,7 +93,7 @@ impl ExecutePacketICS20Msg {
         let ics20 = self.into_packet()?;
         // use ibc_apps_more::types::hook::{Callback, LazyHookMemo};
 
-        let memo: ibc_apps_more::memo::Memo  = serde_json_wasm::from_str(ics20.memo.as_ref())
+        let memo: ibc_apps_more::memo::Memo = serde_json_wasm::from_str(ics20.memo.as_ref())
             .map_err(|x| StdError::generic_err(format!("{:?}", x)))?;
         let wasm: ibc_apps_more::hook::Callback = memo
             .wasm

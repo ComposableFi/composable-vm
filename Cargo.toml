@@ -167,6 +167,8 @@ cw-mantis-order = { path = "./contracts/cosmwasm/order", features = [
 
 fraction = { version = "0.15.1", default-features = false }
 
+cw-orch = { version = "0.21.2", default-features = false}
+
 [profile.deployment]
 inherits = "release"
 codegen-units = 1

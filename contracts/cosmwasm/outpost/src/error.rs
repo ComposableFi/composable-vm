@@ -89,7 +89,7 @@ pub enum ContractError {
     #[error("Hook error: {0}")]
     HookError(String),
     #[error("bech32")]
-    Bech32
+    Bech32,
 }
 
 // impl From<ibc_apps_more::types::error::HookError> for ContractError {

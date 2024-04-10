@@ -3,7 +3,7 @@
 //! and/or need to fund some possible route (still needs simulation of this route possible)
 use cvm_route::venue::VenueId;
 use cvm_runtime::shared::{CvmFundsFilter, CvmInstruction, CvmProgram};
-use cvm_runtime::{exchange, AssetId, ExchangeId};
+use cvm_runtime::{AssetId, ExchangeId};
 use petgraph::algo::bellman_ford;
 use std::collections::BTreeMap;
 
