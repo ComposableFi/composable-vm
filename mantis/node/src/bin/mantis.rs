@@ -11,7 +11,7 @@ use mantis_node::{
         args::*,
         autopilot, blackbox,
         cosmos::{client::*, cosmwasm::to_exec_signed, *},
-        indexer::{get_all_orders, get_cvm_glt},
+        indexer::{get_active_orders, get_cvm_glt},
         simulate,
     },
     prelude::*,
@@ -68,13 +68,9 @@ async fn solve_orders(solver_args: &SolverArgs) {
         let tip =
             get_latest_block_and_account_by_key(&args.rpc_centauri, &args.grpc_centauri, &signer)
                 .await;
-        let all_orders = get_all_orders(&args.order_contract, &mut wasm_read_client, &tip).await;
-        if all_orders
-            .iter()
-            .filter(|x| x.msg.timeout < tip.block.value())
-            .count()
-            > 0
-        {
+        let stale_orders =
+            mantis_node::mantis::indexer::get_stale_orders(&args.order_contract, &mut wasm_read_client, &tip).await;
+        if stale_orders.len() > 0 {
             log::warn!(target: "mantis::autopilot", "timedouted orders");
             autopilot::cleanup(
                 &mut write_client,
@@ -91,7 +87,7 @@ async fn solve_orders(solver_args: &SolverArgs) {
         let tip =
             get_latest_block_and_account_by_key(&args.rpc_centauri, &args.grpc_centauri, &signer)
                 .await;
-        let all_orders = get_all_orders(&args.order_contract, &mut wasm_read_client, &tip).await;
+        let all_orders = get_active_orders(&args.order_contract, &mut wasm_read_client, &tip).await;
         if !all_orders.is_empty() {
             let main_chain = CosmosChainInfo {
                 rpc: args.rpc_centauri.clone(),

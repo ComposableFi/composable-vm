@@ -181,7 +181,7 @@ pub struct OrderSubMsg {
     /// ```
     /// This allow to to CoWs for assets not on this chain.
     pub transfer: Option<AssetId>,
-    /// how much blocks to wait for solution, if none, then cleaned up
+    /// until what block to wait for solution, if none, then cleaned up
     pub timeout: Block,
     /// if ok with partial fill, what is the minimum amount
     pub min_fill: Option<Ratio>,

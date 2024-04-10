@@ -5,7 +5,7 @@ use crate::mantis::cosmos::cosmwasm::smart_query;
 
 use super::cosmos::client::{CosmWasmReadClient, Tip};
 
-pub async fn get_all_orders(
+pub async fn get_active_orders(
     order_contract: &String,
     cosmos_query_client: &mut CosmWasmReadClient,
     tip: &Tip,
@@ -18,6 +18,19 @@ pub async fn get_all_orders(
         .collect::<Vec<OrderItem>>();
     println!("all_orders: {:?}", all_orders);
     all_orders
+}
+
+pub async fn get_stale_orders(
+    order_contract: &String,
+    cosmos_query_client: &mut CosmWasmReadClient,
+    tip: &Tip,
+) -> Vec<OrderItem> {
+    let query = cw_mantis_order::QueryMsg::GetAllOrders {};
+    smart_query::<_, Vec<OrderItem>>(order_contract, query, cosmos_query_client)
+        .await
+        .into_iter()
+        .filter(|x| x.msg.timeout < tip.block.value())
+        .collect::<Vec<OrderItem>>()
 }
 
 pub async fn get_cvm_glt(
