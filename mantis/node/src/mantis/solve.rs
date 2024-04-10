@@ -57,7 +57,7 @@ impl IntentBankInput {
                         .expect("order")
                         .clone();
                     order
-                        .fill(cow.cow_out_amount, optimal_ratio)
+                        .fill(cow.cow_out_amount, optimal_ratio.into())
                         .expect("off chain");
                     pair.add(&order.given);
 

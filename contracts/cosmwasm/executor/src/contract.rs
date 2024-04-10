@@ -43,10 +43,10 @@ pub fn instantiate(
     msg: cvm_runtime::executor::InstantiateMsg,
 ) -> Result {
     set_contract_version(deps.storage, CONTRACT_NAME, CONTRACT_VERSION)?;
-    let gateway_address =
+    let outpost_address =
         cvm_runtime::outpost::Outpost::addr_validate(deps.api, &msg.outpost_address)?;
     let config = Config {
-        outpost_address: gateway_address,
+        outpost_address,
         executor_origin: msg.executor_origin,
     };
     CONFIG.save(deps.storage, &config)?;

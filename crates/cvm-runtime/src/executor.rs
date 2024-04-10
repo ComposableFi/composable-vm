@@ -12,7 +12,7 @@ use crate::ExecutorOrigin;
 )]
 #[serde(rename_all = "snake_case")]
 pub struct InstantiateMsg {
-    /// Address of the gateway.
+    /// Address of the CVM outpost.
     pub outpost_address: String,
     /// The executor origin.
     pub executor_origin: ExecutorOrigin,

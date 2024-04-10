@@ -200,7 +200,7 @@ async fn solve(
             pair_solution.cows,
             cvm_program,
             tip,
-            pair_solution.optimal_price,
+            pair_solution.optimal_price.into(),
             signing_key,
             order_contract,
             rpc,

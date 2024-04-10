@@ -70,7 +70,7 @@ hex = { version = "^0.4.3", default-features = false }
 enumn = { version = "0.1.13", default-features = false }
 prost-build = { version = "^0.12.2" }
 bech32 = { version = "^0.9.0", default-features = false }
-cosmwasm-std = { version = "^1.5.0", features = [
+cosmwasm-std = { version = "1.5.0", features = [
     "iterator",
 ], default-features = false }
 
@@ -79,7 +79,7 @@ cw20 = { version = "^1.1.2", default-features = false }
 cw-controllers = { version = "^1.1.1", default-features = false }
 sylvia = { version = "^0.9.1", default-features = false }
 schemars = { version = "^0.8.16", default-features = false }
-cosmwasm-schema = { version = "^1.5.0", default-features = false }
+cosmwasm-schema = { version = "1.5.0", default-features = false }
 serde = { version = "1.0.192", default-features = false }
 cw-storage-plus = { version = "^1.2.0", features = [
     "iterator",
@@ -88,7 +88,7 @@ itertools = { version = "0.12.0", default-features = false }
 cw-multi-test  = {version = "^1.0.0", default-features = false}
 
 num-integer = { version = "0.1.45", default-features = false }
-num-rational = {git = "https://github.com/dzmitry-lahoda-forks/num-rational.git", rev = "719b4dbe0afd69b98f5875e3bdf936b9df822522", default-features = false}
+num-rational = {git = "https://github.com/dzmitry-lahoda-forks/num-rational.git", rev = "b7350e2f4c64f8f7a468d5321e95f8f523867c66", default-features = false}
 num-traits = { version = "^0.2.18", default-features = false }
 
 
@@ -111,7 +111,7 @@ rand = { version = "^0.8.5", default-features = false }
 rust_decimal = {version =  "1.33", default-features = false}
 rust_decimal_macros = {version = "1.33", default-features = false}
 rand_distr = "^0.4.3"
-strum = "^0.25"
+strum = {version =  "^0.25", default-features = false, features = ["derive"]}
 strum_macros = "^0.25"
 tuples = { version = "^1.14.0" }
 serde-cw-value = { git = "https://github.com/dzmitry-lahoda-forks/serde-cw-value.git", branch = "dz/3", default-features = false }

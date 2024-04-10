@@ -2,7 +2,7 @@ use cosmwasm_std::{ensure, BankMsg, Event, StdResult};
 use cvm_runtime::{outpost::ExecuteProgramMsg, AssetId};
 use mantis_cw::{DenomPair, OrderSide};
 
-pub type Ratio = num_rational::Ratio<u64>;
+pub type Ratio = (u64, u64); // num_rational::Ratio<u64>;
 
 use crate::prelude::*;
 

@@ -48,6 +48,12 @@ num-rational = { workspace = true, default-features = false, features = [
 
 
 [features]
-std = ["cvm-runtime/std", "num-rational/std",]
-json-schema = ["cvm-runtime/json-schema", "dep:schemars", "num-rational/json-schema"]
+std = [
+  "cvm-runtime/std",
+  "num-rational/std",
+   ]
+json-schema = [
+  "cvm-runtime/json-schema", "dep:schemars", 
+  "num-rational/json-schema"
+  ]
 

@@ -2385,7 +2385,7 @@ dependencies = [
 [[package]]
 name = "num-rational"
 version = "0.4.1"
-source = "git+https://github.com/dzmitry-lahoda-forks/num-rational.git?rev=719b4dbe0afd69b98f5875e3bdf936b9df822522#719b4dbe0afd69b98f5875e3bdf936b9df822522"
+source = "git+https://github.com/dzmitry-lahoda-forks/num-rational.git?rev=b7350e2f4c64f8f7a468d5321e95f8f523867c66#b7350e2f4c64f8f7a468d5321e95f8f523867c66"
 dependencies = [
  "cosmwasm-std",
  "num-bigint",
@@ -3412,6 +3412,9 @@ name = "strum"
 version = "0.25.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "290d54ea6f91c969195bdbcd7442c8c2a2ba87da8bf60a7ee86a235d4bc1e125"
+dependencies = [
+ "strum_macros",
+]
 
 [[package]]
 name = "strum_macros"
