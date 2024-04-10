@@ -21,7 +21,7 @@ use mantis_node::{
 async fn main() {
     let args = MantisArgs::parsed();
     env_logger::init();
-    
+
     match &args.command {
         MantisCommands::Solve(x) => solve_orders(x).await,
         MantisCommands::Simulate(x) => {
@@ -75,6 +75,7 @@ async fn solve_orders(solver_args: &SolverArgs) {
             .count()
             > 0
         {
+            log::warn!(target: "mantis::autopilot", "timedouted orders");
             autopilot::cleanup(
                 &mut write_client,
                 &mut cosmos_query_client,

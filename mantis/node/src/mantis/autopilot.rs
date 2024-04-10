@@ -19,14 +19,14 @@ pub async fn cleanup(
     tip: &Tip,
     gas: Gas,
 ) {
-    println!("========================= cleanup =========================");
+    log::info!("========================= cleanup =========================");
     let auth_info = simulate_and_set_fee(signing_key, &tip.account, gas).await;
     let msg = cw_mantis_order::ExecMsg::Timeout {
         orders: vec![],
         solutions: vec![],
     };
     let msg = to_exec_signed(signing_key, order_contract, msg);
-    tx_broadcast_single_signed_msg(
+    let result = tx_broadcast_single_signed_msg(
         msg.to_any().expect("proto"),
         auth_info,
         rpc,
@@ -34,6 +34,15 @@ pub async fn cleanup(
         tip,
     )
     .await;
+    match &result.tx_result.code {
+        cosmrs::tendermint::abci::Code::Err(err) => {
+            log::warn!("result: {:?}", result);
+            panic!("Error: {:?}", err)
+        }
+        cosmrs::tendermint::abci::Code::Ok => {
+            log::info!("ok: {:?}", result);
+        }
+    }
 }
 
 /// move protocol forwards, cranks auctions ending and also cleans up old orders

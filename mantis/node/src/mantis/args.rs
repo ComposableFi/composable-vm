@@ -58,6 +58,7 @@ pub enum AssetCommands {
 
 #[derive(clap::Parser, Debug)]
 pub struct SharedArgs {
+    /// chain id of order contract
     #[arg(long)]
     pub main_chain_id: String,
 
