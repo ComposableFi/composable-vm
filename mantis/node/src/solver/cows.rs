@@ -12,7 +12,7 @@ pub struct Solver<Id> {
     target_price: Price,
     buy_token: BuyToken,
     sell_token: SellToken,
-    order: Order<Id>,
+    order: SolverOrder<Id>,
 }
 
 impl<Id: Copy + PartialEq + Debug> Solver<Id> {
@@ -29,7 +29,7 @@ impl<Id: Copy + PartialEq + Debug> Solver<Id> {
             target_price,
             buy_token,
             sell_token,
-            order: Order::new_decimal(dec!(0.0), Price(dec!(0.0)), OrderSide::A, solver_order_id),
+            order: SolverOrder::new_decimal(dec!(0.0), Price(dec!(0.0)), OrderSide::A, solver_order_id),
         }
     }
 
@@ -37,7 +37,7 @@ impl<Id: Copy + PartialEq + Debug> Solver<Id> {
         self.target_price
     }
 
-    fn f_maximize(&self, order: &Order<Id>) -> Amount {
+    fn f_maximize(&self, order: &SolverOrder<Id>) -> Amount {
         let decimal = match order.order_type {
             OrderSide::A => {
                 self.buy_token.0 - order.amount_filled
@@ -67,7 +67,7 @@ impl<Id: Copy + PartialEq + Debug> Solver<Id> {
 
         let side = if is_buy { OrderSide::A } else { OrderSide::B };
 
-        let orders: Vec<Order<_>> = (0..=num_orders)
+        let orders: Vec<SolverOrder<_>> = (0..=num_orders)
             .map(|i| {
                 self.order_for(
                     Amount::from_usize(i).expect("works") * original_token_amount
@@ -98,7 +98,7 @@ impl<Id: Copy + PartialEq + Debug> Solver<Id> {
         max_solution.ok_or("No max solution found")
     }
 
-    fn match_ob_with_order(&self, order: &Order<Id>) -> Result<Solution<Id>, &'static str> {
+    fn match_ob_with_order(&self, order: &SolverOrder<Id>) -> Result<Solution<Id>, &'static str> {
         let mut orderbook = self.orders.clone();
         orderbook.value.push(order.clone());
         orderbook
@@ -109,7 +109,7 @@ impl<Id: Copy + PartialEq + Debug> Solver<Id> {
         Ok(Solution::new(orderbook.value).match_orders(optimal_price))
     }
 
-    fn order_for(&self, amount: Decimal, order_type: OrderSide, id: Id) -> Order<Id> {
-        Order::new_decimal(amount, self.limit_price(), order_type, id)
+    fn order_for(&self, amount: Decimal, order_type: OrderSide, id: Id) -> SolverOrder<Id> {
+        SolverOrder::new_decimal(amount, self.limit_price(), order_type, id)
     }
 }

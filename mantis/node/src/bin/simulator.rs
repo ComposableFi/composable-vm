@@ -1,11 +1,11 @@
 use mantis_cw::OrderSide;
-use mantis_node::solver::{orderbook::OrderList, solution::Solution, types::Order};
+use mantis_node::solver::{orderbook::OrderList, solution::Solution, types::SolverOrder};
 use mantis_node::{prelude::*, solver::types::Price};
 
 fn main() {
     // decide on basics
-    let order_a = Order::new_integer(100_000, 3, OrderSide::B, 1);
-    let order_b = Order::new_integer(3, 100_000, OrderSide::A, 2);
+    let order_a = SolverOrder::new_integer(100_000, 3, OrderSide::B, 1);
+    let order_b = SolverOrder::new_integer(3, 100_000, OrderSide::A, 2);
     assert!(order_a.is_acceptable_price(order_b.limit_price));
     assert!(order_b.is_acceptable_price(order_a.limit_price));
 
@@ -35,7 +35,7 @@ fn main() {
     );
 
     // randomize price around 2.0 (ratio of 2 price tokens in pair)
-    let orders = (1..100).map(|x| Order::random_f64(2., 0.1, (50, 150), x));
+    let orders = (1..100).map(|x| SolverOrder::random_f64(2., 0.1, (50, 150), x));
     let orders = OrderList {
         value: orders.collect(),
     };

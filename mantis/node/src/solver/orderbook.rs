@@ -6,7 +6,7 @@ use crate::solver::types::*;
 
 #[derive(Clone, Debug)]
 pub struct OrderList<Id> {
-    pub value: Vec<Order<Id>>,
+    pub value: Vec<SolverOrder<Id>>,
 }
 
 impl<Id: Copy + PartialEq + Debug> OrderList<Id> {
@@ -15,7 +15,7 @@ impl<Id: Copy + PartialEq + Debug> OrderList<Id> {
     }
     fn apply_filter<P>(&self, expr: P) -> Self
     where
-        P: FnMut(&Order<Id>) -> bool,
+        P: FnMut(&SolverOrder<Id>) -> bool,
     {
         OrderList {
             value: self.value.iter().cloned().filter(expr).collect(),
@@ -67,7 +67,7 @@ impl<Id: Copy + PartialEq + Debug> OrderList<Id> {
         self.apply_filter(|order| order.id == id)
     }
 
-    pub fn all(&self) -> &Vec<Order<Id>> {
+    pub fn all(&self) -> &Vec<SolverOrder<Id>> {
         &self.value
     }
 

@@ -37,8 +37,8 @@ pub struct OrderItem {
 }
 
 impl OrderItem {
-    pub fn side(&self) -> OrderSide {
-        if self.msg.wants.denom == self.given.denom {
+    pub fn side(&self, pair: &DenomPair) -> OrderSide {
+        if self.given.denom == pair.a {
             OrderSide::A
         } else {
             OrderSide::B

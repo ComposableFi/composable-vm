@@ -36,8 +36,10 @@ pub enum OrderBookStatus {
     Matched,
 }
 
+
+/// Order as handled by solver math
 #[derive(Debug, Clone)]
-pub struct Order<Id> {
+pub struct SolverOrder<Id> {
     pub amount_in: Amount,
     pub filled_price: Amount,
     pub order_type: OrderSide,
@@ -48,7 +50,7 @@ pub struct Order<Id> {
     pub limit_price: Price,
 }
 
-impl<Id: Copy + PartialEq> Order<Id> {
+impl<Id: Copy + PartialEq> SolverOrder<Id> {
     pub fn print(&self) {
         println!(
             "[{}]-{}- Limit Price: {}, In: {}, Filled: {}, Filled price: {}, Out: {}",
@@ -67,7 +69,7 @@ impl<Id: Copy + PartialEq> Order<Id> {
         order_type: OrderSide,
         id: Id,
     ) -> Self {
-        Order {
+        SolverOrder {
             amount_in,
             filled_price: dec!(0.0),
             order_type,
@@ -79,17 +81,17 @@ impl<Id: Copy + PartialEq> Order<Id> {
         }
     }
 
-    pub fn new_integer(amount_in: u128, min_want: u128, order_type: OrderSide, id: Id) -> Self {
+    pub fn new_integer(amount_in: u128, min_want: u128, order_side: OrderSide, id: Id) -> Self {
         let amount_in: Amount = amount_in.try_into().expect("smaller");
         let min_want: Amount = min_want.try_into().expect("smaller");
-        let limit_price = match order_type {
+        let limit_price = match order_side {
             OrderSide::A => amount_in / min_want,
             OrderSide::B => min_want / amount_in,
         };
-        Order {
+        SolverOrder {
             amount_in,
             filled_price: dec!(0.0),
-            order_type,
+            order_type: order_side,
             amount_out: dec!(0.0),
             amount_filled: dec!(0.0),
             status: OrderStatus::Pending,
@@ -186,7 +188,7 @@ impl<Id: Copy + PartialEq> Order<Id> {
     }
 }
 
-impl<Id: Copy + PartialEq> Order<Id> {
+impl<Id: Copy + PartialEq> SolverOrder<Id> {
     pub fn random_f64(mean: f64, std: f64, volume_range: (u64, u64), id: Id) -> Self {
         let amount_in = rand::thread_rng().gen_range(volume_range.0..volume_range.1 + 1) as f64;
         let normal = rand_distr::Normal::new(mean, std).unwrap();
@@ -198,7 +200,7 @@ impl<Id: Copy + PartialEq> Order<Id> {
             OrderSide::B
         };
 
-        Order::new_decimal(
+        SolverOrder::new_decimal(
             Decimal::from_f64_retain(amount_in).unwrap(),
             Price(Decimal::from_f64_retain(limit_price).unwrap()),
             order_type,

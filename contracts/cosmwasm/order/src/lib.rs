@@ -259,12 +259,14 @@ impl OrderContract<'_> {
 
     /// Provides solution for set of orders.
     /// All fully
+    /// Solver does not pay for solution evaluation upfront, but slashed if his solution violates constrains upon best solution picked.
+    /// So solver cheap to update his solution and prevent spam.
     #[msg(exec)]
-    pub fn solve(&self, mut ctx: ExecCtx, msg: SolutionSubMsg) -> StdResult<Response> {
+    pub fn solve(&self, mut ctx: ExecCtx, msg: SolutionSubMsg) -> StdResult<Response> {    
         // read all orders as solver provided
         let mut all_orders = join_solution_with_orders(&self.orders, &msg, &ctx)?;
         let at_least_one = all_orders.first().expect("at least one");
-
+        
         // normalize pair
         let ab = DenomPair::new(
             at_least_one.given().denom.clone(),

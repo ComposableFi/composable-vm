@@ -113,10 +113,10 @@ pub fn find_cows(all_orders: &[OrderItem]) -> Vec<PairSolution> {
     for (ab, orders) in all_orders.into_iter() {
         let orders = orders.collect::<Vec<_>>();
         let orders = orders.iter().map(|x| {
-            crate::solver::types::Order::new_integer(
+            crate::solver::types::SolverOrder::new_integer(
                 x.given.amount.u128(),
                 x.msg.wants.amount.u128(),
-                x.side(),
+                x.side(&ab),
                 x.order_id,
             )
         });
@@ -124,7 +124,8 @@ pub fn find_cows(all_orders: &[OrderItem]) -> Vec<PairSolution> {
             value: orders.collect(),
         };
         let optimal_price = orders.compute_optimal_price(1000);
-        println!("optimal_price: {:?}", optimal_price);
+        println!("mantis::solver::cows::optimal_price: {:?}", optimal_price);
+        println!("mantis::solver::cows::orders: {:?}", orders);
         let mut solution = Solution::new(orders.value.clone());
         solution = solution.match_orders(optimal_price);
         let cows = solution
@@ -141,7 +142,6 @@ pub fn find_cows(all_orders: &[OrderItem]) -> Vec<PairSolution> {
                 }
             })
             .collect::<Vec<_>>();
-        println!("optimal price {:?}", optimal_price);
         let optimal_price = decimal_to_fraction(optimal_price.0);
         println!("cows: {:?}", cows);
         if !cows.is_empty() {

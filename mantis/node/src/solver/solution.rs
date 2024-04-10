@@ -12,7 +12,7 @@ pub struct Solution<Id> {
 
 impl<Id: Copy + PartialEq + Debug> Solution<Id> {
     /// ensures orders are sorted
-    pub fn new(mut orders: Vec<Order<Id>>) -> Self {
+    pub fn new(mut orders: Vec<SolverOrder<Id>>) -> Self {
         orders.sort_by(|a, b| {
             a.limit_price
                 .partial_cmp(&b.limit_price)
@@ -116,7 +116,7 @@ impl<Id: Copy + PartialEq + Debug> Solution<Id> {
     ) -> Self {
         Self::new(
             (0..num_orders)
-                .map(|_| Order::random_f64(mean, std, volume_range, next()))
+                .map(|_| SolverOrder::random_f64(mean, std, volume_range, next()))
                 .collect(),
         )
     }

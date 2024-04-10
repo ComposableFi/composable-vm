@@ -83,6 +83,8 @@ fn cows_two_perfect_math_orders () {
 
     // try solve
     let orders = query_all_orders(&deps, &env);
+    assert_eq!(orders.len() , 2);
+    
     let cows_per_pair = mantis_node::mantis::solve::find_cows(orders.as_slice());
     assert_eq!(cows_per_pair.len() , 1);
     do_solve(cows_per_pair, &mut deps, &env, info.clone());
