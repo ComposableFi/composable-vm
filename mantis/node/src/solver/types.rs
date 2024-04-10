@@ -36,7 +36,6 @@ pub enum OrderBookStatus {
     Matched,
 }
 
-
 /// Order as handled by solver math
 #[derive(Debug, Clone)]
 pub struct SolverOrder<Id> {

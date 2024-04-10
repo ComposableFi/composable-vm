@@ -1,7 +1,7 @@
 #![allow(clippy::disallowed_methods)] // does unwrap inside
 #![allow(deprecated)] // sylvia macro
 
-mod constants;
+pub mod constants;
 mod errors;
 mod events;
 mod prelude;
@@ -10,7 +10,8 @@ mod state;
 mod types;
 mod validation;
 
-use constants::MIN_SOLUTION_COUNT;
+use constants::DEFAULT_MIN_SOLUTION_COUNT;
+use cosmwasm_std::Api;
 use events::order::*;
 use events::solution::*;
 use itertools::Itertools;
@@ -262,11 +263,11 @@ impl OrderContract<'_> {
     /// Solver does not pay for solution evaluation upfront, but slashed if his solution violates constrains upon best solution picked.
     /// So solver cheap to update his solution and prevent spam.
     #[msg(exec)]
-    pub fn solve(&self, mut ctx: ExecCtx, msg: SolutionSubMsg) -> StdResult<Response> {    
+    pub fn solve(&self, mut ctx: ExecCtx, msg: SolutionSubMsg) -> StdResult<Response> {
         // read all orders as solver provided
         let mut all_orders = join_solution_with_orders(&self.orders, &msg, &ctx)?;
         let at_least_one = all_orders.first().expect("at least one");
-        
+
         // normalize pair
         let ab = DenomPair::new(
             at_least_one.given().denom.clone(),
@@ -312,7 +313,7 @@ impl OrderContract<'_> {
             .load(ctx.deps.storage, ab.clone())
             .expect("pair to block");
 
-        if started + constants::BATCH_EPOCH as u64 > ctx.env.block.height {
+        if started + constants::DEFAULT_BATCH_EPOCH as u64 > ctx.env.block.height {
             return Ok(Response::default());
         } else {
             self.pair_to_block.remove(ctx.deps.storage, ab.clone());
@@ -324,7 +325,7 @@ impl OrderContract<'_> {
         let mut transfers = vec![];
         let mut solution_item: SolutionItem = possible_solution;
         let mut volume = 0u128;
-        if all_solutions.len() < MIN_SOLUTION_COUNT as usize {
+        if all_solutions.len() < DEFAULT_MIN_SOLUTION_COUNT as usize {
             return Ok(Response::default());
         }
 
@@ -385,6 +386,7 @@ impl OrderContract<'_> {
             solution_item.block_added,
             solution_item.msg.optimal_price,
             &mut all_orders,
+            ctx.deps.api,
         )?;
 
         let cross_chain_b: u128 = all_orders
@@ -486,6 +488,7 @@ impl OrderContract<'_> {
         solution_block_added: u64,
         optimal_price: Ratio,
         solver_orders: &mut [SolvedOrder],
+        api: &dyn Api,
     ) -> StdResult<Vec<CowFillResult>> {
         let mut results = vec![];
         for (transfer, order) in cows.into_iter() {
@@ -498,10 +501,7 @@ impl OrderContract<'_> {
                     .find_position(|x| x.order.order_id == order.order_id)
                     .expect("solver order");
 
-                ensure!(
-                    solver_order.solution.cross_chain_part.is_none(),
-                    errors::filled_order_cannot_be_cross_chain_routed()
-                );
+                api.debug(&format!("mantis::order::filled::full {:?}", order.order_id));
 
                 self.orders.remove(storage, order.order_id.u128());
                 (
@@ -559,7 +559,7 @@ impl OrderContract<'_> {
                     OrderAmount::Part(_, _) => {
                         return Err(errors::partial_cross_chain_not_implemented())
                     }
-                    OrderAmount::All => {
+                    OrderAmount::AllRemaining => {
                         let event = mantis_order_routed_full(&order.order, &solver_address);
                         let tracker = TrackedOrderItem {
                             order_id: order.order.order_id,

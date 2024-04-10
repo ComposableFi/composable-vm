@@ -7,10 +7,9 @@ use mantis_node::{
     prelude::*,
 };
 
-
 #[test]
 fn cows_single_no_match() {
-    let (mut deps, env, info,) = instantiate_cow_only_orders_contract();
+    let (mut deps, env, info) = instantiate_cow_only_orders_contract();
 
     // order 1
     let msg = ExecMsg::Order {
@@ -43,8 +42,8 @@ fn cows_single_no_match() {
 }
 
 #[test]
-fn cows_two_perfect_math_orders () {
-    let (mut deps, env, info,) = instantiate_cow_only_orders_contract();
+fn cows_two_perfect_math_orders() {
+    let (mut deps, mut env, info) = instantiate_cow_only_orders_contract();
 
     // order 1
     let msg = ExecMsg::Order {
@@ -65,7 +64,7 @@ fn cows_two_perfect_math_orders () {
         sender: Addr::unchecked("sender"),
     };
     cw_mantis_order::entry_points::execute(deps.as_mut(), env.clone(), info.clone(), msg).unwrap();
-    
+
     // order 2 perfect match
     let msg = ExecMsg::Order {
         msg: OrderSubMsg {
@@ -83,20 +82,27 @@ fn cows_two_perfect_math_orders () {
 
     // try solve
     let orders = query_all_orders(&deps, &env);
-    assert_eq!(orders.len() , 2);
-    
-    let cows_per_pair = mantis_node::mantis::solve::find_cows(orders.as_slice());
-    assert_eq!(cows_per_pair.len() , 1);
-    do_solve(cows_per_pair, &mut deps, &env, info.clone());
+    assert_eq!(orders.len(), 2);
 
+    let cows_per_pair = mantis_node::mantis::solve::find_cows(orders.as_slice());
+    assert_eq!(cows_per_pair.len(), 1);
+    execute_solve(cows_per_pair.clone(), &mut deps, &env, info.clone());
+    wait_for_blocks(cw_mantis_order::constants::DEFAULT_BATCH_EPOCH, &mut env);
     let orders = query_all_orders(&deps, &env);
-    assert!(orders.is_empty());    
+    assert_eq!(orders.len(), 2);
+
+    execute_solve(cows_per_pair, &mut deps, &env, info.clone());
+    let orders = query_all_orders(&deps, &env);
+    assert_eq!(orders.len(), 0);
 }
 
+fn wait_for_blocks(blocks: u32, env: &mut cosmwasm_std::Env) {
+    env.block.height += blocks as u64;
+}
 
 #[test]
 fn cows_scenarios() {
-    let (mut deps, env, info,) = instantiate_cow_only_orders_contract();
+    let (mut deps, env, info) = instantiate_cow_only_orders_contract();
 
     // 2 user give more than others wants is ok
 
@@ -161,7 +167,7 @@ fn cows_scenarios() {
     // solving
     let orders = query_all_orders(&deps, &env);
     let cows_per_pair = mantis_node::mantis::solve::find_cows(orders.as_slice());
-    do_solve(cows_per_pair, &mut deps, &env, info.clone());
+    execute_solve(cows_per_pair, &mut deps, &env, info.clone());
     let orders = query_all_orders(&deps, &env);
     assert!(orders.is_empty());
 
@@ -200,7 +206,7 @@ fn cows_scenarios() {
     // second half
     let orders = query_all_orders(&deps, &env);
     let cows_per_pair = mantis_node::mantis::solve::find_cows(orders.as_slice());
-    do_solve(cows_per_pair, &mut deps, &env, info.clone());
+    execute_solve(cows_per_pair, &mut deps, &env, info.clone());
     let orders = query_all_orders(&deps, &env);
     assert!(!orders.is_empty());
 
@@ -221,7 +227,7 @@ fn cows_scenarios() {
     // solving
     let orders = query_all_orders(&deps, &env);
     let cows_per_pair = mantis_node::mantis::solve::find_cows(orders.as_slice());
-    do_solve(cows_per_pair, &mut deps, &env, info.clone());
+    execute_solve(cows_per_pair, &mut deps, &env, info.clone());
     let orders = query_all_orders(&deps, &env);
     assert!(orders.is_empty());
 
@@ -244,13 +250,17 @@ fn cows_scenarios() {
 
     let orders = query_all_orders(&deps, &env);
     let cows_per_pair = mantis_node::mantis::solve::find_cows(orders.as_slice());
-    let responses = do_solve(cows_per_pair, &mut deps, &env, info.clone());
+    let responses = execute_solve(cows_per_pair, &mut deps, &env, info.clone());
     let orders = query_all_orders(&deps, &env);
     println!("solved {}", orders.len());
     println!("{:?}", responses);
 }
 
-fn instantiate_cow_only_orders_contract() -> (cosmwasm_std::OwnedDeps<cosmwasm_std::MemoryStorage, MockApi, MockQuerier>, cosmwasm_std::Env, MessageInfo) {
+fn instantiate_cow_only_orders_contract() -> (
+    cosmwasm_std::OwnedDeps<cosmwasm_std::MemoryStorage, MockApi, MockQuerier>,
+    cosmwasm_std::Env,
+    MessageInfo,
+) {
     let mut deps = mock_dependencies();
     let env = mock_env();
     let info = mock_info("sender", &[]);
@@ -264,7 +274,7 @@ fn instantiate_cow_only_orders_contract() -> (cosmwasm_std::OwnedDeps<cosmwasm_s
     (deps, env, info)
 }
 
-fn do_solve(
+fn execute_solve(
     cows_per_pair: Vec<PairSolution>,
     deps: &mut cosmwasm_std::OwnedDeps<cosmwasm_std::MemoryStorage, MockApi, MockQuerier>,
     env: &cosmwasm_std::Env,
@@ -289,7 +299,7 @@ fn do_solve(
 
         let response =
             cw_mantis_order::entry_points::execute(deps.as_mut(), env.clone(), info.clone(), msg)
-                .unwrap();
+                .expect("solve");
         responses.push(response);
     }
     responses
@@ -317,6 +327,5 @@ fn query_all_orders(
     let msg = cw_mantis_order::sv::ContractQueryMsg::OrderContract(msg);
     let orders: Binary =
         cw_mantis_order::entry_points::query(deps.as_ref(), env.clone(), msg).unwrap();
-    let orders: Vec<OrderItem> = serde_json_wasm::from_slice(orders.as_slice()).unwrap();
-    orders
+    serde_json_wasm::from_slice(orders.as_slice()).unwrap()
 }

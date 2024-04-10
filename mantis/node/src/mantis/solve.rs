@@ -50,7 +50,7 @@ impl IntentBankInput {
 
         for cow in cows {
             match cow.cross_chain_part {
-                Some(OrderAmount::All) => {
+                Some(OrderAmount::AllRemaining) => {
                     let mut order = orders
                         .iter()
                         .find(|x| x.order_id == cow.order_id)
@@ -101,6 +101,7 @@ impl IntentBankInput {
     }
 }
 
+#[derive(Debug, Clone)]
 pub struct PairSolution {
     pub ab: DenomPair,
     pub cows: Vec<OrderSolution>,
@@ -138,7 +139,7 @@ pub fn find_cows(all_orders: &[OrderItem]) -> Vec<PairSolution> {
                 OrderSolution {
                     order_id: x.id,
                     cow_out_amount: filled.into(),
-                    cross_chain_part: Some(OrderAmount::All),
+                    cross_chain_part: Some(OrderAmount::AllRemaining),
                 }
             })
             .collect::<Vec<_>>();

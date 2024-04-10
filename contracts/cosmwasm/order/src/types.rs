@@ -267,7 +267,8 @@ pub struct SubWasmMsg<Payload> {
 pub enum OrderAmount {
     /// whole remaining amount in order
     /// (same as part, when calculated manually)
-    All,
+    /// In case of zero will not cross chain it.
+    AllRemaining,
     /// In and out amount. Must be above optimal price.
     /// .0 how much to take from user for cross chain routing, in `given` unit
     /// .1 how much to dispatch to user after routing, in `wants` unit
@@ -294,7 +295,7 @@ impl OrderSolution {
         Self {
             order_id,
             cow_out_amount,
-            cross_chain_part: Some(OrderAmount::All),
+            cross_chain_part: Some(OrderAmount::AllRemaining),
         }
     }
 }
@@ -314,7 +315,7 @@ impl SolvedOrder {
     pub fn given_cross_chain(&self) -> Amount {
         match self.solution.cross_chain_part {
             Some(x) => match x {
-                OrderAmount::All => self.order.given.amount,
+                OrderAmount::AllRemaining => self.order.given.amount,
                 OrderAmount::Part(x, _) => x,
             },
             None => 0u128.into(),
@@ -324,7 +325,7 @@ impl SolvedOrder {
     pub fn wants_cross_chain(&self) -> Amount {
         match self.solution.cross_chain_part {
             Some(x) => match x {
-                OrderAmount::All => self.order.msg.wants.amount,
+                OrderAmount::AllRemaining => self.order.msg.wants.amount,
                 OrderAmount::Part(_, x) => x,
             },
             None => 0u128.into(),

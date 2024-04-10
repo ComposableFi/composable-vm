@@ -29,7 +29,12 @@ impl<Id: Copy + PartialEq + Debug> Solver<Id> {
             target_price,
             buy_token,
             sell_token,
-            order: SolverOrder::new_decimal(dec!(0.0), Price(dec!(0.0)), OrderSide::A, solver_order_id),
+            order: SolverOrder::new_decimal(
+                dec!(0.0),
+                Price(dec!(0.0)),
+                OrderSide::A,
+                solver_order_id,
+            ),
         }
     }
 
