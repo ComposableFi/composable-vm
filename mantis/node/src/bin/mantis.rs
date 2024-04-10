@@ -20,7 +20,8 @@ use mantis_node::{
 #[tokio::main]
 async fn main() {
     let args = MantisArgs::parsed();
-
+    env_logger::init();
+    
     match &args.command {
         MantisCommands::Solve(x) => solve_orders(x).await,
         MantisCommands::Simulate(x) => {
