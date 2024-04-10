@@ -101,9 +101,9 @@ fn wait_for_blocks(blocks: u32, env: &mut cosmwasm_std::Env) {
 }
 
 #[test]
-fn cows_scenarios() {
-    let (mut deps, env, info) = instantiate_cow_only_orders_contract();
-
+fn cows_two_orders_give_some_more_than_each_wants() {
+    let (mut deps, mut env, info) = instantiate_cow_only_orders_contract();
+    let timeout = env.block.height + 1 + cw_mantis_order::constants::DEFAULT_BATCH_EPOCH as u64;
     // 2 user give more than others wants is ok
 
     // pair 1
@@ -114,7 +114,7 @@ fn cows_scenarios() {
                 amount: 200000u128.into(),
             },
             transfer: None,
-            timeout: 1,
+            timeout,
             min_fill: None,
         },
     };
@@ -128,7 +128,7 @@ fn cows_scenarios() {
                 amount: 2u128.into(),
             },
             transfer: None,
-            timeout: 1,
+            timeout,
             min_fill: None,
         },
     };
@@ -143,7 +143,7 @@ fn cows_scenarios() {
                 amount: 200000u128.into(),
             },
             transfer: None,
-            timeout: 1,
+            timeout,
             min_fill: None,
         },
     };
@@ -157,7 +157,7 @@ fn cows_scenarios() {
                 amount: 2u128.into(),
             },
             transfer: None,
-            timeout: 1,
+            timeout,
             min_fill: None,
         },
     };
@@ -167,9 +167,23 @@ fn cows_scenarios() {
     // solving
     let orders = query_all_orders(&deps, &env);
     let cows_per_pair = mantis_node::mantis::solve::find_cows(orders.as_slice());
+    assert_eq!(cows_per_pair.len(), 1);
+    assert_eq!(cows_per_pair[0].cows.len(), 4);
+
+    execute_solve(cows_per_pair.clone(), &mut deps, &env, info.clone());
+    wait_for_blocks(
+        cw_mantis_order::constants::DEFAULT_BATCH_EPOCH + 1,
+        &mut env,
+    );
     execute_solve(cows_per_pair, &mut deps, &env, info.clone());
+
     let orders = query_all_orders(&deps, &env);
-    assert!(orders.is_empty());
+    assert_eq!(orders.len(), 0);
+}
+
+#[test]
+fn cows_scenarios() {
+    let (mut deps, mut env, info) = instantiate_cow_only_orders_contract();
 
     // partial orders
 
@@ -206,6 +220,8 @@ fn cows_scenarios() {
     // second half
     let orders = query_all_orders(&deps, &env);
     let cows_per_pair = mantis_node::mantis::solve::find_cows(orders.as_slice());
+    execute_solve(cows_per_pair.clone(), &mut deps, &env, info.clone());
+    wait_for_blocks(cw_mantis_order::constants::DEFAULT_BATCH_EPOCH, &mut env);
     execute_solve(cows_per_pair, &mut deps, &env, info.clone());
     let orders = query_all_orders(&deps, &env);
     assert!(!orders.is_empty());
@@ -227,7 +243,10 @@ fn cows_scenarios() {
     // solving
     let orders = query_all_orders(&deps, &env);
     let cows_per_pair = mantis_node::mantis::solve::find_cows(orders.as_slice());
+    execute_solve(cows_per_pair.clone(), &mut deps, &env, info.clone());
+    wait_for_blocks(cw_mantis_order::constants::DEFAULT_BATCH_EPOCH, &mut env);
     execute_solve(cows_per_pair, &mut deps, &env, info.clone());
+
     let orders = query_all_orders(&deps, &env);
     assert!(orders.is_empty());
 
