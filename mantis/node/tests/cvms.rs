@@ -1,5 +1,5 @@
 use cosmwasm_std::{Addr, Empty};
-use cw_multi_test::{App, Contract, ContractWrapper};
+use cw_multi_test::{App, Contract, ContractWrapper, Executor};
 // use cw_orch::prelude::*;
 // use cw_orch::interface;
 
@@ -28,6 +28,15 @@ fn cvm_devnet_case() {
     let cw_mantis_order_code_id = centauri.store_code(Box::new(cw_mantis_order_wasm));
     let cw_cvm_outpost_code_id = centauri.store_code(Box::new(cw_cvm_outpost_wasm));
     let cw_cvm_executor_code_id = centauri.store_code(Box::new(cw_cvm_executor_wasm));
+
+    let cw_cvm_outpost_contract = centauri.instantiate_contract(
+        cw_cvm_outpost_code_id,
+        Addr::unchecked("juno1g2rahf5846rxzp3fwlswy08fz8ccuwk03k57y"),
+        &Empty {},
+        &[],
+        "cvm-outpost",
+        None,
+    ).unwrap();
 
     let sender = Addr::unchecked("juno16g2rahf5846rxzp3fwlswy08fz8ccuwk03k57y");
 }
