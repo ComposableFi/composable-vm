@@ -48,11 +48,13 @@ cvm-runtime = { workspace = true, features = ["std"] }
 cvm-route ={ workspace = true}
 ndarray ={ workspace = true, features = ["std", "serde"]}
 env_logger = {workspace = true}
-cw-multi-test = { workspace = true }
 petgraph = {workspace = true}
 num-rational = {workspace = true, features = ["cosmwasm", "serde", "json-schema"], default-features = false}
 sha2 = {workspace = true}
-cw-orch = { workspace = true}
+
+bounded-collections = {workspace = true, default-features = false, features = ["std"]}
 
 [dev-dependencies]
+cw-multi-test = { workspace = true }
+cw-orch = { workspace = true}
 rustfmt-wrapper = "0.2.1"

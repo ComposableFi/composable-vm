@@ -177,7 +177,7 @@ cw-cvm-outpost = { path = "./contracts/cosmwasm/outpost", features = [
 ] }
 
 
-
+bounded-collections = { version = "0.2.0", default-features = false }
 
 fraction = { version = "0.15.1", default-features = false }
 

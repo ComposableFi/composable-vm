@@ -2,6 +2,7 @@
 
 use std::panic;
 
+use bounded_collections::Get;
 use cosmrs::{tx::Msg, Gas};
 
 use cvm_runtime::shared::CvmProgram;
@@ -154,6 +155,15 @@ async fn simulate_orders(simulate_args: &SimulateArgs) {
     .await;
 }
 
+enum CoinToss{}
+
+
+impl Get<bool> for CoinToss {
+    fn get() -> bool {
+        random::<bool>()
+    }
+}
+
 /// gets orders, groups by pairs
 /// solves them using algorithm
 /// if any volume solved, posts solution
@@ -180,14 +190,14 @@ async fn get_data_and_solve(
         None => None,
     };
 
-    let msgs = solve(all_orders, signing_key, tip, cvm_glt, router_api).await;
+    let msgs = solve::<CoinToss>(all_orders, signing_key, tip, cvm_glt, router_api).await;
 
     for msg in msgs {
         send_solution(msg, tip, signing_key, order_contract, rpc, gas).await;
     }
 }
 
-async fn solve(
+async fn solve<Decider: Get<bool>>(
     active_orders: Vec<OrderItem>,
     signing_key: &cosmrs::crypto::secp256k1::SigningKey,
     tip: &Tip,
@@ -215,7 +225,7 @@ async fn solve(
 
         // would be reasonable to do do cross chain if it solves some % of whole trade
         let route = if let Some(cvm_program) = cvm_program
-            && random::<bool>()
+            && Decider::get()
         {
             Some(CrossChainPart::new(
                 cvm_program,

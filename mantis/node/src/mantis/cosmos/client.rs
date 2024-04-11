@@ -25,10 +25,15 @@ pub struct Tip {
 }
 
 /// allows to act on behalf of user
-#[derive(Debug)]
 pub struct BlockAgent {
     pub tip: Tip,
     pub key: cosmrs::crypto::secp256k1::SigningKey,
+}
+
+impl Debug for BlockAgent {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("BlockAgent").field("tip", &self.tip).field("public_key", &self.key.public_key()).finish()
+    }
 }
 
 
