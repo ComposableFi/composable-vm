@@ -226,12 +226,23 @@ async fn intent_banks_to_cvm_program(
         pair_solution.ab.clone(),
     );
 
-    let a_cvm_route = blackbox::get_route(router_api, a, cvm_glt, salt.as_ref()).await;
-    let b_cvm_route = blackbox::get_route(router_api, b, cvm_glt, salt.as_ref()).await;
+    log::info!(target:"mantis::solver::", "found for cross chain a: {:?}, b: {:?}", a, b);
+
+    let mut instructions = vec![];
+
+    if a.in_asset_amount > 0 {
+        let a_cvm_route = blackbox::get_route(router_api, a, cvm_glt, salt.as_ref()).await;
+        instructions.push(a_cvm_route);
+    }
+    if b.in_asset_amount > 0 {
+        let b_cvm_route = blackbox::get_route(router_api, b, cvm_glt, salt.as_ref()).await;
+        instructions.push(b_cvm_route);
+    }
+    log::info!(target: "mantis::solver", "built instructions: {:?}", instructions);
 
     let cvm_program = CvmProgram {
         tag: salt.to_vec(),
-        instructions: [a_cvm_route, b_cvm_route].concat().to_vec(),
+        instructions,
     };
     cvm_program
 }
