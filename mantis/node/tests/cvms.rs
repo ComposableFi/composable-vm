@@ -1,6 +1,7 @@
 use bounded_collections::Get;
 use cosmrs::tendermint::block::Height;
 use cosmwasm_std::{Addr, Coin, Coins, Empty};
+use cvm_route::transport::NetworkToNetworkItem;
 use cw_cvm_outpost::msg::{CvmGlt, HereItem};
 use cw_mantis_order::{OrderItem, OrderSubMsg};
 use cw_multi_test::{App, Contract, ContractWrapper, Executor};
@@ -123,7 +124,10 @@ async fn cvm_devnet_case() {
     };
     let router = "shortest_path";
     let cvm_glt = Some(CvmGlt {
-        network_to_networks: todo!(),
+        network_to_networks: vec![
+            NetworkToNetworkItem::new(1.into(), 2.into(), OtherNetworkItem::new()),
+            NetworkToNetworkItem::new(2.into(), 1.into(), OtherNetworkItem::new()),
+        ],
         assets: todo!(),
         exchanges: todo!(),
         networks: todo!(),

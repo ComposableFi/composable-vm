@@ -20,6 +20,17 @@ pub struct NetworkToNetworkItem {
     pub closed: Option<u64>,
 }
 
+impl NetworkToNetworkItem {
+    pub fn new(from_network_id: NetworkId, to_network_id: NetworkId, to_network: OtherNetworkItem) -> Self {
+        Self {
+            from_network_id,
+            to_network_id,
+            to_network,
+            closed: None,
+        }
+    }
+}
+
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "snake_case")]
 #[cfg_attr(
@@ -38,6 +49,17 @@ pub struct OtherNetworkItem {
     /// or if connection supports exchange, it will use exchange
     /// default is false if target chain has CVM gateway
     pub use_shortcut: Option<bool>,
+}
+
+impl OtherNetworkItem  {
+    pub fn new() -> Self {
+        Self {
+            ics_20: None,
+            counterparty_timeout: RelativeTimeout::Seconds(10),
+            ics27_channel: None,
+            use_shortcut: None,
+        }
+    }
 }
 
 /// we need both, so we can unwrap
