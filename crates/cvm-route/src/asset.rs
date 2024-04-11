@@ -47,7 +47,6 @@ impl AssetItem {
             bridged: None,
         }
     }
-
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -71,7 +70,6 @@ impl NetworkAssetItem {
         }
     }
 }
-
 
 impl AssetItem {
     pub fn denom(&self) -> String {
@@ -102,13 +100,15 @@ pub struct BridgeAsset {
 )]
 pub enum AssetReference {
     /// Cosmos SDK native
-    Native { denom: String },
-    Cw20 { contract: cosmwasm_std::Addr },
+    Native {
+        denom: String,
+    },
+    Cw20 {
+        contract: cosmwasm_std::Addr,
+    },
     // Erc20 { contract: EthAddress },
     // SPL20 { mint: Pubkey },
 }
-
-
 
 impl AssetReference {
     pub fn denom(&self) -> String {

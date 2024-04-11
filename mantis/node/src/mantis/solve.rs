@@ -43,7 +43,7 @@ impl IntentBankInput {
         optimal_ratio: Ratio<u64>,
         cvm_glt: &GetConfigResponse,
         pair: DenomPair,
-    ) -> (IntentBankInput, IntentBankInput) {
+    ) -> Vec<IntentBankInput> {
         // native calculations
         let mut pair = OrderCoinPair::zero(pair.a, pair.b);
         let mut a_to_b = Vec::new();
@@ -75,31 +75,37 @@ impl IntentBankInput {
 
         // making MANTIS route request in CVM form
 
+        let mut intents = vec![];
         let a_asset = cvm_glt.cvm_asset_by_cw(pair.a.denom);
         let b_asset = cvm_glt.cvm_asset_by_cw(pair.b.denom);
+        if pair.a.amount.u128() > 0 {
+            let b_received = a_to_b.iter().map(|x| {
+                let part = Ratio::new(x.1.u128(), pair.a.amount.u128()).msb_limit_unsigned();
+                let part = CvmBalanceFilter::from((*part.numer(), *part.denom()));
+                CvmInstruction::Transfer {
+                    to: Destination::Account(CvmAddress::from(x.0.to_string())),
+                    assets: CvmFundsFilter::of(a_asset, part),
+                }
+            });
+            let intent =
+                IntentBankInput::new(a_asset, pair.a.amount.into(), b_asset, b_received.collect());
+            intents.push(intent);
+        }
 
-        let b_received = a_to_b.iter().map(|x| {
-            panic!("{:?} {:?}", x.1.u128(), pair.a.amount.u128());
-            let part = Ratio::new(x.1.u128(), pair.a.amount.u128()).msb_limit_unsigned();
-            let part = CvmBalanceFilter::from((*part.numer(), *part.denom()));
-            CvmInstruction::Transfer {
-                to: Destination::Account(CvmAddress::from(x.0.to_string())),
-                assets: CvmFundsFilter::of(a_asset, part),
-            }
-        });
-        let a_received = b_to_a.iter().map(|x| {
-            let part = Ratio::new(x.1.u128(), pair.b.amount.u128()).msb_limit_unsigned();
-            let part = CvmBalanceFilter::from((*part.numer(), *part.denom()));
-            CvmInstruction::Transfer {
-                to: Destination::Account(CvmAddress::from(x.0.to_string())),
-                assets: CvmFundsFilter::of(b_asset, part),
-            }
-        });
-
-        (
-            IntentBankInput::new(a_asset, pair.a.amount.into(), b_asset, b_received.collect()),
-            IntentBankInput::new(b_asset, pair.b.amount.into(), a_asset, a_received.collect()),
-        )
+        if pair.b.amount.u128() > 0 {
+            let a_received = b_to_a.iter().map(|x| {
+                let part = Ratio::new(x.1.u128(), pair.b.amount.u128()).msb_limit_unsigned();
+                let part = CvmBalanceFilter::from((*part.numer(), *part.denom()));
+                CvmInstruction::Transfer {
+                    to: Destination::Account(CvmAddress::from(x.0.to_string())),
+                    assets: CvmFundsFilter::of(b_asset, part),
+                }
+            });
+            let intent =
+                IntentBankInput::new(b_asset, pair.b.amount.into(), a_asset, a_received.collect());
+            intents.push(intent);
+        }
+        intents
     }
 }
 

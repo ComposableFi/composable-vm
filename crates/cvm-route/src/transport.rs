@@ -21,7 +21,11 @@ pub struct NetworkToNetworkItem {
 }
 
 impl NetworkToNetworkItem {
-    pub fn new(from_network_id: NetworkId, to_network_id: NetworkId, to_network: OtherNetworkItem) -> Self {
+    pub fn new(
+        from_network_id: NetworkId,
+        to_network_id: NetworkId,
+        to_network: OtherNetworkItem,
+    ) -> Self {
         Self {
             from_network_id,
             to_network_id,
@@ -51,7 +55,7 @@ pub struct OtherNetworkItem {
     pub use_shortcut: Option<bool>,
 }
 
-impl OtherNetworkItem  {
+impl OtherNetworkItem {
     pub fn new() -> Self {
         Self {
             ics_20: None,

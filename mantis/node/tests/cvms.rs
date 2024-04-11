@@ -1,7 +1,12 @@
 use bounded_collections::Get;
 use cosmrs::tendermint::block::Height;
 use cosmwasm_std::{Addr, Coin, Coins, Empty};
-use cvm_route::{asset::{AssetItem, AssetReference, NetworkAssetItem}, exchange::ExchangeItem, transport::{NetworkToNetworkItem, OtherNetworkItem}, venue::AssetsVenueItem};
+use cvm_route::{
+    asset::{AssetItem, AssetReference, NetworkAssetItem},
+    exchange::ExchangeItem,
+    transport::{NetworkToNetworkItem, OtherNetworkItem},
+    venue::AssetsVenueItem,
+};
 use cw_cvm_outpost::msg::{CvmGlt, HereItem, NetworkItem, OutpostId};
 use cw_mantis_order::{OrderItem, OrderSubMsg};
 use cw_multi_test::{App, Contract, ContractWrapper, Executor};
@@ -57,26 +62,25 @@ async fn cvm_devnet_case() {
         cvm_address: cw_cvm_outpost_contract.clone(),
     };
 
-    
     let cw_mantis_contract = centauri
-    .instantiate_contract(
-        cw_mantis_order_code_id,
-        admin,
-        &cw_mantis_order_instantiate,
-        &[],
-        "composable_mantis_order",
-        None,
-    )
-    .unwrap();
+        .instantiate_contract(
+            cw_mantis_order_code_id,
+            admin,
+            &cw_mantis_order_instantiate,
+            &[],
+            "composable_mantis_order",
+            None,
+        )
+        .unwrap();
 
     let sender = Addr::unchecked("juno16g2rahf5846rxzp3fwlswy08fz8ccuwk03k57y");
-    
+
     let ACoin = |x: u128| Coin {
         denom: "a".to_string(),
         amount: x.into(),
     };
 
-    let BCoin = |x : u128| Coin {
+    let BCoin = |x: u128| Coin {
         denom: "b".to_string(),
         amount: x.into(),
     };
@@ -85,11 +89,10 @@ async fn cvm_devnet_case() {
         owner: sender.clone(),
         msg: OrderSubMsg {
             wants: ACoin(100),
-            timeout: centauri.block_info().height+100,
+            timeout: centauri.block_info().height + 100,
             convert: None,
             min_fill: None,
             virtual_given: None,
-            
         },
         given: BCoin(100),
         order_id: 1u128.into(),
@@ -99,23 +102,21 @@ async fn cvm_devnet_case() {
         owner: sender.clone(),
         msg: OrderSubMsg {
             wants: BCoin(1000),
-            timeout: centauri.block_info().height+100,
+            timeout: centauri.block_info().height + 100,
             convert: None,
             min_fill: None,
             virtual_given: None,
-
         },
         given: ACoin(1000),
         order_id: 2u128.into(),
     };
     let active_orders = vec![a_to_b, b_to_a];
     let alice = from_mnemonic(
-        "document prefer nurse marriage flavor cheese west when knee drink sorry minimum thunder tilt cherry behave cute stove elder couch badge gown coral expire"
-    , 
+        "document prefer nurse marriage flavor cheese west when knee drink sorry minimum thunder tilt cherry behave cute stove elder couch badge gown coral expire", 
     "m/44'/118'/0'/0/0",).unwrap();
     let tip = Tip {
         block: Height::default(),
-        account: cosmos_sdk_proto::cosmos::auth::v1beta1::BaseAccount{
+        account: cosmos_sdk_proto::cosmos::auth::v1beta1::BaseAccount {
             address: alice.public_key().to_string(),
             pub_key: Some(alice.public_key().to_any().unwrap()),
             account_number: 1,
@@ -129,28 +130,62 @@ async fn cvm_devnet_case() {
             NetworkToNetworkItem::new(2.into(), 1.into(), OtherNetworkItem::new()),
         ],
         assets: vec![
-            AssetItem::new(11.into(), 1.into(), AssetReference::Native { denom: "a".to_string() } ),
-            AssetItem::new(12.into(), 1.into(), AssetReference::Native { denom: "ibc/b".to_string() } ),
-            AssetItem::new(21.into(), 2.into(), AssetReference::Native { denom: "b".to_string() } ),
-            AssetItem::new(22.into(), 2.into(), AssetReference::Native { denom: "ibc/a".to_string() } ),
+            AssetItem::new(
+                11.into(),
+                1.into(),
+                AssetReference::Native {
+                    denom: "a".to_string(),
+                },
+            ),
+            AssetItem::new(
+                12.into(),
+                1.into(),
+                AssetReference::Native {
+                    denom: "ibc/b".to_string(),
+                },
+            ),
+            AssetItem::new(
+                21.into(),
+                2.into(),
+                AssetReference::Native {
+                    denom: "b".to_string(),
+                },
+            ),
+            AssetItem::new(
+                22.into(),
+                2.into(),
+                AssetReference::Native {
+                    denom: "ibc/a".to_string(),
+                },
+            ),
         ],
-        exchanges: 
-        vec![
-            ExchangeItem::new(1.into(), 2.into(), cvm_route::exchange::ExchangeType::OsmosisPoolManagerModuleV1Beta1 { pool_id: 1, token_a: "b".to_string(), token_b: "ibc/a".to_string() }),
-        ],
-        networks: 
-        vec![        
+        exchanges: vec![ExchangeItem::new(
+            1.into(),
+            2.into(),
+            cvm_route::exchange::ExchangeType::OsmosisPoolManagerModuleV1Beta1 {
+                pool_id: 1,
+                token_a: "b".to_string(),
+                token_b: "ibc/a".to_string(),
+            },
+        )],
+        networks: vec![
             NetworkItem {
                 network_id: 1.into(),
-                outpost: Some(
-                    OutpostId::CosmWasm { contract: cw_cvm_outpost_contract.clone(), executor_code_id: cw_cvm_executor_code_id, admin: sender.clone() }),
+                outpost: Some(OutpostId::CosmWasm {
+                    contract: cw_cvm_outpost_contract.clone(),
+                    executor_code_id: cw_cvm_executor_code_id,
+                    admin: sender.clone(),
+                }),
                 accounts: None,
                 ibc: None,
             },
             NetworkItem {
                 network_id: 2.into(),
-                outpost: Some(
-                    OutpostId::CosmWasm { contract: cw_cvm_outpost_contract.clone(), executor_code_id: cw_cvm_executor_code_id, admin: sender.clone() }),
+                outpost: Some(OutpostId::CosmWasm {
+                    contract: cw_cvm_outpost_contract.clone(),
+                    executor_code_id: cw_cvm_executor_code_id,
+                    admin: sender.clone(),
+                }),
                 accounts: None,
                 ibc: None,
             },
@@ -162,15 +197,25 @@ async fn cvm_devnet_case() {
             NetworkAssetItem::new(1.into(), 22.into(), 11.into()),
         ],
         asset_venue_items: vec![
-            AssetsVenueItem::new(cvm_route::venue::VenueId::Exchange(1.into()), 21.into(), 22.into()),
-            AssetsVenueItem::new(cvm_route::venue::VenueId::Exchange(1.into()), 22.into(), 21.into()),
+            AssetsVenueItem::new(
+                cvm_route::venue::VenueId::Exchange(1.into()),
+                21.into(),
+                22.into(),
+            ),
+            AssetsVenueItem::new(
+                cvm_route::venue::VenueId::Exchange(1.into()),
+                22.into(),
+                21.into(),
+            ),
         ],
     });
-    let solution = mantis_node::mantis::blackbox::solve::<True>(active_orders, &alice, &tip, cvm_glt, router).await;
+    let solution =
+        mantis_node::mantis::blackbox::solve::<True>(active_orders, &alice, &tip, cvm_glt, router)
+            .await;
     panic!("solution: {:?}", solution);
 }
 
-enum True{}
+enum True {}
 
 impl Get<bool> for True {
     fn get() -> bool {

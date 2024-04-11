@@ -110,7 +110,7 @@ fn new_exchange(exchange: &Exchange) -> CvmInstruction {
     }
 }
 
-pub async fn get_route(
+pub async fn get_routes(
     route_provider: &str,
     input: IntentBankInput,
     cvm_glt: &GetConfigResponse,
@@ -199,7 +199,7 @@ async fn intent_banks_to_cvm_program(
     router_api: &str,
     salt: &Vec<u8>,
 ) -> CvmProgram {
-    let (a, b) = IntentBankInput::find_intent_amount(
+    let intents = IntentBankInput::find_intent_amount(
         pair_solution.cows.as_ref(),
         all_orders,
         pair_solution.optimal_price,
@@ -207,18 +207,15 @@ async fn intent_banks_to_cvm_program(
         pair_solution.ab.clone(),
     );
 
-    log::info!(target:"mantis::solver::", "found for cross chain a: {:?}, b: {:?}", a, b);
+    log::info!(target:"mantis::solver::", "intents: {:?}", intents);
 
     let mut instructions = vec![];
 
-    if a.in_asset_amount.0.gt(&0) {
-        let mut a_cvm_route = get_route(router_api, a, cvm_glt, salt.as_ref()).await;
-        instructions.append(&mut a_cvm_route);
+    for intent in intents.into_iter().filter(|x| x.in_asset_amount.0.gt(&0)) {
+        let mut cvm_routes = get_routes(router_api, intent, cvm_glt, salt.as_ref()).await;
+        instructions.append(&mut cvm_routes);
     }
-    if b.in_asset_amount.0.gt(&0) {
-        let mut b_cvm_route = get_route(router_api, b, cvm_glt, salt.as_ref()).await;
-        instructions.append(&mut b_cvm_route);
-    }
+
     log::info!(target: "mantis::solver", "built instructions: {:?}", instructions);
 
     let cvm_program = CvmProgram {
