@@ -24,6 +24,12 @@ fn cvm_devnet_case() {
         cw_cvm_outpost::contract::query::query,
     );
 
+    let cw_cvm_executor_wasm = ContractWrapper::new(
+        cw_cvm_executor::contract::execute,
+        cw_cvm_executor::contract::instantiate,
+        cw_cvm_executor::contract::query,
+    );
+
     let sender = Addr::unchecked("juno16g2rahf5846rxzp3fwlswy08fz8ccuwk03k57y");
 }
 

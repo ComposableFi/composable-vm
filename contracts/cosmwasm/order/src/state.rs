@@ -1,17 +1,17 @@
 //! simple operation without constraint checks and calculations
 use cw_storage_plus::MultiIndex;
+use mantis_cw::Denom;
 
 use crate::*;
 
 
 
-/// the connection description from first network to second
-// pub(crate) const NETWORK_TO_NETWORK: Map<(NetworkId, NetworkId), NetworkToNetworkItem> =
-//     Map::new("network_to_network");
+/// tracks best price for A in pair, so that simplest solution which can take ALL orders can pay this one
+pub(crate) const PAIR_BEST_A: Map<DenomPair, Ratio> =
+    Map::new("PAIR_BEST_A");
 
-
-
-// pub const BEST_A_PROIE: Ratio = ;
+pub(crate) const PAIR_BEST_B: Map<DenomPair, Ratio> =
+    Map::new("PAIR_BEST_B");
 
 /// so we need to have several solution per pair to pick one best
 pub struct SolutionIndexes<'a> {

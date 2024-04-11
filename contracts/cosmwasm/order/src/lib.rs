@@ -449,6 +449,14 @@ impl OrderContract<'_> {
         Ok(())
     }
 
+    
+    /// simply exchange maximal given token for best price for other side
+    /// mostly for testing purposes because  as any one bad price can prevent execution (even if it is small amount) 
+    #[msg(exec)]
+    pub fn exchange(&self, mut ctx: ExecCtx, limit: Ratio) -> StdResult<Response> {
+        todo!();
+    }
+
     /// Simple get all orders
     #[msg(query)]
     pub fn get_all_orders(&self, ctx: QueryCtx) -> StdResult<Vec<OrderItem>> {
