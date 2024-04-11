@@ -94,6 +94,10 @@ pub struct SimulateArgs {
     /// format: "--coins="token1amount1,token2amount2" --coins="token2amount2,token3amount3"
     #[arg(long, value_delimiter = ' ', num_args = 1..)]
     pub coins: Vec<String>,
+
+    /// the larger value the smaller deviation for randomized order
+    #[arg(long, default_value_t = 3)]
+    pub random_parts: u8,
 }
 
 #[derive(clap::Parser, Debug)]

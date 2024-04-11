@@ -18,9 +18,10 @@ fn cows_single_no_match() {
                 denom: "b".to_string(),
                 amount: 200000u128.into(),
             },
-            transfer: None,
+            convert: None,
             timeout: 1,
             min_fill: None,
+            virtual_given: None,
         },
     };
     let msg = cw_mantis_order::sv::ContractExecMsg::OrderContract(msg);
@@ -52,9 +53,10 @@ fn cows_two_perfect_math_orders() {
                 denom: "b".to_string(),
                 amount: 200000u128.into(),
             },
-            transfer: None,
+            convert: None,
             timeout: 1,
             min_fill: None,
+            virtual_given: None,
         },
     };
     let msg = cw_mantis_order::sv::ContractExecMsg::OrderContract(msg);
@@ -72,9 +74,10 @@ fn cows_two_perfect_math_orders() {
                 denom: "a".to_string(),
                 amount: 2u128.into(),
             },
-            transfer: None,
+            convert: None,
             timeout: 1,
             min_fill: None,
+            virtual_given: None,
         },
     };
     let given = Coin::new(200000u128, "b");
@@ -113,9 +116,10 @@ fn cows_two_orders_give_some_more_than_each_wants() {
                 denom: "a".to_string(),
                 amount: 200000u128.into(),
             },
-            transfer: None,
+            convert: None,
             timeout,
             min_fill: None,
+            virtual_given: None,
         },
     };
     let given = Coin::new(2u128, "b");
@@ -127,9 +131,10 @@ fn cows_two_orders_give_some_more_than_each_wants() {
                 denom: "b".to_string(),
                 amount: 2u128.into(),
             },
-            transfer: None,
+            convert: None,
             timeout,
             min_fill: None,
+            virtual_given: None,
         },
     };
     let given = Coin::new(200000u128, "a");
@@ -142,9 +147,10 @@ fn cows_two_orders_give_some_more_than_each_wants() {
                 denom: "a".to_string(),
                 amount: 200000u128.into(),
             },
-            transfer: None,
+            convert: None,
             timeout,
             min_fill: None,
+            virtual_given: None,
         },
     };
     let given = Coin::new(2u128, "b");
@@ -156,9 +162,10 @@ fn cows_two_orders_give_some_more_than_each_wants() {
                 denom: "b".to_string(),
                 amount: 2u128.into(),
             },
-            transfer: None,
+            convert: None,
             timeout,
             min_fill: None,
+            virtual_given: None,
         },
     };
     let given = Coin::new(200000u128, "a");
@@ -194,9 +201,10 @@ fn cows_scenarios() {
                 denom: "a".to_string(),
                 amount: 200000u128.into(),
             },
-            transfer: None,
+            convert: None,
             timeout: 1,
             min_fill: None,
+            virtual_given: None,
         },
     };
     let given = Coin::new(2u128, "b");
@@ -209,9 +217,10 @@ fn cows_scenarios() {
                 denom: "b".to_string(),
                 amount: (2u128 / 2).into(),
             },
-            transfer: None,
+            convert: None,
             timeout: 1,
             min_fill: None,
+            virtual_given: None,
         },
     };
     let given = Coin::new(200000u128 / 2, "a");
@@ -232,9 +241,10 @@ fn cows_scenarios() {
                 denom: "b".to_string(),
                 amount: (2u128 / 2).into(),
             },
-            transfer: None,
+            convert: None,
             timeout: 1,
             min_fill: None,
+            virtual_given: None,
         },
     };
     let given = Coin::new(200000u128 / 2, "a");
@@ -254,6 +264,7 @@ fn cows_scenarios() {
         let (msg, funds): (cw_mantis_order::ExecMsg, cosmrs::Coin) = randomize_order(
             &"20a,200000b".to_string(),
             Height::try_from(env.block.height).unwrap(),
+            3,
         );
 
         send_order(

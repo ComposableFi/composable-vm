@@ -14,7 +14,7 @@ use super::cosmos::{
     cosmwasm::parse_coin_pair,
 };
 
-pub fn randomize_order(pair: &String, tip: Height) -> (cw_mantis_order::ExecMsg, cosmrs::Coin) {
+pub fn randomize_order(pair: &String, tip: Height, random_parts: u8) -> (cw_mantis_order::ExecMsg, cosmrs::Coin) {
     let pair = parse_coin_pair(pair);
 
     let pair = if rand::random::<bool>() {
@@ -22,8 +22,8 @@ pub fn randomize_order(pair: &String, tip: Height) -> (cw_mantis_order::ExecMsg,
     } else {
         (pair.1.clone(), pair.0.clone())
     };
-    let coin_0_random = randomize_coin(pair.0.amount.u128());
-    let coin_1_random = randomize_coin(pair.1.amount.u128());
+    let coin_0_random = randomize_coin(pair.0.amount.u128(), random_parts);
+    let coin_1_random = randomize_coin(pair.1.amount.u128(), random_parts);
 
     let msg = cw_mantis_order::ExecMsg::Order {
         msg: OrderSubMsg {
@@ -31,9 +31,10 @@ pub fn randomize_order(pair: &String, tip: Height) -> (cw_mantis_order::ExecMsg,
                 amount: coin_0_random.into(),
                 denom: pair.0.denom.clone(),
             },
-            transfer: None,
+            convert: None,
             timeout: timeout(tip, 100),
             min_fill: None,
+            virtual_given : None
         },
     };
     let fund = cosmrs::Coin {
@@ -43,8 +44,9 @@ pub fn randomize_order(pair: &String, tip: Height) -> (cw_mantis_order::ExecMsg,
     (msg, fund)
 }
 
-pub fn randomize_coin(coin_0_amount: u128) -> u128 {
-    let delta_0 = 1.max(coin_0_amount / 10);
+pub fn randomize_coin(coin_0_amount: u128, random_parts: u8) -> u128 {
+    let delta_0 = 1.max(coin_0_amount / random_parts as u128);
+
     let coin_0_random = rand_distr::Uniform::new(coin_0_amount - delta_0, coin_0_amount + delta_0);
     let coin_0_random: u128 = coin_0_random.sample(&mut rand::thread_rng());
     coin_0_random
@@ -70,9 +72,10 @@ pub async fn simulate_order(
     rpc: &CosmosChainInfo,
     tip: &Tip,
     gas: Gas,
+    random_parts: u8,
 ) {
     log::info!("========================= simulate_order =========================");
-    let (msg, fund) = randomize_order(&coins_pair, tip.block);
+    let (msg, fund) = randomize_order(&coins_pair, tip.block, random_parts);
 
     println!("msg: {:?}", msg);
 

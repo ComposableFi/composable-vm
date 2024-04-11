@@ -109,7 +109,7 @@ mod test {
                     denom: "wants".to_string(),
                     amount: 100u128.into(),
                 },
-                transfer: None,
+                convert: None,
                 timeout: 1,
                 min_fill: None,
             },
@@ -136,7 +136,7 @@ mod test {
                     denom: "wants".to_string(),
                     amount: 2000000000u128.into(),
                 },
-                transfer: None,
+                convert: None,
                 timeout: 1,
                 min_fill: None,
             },
@@ -180,11 +180,17 @@ pub struct OrderSubMsg {
     /// but additionally with attached transfer route Alice picked.  
     /// ```
     /// This allow to to CoWs for assets not on this chain.
-    pub transfer: Option<AssetId>,
+    pub convert: Option<AssetId>,
     /// until what block to wait for solution, if none, then cleaned up
     pub timeout: Block,
     /// if ok with partial fill, what is the minimum amount
     pub min_fill: Option<Ratio>,
+
+    /// promise to settle some amount of other orders,
+    /// does not influences optimal price neither can violate it
+    /// can be used iff it is better than optimal price (unless optimal price violates current limit)
+    /// used by solvers for cross chain routers promises
+    pub virtual_given: Option<Coin>,
 }
 
 #[cw_serde]

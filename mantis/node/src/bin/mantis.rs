@@ -149,6 +149,7 @@ async fn simulate_orders(simulate_args: &SimulateArgs) {
         &rpc,
         &tip,
         gas,
+        simulate_args.random_parts,
     )
     .await;
 }
