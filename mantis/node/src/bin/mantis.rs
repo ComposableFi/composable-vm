@@ -98,7 +98,7 @@ async fn solve_orders(solver_args: &SolverArgs) {
                 rpc: args.rpc_centauri.clone(),
                 chain_id: args.main_chain_id.clone(),
             };
-            solve(
+            get_data_and_solve(
                 &mut write_client,
                 &mut wasm_read_client,
                 &solver_args.cvm_contract,
@@ -161,7 +161,7 @@ async fn simulate_orders(simulate_args: &SimulateArgs) {
 /// gets data from chain pools/fees on osmosis and neutron
 /// gets CVM routing data
 /// uses cfmm algorithm
-async fn solve(
+async fn get_data_and_solve(
     _write_client: &mut CosmWasmWriteClient,
     cosmos_query_client: &mut CosmWasmReadClient,
     // really this should query Python Blackbox
@@ -175,15 +175,29 @@ async fn solve(
     router_api: &String,
 ) {
     log::info!(target: "mantis::solver", "Solving orders");
-    let cows_per_pair = mantis_node::mantis::solve::find_cows(&all_orders);
     let cvm_glt = match cvm_contact {
         Some(x) => Some(get_cvm_glt(&x, cosmos_query_client).await),
         None => None,
     };
-    
+
+    let msgs = solve(all_orders, signing_key, tip, cvm_glt, router_api).await;
+
+    for msg in msgs {
+        send_solution(msg, tip, signing_key, order_contract, rpc, gas).await;
+    }
+}
+
+async fn solve(
+    all_orders: Vec<OrderItem>,
+    signing_key: &cosmrs::crypto::secp256k1::SigningKey,
+    tip: &Tip,
+    cvm_glt: Option<cw_cvm_outpost::msg::GetConfigResponse>,
+    router_api: &String,
+) -> Vec<cw_mantis_order::ExecMsg> {
+    let cows_per_pair = mantis_node::mantis::solve::find_cows(&all_orders);
     let mut msgs = vec![];
     for pair_solution in cows_per_pair {
-        let salt = crate::cvm::get_salt(signing_key, tip, pair_solution.ab.clone());
+        let salt = crate::cvm::calculate_salt(signing_key, tip, pair_solution.ab.clone());
         let cvm_program = if let Some(ref cvm_glt) = cvm_glt {
             let cvm_program = intent_banks_to_cvm_program(
                 pair_solution.clone(),
@@ -220,10 +234,7 @@ async fn solve(
         let msg = cw_mantis_order::ExecMsg::Solve { msg };
         msgs.push(msg);
     }
-
-    for msg in msgs {
-        send_solution(msg, tip, signing_key, order_contract, rpc, gas).await;
-    }
+    msgs
 }
 
 async fn intent_banks_to_cvm_program(
