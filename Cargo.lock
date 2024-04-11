@@ -2423,6 +2423,7 @@ dependencies = [
  "rustfmt-wrapper",
  "serde",
  "serde-json-wasm 1.0.1",
+ "sha2 0.10.8",
  "strum",
  "strum_macros",
  "tokio",

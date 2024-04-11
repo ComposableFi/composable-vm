@@ -175,14 +175,15 @@ async fn solve(
     router_api: &String,
 ) {
     log::info!(target: "mantis::solver", "Solving orders");
-    let salt = crate::cvm::get_salt(signing_key, tip);
     let cows_per_pair = mantis_node::mantis::solve::find_cows(&all_orders);
     let cvm_glt = match cvm_contact {
         Some(x) => Some(get_cvm_glt(&x, cosmos_query_client).await),
         None => None,
     };
-
+    
+    let mut msgs = vec![];
     for pair_solution in cows_per_pair {
+        let salt = crate::cvm::get_salt(signing_key, tip, pair_solution.ab.clone());
         let cvm_program = if let Some(ref cvm_glt) = cvm_glt {
             let cvm_program = intent_banks_to_cvm_program(
                 pair_solution.clone(),
@@ -198,18 +199,30 @@ async fn solve(
             None
         };
 
-        send_solution(
-            pair_solution.cows,
-            cvm_program,
-            tip,
-            pair_solution.optimal_price.into(),
-            signing_key,
-            order_contract,
-            rpc,
-            gas,
-            salt.to_vec(),
-        )
-        .await;
+        // would be reasonable to do do cross chain if it solves some % of whole trade
+        let route = if let Some(cvm_program) = cvm_program
+            && random::<bool>()
+        {
+            Some(CrossChainPart::new(
+                cvm_program,
+                salt.clone(),
+                pair_solution.optimal_price.into(),
+            ))
+        } else {
+            None
+        };
+        let msg = SolutionSubMsg {
+            cows: pair_solution.cows.clone(),
+            route,
+            timeout: tip.timeout(12),
+            optimal_price: pair_solution.optimal_price.into(),
+        };
+        let msg = cw_mantis_order::ExecMsg::Solve { msg };
+        msgs.push(msg);
+    }
+
+    for msg in msgs {
+        send_solution(msg, tip, signing_key, order_contract, rpc, gas).await;
     }
 }
 
@@ -250,34 +263,15 @@ async fn intent_banks_to_cvm_program(
 }
 
 async fn send_solution(
-    cows: Vec<OrderSolution>,
-    program: Option<CvmProgram>,
+    msg: cw_mantis_order::ExecMsg,
     tip: &Tip,
-    optimal_price: Ratio,
     signing_key: &cosmrs::crypto::secp256k1::SigningKey,
     order_contract: &String,
     rpc: &CosmosChainInfo,
     gas: Gas,
-    salt: Vec<u8>,
 ) {
     log::info!("========================= settle =========================");
-    // would be reasonable to do do cross chain if it solves some % of whole trade
-    let route = if let Some(program) = program
-        && random::<bool>()
-    {
-        Some(CrossChainPart::new(program, salt, optimal_price))
-    } else {
-        None
-    };
-    let solution = SolutionSubMsg {
-        cows,
-        route,
-        timeout: tip.timeout(12),
-        optimal_price,
-    };
-
     let auth_info = simulate_and_set_fee(signing_key, &tip.account, gas).await;
-    let msg = cw_mantis_order::ExecMsg::Solve { msg: solution };
     let msg = to_exec_signed(signing_key, order_contract.clone(), msg);
     let result = tx_broadcast_single_signed_msg(
         msg.to_any().expect("proto"),

@@ -51,7 +51,7 @@ env_logger = {workspace = true}
 cw-multi-test = { workspace = true }
 petgraph = {workspace = true}
 num-rational = {workspace = true, features = ["cosmwasm", "serde", "json-schema"], default-features = false}
-
+sha2 = {workspace = true}
 cw-orch = { workspace = true}
 
 [dev-dependencies]
