@@ -309,7 +309,7 @@ fn execute_solve(
         let msg = ExecMsg::Solve {
             msg: SolutionSubMsg {
                 cows,
-                optimal_price,
+                optimal_price : optimal_price.into(),
                 route: None,
                 timeout: 12,
             },

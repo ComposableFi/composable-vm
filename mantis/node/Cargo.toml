@@ -49,6 +49,7 @@ cw-multi-test = { workspace = true }
 petgraph = {workspace = true}
 num-rational = {workspace = true, features = ["cosmwasm", "serde", "json-schema"], default-features = false}
 
+cw-orch = { workspace = true}
 
 [dev-dependencies]
 rustfmt-wrapper = "0.2.1"
