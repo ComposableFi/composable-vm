@@ -1,5 +1,5 @@
 use cosmwasm_std::{ensure, BankMsg, Event, StdResult};
-use cvm_runtime::{outpost::ExecuteProgramMsg, AssetId};
+use cvm_runtime::{outpost::ExecuteProgramMsg, shared::CvmProgram, AssetId};
 use mantis_cw::{DenomPair, OrderSide};
 
 pub type Ratio = (u64, u64); // num_rational::Ratio<u64>;
@@ -212,6 +212,20 @@ pub struct CrossChainPart {
     pub msg: ExecuteProgramMsg,
     /// what price is used to take from orders
     pub optimal_price: Ratio,
+}
+
+impl CrossChainPart {
+    pub fn new(program: CvmProgram, salt: Vec<u8>, optimal_price: Ratio) -> Self {
+        Self {
+            msg: ExecuteProgramMsg {
+                program,
+                salt,
+                assets: None,
+                tip: None,
+            },
+            optimal_price,
+        }
+    }
 }
 
 /// price information will not be used on chain or deciding.

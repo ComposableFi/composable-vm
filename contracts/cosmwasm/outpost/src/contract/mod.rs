@@ -1,8 +1,8 @@
 pub mod execute;
 pub mod ibc;
 pub mod query;
-pub mod sudo;
 pub mod reply;
+pub mod sudo;
 
 use crate::{
     error::{ContractError, Result},
@@ -55,8 +55,6 @@ pub fn reply(deps: DepsMut, _env: Env, msg: Reply) -> Result<Response> {
     }
     Err(ContractError::UnknownReply)
 }
-
-
 
 fn handle_transfer_sent(deps: DepsMut, msg: Reply) -> Result {
     deps.api.debug(&format!(

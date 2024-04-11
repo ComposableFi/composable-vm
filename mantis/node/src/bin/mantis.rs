@@ -13,6 +13,7 @@ use mantis_node::{
         cosmos::{client::*, cosmwasm::to_exec_signed, *},
         indexer::{get_active_orders, get_cvm_glt},
         simulate,
+        solve::PairSolution,
     },
     prelude::*,
 };
@@ -68,8 +69,12 @@ async fn solve_orders(solver_args: &SolverArgs) {
         let tip =
             get_latest_block_and_account_by_key(&args.rpc_centauri, &args.grpc_centauri, &signer)
                 .await;
-        let stale_orders =
-            mantis_node::mantis::indexer::get_stale_orders(&args.order_contract, &mut wasm_read_client, &tip).await;
+        let stale_orders = mantis_node::mantis::indexer::get_stale_orders(
+            &args.order_contract,
+            &mut wasm_read_client,
+            &tip,
+        )
+        .await;
         if stale_orders.len() > 0 {
             log::warn!(target: "mantis::autopilot", "timedouted orders");
             autopilot::cleanup(
@@ -169,30 +174,27 @@ async fn solve(
     router_api: &String,
 ) {
     log::info!(target: "mantis::solver", "Solving orders");
+    let salt = crate::cvm::get_salt(signing_key, tip);
 
     let cows_per_pair = mantis_node::mantis::solve::find_cows(&all_orders);
     for pair_solution in cows_per_pair {
-        let salt = crate::cvm::get_salt(signing_key, tip);
         let cvm_program = if let Some(cvm_contact) = cvm_contact {
             let cvm_glt = get_cvm_glt(cvm_contact, cosmos_query_client).await;
-            let (a, b) = mantis_node::mantis::solve::IntentBankInput::find_intent_amount(
-                pair_solution.cows.as_ref(),
+
+            let cvm_program = intent_banks_to_cvm_program(
+                pair_solution.clone(),
                 &all_orders,
-                pair_solution.optimal_price,
                 &cvm_glt,
-                pair_solution.ab.clone(),
-            );
+                router_api,
+                &salt,
+            )
+            .await;
 
-            let a_cvm_route = blackbox::get_route(router_api, a, &cvm_glt, salt.as_ref()).await;
-            let b_cvm_route = blackbox::get_route(router_api, b, &cvm_glt, salt.as_ref()).await;
-
-            Some(CvmProgram {
-                tag: salt.to_vec(),
-                instructions: [a_cvm_route, b_cvm_route].concat().to_vec(),
-            })
+            Some(cvm_program)
         } else {
             None
         };
+
         send_solution(
             pair_solution.cows,
             cvm_program,
@@ -206,6 +208,31 @@ async fn solve(
         )
         .await;
     }
+}
+
+async fn intent_banks_to_cvm_program(
+    pair_solution: PairSolution,
+    all_orders: &Vec<OrderItem>,
+    cvm_glt: &cw_cvm_outpost::msg::GetConfigResponse,
+    router_api: &String,
+    salt: &Vec<u8>,
+) -> CvmProgram {
+    let (a, b) = mantis_node::mantis::solve::IntentBankInput::find_intent_amount(
+        pair_solution.cows.as_ref(),
+        all_orders,
+        pair_solution.optimal_price,
+        cvm_glt,
+        pair_solution.ab.clone(),
+    );
+
+    let a_cvm_route = blackbox::get_route(router_api, a, cvm_glt, salt.as_ref()).await;
+    let b_cvm_route = blackbox::get_route(router_api, b, cvm_glt, salt.as_ref()).await;
+
+    let cvm_program = CvmProgram {
+        tag: salt.to_vec(),
+        instructions: [a_cvm_route, b_cvm_route].concat().to_vec(),
+    };
+    cvm_program
 }
 
 async fn send_solution(
@@ -224,15 +251,7 @@ async fn send_solution(
     let route = if let Some(program) = program
         && random::<bool>()
     {
-        Some(CrossChainPart {
-            msg: cvm_runtime::outpost::ExecuteProgramMsg {
-                salt,
-                program,
-                assets: None,
-                tip: None,
-            },
-            optimal_price,
-        })
+        Some(CrossChainPart::new(program, salt, optimal_price))
     } else {
         None
     };
