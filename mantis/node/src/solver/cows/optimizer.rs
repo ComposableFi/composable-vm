@@ -2,9 +2,10 @@ use mantis_cw::OrderSide;
 use rand_distr::num_traits::FromPrimitive;
 
 use crate::prelude::*;
-use crate::solver::orderbook::*;
-use crate::solver::solution::Solution;
+use crate::solver::cows::orderbook::*;
 use crate::solver::types::*;
+
+use super::solution::Solution;
 
 #[derive(Clone, Debug)]
 pub struct Solver<Id> {

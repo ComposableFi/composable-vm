@@ -112,6 +112,7 @@ mod test {
                 convert: None,
                 timeout: 1,
                 min_fill: None,
+                virtual_given: None,
             },
             given: Coin {
                 denom: "given".to_string(),
@@ -119,13 +120,15 @@ mod test {
             },
             order_id: 1u128.into(),
         };
-        order.fill(50u128.into(), optimal_price).unwrap();
+        order.fill(50u128.into(), optimal_price.into()).unwrap();
         assert_eq!(order.given.amount, Uint128::from(50u128));
         assert_eq!(order.msg.wants.amount, Uint128::from(50u128));
-        order.fill(15u128.into(), optimal_price).unwrap();
+        order.fill(15u128.into(), optimal_price.into()).unwrap();
         assert_eq!(order.given.amount, Uint128::from(35u128));
         assert_eq!(order.msg.wants.amount, Uint128::from(35u128));
-        order.fill(Uint128::from(50u128), optimal_price).unwrap();
+        order
+            .fill(Uint128::from(50u128), optimal_price.into())
+            .unwrap();
         assert_eq!(order.given.amount, Uint128::from(0u128));
         assert_eq!(order.msg.wants.amount, Uint128::from(0u128));
 
@@ -139,6 +142,7 @@ mod test {
                 convert: None,
                 timeout: 1,
                 min_fill: None,
+                virtual_given: None,
             },
             given: Coin {
                 denom: "given".to_string(),
@@ -147,8 +151,10 @@ mod test {
             order_id: 1u128.into(),
         };
 
-        assert!(order.fill(500u128.into(), optimal_price).is_err());
-        order.fill(50000000u128.into(), optimal_price).unwrap();
+        assert!(order.fill(500u128.into(), optimal_price.into()).is_err());
+        order
+            .fill(50000000u128.into(), optimal_price.into())
+            .unwrap();
         assert_eq!(order.given.amount, Uint128::from(98u128));
     }
 }

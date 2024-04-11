@@ -1,5 +1,6 @@
 use mantis_cw::OrderSide;
-use mantis_node::solver::{orderbook::OrderList, solution::Solution, types::SolverOrder};
+use mantis_node::solver::cows::{orderbook::OrderList, solution::Solution};
+use mantis_node::solver::types::SolverOrder;
 use mantis_node::{prelude::*, solver::types::Price};
 
 fn main() {

@@ -155,7 +155,7 @@ async fn simulate_orders(simulate_args: &SimulateArgs) {
     .await;
 }
 
-enum CoinToss{}
+enum CoinToss {}
 
 impl Get<bool> for CoinToss {
     fn get() -> bool {
@@ -189,13 +189,19 @@ async fn get_data_and_solve(
         None => None,
     };
 
-    let msgs = solve::<CoinToss>(all_orders, signing_key, tip, cvm_glt, router_api).await;
+    let msgs = mantis_node::mantis::blackbox::solve::<CoinToss>(
+        all_orders,
+        signing_key,
+        tip,
+        cvm_glt,
+        router_api,
+    )
+    .await;
 
     for msg in msgs {
         send_solution(msg, tip, signing_key, order_contract, rpc, gas).await;
     }
 }
-
 
 async fn send_solution(
     msg: cw_mantis_order::ExecMsg,

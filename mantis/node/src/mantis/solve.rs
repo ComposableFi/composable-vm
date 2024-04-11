@@ -9,7 +9,7 @@ use num_rational::Ratio;
 
 use crate::{
     prelude::*,
-    solver::{orderbook::OrderList, solution::Solution},
+    solver::cows::{orderbook::OrderList, solution::Solution},
 };
 
 /// input batched summarized from users for routing

@@ -32,10 +32,12 @@ pub struct BlockAgent {
 
 impl Debug for BlockAgent {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.debug_struct("BlockAgent").field("tip", &self.tip).field("public_key", &self.key.public_key()).finish()
+        f.debug_struct("BlockAgent")
+            .field("tip", &self.tip)
+            .field("public_key", &self.key.public_key())
+            .finish()
     }
 }
-
 
 impl Tip {
     pub fn timeout(&self, delta: u32) -> u64 {

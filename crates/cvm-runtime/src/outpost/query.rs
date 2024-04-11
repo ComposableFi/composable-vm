@@ -99,7 +99,7 @@ pub struct GetAssetResponse {
     pub asset: AssetItem,
 }
 
-pub type CvmGlt = GetConfigResponse; 
+pub type CvmGlt = GetConfigResponse;
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "snake_case")]
