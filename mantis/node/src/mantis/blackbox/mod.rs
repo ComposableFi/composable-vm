@@ -147,7 +147,7 @@ pub async fn solve<Decider: Get<bool>>(
     signing_key: &cosmrs::crypto::secp256k1::SigningKey,
     tip: &Tip,
     cvm_glt: Option<cw_cvm_outpost::msg::CvmGlt>,
-    router: &String,
+    router: &str,
 ) -> Vec<cw_mantis_order::ExecMsg> {
     let cows_per_pair = find_cows(&active_orders);
     let mut msgs = vec![];
@@ -196,7 +196,7 @@ async fn intent_banks_to_cvm_program(
     pair_solution: PairSolution,
     all_orders: &Vec<OrderItem>,
     cvm_glt: &cw_cvm_outpost::msg::GetConfigResponse,
-    router_api: &String,
+    router_api: &str,
     salt: &Vec<u8>,
 ) -> CvmProgram {
     let (a, b) = IntentBankInput::find_intent_amount(
