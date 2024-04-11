@@ -1,6 +1,6 @@
 use crate::{
     batch::BatchResponse,
-    contract::ReplyId,
+    contract::reply::ReplyId,
     error::{ContractError, Result},
     events::make_event,
     state::{self, network::load_this},

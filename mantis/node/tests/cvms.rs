@@ -18,6 +18,12 @@ fn cvm_devnet_case() {
         cw_mantis_order::entry_points::query,
     );
 
+    let cw_cvm_outpost_wasm = ContractWrapper::new(
+        cw_cvm_outpost::contract::execute::execute,
+        cw_cvm_outpost::contract::instantiate,
+        cw_cvm_outpost::contract::query::query,
+    );
+
     let sender = Addr::unchecked("juno16g2rahf5846rxzp3fwlswy08fz8ccuwk03k57y");
 }
 

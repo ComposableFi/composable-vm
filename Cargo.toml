@@ -165,6 +165,20 @@ cw-mantis-order = { path = "./contracts/cosmwasm/order", features = [
     "std",
 ] }
 
+
+cw-cvm-executor = { path = "./contracts/cosmwasm/executor", features = [
+    "json-schema",
+    "std",
+] }
+
+cw-cvm-outpost = { path = "./contracts/cosmwasm/outpost", features = [
+    "json-schema",
+    "std",
+] }
+
+
+
+
 fraction = { version = "0.15.1", default-features = false }
 
 cw-orch = { version = "0.21.2", default-features = false}

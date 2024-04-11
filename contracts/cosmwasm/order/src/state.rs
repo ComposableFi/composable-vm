@@ -3,6 +3,16 @@ use cw_storage_plus::MultiIndex;
 
 use crate::*;
 
+
+
+/// the connection description from first network to second
+// pub(crate) const NETWORK_TO_NETWORK: Map<(NetworkId, NetworkId), NetworkToNetworkItem> =
+//     Map::new("network_to_network");
+
+
+
+// pub const BEST_A_PROIE: Ratio = ;
+
 /// so we need to have several solution per pair to pick one best
 pub struct SolutionIndexes<'a> {
     /// (token pair secondary index), (stored item), (stored item full key)

@@ -2,6 +2,7 @@ pub mod execute;
 pub mod ibc;
 pub mod query;
 pub mod sudo;
+pub mod reply;
 
 use crate::{
     error::{ContractError, Result},
@@ -15,24 +16,10 @@ use cw2::ensure_from_older_version;
 use cw2::set_contract_version;
 use ibc_app_transfer_types::proto::transfer::v1::MsgTransferResponse;
 
-use self::ibc::make_ibc_failure_event;
+use self::{ibc::make_ibc_failure_event, reply::ReplyId};
 
 const CONTRACT_NAME: &str = include_str!("contract_name.txt");
 const CONTRACT_VERSION: &str = env!("CARGO_PKG_VERSION");
-
-#[derive(PartialEq, Debug, Clone, Copy, enumn::N)]
-#[repr(u64)]
-pub enum ReplyId {
-    InstantiateExecutor = 0,
-    ExecProgram = 2,
-    TransportSent = 3,
-}
-
-impl From<ReplyId> for u64 {
-    fn from(val: ReplyId) -> Self {
-        val as u64
-    }
-}
 
 #[cfg_attr(not(feature = "library"), cosmwasm_std::entry_point)]
 pub fn instantiate(
@@ -68,6 +55,8 @@ pub fn reply(deps: DepsMut, _env: Env, msg: Reply) -> Result<Response> {
     }
     Err(ContractError::UnknownReply)
 }
+
+
 
 fn handle_transfer_sent(deps: DepsMut, msg: Reply) -> Result {
     deps.api.debug(&format!(

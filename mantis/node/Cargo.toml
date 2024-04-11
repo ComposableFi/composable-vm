@@ -24,6 +24,9 @@ cw-mantis-order = { workspace = true, features = [
     "std",
 ] }
 
+cw-cvm-outpost = { workspace = true, features = ["std"] }
+cw-cvm-executor = { workspace = true, features = ["std"] }
+
 mantis-cw = { workspace = true, default-features = false }
 log = { workspace = true }
 derive_more = { workspace = true, features = [] }
