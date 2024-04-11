@@ -13,6 +13,7 @@ use crate::{
 };
 
 /// input batched summarized from users for routing
+#[derive(Debug, Clone)]
 pub struct IntentBankInput {
     pub in_asset_id: AssetId,
     pub in_asset_amount: Displayed<u128>,
@@ -107,7 +108,6 @@ pub struct PairSolution {
     pub cows: Vec<OrderSolution>,
     pub optimal_price: Ratio<u64>,
 }
-
 
 /// seems right to do:
 /// if cross chain enabled, it must do next:

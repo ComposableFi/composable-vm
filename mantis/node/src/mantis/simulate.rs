@@ -14,7 +14,11 @@ use super::cosmos::{
     cosmwasm::parse_coin_pair,
 };
 
-pub fn randomize_order(pair: &String, tip: Height, random_parts: u8) -> (cw_mantis_order::ExecMsg, cosmrs::Coin) {
+pub fn randomize_order(
+    pair: &String,
+    tip: Height,
+    random_parts: u8,
+) -> (cw_mantis_order::ExecMsg, cosmrs::Coin) {
     let pair = parse_coin_pair(pair);
 
     let pair = if rand::random::<bool>() {
@@ -34,7 +38,7 @@ pub fn randomize_order(pair: &String, tip: Height, random_parts: u8) -> (cw_mant
             convert: None,
             timeout: timeout(tip, 100),
             min_fill: None,
-            virtual_given : None
+            virtual_given: None,
         },
     };
     let fund = cosmrs::Coin {

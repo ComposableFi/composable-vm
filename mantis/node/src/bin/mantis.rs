@@ -176,16 +176,18 @@ async fn solve(
 ) {
     log::info!(target: "mantis::solver", "Solving orders");
     let salt = crate::cvm::get_salt(signing_key, tip);
-
     let cows_per_pair = mantis_node::mantis::solve::find_cows(&all_orders);
-    for pair_solution in cows_per_pair {
-        let cvm_program = if let Some(cvm_contact) = cvm_contact {
-            let cvm_glt = get_cvm_glt(cvm_contact, cosmos_query_client).await;
+    let cvm_glt = match cvm_contact {
+        Some(x) => Some(get_cvm_glt(&x, cosmos_query_client).await),
+        None => None,
+    };
 
+    for pair_solution in cows_per_pair {
+        let cvm_program = if let Some(ref cvm_glt) = cvm_glt {
             let cvm_program = intent_banks_to_cvm_program(
                 pair_solution.clone(),
                 &all_orders,
-                &cvm_glt,
+                cvm_glt,
                 router_api,
                 &salt,
             )
@@ -230,13 +232,13 @@ async fn intent_banks_to_cvm_program(
 
     let mut instructions = vec![];
 
-    if a.in_asset_amount > 0 {
-        let a_cvm_route = blackbox::get_route(router_api, a, cvm_glt, salt.as_ref()).await;
-        instructions.push(a_cvm_route);
+    if a.in_asset_amount.0.gt(&0) {
+        let mut a_cvm_route = blackbox::get_route(router_api, a, cvm_glt, salt.as_ref()).await;
+        instructions.append(&mut a_cvm_route);
     }
-    if b.in_asset_amount > 0 {
-        let b_cvm_route = blackbox::get_route(router_api, b, cvm_glt, salt.as_ref()).await;
-        instructions.push(b_cvm_route);
+    if b.in_asset_amount.0.gt(&0) {
+        let mut b_cvm_route = blackbox::get_route(router_api, b, cvm_glt, salt.as_ref()).await;
+        instructions.append(&mut b_cvm_route);
     }
     log::info!(target: "mantis::solver", "built instructions: {:?}", instructions);
 
