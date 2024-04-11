@@ -108,6 +108,10 @@ pub struct SolverArgs {
     /// HTTP url to call with parameters to obtain route or built in shortest pass router
     #[arg(long, default_value = "shortest_path")]
     pub router: String,
+
+    /// set to true of want to use CVM for routing only
+    #[arg(long, default_value_t = false)]
+    pub no_cows: bool,
 }
 
 impl MantisArgs {
