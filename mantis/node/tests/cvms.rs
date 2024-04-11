@@ -50,16 +50,20 @@ fn cvm_devnet_case() {
         admin: Some(admin.clone()),
         cvm_address: cw_cvm_outpost_contract.clone(),
     };
+
+    
     let cw_mantis_contract = centauri
-        .instantiate_contract(
-            cw_mantis_order_code_id,
-            admin,
-            &cw_mantis_order_instantiate,
-            &[],
-            "composable_mantis_order",
-            None,
-        )
-        .unwrap();
+    .instantiate_contract(
+        cw_mantis_order_code_id,
+        admin,
+        &cw_mantis_order_instantiate,
+        &[],
+        "composable_mantis_order",
+        None,
+    )
+    .unwrap();
 
     let sender = Addr::unchecked("juno16g2rahf5846rxzp3fwlswy08fz8ccuwk03k57y");
+    
+    let solution = mantis_node::mantis::blackbox::solve(active_orders, signing_key, tip, cvm_glt, router);
 }
