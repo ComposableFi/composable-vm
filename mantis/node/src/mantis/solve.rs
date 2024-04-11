@@ -108,6 +108,12 @@ pub struct PairSolution {
     pub optimal_price: Ratio<u64>,
 }
 
+
+/// seems right to do:
+/// if cross chain enabled, it must do next:
+/// 1. solve optimal price for existing cows.
+/// 2. iterate over router and amounts to find good routing `cow`s
+/// 3. return cow optimal price with cross chain (virtual) order.
 pub fn find_cows(all_orders: &[OrderItem]) -> Vec<PairSolution> {
     let all_orders = all_orders.into_iter().group_by(|x| x.pair());
     let mut cows_per_pair = vec![];
