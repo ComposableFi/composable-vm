@@ -2595,7 +2595,7 @@ dependencies = [
 [[package]]
 name = "num-rational"
 version = "0.4.1"
-source = "git+https://github.com/dzmitry-lahoda-forks/num-rational.git?rev=b7350e2f4c64f8f7a468d5321e95f8f523867c66#b7350e2f4c64f8f7a468d5321e95f8f523867c66"
+source = "git+https://github.com/dzmitry-lahoda-forks/num-rational.git?rev=94f6282ae92cbd49bb60b286269f2a365b0c4e43#94f6282ae92cbd49bb60b286269f2a365b0c4e43"
 dependencies = [
  "cosmwasm-std",
  "num-bigint",
