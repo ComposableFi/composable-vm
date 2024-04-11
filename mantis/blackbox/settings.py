@@ -3,8 +3,8 @@ from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
-    OSMOSIS_POOLS: str | None = Field(alias="OSMOSIS_POOLS", default=None)
-    CVM_COSMOS_GRPC: str | None = Field(alias="CVM_COSMOS_GRPC", default="http://grpc.osmosis.zone:9090")
+    OSMOSIS_POOLS: str | None = Field(alias="OSMOSIS_POOLS", default="http://app.osmosis.zone/api/pools")
+    CVM_COSMOS_GRPC: str | None = Field(alias="CVM_COSMOS_GRPC", default="https://osmosis.grpc.stakin-nodes.com:443")
     CVM_CHAIN_ID: str | None = Field(alias="CVM_CHAIN_ID", default="osmosis-1")
     COMPOSABLEFI_NETWORKS: str | None = Field(
         alias="COMPOSABLEFI_NETWORKS",
@@ -16,10 +16,10 @@ class Settings(BaseSettings):
         alias="CVM_ADDRESS",
         default="osmo13guwqtt7xdcuhtewc53tpt9jas5xcnk5tvzdxwhn09774m8jpytqr89pry",
     )
-    astroport_pools: str | None = Field(alias="ASTROPORT_POOLS", default=None)
+    astroport_pools: str | None = Field(alias="ASTROPORT_POOLS", default="https://app.astroport.fi/api/trpc/pools.getAll?input=%7B%22json%22%3A%7B%22chainId%22%3A%5B%22neutron-1%22%5D%7D%7D")
     neutron_rpc: str | None = Field(alias="NEUTRON_RPC", default=None)
     osmosis_rpc: str | None = Field(alias="OSMOSIS_RPC", default=None)
-    skip_money: str | None = Field(alias="SKIP_MONEY", default=None)
+    skip_money: str | None = Field(alias="SKIP_MONEY", default="https://api.skip.money/")
     port: int = Field(default=8000, alias="LISTEN_PORT")
 
 

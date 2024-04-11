@@ -20,7 +20,6 @@ class Devnet(BaseModel):
     FEE: str
     GRPCPORT: int
     GRPCWEB: int
-    HOME: str
     KEYRING_TEST: str
     NETWORK_ID: int
     NODE: str
@@ -49,25 +48,36 @@ class CosmosHub(BaseModel):
     mainnet: Mainnet
 
 
+class Directories(BaseModel):
+    DATA_DIRECTORY: str
+    HOME: str
+    LOG_DIRECTORY: str
+
+
 class Mnemonics(BaseModel):
     ALICE: str
     APPLICATION1: str
     APPLICATION2: str
+    BOB: str
     DEMO_MNEMONIC_1: str
     DEMO_MNEMONIC_2: str
     DEMO_MNEMONIC_3: str
+    EXCHNANGE_1: str
     FAUCET_MNEMONIC: str
+    MANTIS_1: str
     RLY_MNEMONIC_1: str
     RLY_MNEMONIC_2: str
     RLY_MNEMONIC_3: str
     RLY_MNEMONIC_4: str
+    TEST1: str
+    TEST2: str
     VAL_MNEMONIC_1: str
     VAL_MNEMONIC_2: str
+    VAL_MNEMONIC_3: str
 
 
 class Devnet1(BaseModel):
-    DEFAULT_DEVNET_DIRECTORY: str
-    devnetRootDirectory: str
+    directories: Directories
     mnemonics: Mnemonics
 
 
@@ -86,7 +96,6 @@ class Devnet2(BaseModel):
     FEE: str
     GRPCPORT: int
     GRPCWEB: int
-    HOME: str
     IBCATOMDENOM: str
     IBCUSDCDENOM: str
     KEYRING_TEST: str
@@ -131,7 +140,6 @@ class Devnet3(BaseModel):
     FEE: str
     GRPCPORT: int
     GRPCWEB: int
-    HOME: str
     KEYRING_TEST: str
     NETWORK_ID: int
     NODE: str
@@ -146,7 +154,6 @@ class Mainnet2(BaseModel):
     BINARY: str
     BLOCK_SECONDS: int
     CHAIN_ID: str
-    CVM_OUTPOST_CONTRACT_ADDRESS: str
     DIR: str
     FEE: str
     NETWORK_ID: int
@@ -176,11 +183,23 @@ class Testnet(BaseModel):
 class Osmosis(BaseModel):
     devnet: Devnet3
     mainnet: Mainnet2
-    remote_devnet: RemoteDevnet = Field(..., alias="remote-devnet")
+    remote_devnet: RemoteDevnet = Field(..., alias='remote-devnet')
     testnet: Testnet
 
 
 class Devnet4(BaseModel):
+    CHAIN_ID_A: str
+    CHAIN_ID_B: str
+    RELAY_DATA: str
+    REST_PORT: int
+    TELEMETRY_PORT: int
+
+
+class OsmosisCentauri(BaseModel):
+    devnet: Devnet4
+
+
+class Devnet5(BaseModel):
     ACCOUNT_PREFIX: str
     BASE_DIR: str
     BINARY: str
@@ -195,8 +214,8 @@ class Devnet4(BaseModel):
     FEE: str
     GRPCPORT: int
     GRPWEB: int
-    HOME: str
     KEYRING_TEST: str
+    LOG_DIRECTORY: str
     NETWORK_ID: int
     NODE: str
     RESTPORT: int
@@ -207,7 +226,6 @@ class Mainnet3(BaseModel):
     BINARY: str
     BLOCK_TIME: int
     CHAIN_ID: str
-    CVM_OUTPOST_CONTRACT_ADDRESS: str
     DIR: str
     FEE: str
     GRPC: str
@@ -229,14 +247,15 @@ class Testnet1(BaseModel):
 
 
 class Pica(BaseModel):
-    devnet: Devnet4
+    devnet: Devnet5
     mainnet: Mainnet3
     testnet: Testnet1
 
 
 class Model(BaseModel):
-    cosmos_hub: CosmosHub = Field(..., alias="cosmos-hub")
+    cosmos_hub: CosmosHub = Field(..., alias='cosmos-hub')
     devnet: Devnet1
     neutron: Neutron
     osmosis: Osmosis
+    osmosis_centauri: OsmosisCentauri = Field(..., alias='osmosis-centauri')
     pica: Pica
