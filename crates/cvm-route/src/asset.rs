@@ -38,6 +38,18 @@ pub struct AssetItem {
     pub bridged: Option<BridgeAsset>,
 }
 
+impl AssetItem {
+    pub fn new(asset_id: AssetId, network_id: NetworkId, local: AssetReference) -> Self {
+        Self {
+            asset_id,
+            network_id,
+            local,
+            bridged: None,
+        }
+    }
+
+}
+
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "snake_case")]
 #[cfg_attr(
@@ -49,6 +61,17 @@ pub struct NetworkAssetItem {
     pub from_asset_id: AssetId,
     pub to_asset_id: AssetId,
 }
+
+impl NetworkAssetItem {
+    pub fn new(to_network_id: NetworkId, from_asset_id: AssetId, to_asset_id: AssetId) -> Self {
+        Self {
+            to_network_id,
+            from_asset_id,
+            to_asset_id,
+        }
+    }
+}
+
 
 impl AssetItem {
     pub fn denom(&self) -> String {
@@ -78,10 +101,14 @@ pub struct BridgeAsset {
     derive(schemars::JsonSchema)
 )]
 pub enum AssetReference {
+    /// Cosmos SDK native
     Native { denom: String },
     Cw20 { contract: cosmwasm_std::Addr },
     // Erc20 { contract: EthAddress },
+    // SPL20 { mint: Pubkey },
 }
+
+
 
 impl AssetReference {
     pub fn denom(&self) -> String {

@@ -26,3 +26,13 @@ pub struct AssetsVenueItem {
     pub from_asset_id: AssetId,
     pub to_asset_id: AssetId,
 }
+
+impl AssetsVenueItem {
+    pub fn new(venue_id: VenueId, from_asset_id: AssetId, to_asset_id: AssetId) -> Self {
+        Self {
+            venue_id,
+            from_asset_id,
+            to_asset_id,
+        }
+    }
+}

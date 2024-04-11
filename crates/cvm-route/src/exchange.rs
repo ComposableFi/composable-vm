@@ -36,3 +36,14 @@ pub struct ExchangeItem {
     // if was set, means that cannot exchange via this venue
     pub closed: Option<u64>,
 }
+
+impl ExchangeItem {
+    pub fn new(exchange_id: ExchangeId, network_id: NetworkId, exchange: ExchangeType) -> Self {
+        Self {
+            exchange_id,
+            network_id,
+            exchange,
+            closed: None,
+        }
+    }
+}

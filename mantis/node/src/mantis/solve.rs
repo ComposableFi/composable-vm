@@ -79,6 +79,7 @@ impl IntentBankInput {
         let b_asset = cvm_glt.cvm_asset_by_cw(pair.b.denom);
 
         let b_received = a_to_b.iter().map(|x| {
+            panic!("{:?} {:?}", x.1.u128(), pair.a.amount.u128());
             let part = Ratio::new(x.1.u128(), pair.a.amount.u128()).msb_limit_unsigned();
             let part = CvmBalanceFilter::from((*part.numer(), *part.denom()));
             CvmInstruction::Transfer {
