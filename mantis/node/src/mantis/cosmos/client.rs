@@ -24,6 +24,14 @@ pub struct Tip {
     pub account: cosmos_sdk_proto::cosmos::auth::v1beta1::BaseAccount,
 }
 
+/// allows to act on behalf of user
+#[derive(Debug)]
+pub struct BlockAgent {
+    pub tip: Tip,
+    pub key: cosmrs::crypto::secp256k1::SigningKey,
+}
+
+
 impl Tip {
     pub fn timeout(&self, delta: u32) -> u64 {
         self.block.value() + delta as u64

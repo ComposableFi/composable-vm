@@ -188,22 +188,22 @@ async fn get_data_and_solve(
 }
 
 async fn solve(
-    all_orders: Vec<OrderItem>,
+    active_orders: Vec<OrderItem>,
     signing_key: &cosmrs::crypto::secp256k1::SigningKey,
     tip: &Tip,
-    cvm_glt: Option<cw_cvm_outpost::msg::GetConfigResponse>,
-    router_api: &String,
+    cvm_glt: Option<cw_cvm_outpost::msg::CvmGlt>,
+    router: &String,
 ) -> Vec<cw_mantis_order::ExecMsg> {
-    let cows_per_pair = mantis_node::mantis::solve::find_cows(&all_orders);
+    let cows_per_pair = mantis_node::mantis::solve::find_cows(&active_orders);
     let mut msgs = vec![];
     for pair_solution in cows_per_pair {
         let salt = crate::cvm::calculate_salt(signing_key, tip, pair_solution.ab.clone());
         let cvm_program = if let Some(ref cvm_glt) = cvm_glt {
             let cvm_program = intent_banks_to_cvm_program(
                 pair_solution.clone(),
-                &all_orders,
+                &active_orders,
                 cvm_glt,
-                router_api,
+                router,
                 &salt,
             )
             .await;
