@@ -9,11 +9,9 @@ use cvm_route::{
 };
 use cw_cvm_outpost::msg::{CvmGlt, HereItem, NetworkItem, OutpostId};
 use cw_mantis_order::{OrderItem, OrderSubMsg};
-use cw_multi_test::{App, Contract, ContractWrapper, Executor};
+use cw_multi_test::{App, Bank, BankKeeper, Contract, ContractWrapper, Executor};
 use mantis_node::mantis::cosmos::{client::Tip, signer::from_mnemonic};
 use serde::de;
-// use cw_orch::prelude::*;
-// use cw_orch::interface;
 
 #[tokio::test]
 async fn cvm_devnet_case() {
@@ -85,31 +83,67 @@ async fn cvm_devnet_case() {
         amount: x.into(),
     };
 
+    let bank = BankKeeper::new();
+    bank.init_balance(
+        centauri.storage_mut(),
+        &sender,
+        vec![ACoin(10u128.pow(10)), BCoin(10u128.pow(10))],
+    )
+    .unwrap();
+
+    let a_to_b_msg = OrderSubMsg {
+        wants: BCoin(100),
+        timeout: centauri.block_info().height + 100,
+        convert: None,
+        min_fill: None,
+        virtual_given: None,
+    };
     let a_to_b = OrderItem {
         owner: sender.clone(),
-        msg: OrderSubMsg {
-            wants: ACoin(100),
-            timeout: centauri.block_info().height + 100,
-            convert: None,
-            min_fill: None,
-            virtual_given: None,
-        },
-        given: BCoin(100),
+        msg: a_to_b_msg.clone(),
+        given: ACoin(100),
         order_id: 1u128.into(),
     };
 
+    let b_to_a_msg = OrderSubMsg {
+        wants: ACoin(1000),
+        timeout: centauri.block_info().height + 100,
+        convert: None,
+        min_fill: None,
+        virtual_given: None,
+    };
     let b_to_a = OrderItem {
         owner: sender.clone(),
-        msg: OrderSubMsg {
-            wants: BCoin(1000),
-            timeout: centauri.block_info().height + 100,
-            convert: None,
-            min_fill: None,
-            virtual_given: None,
-        },
-        given: ACoin(1000),
+        msg: b_to_a_msg.clone(),
+        given: BCoin(1000),
         order_id: 2u128.into(),
     };
+
+    centauri
+        .execute_contract(
+            sender.clone(),
+            cw_mantis_contract.clone(),
+            &cw_mantis_order::sv::ExecMsg::Order {
+                msg: a_to_b_msg.clone(),
+            },
+            &[ACoin(100)],
+        )
+        .unwrap();
+
+    centauri
+        .execute_contract(
+            sender.clone(),
+            cw_mantis_contract.clone(),
+            &cw_mantis_order::sv::ExecMsg::Order {
+                msg: b_to_a_msg.clone(),
+            },
+            &[BCoin(1000)],
+        )
+        .unwrap();
+
+
+
+
     let active_orders = vec![a_to_b, b_to_a];
     let alice = from_mnemonic(
         "document prefer nurse marriage flavor cheese west when knee drink sorry minimum thunder tilt cherry behave cute stove elder couch badge gown coral expire", 
@@ -123,6 +157,7 @@ async fn cvm_devnet_case() {
             sequence: 1,
         },
     };
+    let force_config = cw_cvm_outpost::
     let router = "shortest_path";
     let cvm_glt = Some(CvmGlt {
         network_to_networks: vec![
@@ -212,6 +247,7 @@ async fn cvm_devnet_case() {
     let solution =
         mantis_node::mantis::blackbox::solve::<True>(active_orders, &alice, &tip, cvm_glt, router)
             .await;
+
     panic!("solution: {:?}", solution);
 }
 
