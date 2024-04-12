@@ -141,9 +141,6 @@ async fn cvm_devnet_case() {
         )
         .unwrap();
 
-
-
-
     let active_orders = vec![a_to_b, b_to_a];
     let alice = from_mnemonic(
         "document prefer nurse marriage flavor cheese west when knee drink sorry minimum thunder tilt cherry behave cute stove elder couch badge gown coral expire", 
@@ -157,9 +154,9 @@ async fn cvm_devnet_case() {
             sequence: 1,
         },
     };
-    let force_config = cw_cvm_outpost::
+
     let router = "shortest_path";
-    let cvm_glt = Some(CvmGlt {
+    let cvm_glt = CvmGlt {
         network_to_networks: vec![
             NetworkToNetworkItem::new(1.into(), 2.into(), OtherNetworkItem::new()),
             NetworkToNetworkItem::new(2.into(), 1.into(), OtherNetworkItem::new()),
@@ -243,9 +240,21 @@ async fn cvm_devnet_case() {
                 21.into(),
             ),
         ],
-    });
+    };
+
+    let mut config_messages = vec![];
+
+    for network_item in cvm_glt {
+        let config_message = cw_cvm_outpost::msg::ConfigSubMsg::ForceNetwork(network_item);
+        config_messages.push(config_message);
+    }
+
+    let force_config = cw_cvm_outpost::msg::ExecuteMsg::Config(
+        cw_cvm_outpost::msg::ConfigSubMsg::Force(config_messages),
+    );
+
     let solution =
-        mantis_node::mantis::blackbox::solve::<True>(active_orders, &alice, &tip, cvm_glt, router)
+        mantis_node::mantis::blackbox::solve::<True>(active_orders, &alice, &tip, cvm_glt.into(), router)
             .await;
 
     panic!("solution: {:?}", solution);

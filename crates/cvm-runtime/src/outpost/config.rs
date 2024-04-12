@@ -1,11 +1,11 @@
 use cvm_route::{
-    asset::AssetToNetwork, exchange::ExchangeItem, transport::NetworkToNetworkItem,
+    asset::{AssetItem, AssetToNetwork}, exchange::ExchangeItem, transport::NetworkToNetworkItem,
     venue::AssetsVenueItem,
 };
 
 use crate::{prelude::*, transport::ibc::IbcEnabled, AssetId, NetworkId};
 
-/// Version of IBC channels used by the gateway.
+/// Version of IBC ICS27 channel used by the outpost.
 pub const IBC_VERSION: &str = "cvm-v0";
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -101,7 +101,7 @@ pub enum ConfigSubMsg {
     ForceNetworkToNetwork(NetworkToNetworkItem),
 
     /// Permissioned message (gov or admin) to force set asset information.
-    ForceAsset(cvm_route::asset::AssetItem),
+    ForceAsset(AssetItem),
 
     ForceAssetToNetworkMap(AssetToNetwork),
 
