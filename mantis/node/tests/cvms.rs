@@ -81,7 +81,7 @@ async fn cvm_devnet_case() {
     };
 
     let BCoin = |x: u128| Coin {
-        denom: "b".to_string(),
+        denom: "ibc/b".to_string(),
         amount: x.into(),
     };
 
@@ -212,7 +212,7 @@ async fn cvm_devnet_case() {
     let solution =
         mantis_node::mantis::blackbox::solve::<True>(active_orders, &alice, &tip, cvm_glt, router)
             .await;
-    panic!("solution: {:?}", serde_json::ser::to_string_pretty(&solution));
+    panic!("solution: {:?}", solution);
 }
 
 enum True {}
