@@ -303,7 +303,20 @@ async fn cvm_devnet_case() {
         &[],
     ).unwrap();
 
-    panic!("solution: {:?}", solution);
+    centauri.update_block(|x| {
+        x.height += 2;
+    });
+
+    println!("=========================================================================================");
+    centauri.execute_contract(
+        sender.clone(),
+        cw_mantis_contract.clone(),
+        &solution[0],
+        &[],
+    ).unwrap();
+
+
+    //panic!("solution: {:?}", solution);
 }
 
 enum True {}

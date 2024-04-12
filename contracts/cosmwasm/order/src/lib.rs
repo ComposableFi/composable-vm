@@ -265,14 +265,8 @@ impl OrderContract<'_> {
     #[msg(exec)]
     pub fn solve(&self, mut ctx: ExecCtx, msg: SolutionSubMsg) -> StdResult<Response> {
         // read all orders as solver provided
-        let mut all_orders = join_solution_with_orders(&self.orders, &msg, &ctx)?;
-        let at_least_one = all_orders.first().expect("at least one");
-
-        // normalize pair
-        let ab = DenomPair::new(
-            at_least_one.given().denom.clone(),
-            at_least_one.wants().denom.clone(),
-        );
+        let mut all_orders = join_solution_with_orders(&self.orders, &msg, &ctx)?;        
+        let ab = all_orders.first().expect("at least one").pair();
 
         // add solution to total solutions
         let possible_solution = SolutionItem {
@@ -452,7 +446,8 @@ impl OrderContract<'_> {
     /// simply exchange maximal given token for best price for other side
     /// mostly for testing purposes because  as any one bad price can prevent execution (even if it is small amount)
     #[msg(exec)]
-    pub fn exchange(&self, mut ctx: ExecCtx, limit: Ratio) -> StdResult<Response> {
+    pub fn exchange(&self, mut _ctx: ExecCtx, limit: Ratio) -> StdResult<Response> {
+        println!("exchange {:?}", limit);
         todo!();
     }
 

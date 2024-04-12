@@ -5,3 +5,4 @@ pub use cvm_runtime::{outpost::config::*, shared::Displayed};
 pub use cw_storage_plus::Map;
 pub use ibc_core_host_types::identifiers::ChannelId;
 pub use serde::{Deserialize, Serialize};
+pub use enumn::N as  EnumNum;

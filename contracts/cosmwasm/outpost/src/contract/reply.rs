@@ -1,6 +1,6 @@
 use crate::prelude::*;
 
-#[derive(PartialEq, Debug, Clone, Copy, enumn::N)]
+#[derive(PartialEq, Debug, Clone, Copy, EnumNum)]
 #[repr(u64)]
 pub enum ReplyId {
     InstantiateExecutor = 0,

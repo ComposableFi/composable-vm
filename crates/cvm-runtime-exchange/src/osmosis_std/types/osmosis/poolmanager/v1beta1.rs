@@ -28,7 +28,3 @@ pub struct SwapAmountInRoute {
     #[prost(string, tag = "2")]
     pub token_out_denom: String,
 }
-
-impl SwapAmountInRoute {
-    pub const TYPE_URL: &'static str = "/osmosis.poolmanager.v1beta1.SwapAmountInRoute";
-}

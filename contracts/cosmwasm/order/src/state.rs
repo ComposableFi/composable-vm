@@ -5,9 +5,9 @@ use mantis_cw::Denom;
 use crate::*;
 
 /// tracks best price for A in pair, so that simplest solution which can take ALL orders can pay this one
-pub(crate) const PAIR_BEST_A: Map<DenomPair, Ratio> = Map::new("PAIR_BEST_A");
+pub const PAIR_BEST_A: Map<DenomPair, Ratio> = Map::new("PAIR_BEST_A");
 
-pub(crate) const PAIR_BEST_B: Map<DenomPair, Ratio> = Map::new("PAIR_BEST_B");
+pub const PAIR_BEST_B: Map<DenomPair, Ratio> = Map::new("PAIR_BEST_B");
 
 /// so we need to have several solution per pair to pick one best
 pub struct SolutionIndexes<'a> {
