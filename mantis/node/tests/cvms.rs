@@ -212,7 +212,7 @@ async fn cvm_devnet_case() {
     let solution =
         mantis_node::mantis::blackbox::solve::<True>(active_orders, &alice, &tip, cvm_glt, router)
             .await;
-    panic!("solution: {:?}", solution);
+    panic!("solution: {:?}", serde_json::ser::to_string_pretty(&solution));
 }
 
 enum True {}

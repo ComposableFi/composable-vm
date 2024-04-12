@@ -58,3 +58,4 @@ bounded-collections = {workspace = true, default-features = false, features = ["
 cw-multi-test = { workspace = true }
 cw-orch = { workspace = true}
 rustfmt-wrapper = "0.2.1"
+serde_json = { workspace = true }

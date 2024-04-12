@@ -94,6 +94,7 @@ num-traits = { version = "^0.2.18", default-features = false }
 
 ibc-proto = { version = "0.39.1", default-features = false }
 serde-json-wasm = { version = "1.0.0", default-features = false }
+serde_json ={ version = "1.0.64", default-features = false, features = [] }
 
 clap = { version = "^4.5.4", features = ["derive"], default-features = false}
 cosmrs = { version = "^0.16.0", features = [
