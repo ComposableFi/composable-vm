@@ -2,13 +2,13 @@ use bounded_collections::Get;
 use cosmrs::tendermint::block::Height;
 use cosmwasm_std::{Addr, Coin, Coins, Empty};
 use cvm_route::{
-    asset::{AssetItem, AssetReference, NetworkAssetItem},
+    asset::{self, AssetItem, AssetReference, NetworkAssetItem},
     exchange::ExchangeItem,
     transport::{NetworkToNetworkItem, OtherNetworkItem},
     venue::AssetsVenueItem,
 };
 use cw_cvm_outpost::msg::{CvmGlt, HereItem, NetworkItem, OutpostId};
-use cw_mantis_order::{OrderItem, OrderSubMsg};
+use cw_mantis_order::{OrderItem, OrderSubMsg, SolutionSubMsg};
 use cw_multi_test::{App, Bank, BankKeeper, Contract, ContractWrapper, Executor};
 use mantis_node::mantis::cosmos::{client::Tip, signer::from_mnemonic};
 use serde::de;
@@ -39,15 +39,15 @@ async fn cvm_devnet_case() {
     let cw_cvm_outpost_code_id = centauri.store_code(Box::new(cw_cvm_outpost_wasm));
     let cw_cvm_executor_code_id = centauri.store_code(Box::new(cw_cvm_executor_wasm));
 
-    let admin = Addr::unchecked("juno1g2rahf5846rxzp3fwlswy08fz8ccuwk03k57y");
+    let sender = Addr::unchecked("juno1g2rahf5846rxzp3fwlswy08fz8ccuwk03k57y");
     let cw_cvm_outpost_instantiate = cw_cvm_outpost::msg::InstantiateMsg(HereItem {
         network_id: 3.into(),
-        admin: admin.clone(),
+        admin: sender.clone(),
     });
     let cw_cvm_outpost_contract = centauri
         .instantiate_contract(
             cw_cvm_outpost_code_id,
-            admin.clone(),
+            sender.clone(),
             &cw_cvm_outpost_instantiate,
             &[],
             "composable_cvm_outpost",
@@ -56,22 +56,20 @@ async fn cvm_devnet_case() {
         .unwrap();
 
     let cw_mantis_order_instantiate = cw_mantis_order::sv::InstantiateMsg {
-        admin: Some(admin.clone()),
+        admin: Some(sender.clone()),
         cvm_address: cw_cvm_outpost_contract.clone(),
     };
 
     let cw_mantis_contract = centauri
         .instantiate_contract(
             cw_mantis_order_code_id,
-            admin,
+            sender.clone(),
             &cw_mantis_order_instantiate,
             &[],
             "composable_mantis_order",
             None,
         )
         .unwrap();
-
-    let sender = Addr::unchecked("juno16g2rahf5846rxzp3fwlswy08fz8ccuwk03k57y");
 
     let ACoin = |x: u128| Coin {
         denom: "a".to_string(),
@@ -102,7 +100,7 @@ async fn cvm_devnet_case() {
         owner: sender.clone(),
         msg: a_to_b_msg.clone(),
         given: ACoin(100),
-        order_id: 1u128.into(),
+        order_id: 0u128.into(),
     };
 
     let b_to_a_msg = OrderSubMsg {
@@ -116,7 +114,7 @@ async fn cvm_devnet_case() {
         owner: sender.clone(),
         msg: b_to_a_msg.clone(),
         given: BCoin(1000),
-        order_id: 2u128.into(),
+        order_id: 1u128.into(),
     };
 
     centauri
@@ -244,8 +242,35 @@ async fn cvm_devnet_case() {
 
     let mut config_messages = vec![];
 
-    for network_item in cvm_glt {
-        let config_message = cw_cvm_outpost::msg::ConfigSubMsg::ForceNetwork(network_item);
+    for network in cvm_glt.networks.clone().into_iter() {
+        let config_message = cw_cvm_outpost::msg::ConfigSubMsg::ForceNetwork(network);
+        config_messages.push(config_message);
+    }
+
+    for asset in cvm_glt.assets.clone().into_iter() {
+        let config_message = cw_cvm_outpost::msg::ConfigSubMsg::ForceAsset(asset);
+        config_messages.push(config_message);
+    }
+
+    for network_to_network in cvm_glt.network_to_networks.clone().into_iter() {
+        let config_message =
+            cw_cvm_outpost::msg::ConfigSubMsg::ForceNetworkToNetwork(network_to_network);
+        config_messages.push(config_message);
+    }
+
+    for exchange in cvm_glt.exchanges.clone().into_iter() {
+        let config_message = cw_cvm_outpost::msg::ConfigSubMsg::ForceExchange(exchange);
+        config_messages.push(config_message);
+    }
+
+    for asset_venue in cvm_glt.asset_venue_items.clone().into_iter() {
+        let config_message = cw_cvm_outpost::msg::ConfigSubMsg::ForceAssetsVenue(asset_venue);
+        config_messages.push(config_message);
+    }
+
+    for network_asset in cvm_glt.network_assets.clone().into_iter() {
+        let config_message =
+            cw_cvm_outpost::msg::ConfigSubMsg::ForceAssetToNetworkMap(network_asset);
         config_messages.push(config_message);
     }
 
@@ -253,9 +278,30 @@ async fn cvm_devnet_case() {
         cw_cvm_outpost::msg::ConfigSubMsg::Force(config_messages),
     );
 
-    let solution =
-        mantis_node::mantis::blackbox::solve::<True>(active_orders, &alice, &tip, cvm_glt.into(), router)
-            .await;
+    centauri
+        .execute_contract(
+            sender.clone(),
+            cw_cvm_outpost_contract.clone(),
+            &force_config,
+            &[],
+        )
+        .unwrap();
+
+    let solution = mantis_node::mantis::blackbox::solve::<True>(
+        active_orders,
+        &alice,
+        &tip,
+        cvm_glt.into(),
+        router,
+    )
+    .await;
+
+    centauri.execute_contract(
+        sender.clone(),
+        cw_mantis_contract.clone(),
+        &solution[0],
+        &[],
+    ).unwrap();
 
     panic!("solution: {:?}", solution);
 }

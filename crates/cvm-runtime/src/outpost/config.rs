@@ -1,5 +1,5 @@
 use cvm_route::{
-    asset::{AssetItem, AssetToNetwork}, exchange::ExchangeItem, transport::NetworkToNetworkItem,
+    asset::{AssetItem, NetworkAssetItem}, exchange::ExchangeItem, transport::NetworkToNetworkItem,
     venue::AssetsVenueItem,
 };
 
@@ -103,7 +103,7 @@ pub enum ConfigSubMsg {
     /// Permissioned message (gov or admin) to force set asset information.
     ForceAsset(AssetItem),
 
-    ForceAssetToNetworkMap(AssetToNetwork),
+    ForceAssetToNetworkMap(NetworkAssetItem),
 
     ForceExchange(ExchangeItem),
 

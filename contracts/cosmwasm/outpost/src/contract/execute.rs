@@ -13,7 +13,7 @@ use cosmwasm_std::{
     entry_point, wasm_execute, Addr, BankMsg, Coin, CosmosMsg, Deps, DepsMut, Env, MessageInfo,
     Response, StdError,
 };
-use cvm_route::asset::{AssetReference, AssetToNetwork};
+use cvm_route::asset::{AssetReference,  NetworkAssetItem};
 use cw20::{Cw20Contract, Cw20ExecuteMsg};
 
 use cvm_runtime::{
@@ -97,12 +97,12 @@ fn handle_config_msg(
         ConfigSubMsg::ForceRemoveAsset { asset_id } => {
             assets::force_remove_asset(auth, deps, asset_id)
         }
-        ConfigSubMsg::ForceAssetToNetworkMap(AssetToNetwork {
-            this_asset,
-            other_network,
-            other_asset,
+        ConfigSubMsg::ForceAssetToNetworkMap(NetworkAssetItem {
+            to_network_id,
+            from_asset_id,
+            to_asset_id,
         }) => {
-            assets::force_asset_to_network_map(auth, deps, this_asset, other_network, other_asset)
+            assets::force_asset_to_network_map(auth, deps, from_asset_id, to_network_id, to_asset_id)
         }
         ConfigSubMsg::ForceNetwork(msg) => network::force_network(auth, deps, msg),
         ConfigSubMsg::ForceInstantiate { user_origin, salt } => {
