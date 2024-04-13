@@ -123,8 +123,7 @@ def get_remote_data() -> AllData:
     if response.status_code == 200:
         osmosis_pools = OsmosisPoolsResponse.parse_raw(response.content)
     else:
-        logger.error(f"Response Status Code: {response.status_code}")
-        logger.error(f"Error fetching OSMOSIS pools: {response.content}")
+        raise Exception(f"Failed to fetch OSMOSIS pools: Status code {response.status_code}\n{response.content}")        
     astroport_pools = NeutronPoolsResponse.parse_raw(requests.get(settings.astroport_pools).content).result.data
     result: AllData = AllData(
         osmosis_pools=osmosis_pools.pools,
