@@ -315,7 +315,6 @@ async fn cvm_devnet_case() {
         &[],
     ).unwrap();
 
-
     //panic!("solution: {:?}", solution);
 }
 

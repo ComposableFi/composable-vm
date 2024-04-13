@@ -126,6 +126,7 @@ impl OrderContract<'_> {
             "mantis::timeout::cleaning orders {:?} and solutions {:?}",
             orders, solutions
         ));
+
         let orders: Result<Vec<(u128, OrderItem)>, _> = self
             .orders
             .range(ctx.deps.storage, None, None, Order::Ascending)
@@ -191,7 +192,7 @@ impl OrderContract<'_> {
         );
 
         ctx.deps.api.debug(
-            &format!("mantis::route:: so here we add route execution tracking to storage and map route to CVM program {:?}", msg)
+            &format!("mantis::order::route:: so here we add route execution tracking to storage and map route to CVM program {:?}", msg)
         );
 
         let cvm: cvm_runtime::outpost::ExecuteMsg =
@@ -220,7 +221,7 @@ impl OrderContract<'_> {
             .map(|x| x.tracking.amount_taken.amount)
             .sum();
 
-        let funds = vec![
+        let funds: Vec<Coin> = vec![
             Coin {
                 denom: msg.pair.a,
                 amount: a_funds,
@@ -229,7 +230,26 @@ impl OrderContract<'_> {
                 denom: msg.pair.b,
                 amount: b_funds,
             },
-        ];
+        ]
+        .into_iter()
+        .filter(|x| x.amount.u128() > 0)
+        .collect();
+
+        ensure!(
+            !funds.is_empty(),
+            crate::errors::expected_some_funds_in_route()
+        );
+
+        for fund in funds.iter().rev() {
+            let has = ctx
+                .deps
+                .querier
+                .query_balance(ctx.env.contract.address.to_string(), fund.denom.to_string())?;
+            ensure!(
+                has.amount >= fund.amount,
+                crate::errors::banks_funds_must_be_at_least_routed(&has, fund)
+            )
+        }
 
         let events = cvm_filled
             .iter()
@@ -265,7 +285,7 @@ impl OrderContract<'_> {
     #[msg(exec)]
     pub fn solve(&self, mut ctx: ExecCtx, msg: SolutionSubMsg) -> StdResult<Response> {
         // read all orders as solver provided
-        let mut all_orders = join_solution_with_orders(&self.orders, &msg, &ctx)?;        
+        let mut all_orders = join_solution_with_orders(&self.orders, &msg, &ctx)?;
         let ab = all_orders.first().expect("at least one").pair();
 
         // add solution to total solutions
@@ -493,11 +513,13 @@ impl OrderContract<'_> {
         api: &dyn Api,
     ) -> StdResult<Vec<CowFillResult>> {
         let mut results = vec![];
-        for (transfer, order) in cows.into_iter() {
-            let mut order: OrderItem = self.orders.load(storage, order.u128())?;
-            order.fill(transfer.amount, optimal_price)?;
+        for (transfer_coin, order_amount) in cows.into_iter() {
+            let mut order: OrderItem = self.orders.load(storage, order_amount.u128())?;
+            order.fill(transfer_coin.amount, optimal_price)?;
+
             let (event, remaining) = if order.given.amount.is_zero() {
                 // hey, need some other data structure for this
+                TOOD
                 let (_idx, solver_order) = solver_orders
                     .iter()
                     .find_position(|x| x.order.order_id == order.order_id)
@@ -522,7 +544,7 @@ impl OrderContract<'_> {
                 (
                     mantis_order_filled_partially(
                         &order,
-                        &transfer,
+                        &transfer_coin,
                         &solver_address,
                         solution_block_added,
                     ),
@@ -531,7 +553,7 @@ impl OrderContract<'_> {
             };
             let transfer = BankMsg::Send {
                 to_address: order.owner.to_string(),
-                amount: vec![transfer],
+                amount: vec![transfer_coin],
             };
             results.push(CowFillResult {
                 remaining: if remaining { Some(order) } else { None },
