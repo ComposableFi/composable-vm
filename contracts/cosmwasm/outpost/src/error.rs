@@ -25,8 +25,8 @@ pub enum ContractError {
     FailedIBCTransfer(String),
     #[error("Could not serialize to JSON")]
     FailedToSerialize,
-    #[error("Asset not been found in the registry.")]
-    AssetNotFound,
+    #[error("Asset not been found in the registry {0}.")]
+    AssetIdNotFound(AssetId),
     #[error("Exchange not been found in the registry.")]
     ExchangeNotFound,
     #[error("The contract must be initialized first.")]

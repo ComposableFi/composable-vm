@@ -517,13 +517,15 @@ impl OrderContract<'_> {
             let mut order: OrderItem = self.orders.load(storage, order_amount.u128())?;
             order.fill(transfer_coin.amount, optimal_price)?;
 
+            // hey, need some other data structure for this
+            let solver_order = solver_orders
+            .iter_mut()
+            .find(|x| x.order.order_id == order.order_id)
+            .expect("solver order");
+        
+            solver_order.order = order.clone();
+
             let (event, remaining) = if order.given.amount.is_zero() {
-                // hey, need some other data structure for this
-                TOOD
-                let (_idx, solver_order) = solver_orders
-                    .iter()
-                    .find_position(|x| x.order.order_id == order.order_id)
-                    .expect("solver order");
 
                 api.debug(&format!("mantis::order::filled::full {:?}", order.order_id));
 
@@ -533,13 +535,6 @@ impl OrderContract<'_> {
                     false,
                 )
             } else {
-                let solver_order = solver_orders
-                    .iter_mut()
-                    .find(|x| x.order.order_id == order.order_id)
-                    .expect("solver order");
-
-                solver_order.order = order.clone();
-
                 self.orders.save(storage, order.order_id.u128(), &order)?;
                 (
                     mantis_order_filled_partially(
