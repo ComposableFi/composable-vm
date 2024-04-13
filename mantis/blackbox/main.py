@@ -114,7 +114,16 @@ def get_remote_data() -> AllData:
     skip_api = CosmosChains.parse_raw(requests.get(settings.skip_money + "v1/info/chains").content)
     networks = requests.get(settings.COMPOSABLEFI_NETWORKS).content
     networks = NetworksModel.parse_raw(networks)
-    osmosis_pools = OsmosisPoolsResponse.parse_raw(requests.get(settings.OSMOSIS_POOLS).content)
+    # Had to add a User-Agent header similar to a web browser to avoid a 
+    # 403 Forbidden error when sending a request to the API from Python code.
+    headers = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36'}
+    response = requests.get(settings.OSMOSIS_POOLS, headers=headers)
+    logger.info(f"Response Status Code: {response.status_code}")
+    logger.info(f"Response Body: {response.content}")
+    if response.status_code == 200:
+        osmosis_pools = OsmosisPoolsResponse.parse_raw(response.content)
+    else:
+        raise Exception(f"Failed to fetch OSMOSIS pools: Status code {response.status_code}\n{response.content}")        
     astroport_pools = NeutronPoolsResponse.parse_raw(requests.get(settings.astroport_pools).content).result.data
     result: AllData = AllData(
         osmosis_pools=osmosis_pools.pools,

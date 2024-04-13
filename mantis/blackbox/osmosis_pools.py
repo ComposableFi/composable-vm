@@ -35,12 +35,12 @@ class PoolAsset(BaseModel):
 
 
 class ModelItem(BaseModel):
-    field_type: str = Field(..., alias="@type")
-    id: str
+    field_type: str = Field(..., alias='@type')
+    id: Optional[str] = None
     pool_params: Optional[PoolParams] = None
     total_shares: Optional[TotalShares] = None
     liquidityUsd: float
-    liquidity24hUsdChange: float
+    liquidity24hUsdChange: Optional[float] = None
     volume24hUsd: float
     volume24hUsdChange: Optional[float] = None
     volume7dUsd: float
@@ -61,6 +61,9 @@ class ModelItem(BaseModel):
     tick_spacing: Optional[str] = None
     exponent_at_price_one: Optional[str] = None
     spread_factor: Optional[str] = None
+    pool_id: Optional[str] = None
+    code_id: Optional[str] = None
+    tokens: Optional[List[Token]] = None
 
 
 class Model(RootModel[List[ModelItem]]):
