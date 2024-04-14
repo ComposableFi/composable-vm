@@ -68,6 +68,8 @@ pub enum ContractError {
     NotImplemented,
     #[error("{0}")]
     IbcIdentifier(IdentifierError),
+    #[error("{0}")]
+    SaltLimitReached(String),
     #[error("Network config")]
     NetworkConfig,
     #[error("Unknown target network")]

@@ -19,5 +19,5 @@ pub fn calculate_salt(
     base.extend(pair.b.as_bytes().to_vec());
     let mut hasher = Sha224::default();
     hasher.update(base);
-    hasher.finalize().into_iter().take(48).collect()
+    hasher.finalize().into_iter().take(16).collect()
 }

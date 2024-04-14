@@ -6,7 +6,7 @@ use crate::{
     state::{self, network::load_this},
 };
 use cosmwasm_std::{
-    to_json_binary, Deps, DepsMut, Reply, Response, StdError, StdResult, SubMsg, WasmMsg,
+    ensure, to_json_binary, Deps, DepsMut, Reply, Response, StdError, StdResult, SubMsg, WasmMsg
 };
 
 use cvm_runtime::{executor::CvmExecutorInstantiated, CallOrigin, ExecutorOrigin};
@@ -53,6 +53,11 @@ pub fn instantiate(
     executor_origin: &ExecutorOrigin,
     salt: Vec<u8>,
 ) -> Result<SubMsg, ContractError> {
+    let salt = to_json_binary(&salt)?;
+    ensure!(
+        salt.len() <= 64,
+        ContractError::SaltLimitReached(salt.to_string())
+    );
     let next_executor_id: u128 = state::executors::EXECUTORS_COUNT
         .load(deps.storage)
         .unwrap_or_default()
@@ -68,8 +73,7 @@ pub fn instantiate(
         funds: vec![],
         // and label has some unknown limits  (including usage of special characters)
         label: format!("cvm_executor_{}", &next_executor_id),
-        // salt limit is 64 characters
-        salt: to_json_binary(&salt)?,
+        salt,
     };
     let executor_instantiate_submessage =
         SubMsg::reply_on_success(instantiate_msg, ReplyId::InstantiateExecutor.into());
