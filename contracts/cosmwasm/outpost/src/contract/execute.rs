@@ -258,6 +258,7 @@ pub(crate) fn handle_execute_program_privilleged(
     if let Some(state::executors::ExecutorItem { address, .. }) = executor {
         deps.api
             .debug("cvm::outpost::execute:: reusing existing executor and adding funds");
+        // tbh it is SLOW to send and then execute, must be one message
         let response = send_funds_to_executor(deps.as_ref(), address.clone(), assets)?;
         let wasm_msg = wasm_execute(
             address.clone(),
@@ -268,7 +269,7 @@ pub(crate) fn handle_execute_program_privilleged(
                     .unwrap_or(env.contract.address),
                 program,
             },
-            vec![],
+            vec![], // funds now are send as separate message, which is bad
         )?;
         Ok(response
             .add_event(make_event("route.execute").add_attribute("executor", address.into_string()))
@@ -327,7 +328,7 @@ fn send_funds_to_executor(
 ) -> Result {
     let mut response = Response::new();
     let executor_address = executor_address.into_string();
-    deps.api.debug(&format!("cvm::outpost:: sending funds {:?}", funds));
+    deps.api.debug(&format!("cvm::outpost::funds:: sending funds {:?}", funds));
     for (asset_id, amount) in funds.0 {        
         ensure!(amount >= <_>::default(), ContractError::DoNotAddFundsInsteadOfSendingZero);
         let msg = match assets::get_asset_by_id(deps, asset_id)?.local {
@@ -344,6 +345,7 @@ fn send_funds_to_executor(
                 })?
             } //cvm_route::asset::AssetReference::Erc20 { .. } => Err(ContractError::RuntimeUnsupportedOnNetwork)?,
         };
+        deps.api.debug(&format!("cvm::outpost::funds::msg {:?}", msg));
         response = response.add_message(msg);
     }
     Ok(response)

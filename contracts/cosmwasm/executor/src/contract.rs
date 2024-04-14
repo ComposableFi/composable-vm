@@ -393,14 +393,14 @@ pub fn execute_spawn(
     let mut response = Response::default();
     response = response.add_event(events::CvmExecutorInstructionSpawning::new(network_id));
     for (asset_id, balance) in assets.0 {
-
         let reference = outpost_address.get_asset_by_id(deps.querier, asset_id)?;
+        deps.api.debug(&format!("cvm::executor::execute::spawn::asset {:?}", reference)); 
         let transfer_amount = match &reference.local {
             AssetReference::Native { denom } => {
                 let coin = deps
                 .querier
                 .query_balance(env.contract.address.clone(), denom.clone())?;
-                deps.api.debug(&format!("cvm::executor::execute::spawn::filter {:?} {:?}", balance, coin));
+                deps.api.debug(&format!("cvm::executor::execute::spawn::filter {:?} {:?} {:?}", balance, coin, asset_id));
                 balance
                     .apply(coin.amount.into())
                     .map_err(|_| ContractError::ArithmeticError)
