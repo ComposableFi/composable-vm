@@ -73,7 +73,7 @@ pub fn route(
     let mut instructions = input.order_accounts.clone();
     while let Some(in_node_index_value) = in_node_index {
         let venue_index = graph
-            .find_edge(out_node_index, in_node_index_value)
+            .find_edge(in_node_index_value, out_node_index, )
             .expect("edge");
         let venue = venue_local_to_global
             .get(&venue_index)

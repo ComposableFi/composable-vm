@@ -156,36 +156,40 @@ async fn cvm_devnet_case() {
     let router = "shortest_path";
     let OSMOSIS = 2;
     let CENTAURI = 1;
+    let CENTAURI_OSMOSIS_OSMO = 12;
+    let CENTAURI_PICA = 11;
+    let OSMOSIS_OSMO = 22;
+    let OSMOSIS_CENTAURI_PICA = 21;
     let cvm_glt = CvmGlt {
         network_to_networks: vec![
-            NetworkToNetworkItem::new(1.into(), 2.into(), OtherNetworkItem::new()),
-            NetworkToNetworkItem::new(2.into(), 1.into(), OtherNetworkItem::new()),
+            NetworkToNetworkItem::new(OSMOSIS.into(), CENTAURI.into(), OtherNetworkItem::new()),
+            NetworkToNetworkItem::new(CENTAURI.into(), OSMOSIS.into(), OtherNetworkItem::new()),
         ],
         assets: vec![
             AssetItem::new(
-                11.into(),
-                1.into(),
+                CENTAURI_PICA.into(),
+                CENTAURI.into(),
                 AssetReference::Native {
                     denom: "a".to_string(),
                 },
             ),
             AssetItem::new(
-                12.into(),
-                1.into(),
+                CENTAURI_OSMOSIS_OSMO.into(),
+                CENTAURI.into(),
                 AssetReference::Native {
                     denom: "ibc/b".to_string(),
                 },
             ),
             AssetItem::new(
-                21.into(),
-                2.into(),
+                OSMOSIS_OSMO.into(),
+                OSMOSIS.into(),
                 AssetReference::Native {
                     denom: "b".to_string(),
                 },
             ),
             AssetItem::new(
-                22.into(),
-                2.into(),
+                OSMOSIS_CENTAURI_PICA.into(),
+                OSMOSIS.into(),
                 AssetReference::Native {
                     denom: "ibc/a".to_string(),
                 },
@@ -193,7 +197,7 @@ async fn cvm_devnet_case() {
         ],
         exchanges: vec![ExchangeItem::new(
             1.into(),
-            2.into(),
+            OSMOSIS.into(),
             cvm_route::exchange::ExchangeType::OsmosisPoolManagerModuleV1Beta1 {
                 pool_id: 1,
                 token_a: "b".to_string(),
@@ -202,7 +206,7 @@ async fn cvm_devnet_case() {
         )],
         networks: vec![
             NetworkItem {
-                network_id: 1.into(),
+                network_id: CENTAURI.into(),
                 outpost: Some(OutpostId::CosmWasm {
                     contract: cw_cvm_outpost_contract.clone(),
                     executor_code_id: cw_cvm_executor_code_id,
@@ -212,7 +216,7 @@ async fn cvm_devnet_case() {
                 ibc: None,
             },
             NetworkItem {
-                network_id: 2.into(),
+                network_id: OSMOSIS.into(),
                 outpost: Some(OutpostId::CosmWasm {
                     contract: cw_cvm_outpost_contract.clone(),
                     executor_code_id: cw_cvm_executor_code_id,
@@ -223,21 +227,21 @@ async fn cvm_devnet_case() {
             },
         ],
         network_assets: vec![
-            NetworkAssetItem::new(2.into(), 11.into(), 22.into()),
-            NetworkAssetItem::new(2.into(), 12.into(), 21.into()),
-            NetworkAssetItem::new(1.into(), 21.into(), 12.into()),
-            NetworkAssetItem::new(1.into(), 22.into(), 11.into()),
+            NetworkAssetItem::new(OSMOSIS.into(), CENTAURI_OSMOSIS_OSMO.into(), OSMOSIS_OSMO.into()),
+            NetworkAssetItem::new(OSMOSIS.into(), CENTAURI_PICA.into(), OSMOSIS_CENTAURI_PICA.into()),
+            NetworkAssetItem::new(CENTAURI.into(), OSMOSIS_CENTAURI_PICA.into(), CENTAURI_PICA.into()),
+            NetworkAssetItem::new(CENTAURI.into(), OSMOSIS_OSMO.into(), CENTAURI_OSMOSIS_OSMO.into()),
         ],
         asset_venue_items: vec![
             AssetsVenueItem::new(
                 cvm_route::venue::VenueId::Exchange(1.into()),
-                21.into(),
-                22.into(),
+                OSMOSIS_CENTAURI_PICA.into(),
+                OSMOSIS_OSMO.into(),
             ),
             AssetsVenueItem::new(
                 cvm_route::venue::VenueId::Exchange(1.into()),
-                22.into(),
-                21.into(),
+                OSMOSIS_OSMO.into(),
+                OSMOSIS_CENTAURI_PICA.into(),
             ),
         ],
     };
@@ -297,6 +301,8 @@ async fn cvm_devnet_case() {
         router,
     )
     .await;
+
+    panic!("{:?}", solution);
 
     centauri
         .execute_contract(

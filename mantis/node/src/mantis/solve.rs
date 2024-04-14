@@ -78,13 +78,14 @@ impl IntentBankInput {
         let mut intents = vec![];
         let a_asset = cvm_glt.cvm_asset_by_cw(pair.a.denom);
         let b_asset = cvm_glt.cvm_asset_by_cw(pair.b.denom);
+        
         if pair.a.amount.u128() > 0 {
             let b_received = a_to_b.iter().map(|x| {
                 let part = Ratio::new(x.1.u128(), pair.a.amount.u128()).msb_limit_unsigned();
                 let part = CvmBalanceFilter::from((*part.numer(), *part.denom()));
                 CvmInstruction::Transfer {
                     to: Destination::Account(CvmAddress::from(x.0.to_string())),
-                    assets: CvmFundsFilter::of(a_asset, part),
+                    assets: CvmFundsFilter::of(b_asset, part),
                 }
             });
             let intent =
@@ -98,7 +99,7 @@ impl IntentBankInput {
                 let part = CvmBalanceFilter::from((*part.numer(), *part.denom()));
                 CvmInstruction::Transfer {
                     to: Destination::Account(CvmAddress::from(x.0.to_string())),
-                    assets: CvmFundsFilter::of(b_asset, part),
+                    assets: CvmFundsFilter::of(a_asset, part),
                 }
             });
             let intent =
