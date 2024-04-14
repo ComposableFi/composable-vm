@@ -314,7 +314,6 @@ async fn cvm_devnet_case() {
         .wrap()
         .query_wasm_smart(cw_cvm_outpost_contract, &query)
         .unwrap();
-    //panic!("{:?}", cvm_glt);
     centauri
         .execute_contract(
             sender.clone(),

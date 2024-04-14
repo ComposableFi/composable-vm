@@ -19,9 +19,7 @@ pub fn query(deps: Deps, _env: Env, msg: msg::QueryMsg) -> Result<Binary> {
             .and_then(|route| Ok(to_json_binary(&msg::GetIbcIcs20RouteResponse { route })?)),
         GetExchangeById { exchange_id } => crate::state::exchange::get_by_id(deps, exchange_id)
             .and_then(|exchange| Ok(to_json_binary(&msg::GetExchangeResponse { exchange })?)),
-        GetConfig {} => {
-            crate::state::get_config(deps).and_then(|config| Ok(to_json_binary(&config)?))
-        }
+        GetConfig {} => crate::state::get_config(deps).and_then(|x| Ok(to_json_binary(&x)?)),
         GetAllAssetIds {} => crate::state::assets::get_all_assets(deps)
             .and_then(|x| Ok(to_json_binary(&x)?))
             .map_err(Into::into),

@@ -52,7 +52,7 @@ pub async fn smart_query<T: serde::ser::Serialize, O: serde::de::DeserializeOwne
     let result = read
         .smart_contract_state(orders_request)
         .await
-        .expect("result obtained")
+        .expect("why cannot execute?")
         .into_inner()
         .data;
     serde_json_wasm::from_slice(&result).expect("result parsed")

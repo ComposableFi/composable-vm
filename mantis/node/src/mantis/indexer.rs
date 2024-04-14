@@ -11,13 +11,11 @@ pub async fn get_active_orders(
     tip: &Tip,
 ) -> Vec<OrderItem> {
     let query = cw_mantis_order::QueryMsg::GetAllOrders {};
-    let all_orders = smart_query::<_, Vec<OrderItem>>(order_contract, query, cosmos_query_client)
+    smart_query::<_, Vec<OrderItem>>(order_contract, query, cosmos_query_client)
         .await
         .into_iter()
         .filter(|x| x.msg.timeout > tip.block.value())
-        .collect::<Vec<OrderItem>>();
-    println!("all_orders: {:?}", all_orders);
-    all_orders
+        .collect::<Vec<OrderItem>>()
 }
 
 pub async fn get_stale_orders(
@@ -38,6 +36,5 @@ pub async fn get_cvm_glt(
     cosmos_query_client: &mut CosmWasmReadClient,
 ) -> GetConfigResponse {
     let query = cvm_runtime::outpost::QueryMsg::GetConfig {};
-    let cvm_glt = smart_query::<_, GetConfigResponse>(contract, query, cosmos_query_client).await;
-    cvm_glt
+    smart_query::<_, GetConfigResponse>(contract, query, cosmos_query_client).await
 }

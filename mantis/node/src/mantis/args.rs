@@ -32,6 +32,7 @@ pub enum GltCommands {
     Plan,
     /// adds specific things to offchain config
     Add,
+    Get(GltGetArgs),
 }
 
 #[derive(Debug, Parser)]
@@ -57,7 +58,7 @@ pub enum AssetCommands {
 }
 
 #[derive(clap::Parser, Debug)]
-pub struct SharedArgs {
+pub struct SolverSharedArgs {
     /// chain id of order contract
     #[arg(long)]
     pub main_chain_id: String,
@@ -84,7 +85,7 @@ pub struct SharedArgs {
 #[derive(clap::Parser, Debug)]
 pub struct SimulateArgs {
     #[command(flatten)]
-    pub shared: SharedArgs,
+    pub shared: SolverSharedArgs,
 
     /// CVM contract on Centauri. Optional, only if consider routing via cross chain CVM.
     #[arg(long)]
@@ -103,7 +104,7 @@ pub struct SimulateArgs {
 #[derive(clap::Parser, Debug)]
 pub struct SolverArgs {
     #[command(flatten)]
-    pub shared: SharedArgs,
+    pub shared: SolverSharedArgs,
 
     /// CVM contract if interchain solving via CVM enabled
     #[arg(long)]
@@ -118,6 +119,14 @@ pub struct SolverArgs {
     pub no_cows: bool,
 }
 
+#[derive(clap::Parser, Debug)]
+pub struct GltGetArgs {
+    #[arg(long)]
+    pub cvm_contract: String,
+
+    #[arg(long)]
+    pub grpc_centauri: String,
+}
 impl MantisArgs {
     pub fn parsed() -> Self {
         Self::parse()

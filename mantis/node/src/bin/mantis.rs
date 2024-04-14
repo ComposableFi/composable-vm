@@ -43,13 +43,21 @@ async fn main() {
                 }
             },
         },
-        MantisCommands::Glt(_) => todo!(),
+        MantisCommands::Glt(x) => match &x.command {
+            GltCommands::Validate => todo!(),
+            GltCommands::Plan => todo!(),
+            GltCommands::Add => todo!(),
+            GltCommands::Get(args) => {
+                let mut wasm_read_client = create_wasm_query_client(&args.grpc_centauri).await;
+                let cvm_glt = get_cvm_glt(&args.cvm_contract, &mut wasm_read_client).await;
+                println!("{:?}", cvm_glt);
+            }
+        },
     }
 }
 
 async fn solve_orders(solver_args: &SolverArgs) {
     let args = &solver_args.shared;
-    let _wasm_read_client = create_wasm_query_client(&args.grpc_centauri).await;
 
     let signer = mantis_node::mantis::cosmos::signer::from_mnemonic(
         args.wallet.as_str(),

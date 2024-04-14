@@ -8,6 +8,7 @@ use crate::{error::ContractError, prelude::*};
 
 use cosmwasm_std::{StdResult, Storage};
 
+use cvm_route::asset;
 use cvm_runtime::outpost::GetConfigResponse;
 use cw_storage_plus::Item;
 
@@ -23,13 +24,25 @@ pub(crate) fn save(storage: &mut dyn Storage, value: &HereItem) -> StdResult<()>
 
 pub(crate) fn get_config(deps: cosmwasm_std::Deps<'_>) -> Result<GetConfigResponse, ContractError> {
     use crate::state::*;
+    let network_to_networks = network::get_all_network_to_network(deps)?;
+    deps.api.debug("got networks to networks");
     let exchanges = exchange::get_all_exchanges(deps)?;
-    Ok(GetConfigResponse {
-        network_to_networks: network::get_all_network_to_network(deps)?,
-        assets: assets::get_all_assets(deps)?,
+    deps.api.debug("got exchanges");
+    let assets = assets::get_all_assets(deps)?;
+    deps.api.debug("got assets");
+    let networks = network::get_all_networks(deps)?;
+    deps.api.debug("got networks");
+    let network_assets = assets::get_all_network_assets(deps)?;
+    deps.api.debug("got network assets");
+    let asset_venue_items = exchange::get_all_exchange_venues(deps)?;
+    deps.api.debug("got asset venue items");
+    let get_config_response = GetConfigResponse {
+        network_to_networks,
+        assets,
         exchanges,
-        networks: network::get_all_networks(deps)?,
-        network_assets: assets::get_all_network_assets(deps)?,
-        asset_venue_items: exchange::get_all_exchange_venues(deps)?,
-    })
+        networks,
+        network_assets,
+        asset_venue_items,
+    };
+    Ok(get_config_response)
 }
