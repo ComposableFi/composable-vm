@@ -80,9 +80,9 @@ pub fn route(
             .expect("venue")
             .clone();
         match venue {
-            Venue::Transfer(from_asset_id, _to_asset_id) => {
+            Venue::Transfer(from_asset_id, to_asset_id) => {
                 let spawn = CvmInstruction::Spawn {
-                    network_id: cvm_glt.get_network_for_asset(from_asset_id),
+                    network_id: cvm_glt.get_network_for_asset(to_asset_id),
                     salt: salt.to_vec(),
                     assets: CvmFundsFilter::all_of(from_asset_id),
                     program: CvmProgram {
@@ -107,5 +107,6 @@ pub fn route(
             in_node_index_value,
         );
     }
+    log::info!("instructions: {:?}", instructions);
     instructions
 }

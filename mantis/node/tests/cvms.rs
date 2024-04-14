@@ -154,6 +154,8 @@ async fn cvm_devnet_case() {
     };
 
     let router = "shortest_path";
+    let OSMOSIS = 2;
+    let CENTAURI = 1;
     let cvm_glt = CvmGlt {
         network_to_networks: vec![
             NetworkToNetworkItem::new(1.into(), 2.into(), OtherNetworkItem::new()),
@@ -312,9 +314,15 @@ async fn cvm_devnet_case() {
     let query = cvm_runtime::outpost::QueryMsg::GetConfig {};
     let cvm_glt: CvmGlt = centauri
         .wrap()
-        .query_wasm_smart(cw_cvm_outpost_contract, &query)
+        .query_wasm_smart(cw_cvm_outpost_contract.clone(), &query)
         .unwrap();
-
+    let query = cvm_runtime::outpost::QueryMsg::GetAssetById {
+        asset_id: 12.into(),
+    };
+    let asset: GetAssetResponse = centauri
+        .wrap()
+        .query_wasm_smart(cw_cvm_outpost_contract.clone(), &query)
+        .unwrap();
     centauri
         .execute_contract(
             sender.clone(),
