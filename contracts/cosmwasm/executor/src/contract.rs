@@ -62,6 +62,7 @@ pub fn execute(
     msg: cvm_runtime::executor::ExecuteMsg,
 ) -> Result {
     let token = ensure_owner(deps.as_ref(), &env.contract.address, info.sender.clone())?;
+    deps.api.debug(&format!("cvm::executor::execute::coins {:?}", &info.funds));
     use cvm_runtime::executor::*;
     match msg {
         ExecuteMsg::Execute { tip, program } => initiate_execution(token, deps, env, tip, program),

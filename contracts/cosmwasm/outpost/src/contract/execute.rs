@@ -189,6 +189,7 @@ fn transfer_from_user(
 
             program_funds.0.push((asset.asset_id, coin.amount.into()));
         }
+        deps.api.debug(&format!("cvm::outpost::funds obtained from msg {:?}", program_funds));
         // we cannot do same trick with CW20 as need to know CW20 address (and it has to support
         // Allowance query).
         // so it is implement CW20 receiver interface like Michal did for wallet

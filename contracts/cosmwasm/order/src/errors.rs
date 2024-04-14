@@ -17,7 +17,7 @@ pub fn partial_cross_chain_not_implemented() -> StdError {
 }
 
 pub(crate) fn expected_some_funds_in_route() -> StdError {
-    StdError::generic_err("expected_some_funds_in_route")
+    StdError::generic_err("Expected some funds in route")
 }
 
 pub fn banks_funds_must_be_at_least_routed(has: &Coin, expected: &Coin) -> StdError {

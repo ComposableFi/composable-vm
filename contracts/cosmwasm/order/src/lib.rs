@@ -234,7 +234,7 @@ impl OrderContract<'_> {
         .into_iter()
         .filter(|x| x.amount.u128() > 0)
         .collect();
-
+        ctx.deps.api.debug(&format!("mantis::order::route::funds {:?}", funds));
         ensure!(
             !funds.is_empty(),
             crate::errors::expected_some_funds_in_route()
