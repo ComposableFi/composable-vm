@@ -519,14 +519,13 @@ impl OrderContract<'_> {
 
             // hey, need some other data structure for this
             let solver_order = solver_orders
-            .iter_mut()
-            .find(|x| x.order.order_id == order.order_id)
-            .expect("solver order");
-        
+                .iter_mut()
+                .find(|x| x.order.order_id == order.order_id)
+                .expect("solver order");
+
             solver_order.order = order.clone();
 
             let (event, remaining) = if order.given.amount.is_zero() {
-
                 api.debug(&format!("mantis::order::filled::full {:?}", order.order_id));
 
                 self.orders.remove(storage, order.order_id.u128());

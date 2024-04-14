@@ -1,4 +1,5 @@
 use cosmwasm_std::{IbcOrder, Response, StdError};
+use cvm_route::{asset::AssetReference, venue::AssetsVenueItem};
 use cvm_runtime::{AssetId, NetworkId};
 use ibc_core_host_types::error::IdentifierError;
 use thiserror::Error;
@@ -27,6 +28,8 @@ pub enum ContractError {
     FailedToSerialize,
     #[error("Asset not been found in the registry {0}.")]
     AssetIdNotFound(AssetId),
+    #[error("Asset by reference not found {0}.")]
+    AssetByReferenceNotFound(AssetReference),
     #[error("Exchange not been found in the registry.")]
     ExchangeNotFound,
     #[error("The contract must be initialized first.")]

@@ -30,7 +30,7 @@ pub(crate) fn force_asset(_: auth::Admin, deps: DepsMut, msg: AssetItem) -> Resu
 pub(crate) fn get_asset_by_id(deps: Deps, asset_id: AssetId) -> Result<AssetItem> {
     ASSETS
         .may_load(deps.storage, asset_id)?
-        .ok_or(ContractError::AssetIdNotFound)
+        .ok_or(ContractError::AssetIdNotFound(asset_id))
 }
 
 /// Fetches information about given asset by its local reference.
@@ -39,8 +39,8 @@ pub(crate) fn get_local_asset_by_reference(
     reference: AssetReference,
 ) -> Result<AssetItem> {
     LOCAL_ASSETS
-        .may_load(deps.storage, reference)?
-        .ok_or(ContractError::AssetIdNotFound)
+        .may_load(deps.storage, reference.clone())?
+        .ok_or(ContractError::AssetByReferenceNotFound(reference))
 }
 
 /// Removes an existing asset from the registry; errors out if asset doesn’t

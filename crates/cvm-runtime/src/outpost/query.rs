@@ -22,7 +22,11 @@ pub enum QueryMsg {
         returns(GetAssetResponse)
     )]
     GetAssetById { asset_id: AssetId },
-
+    #[cfg_attr(
+        feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
+        returns(Vec<AssetItem>)
+    )]
+    GetAllAssetIds {},
     /// Returns [`AssetItem`] for an asset with given local reference.
     #[cfg_attr(
         feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),

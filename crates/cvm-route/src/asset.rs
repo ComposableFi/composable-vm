@@ -1,3 +1,5 @@
+use core::fmt::Display;
+
 use crate::{prelude::*, transport::ForeignAssetId};
 use cvm::{AssetId, NetworkId};
 
@@ -95,6 +97,12 @@ impl AssetReference {
             AssetReference::Cw20 { contract } => ["cw20:", contract.as_str()].concat(),
             //AssetReference::Erc20 { contract } => ["erc20:", &contract.to_string()].concat(),
         }
+    }
+}
+
+impl Display for AssetReference {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        f.write_str(&self.denom())
     }
 }
 

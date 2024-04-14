@@ -1,5 +1,7 @@
 use cvm_route::{
-    asset::{AssetItem, NetworkAssetItem}, exchange::ExchangeItem, transport::NetworkToNetworkItem,
+    asset::{AssetItem, NetworkAssetItem},
+    exchange::ExchangeItem,
+    transport::NetworkToNetworkItem,
     venue::AssetsVenueItem,
 };
 

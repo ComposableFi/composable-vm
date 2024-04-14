@@ -1,15 +1,15 @@
 use bounded_collections::Get;
 use cosmrs::tendermint::block::Height;
-use cosmwasm_std::{Addr, Coin, Coins, Empty};
+use cosmwasm_std::{Addr, Coin, Coins, Empty, Querier, QuerierWrapper};
 use cvm_route::{
     asset::{self, AssetItem, AssetReference, NetworkAssetItem},
     exchange::ExchangeItem,
     transport::{NetworkToNetworkItem, OtherNetworkItem},
     venue::AssetsVenueItem,
 };
-use cw_cvm_outpost::msg::{CvmGlt, HereItem, NetworkItem, OutpostId};
+use cw_cvm_outpost::msg::{CvmGlt, GetAssetResponse, HereItem, NetworkItem, OutpostId};
 use cw_mantis_order::{OrderItem, OrderSubMsg, SolutionSubMsg};
-use cw_multi_test::{App, Bank, BankKeeper, Contract, ContractWrapper, Executor};
+use cw_multi_test::{App, Bank, BankKeeper, Contract, ContractWrapper, Executor, StargateQuery};
 use mantis_node::mantis::cosmos::{client::Tip, signer::from_mnemonic};
 use serde::de;
 
@@ -41,7 +41,7 @@ async fn cvm_devnet_case() {
 
     let sender = Addr::unchecked("juno1g2rahf5846rxzp3fwlswy08fz8ccuwk03k57y");
     let cw_cvm_outpost_instantiate = cw_cvm_outpost::msg::InstantiateMsg(HereItem {
-        network_id: 3.into(),
+        network_id: 1.into(),
         admin: sender.clone(),
     });
     let cw_cvm_outpost_contract = centauri
@@ -296,26 +296,33 @@ async fn cvm_devnet_case() {
     )
     .await;
 
-    centauri.execute_contract(
-        sender.clone(),
-        cw_mantis_contract.clone(),
-        &solution[0],
-        &[],
-    ).unwrap();
+    centauri
+        .execute_contract(
+            sender.clone(),
+            cw_mantis_contract.clone(),
+            &solution[0],
+            &[],
+        )
+        .unwrap();
 
     centauri.update_block(|x| {
         x.height += 2;
     });
 
-    println!("=========================================================================================");
-    centauri.execute_contract(
-        sender.clone(),
-        cw_mantis_contract.clone(),
-        &solution[0],
-        &[],
-    ).unwrap();
-
-    //panic!("solution: {:?}", solution);
+    let query = cvm_runtime::outpost::QueryMsg::GetAllAssetIds {};
+    let cvm_glt: Vec<AssetItem> = centauri
+        .wrap()
+        .query_wasm_smart(cw_cvm_outpost_contract, &query)
+        .unwrap();
+    //panic!("{:?}", cvm_glt);
+    centauri
+        .execute_contract(
+            sender.clone(),
+            cw_mantis_contract.clone(),
+            &solution[0],
+            &[],
+        )
+        .expect("https://github.com/CosmWasm/cw-multi-test/blob/main/src/wasm.rs#L722");
 }
 
 enum True {}

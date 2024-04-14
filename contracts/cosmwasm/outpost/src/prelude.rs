@@ -3,6 +3,6 @@ pub use alloc::format;
 pub use cosmwasm_std::Addr;
 pub use cvm_runtime::{outpost::config::*, shared::Displayed};
 pub use cw_storage_plus::Map;
+pub use enumn::N as EnumNum;
 pub use ibc_core_host_types::identifiers::ChannelId;
 pub use serde::{Deserialize, Serialize};
-pub use enumn::N as  EnumNum;

@@ -21,6 +21,10 @@ pub fn query(deps: Deps, _env: Env, msg: msg::QueryMsg) -> Result<Binary> {
             .and_then(|exchange| Ok(to_json_binary(&msg::GetExchangeResponse { exchange })?)),
         GetConfig {} => {
             crate::state::get_config(deps).and_then(|config| Ok(to_json_binary(&config)?))
-        } // GetRoute { program } => router::get_route(deps, program),
+        }
+        GetAllAssetIds {} => crate::state::assets::get_all_assets(deps)
+            .and_then(|x| Ok(to_json_binary(&x)?))
+            .map_err(Into::into),
+        // GetRoute { program } => router::get_route(deps, program),
     }
 }

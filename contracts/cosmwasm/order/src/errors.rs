@@ -21,6 +21,8 @@ pub(crate) fn expected_some_funds_in_route() -> StdError {
 }
 
 pub fn banks_funds_must_be_at_least_routed(has: &Coin, expected: &Coin) -> StdError {
-    StdError::generic_err(format!("banks_funds_must_be_at_least_routed {:?} => {:?} ", has, expected))
-    
+    StdError::generic_err(format!(
+        "banks_funds_must_be_at_least_routed {:?} => {:?} ",
+        has, expected
+    ))
 }
