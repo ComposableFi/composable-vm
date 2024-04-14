@@ -393,12 +393,14 @@ pub fn execute_spawn(
     let mut response = Response::default();
     response = response.add_event(events::CvmExecutorInstructionSpawning::new(network_id));
     for (asset_id, balance) in assets.0 {
+
         let reference = outpost_address.get_asset_by_id(deps.querier, asset_id)?;
         let transfer_amount = match &reference.local {
             AssetReference::Native { denom } => {
                 let coin = deps
-                    .querier
-                    .query_balance(env.contract.address.clone(), denom.clone())?;
+                .querier
+                .query_balance(env.contract.address.clone(), denom.clone())?;
+                deps.api.debug(&format!("cvm::executor::execute::spawn::filter {:?} {:?}", balance, coin));
                 balance
                     .apply(coin.amount.into())
                     .map_err(|_| ContractError::ArithmeticError)
@@ -411,6 +413,7 @@ pub fn execute_spawn(
             ),
             // AssetReference::Erc20 { .. } => Err(ContractError::AssetUnsupportedOnThisNetwork)?,
         }?;
+        deps.api.debug(&format!("cvm::executor::execute::spawn::transfer_amount {:?}", transfer_amount));
 
         if !transfer_amount.is_zero() {
             let asset_id: u128 = asset_id.into();

@@ -10,8 +10,7 @@ use crate::{
 };
 
 use cosmwasm_std::{
-    entry_point, wasm_execute, Addr, BankMsg, Coin, CosmosMsg, Deps, DepsMut, Env, MessageInfo,
-    Response, StdError,
+    ensure, ensure_eq, entry_point, wasm_execute, Addr, BankMsg, Coin, CosmosMsg, Deps, DepsMut, Env, MessageInfo, Response, StdError
 };
 use cvm_route::asset::{AssetReference, NetworkAssetItem};
 use cw20::{Cw20Contract, Cw20ExecuteMsg};
@@ -288,7 +287,7 @@ pub(crate) fn handle_execute_program_privilleged(
             //     Err(ContractError::BadlyConfiguredRouteBecauseThisChainCanSendOnlyFromCosmwasm)?
             // }
         };
-        deps.api.debug("instantiating executor");
+        deps.api.debug("cvm::outpost:: instantiating executor");
         let this = msg::Outpost::new(env.contract.address);
 
         let executor_instantiate_submsg = crate::executor::instantiate(
@@ -300,7 +299,7 @@ pub(crate) fn handle_execute_program_privilleged(
         )?;
 
         // Secondly, call itself again with the same parameters, so that this functions goes
-        // into `Ok` state and properly executes the executor
+        // into `Ok` state and properly executes the executor        
         let execute_program = cvm_runtime::outpost::BridgeExecuteProgramMsg {
             salt: executor_origin.salt,
             program,
@@ -328,13 +327,9 @@ fn send_funds_to_executor(
 ) -> Result {
     let mut response = Response::new();
     let executor_address = executor_address.into_string();
-    for (asset_id, amount) in funds.0 {
-        // Ignore zero amounts
-        if amount == 0 {
-            continue;
-        }
-        deps.api.debug("cvm::outpost:: sending funds");
-
+    deps.api.debug(&format!("cvm::outpost:: sending funds {:?}", funds));
+    for (asset_id, amount) in funds.0 {        
+        ensure!(amount >= <_>::default(), ContractError::DoNotAddFundsInsteadOfSendingZero);
         let msg = match assets::get_asset_by_id(deps, asset_id)?.local {
             cvm_route::asset::AssetReference::Native { denom } => BankMsg::Send {
                 to_address: executor_address.clone(),
