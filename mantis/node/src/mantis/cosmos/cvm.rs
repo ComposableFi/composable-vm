@@ -1,3 +1,5 @@
+use std::io::Read;
+
 use mantis_cw::DenomPair;
 
 use super::client::Tip;
@@ -9,13 +11,13 @@ pub fn calculate_salt(
     tip: &Tip,
     pair: DenomPair,
 ) -> Vec<u8> {
-    use sha2::{Digest, Sha256};
+    use sha2::{Digest, Sha224};
     let mut base = signing_key.public_key().to_bytes().to_vec();
     base.extend(tip.block.value().to_be_bytes().to_vec());
     base.extend(tip.account.sequence.to_be_bytes().to_vec());
     base.extend(pair.a.as_bytes().to_vec());
     base.extend(pair.b.as_bytes().to_vec());
-    let mut hasher = Sha256::default();
+    let mut hasher = Sha224::default();
     hasher.update(base);
-    hasher.finalize().to_vec()
+    hasher.finalize().into_iter().take(48).collect()
 }
