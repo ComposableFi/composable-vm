@@ -23,6 +23,9 @@ pub fn query(deps: Deps, _env: Env, msg: msg::QueryMsg) -> Result<Binary> {
         GetAllAssetIds {} => crate::state::assets::get_all_assets(deps)
             .and_then(|x| Ok(to_json_binary(&x)?))
             .map_err(Into::into),
+        GetAllAssetVenues {} => crate::state::exchange::get_all_exchange_venues(deps)
+            .and_then(|x| Ok(to_json_binary(&x)?))
+            .map_err(Into::into),
         // GetRoute { program } => router::get_route(deps, program),
     }
 }

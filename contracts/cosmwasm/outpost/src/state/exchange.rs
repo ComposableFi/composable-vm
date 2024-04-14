@@ -43,47 +43,49 @@ pub(crate) fn force_exchange(
 }
 
 pub(crate) const EXCHANGE: Map<u128, cvm_route::exchange::ExchangeItem> = Map::new("exchange");
+pub type VenueKey = (u128, u128, u128);
+pub(crate) const EXCHANGE_VENUE: Map<VenueKey, cvm_route::venue::AssetsVenueItem> =
+    Map::new("venues");
 
-pub type VenuePairId = (u128, u128);
+// pub type VenueMultiMap<'a> =
+//     IndexedMap<'a, (VenuePairId, u128), cvm_route::venue::AssetsVenueItem, VenueIndexes<'a>>;
 
-pub type VenueMultiMap<'a> =
-    IndexedMap<'a, (VenuePairId, u128), cvm_route::venue::AssetsVenueItem, VenueIndexes<'a>>;
+// pub struct VenueIndexes<'a> {
+//     pub pair_first:
+//         MultiIndex<'a, VenuePairId, cvm_route::venue::AssetsVenueItem, (VenuePairId, u128)>,
+// }
 
-pub struct VenueIndexes<'a> {
-    pub pair_first:
-        MultiIndex<'a, VenuePairId, cvm_route::venue::AssetsVenueItem, (VenuePairId, u128)>,
-}
+// impl<'a> cw_storage_plus::IndexList<cvm_route::venue::AssetsVenueItem> for VenueIndexes<'a> {
+//     fn get_indexes(
+//         &'_ self,
+//     ) -> Box<
+//         dyn Iterator<Item = &'_ dyn cw_storage_plus::Index<cvm_route::venue::AssetsVenueItem>> + '_,
+//     > {
+//         let v: Vec<&dyn cw_storage_plus::Index<cvm_route::venue::AssetsVenueItem>> =
+//             vec![&self.pair_first];
+//         Box::new(v.into_iter())
+//     }
+// }
 
-impl<'a> cw_storage_plus::IndexList<cvm_route::venue::AssetsVenueItem> for VenueIndexes<'a> {
-    fn get_indexes(
-        &'_ self,
-    ) -> Box<
-        dyn Iterator<Item = &'_ dyn cw_storage_plus::Index<cvm_route::venue::AssetsVenueItem>> + '_,
-    > {
-        let v: Vec<&dyn cw_storage_plus::Index<cvm_route::venue::AssetsVenueItem>> =
-            vec![&self.pair_first];
-        Box::new(v.into_iter())
-    }
-}
+// pub const fn venues<'a>() -> VenueMultiMap<'a> {
+//     let pk_name = "venues";
+//     let indexes = VenueIndexes {
+//         pair_first: MultiIndex::new(
+//             |_pk: &[u8], d: &cvm_route::venue::AssetsVenueItem| {
+//                 (d.from_asset_id.into(), d.to_asset_id.into())
+//             },
+//             "pk_name",
+//             "pair",
+//         ),
+//     };
+//     IndexedMap::new("venues", indexes)
+// }
 
-pub const fn venues<'a>() -> VenueMultiMap<'a> {
-    let indexes = VenueIndexes {
-        pair_first: MultiIndex::new(
-            |_pk: &[u8], d: &cvm_route::venue::AssetsVenueItem| {
-                (d.from_asset_id.into(), d.to_asset_id.into())
-            },
-            "exchange_id_pair",
-            "pair",
-        ),
-    };
-    IndexedMap::new("venues", indexes)
-}
-
-pub const EXCHANGE_VENUE: IndexedMap<
-    (VenuePairId, u128),
-    cvm_route::venue::AssetsVenueItem,
-    VenueIndexes,
-> = venues();
+// pub const EXCHANGE_VENUE: IndexedMap<
+//     (VenuePairId, u128),
+//     cvm_route::venue::AssetsVenueItem,
+//     VenueIndexes,
+// > = venues();
 
 pub(crate) fn force_assets_venue(
     _: auth::Admin,
@@ -94,10 +96,7 @@ pub(crate) fn force_assets_venue(
         cvm_route::venue::VenueId::Exchange(exchange_id) => {
             EXCHANGE_VENUE.save(
                 deps.storage,
-                (
-                    (msg.from_asset_id.0 .0, msg.to_asset_id.0 .0),
-                    exchange_id.0,
-                ),
+                (msg.from_asset_id.0 .0, msg.to_asset_id.0 .0, exchange_id.0),
                 &msg,
             )?;
             Ok(BatchResponse::new().add_event(

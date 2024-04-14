@@ -309,11 +309,12 @@ async fn cvm_devnet_case() {
         x.height += 2;
     });
 
-    let query = cvm_runtime::outpost::QueryMsg::GetAllAssetIds {};
-    let cvm_glt: Vec<AssetItem> = centauri
+    let query = cvm_runtime::outpost::QueryMsg::GetConfig {};
+    let cvm_glt: CvmGlt = centauri
         .wrap()
         .query_wasm_smart(cw_cvm_outpost_contract, &query)
         .unwrap();
+
     centauri
         .execute_contract(
             sender.clone(),

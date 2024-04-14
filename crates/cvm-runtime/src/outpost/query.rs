@@ -54,6 +54,12 @@ pub enum QueryMsg {
         returns(GetConfigResponse)
     )]
     GetConfig {},
+
+    #[cfg_attr(
+        feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
+        returns(Vec<AssetsVenueItem>)
+    )]
+    GetAllAssetVenues {},
     // /// So given program, contract returns route which will follow
     // #[cfg_attr(
     //     feature = "json-schema", // all(feature = "json-schema", not(target_arch = "wasm32")),
