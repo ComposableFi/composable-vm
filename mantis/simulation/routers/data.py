@@ -14,13 +14,13 @@ from anytree import NodeMixin
 from disjoint_set import DisjointSet
 from loguru import logger
 from pydantic import BaseModel, Field, model_validator, validator
-
+from decimal import Decimal as dec
 from simulation.routers.oracles.usdoracle import merge_by_connection_from_existing
 
 # This is global unique ID for token(asset) or exchange(pool)
 TId = TypeVar("TId", int, str)
 TNetworkId = TypeVar("TNetworkId", int, str)
-TAmount = TypeVar("TAmount", int, str, float)
+TAmount = TypeVar("TAmount", int, float, dec)
 
 MINIMAL_FEE_PER_MILLION_DEFAULT = 100
 """
