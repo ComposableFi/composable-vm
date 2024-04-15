@@ -1593,7 +1593,8 @@
         "networks": "networks",
         "nixpkgs": "nixpkgs_5",
         "poetry2nix": "poetry2nix",
-        "rust-overlay": "rust-overlay"
+        "rust-overlay": "rust-overlay",
+        "scip-src": "scip-src"
       }
     },
     "rust-overlay": {
@@ -1632,6 +1633,23 @@
       "original": {
         "owner": "zaninime",
         "repo": "sbt-derivation",
+        "type": "github"
+      }
+    },
+    "scip-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1707302947,
+        "narHash": "sha256-V3NaYoH+4GIv4MWJwgmqIJTfEdsKnPxaYLl7qznejp0=",
+        "owner": "scipopt",
+        "repo": "scip",
+        "rev": "7205bedd942f87faeb9a0552839710941d1ffc2c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "scipopt",
+        "ref": "v900",
+        "repo": "scip",
         "type": "github"
       }
     },

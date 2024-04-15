@@ -1,5 +1,5 @@
 {
-  description = "CVM and MANTIS";
+  description = "Composable VM and MANTIS";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -33,10 +33,10 @@
     #   flake = false;
     # };
 
-    # scip = {
-    #   url = github:dzmitry-lahoda-forks/scip/7f083e91574527c8fb788c608e3b47f39217b47b;
-    #   inputs.nixpkgs.follows = "nixpkgs";
-    # };
+    scip-src = {
+      url = github:scipopt/scip/v900;
+      flake = false;
+    };
 
     # pydantic-src = {
     #   url = "github:pydantic/pydantic/v2.5.3";
@@ -70,7 +70,7 @@
     datamodel-code-generator-src,
     poetry2nix,
     nixpkgs,
-    # scip,
+    scip-src,
     # pyscipopt-src,
     ...
   }:
@@ -281,21 +281,26 @@
 
         override = overrides:
           overrides.withDefaults (self: super: {
-            editables = super.editables.overridePythonAttrs (old: {
-              buildInputs = old.buildInputs or [] ++ [self.python.pkgs.flit-core];
+
+            pyscipopt = super.pyscipopt.overridePythonAttrs (old: {
+              # buildInputs = old.buildInputs or [] ++ [self.python.pkgs.setuptools];
+              SCIPOPTDIR = scip-src;
             });
-            dnspython = super.dnspython.overridePythonAttrs (old: {
-              buildInputs = old.buildInputs or [] ++ [self.python.pkgs.hatchling];
-            });
+            # editables = super.editables.overridePythonAttrs (old: {
+            #   buildInputs = old.buildInputs or [] ++ [self.python.pkgs.flit-core];
+            # });
+            # dnspython = super.dnspython.overridePythonAttrs (old: {
+            #   buildInputs = old.buildInputs or [] ++ [self.python.pkgs.hatchling];
+            # });
 
             # pyscipopt = pyscipopt-latest;
-            google = super.google.overridePythonAttrs (old: {
-              buildInputs = old.buildInputs or [] ++ [self.python.pkgs.setuptools];
-            });
-            wirerope = super.wirerope.overridePythonAttrs (old: {
-              buildInputs = old.buildInputs or [] ++ [self.python.pkgs.setuptools];
-            });
-            methodtools = super.methodtools.overridePythonAttrs (old: {
+            # google = super.google.overridePythonAttrs (old: {
+            #   buildInputs = old.buildInputs or [] ++ [self.python.pkgs.setuptools];
+            # });
+            # wirerope = super.wirerope.overridePythonAttrs (old: {
+            #   buildInputs = old.buildInputs or [] ++ [self.python.pkgs.setuptools];
+            # });
+            maturin = super.maturin.overridePythonAttrs (old: {
               buildInputs = old.buildInputs or [] ++ [self.python.pkgs.setuptools];
             });
             # mpire = super.mpire.overridePythonAttrs (old: {
@@ -306,9 +311,9 @@
             #   nativeBuildInputs = old.nativeBuildInputs or [] ++ [self.python.pkgs.setuptools self.python.pkgs.wheel pkgs.cbc pkgs.pkg-config];
             # });
 
-            google-cloud = super.google-cloud.overridePythonAttrs (old: {
-              buildInputs = old.buildInputs or [] ++ [self.python.pkgs.setuptools];
-            });
+            # google-cloud = super.google-cloud.overridePythonAttrs (old: {
+            #   buildInputs = old.buildInputs or [] ++ [self.python.pkgs.setuptools];
+            # });
             # cvxpy = cvxpy-latest;
 
             # maturin = maturin-latest;
@@ -371,7 +376,7 @@
           };
         native-deps = [
           pkgs.cbc
-          inputs'.scip.packages.scip
+          #inputs'.scip.packages.scip
           #pkgs.CoinMP
           pkgs.ipopt
           pkgs.or-tools
@@ -394,14 +399,13 @@
 
           buildInputs =
             [
-              inputs'.scip.packages.scip
+              #inputs'.scip.packages.scip
               devour-flake
-              #pyEnvShell
+              pythonPackages
               pkgs.conda
               pkgs.nix
               pkgs.nodejs
               pkgs.nodePackages.npm
-              pkgs.poetry
               pkgs.pyo3-pack
               pkgs.python3Packages.flit
               pkgs.python3Packages.flit-core
@@ -433,7 +437,8 @@
         };
         formatter = pkgs.alejandra;
         packages = rec {
-          scip = inputs'.scip.packages.scip;
+          pyscipopt = pkgs.python3Packages.pyscipopt;
+          # scip = inputs'.scip.packages.scip;
           inherit
             cw-mantis-order
             cw-cvm-executor
