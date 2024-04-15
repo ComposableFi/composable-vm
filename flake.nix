@@ -281,7 +281,6 @@
 
         override = overrides:
           overrides.withDefaults (self: super: {
-
             pyscipopt = super.pyscipopt.overridePythonAttrs (old: {
               # buildInputs = old.buildInputs or [] ++ [self.python.pkgs.setuptools];
               SCIPOPTDIR = scip-src;
@@ -381,7 +380,7 @@
           pkgs.ipopt
           pkgs.or-tools
         ];
-        pythonPackages = [pkgs.poetry pyEnvShell];
+        pythonPackages = [pkgs.poetry];
       in {
         _module.args.pkgs = import self.inputs.nixpkgs {
           inherit system;
@@ -449,6 +448,7 @@
             cosmwasm-json-schema-ts
             mantis-blackbox
             # pyscipopt-latest
+            
             # maturin-latest
             
             ;

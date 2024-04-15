@@ -90,7 +90,8 @@ pub enum AssetReference {
         contract: cosmwasm_std::Addr,
     },
     // Erc20 { contract: EthAddress },
-    // SPL20 { mint: Pubkey },
+    // SPL20 { mint: Pubkey },    
+    // PolkadotSubstrateAsset{ general_index: u128 }
 }
 
 impl AssetReference {
