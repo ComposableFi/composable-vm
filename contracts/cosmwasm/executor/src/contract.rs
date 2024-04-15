@@ -483,7 +483,12 @@ pub fn interpret_transfer(
                 let mut coin = deps
                     .querier
                     .query_balance(env.contract.address.clone(), denom)?;
-                coin.amount = balance.apply(coin.amount.into())?.into();
+                let transfer_amount = balance.apply(coin.amount.into())?.into();
+                if transfer_amount.is_zero() {
+                    // after cross chain route 1% of total can become zero, so it is not error
+                    continue;
+                }
+                coin.amount = transfer_amount;
                 response.add_message(BankMsg::Send {
                     to_address: recipient.clone(),
                     amount: vec![coin],
@@ -497,6 +502,9 @@ pub fn interpret_transfer(
                     &contract.0,
                     &env.contract.address,
                 )?;
+                if transfer_amount.is_zero() {
+                    continue;
+                }
                 response.add_message(contract.call(Cw20ExecuteMsg::Transfer {
                     recipient: recipient.clone(),
                     amount: transfer_amount.into(),
