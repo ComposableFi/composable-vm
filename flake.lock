@@ -269,33 +269,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1712513517,
-        "narHash": "sha256-VuLm5tTMqfS82NZAsNfsW7U+pTZ1+GcOU7gYR/Fb1Z4=",
+        "lastModified": 1712681629,
+        "narHash": "sha256-bMDXn4AkTXLCpoZbII6pDGoSeSe9gI87jxPsHRXgu/E=",
         "owner": "ipetkov",
         "repo": "crane",
-        "rev": "9caad1eb0c69a13ee6467035353b71a76c85ea53",
+        "rev": "220387ac8e99cbee0ca4c95b621c4bc782b6a235",
         "type": "github"
       },
       "original": {
         "owner": "ipetkov",
         "repo": "crane",
-        "type": "github"
-      }
-    },
-    "cvxpy-src": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1687849951,
-        "narHash": "sha256-3OW54j8uQs+EmSwQm608v4VflNlEnTO48GNqYeGuPrM=",
-        "owner": "cvxpy",
-        "repo": "cvxpy",
-        "rev": "ad4624493aec144a7a42a53a3dcd6e4ade65e86b",
-        "type": "github"
-      },
-      "original": {
-        "owner": "cvxpy",
-        "ref": "v1.3.2",
-        "repo": "cvxpy",
         "type": "github"
       }
     },
@@ -318,11 +301,11 @@
     "datamodel-code-generator-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1712589601,
-        "narHash": "sha256-OBa+MVls5bZl11QrNb0uScUnQBvfH/lJ6tORd9w/P18=",
+        "lastModified": 1713056636,
+        "narHash": "sha256-V39YKnSW/kCSpVJ7FIiapsgXP+et2m65q3RFqkGjBZY=",
         "owner": "koxudaxi",
         "repo": "datamodel-code-generator",
-        "rev": "bc898edb47275c155e7c408a5f6550b5cfd4a46c",
+        "rev": "c0d5c882e31bb8ca749a15bd78bc6a717d90e7ce",
         "type": "github"
       },
       "original": {
@@ -419,22 +402,6 @@
         "type": "github"
       }
     },
-    "fastapi-cache-src": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1701956277,
-        "narHash": "sha256-zkWDeODlkEOd9s+vnedS1cliycZadpZNS1RvFfhw8/A=",
-        "owner": "long2ice",
-        "repo": "fastapi-cache",
-        "rev": "91ba6d75524b1f6a17ae6a3300ab51b9aa1fcf71",
-        "type": "github"
-      },
-      "original": {
-        "owner": "long2ice",
-        "repo": "fastapi-cache",
-        "type": "github"
-      }
-    },
     "flake-compat": {
       "flake": false,
       "locked": {
@@ -477,23 +444,6 @@
         "owner": "hercules-ci",
         "repo": "flake-parts",
         "rev": "9126214d0a59633752a136528f5f3b9aa8565b7d",
-        "type": "github"
-      },
-      "original": {
-        "id": "flake-parts",
-        "type": "indirect"
-      }
-    },
-    "flake-parts_3": {
-      "inputs": {
-        "nixpkgs-lib": "nixpkgs-lib_3"
-      },
-      "locked": {
-        "lastModified": 1704982712,
-        "narHash": "sha256-2Ptt+9h8dczgle2Oo6z5ni5rt/uLMG47UFTR1ry/wgg=",
-        "owner": "hercules-ci",
-        "repo": "flake-parts",
-        "rev": "07f6395285469419cf9d078f59b5b49993198c00",
         "type": "github"
       },
       "original": {
@@ -1393,24 +1343,6 @@
         "type": "github"
       }
     },
-    "nixpkgs-lib_3": {
-      "locked": {
-        "dir": "lib",
-        "lastModified": 1703961334,
-        "narHash": "sha256-M1mV/Cq+pgjk0rt6VxoyyD+O8cOUiai8t9Q6Yyq4noY=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "b0d36bd0a420ecee3bc916c91886caca87c894e9",
-        "type": "github"
-      },
-      "original": {
-        "dir": "lib",
-        "owner": "NixOS",
-        "ref": "nixos-unstable",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
     "nixpkgs-regression": {
       "locked": {
         "narHash": "sha256-uGJ0VXIhWKGXxkeNnq4TvV3CIOkUJ3PAoLZ3HMzNVMw=",
@@ -1500,11 +1432,11 @@
     },
     "nixpkgs_5": {
       "locked": {
-        "lastModified": 1712439257,
-        "narHash": "sha256-aSpiNepFOMk9932HOax0XwNxbA38GOUVOiXfUVPOrck=",
+        "lastModified": 1712963716,
+        "narHash": "sha256-WKm9CvgCldeIVvRz87iOMi8CFVB1apJlkUT4GGvA0iM=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "ff0dbd94265ac470dda06a657d5fe49de93b4599",
+        "rev": "cfd6b5fc90b15709b780a5a1619695a88505a176",
         "type": "github"
       },
       "original": {
@@ -1528,22 +1460,6 @@
         "owner": "osmosis-labs",
         "ref": "v22.0.5",
         "repo": "osmosis",
-        "type": "github"
-      }
-    },
-    "papilo-src": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1705048944,
-        "narHash": "sha256-E0J9bQucEoea4xWsEj+cSOB0zbd4Ra28M0HrvUzdHIk=",
-        "owner": "scipopt",
-        "repo": "papilo",
-        "rev": "e0c6df4dc6f6ddea615dba57e38352e592fc8a2a",
-        "type": "github"
-      },
-      "original": {
-        "owner": "scipopt",
-        "repo": "papilo",
         "type": "github"
       }
     },
@@ -1619,40 +1535,6 @@
         "type": "github"
       }
     },
-    "pydantic-src": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1703239391,
-        "narHash": "sha256-YTNV67uKGRag6ICkNjjY9YrOiKFB1hSZkKcUXjSrhwM=",
-        "owner": "pydantic",
-        "repo": "pydantic",
-        "rev": "9f58e785a5f1f2c34437f6e9b6adcd5b969e0df4",
-        "type": "github"
-      },
-      "original": {
-        "owner": "pydantic",
-        "ref": "v2.5.3",
-        "repo": "pydantic",
-        "type": "github"
-      }
-    },
-    "pyscipopt-src": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1701706375,
-        "narHash": "sha256-xI5auBByQIA/eb/u1/8u7A0xyZHeRMw3hA+BGTFWf84=",
-        "owner": "scipopt",
-        "repo": "PySCIPOpt",
-        "rev": "0b6bb13db6dd6eafa1ece660dedee11f4c226865",
-        "type": "github"
-      },
-      "original": {
-        "owner": "scipopt",
-        "ref": "v4.4.0",
-        "repo": "PySCIPOpt",
-        "type": "github"
-      }
-    },
     "regen-src": {
       "flake": false,
       "locked": {
@@ -1705,19 +1587,13 @@
       "inputs": {
         "cosmos": "cosmos",
         "crane": "crane",
-        "cvxpy-src": "cvxpy-src",
         "datamodel-code-generator-src": "datamodel-code-generator-src",
         "devour-flake": "devour-flake",
-        "fastapi-cache-src": "fastapi-cache-src",
         "flake-parts": "flake-parts_2",
         "networks": "networks",
         "nixpkgs": "nixpkgs_5",
         "poetry2nix": "poetry2nix",
-        "pydantic-src": "pydantic-src",
-        "pyscipopt-src": "pyscipopt-src",
-        "rust-overlay": "rust-overlay",
-        "scip": "scip",
-        "scipy-src": "scipy-src"
+        "rust-overlay": "rust-overlay"
       }
     },
     "rust-overlay": {
@@ -1728,11 +1604,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1712628742,
-        "narHash": "sha256-FIAlt8mbPUs8jRuh6xpFtYzDsyHzmiLNPcen8HwvD00=",
+        "lastModified": 1713150335,
+        "narHash": "sha256-Ic7zCPfiSYc9nFFp+E44WFk3TBJ99J/uPZ4QXX+uPPw=",
         "owner": "oxalica",
         "repo": "rust-overlay",
-        "rev": "e7354bb9e5f68b2074e272fd5f5ac3f4848860ba",
+        "rev": "b186d85e747e2b7bee220ec95839fb66c868dc47",
         "type": "github"
       },
       "original": {
@@ -1756,48 +1632,6 @@
       "original": {
         "owner": "zaninime",
         "repo": "sbt-derivation",
-        "type": "github"
-      }
-    },
-    "scip": {
-      "inputs": {
-        "flake-parts": "flake-parts_3",
-        "nixpkgs": [
-          "nixpkgs"
-        ],
-        "papilo-src": "papilo-src",
-        "soplex-src": "soplex-src",
-        "suite-src": "suite-src"
-      },
-      "locked": {
-        "lastModified": 1705788282,
-        "narHash": "sha256-I763x6ibkjebXStWm5s/iNn9Eoirfrcz0LJaTpYCg0Y=",
-        "owner": "dzmitry-lahoda-forks",
-        "repo": "scip",
-        "rev": "7f083e91574527c8fb788c608e3b47f39217b47b",
-        "type": "github"
-      },
-      "original": {
-        "owner": "dzmitry-lahoda-forks",
-        "repo": "scip",
-        "rev": "7f083e91574527c8fb788c608e3b47f39217b47b",
-        "type": "github"
-      }
-    },
-    "scipy-src": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1666212481,
-        "narHash": "sha256-raLcK5Z5va3e5wD8mTWNS1QV2HRBWhQJrBVuqqLCOPM=",
-        "owner": "scipy",
-        "repo": "scipy",
-        "rev": "de80faf9d3480b9dbb9b888568b64499e0e70c19",
-        "type": "github"
-      },
-      "original": {
-        "owner": "scipy",
-        "ref": "v1.9.3",
-        "repo": "scipy",
         "type": "github"
       }
     },
@@ -1864,22 +1698,6 @@
         "type": "github"
       }
     },
-    "soplex-src": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1705653601,
-        "narHash": "sha256-S6f8I2i0MsY2MY/jYymvKvltkfmwMeg0qnRF2jXO0V4=",
-        "owner": "scipopt",
-        "repo": "soplex",
-        "rev": "b10b149cddfd4f5e424c2986e53ce01dd815cdb8",
-        "type": "github"
-      },
-      "original": {
-        "owner": "scipopt",
-        "repo": "soplex",
-        "type": "github"
-      }
-    },
     "stargaze-src": {
       "flake": false,
       "locked": {
@@ -1941,18 +1759,6 @@
         "ref": "v8.0.0",
         "repo": "stride",
         "type": "github"
-      }
-    },
-    "suite-src": {
-      "flake": false,
-      "locked": {
-        "narHash": "sha256-UjEYFcKsfBbBN25xxWFRIdZzenUk2Ooev8lz2eQtzTk=",
-        "type": "tarball",
-        "url": "https://scipopt.org/download/release/scipoptsuite-8.1.0.tgz"
-      },
-      "original": {
-        "type": "tarball",
-        "url": "https://scipopt.org/download/release/scipoptsuite-8.1.0.tgz"
       }
     },
     "systems": {

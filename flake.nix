@@ -28,38 +28,36 @@
       url = "github:ComposableFi/networks";
     };
 
-    fastapi-cache-src = {
-      url = "github:long2ice/fastapi-cache";
-      flake = false;
-    };
+    # fastapi-cache-src = {
+    #   url = "github:long2ice/fastapi-cache";
+    #   flake = false;
+    # };
 
-    scip = {
-      url = github:dzmitry-lahoda-forks/scip/7f083e91574527c8fb788c608e3b47f39217b47b;
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    # scip = {
+    #   url = github:dzmitry-lahoda-forks/scip/7f083e91574527c8fb788c608e3b47f39217b47b;
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    # };
 
-    pydantic-src = {
-      url = "github:pydantic/pydantic/v2.5.3";
-      flake = false;
-    };
+    # pydantic-src = {
+    #   url = "github:pydantic/pydantic/v2.5.3";
+    #   flake = false;
+    # };
 
-    scipy-src = {
-      url = "github:scipy/scipy/v1.9.3";
-      flake = false;
-    };
-
-    cvxpy-src = {
-      url = "github:cvxpy/cvxpy/v1.3.2";
-      flake = false;
-    };
+    # scipy-src = {
+    #   url = "github:scipy/scipy/v1.9.3";
+    #   flake = false;
+    # };
+    # pyscipopt-src = {
+    #   url = "github:scipopt/PySCIPOpt/v4.4.0";
+    #   flake = false;
+    # };
+    # cvxpy-src = {
+    #   url = "github:cvxpy/cvxpy/v1.3.2";
+    #   flake = false;
+    # };
 
     devour-flake = {
       url = "github:srid/devour-flake";
-      flake = false;
-    };
-
-    pyscipopt-src = {
-      url = "github:scipopt/PySCIPOpt/v4.4.0";
       flake = false;
     };
   };
@@ -72,8 +70,8 @@
     datamodel-code-generator-src,
     poetry2nix,
     nixpkgs,
-    scip,
-    pyscipopt-src,
+    # scip,
+    # pyscipopt-src,
     ...
   }:
     flake-parts.lib.mkFlake {inherit inputs;} {
@@ -192,66 +190,66 @@
           checkGroups = [];
         };
 
-        scipy-latest = pkgs.python3Packages.buildPythonPackage {
-          name = "scipy";
-          version = "0.0.1";
-          format = "pyproject";
+        # scipy-latest = pkgs.python3Packages.buildPythonPackage {
+        #   name = "scipy";
+        #   version = "0.0.1";
+        #   format = "pyproject";
 
-          src = inputs.scipy-src;
+        #   src = inputs.scipy-src;
 
-          nativeBuildInputs = with pkgs.python3Packages; [
-            poetry-core
-            meson
-            meson-python
-            setuptools
-            setuptools-git-versioning
-            pkgs.pkg-config
-          ];
-        };
+        #   nativeBuildInputs = with pkgs.python3Packages; [
+        #     poetry-core
+        #     meson
+        #     meson-python
+        #     setuptools
+        #     setuptools-git-versioning
+        #     pkgs.pkg-config
+        #   ];
+        # };
 
-        pyscipopt-latest = pkgs.python3Packages.buildPythonPackage {
-          name = "pyscipopt";
-          version = "v4.3.0";
-          format = "pyproject";
-          SCIPOPTDIR = inputs'.scip.packages.scip;
-          src = inputs.pyscipopt-src;
-          propagatedBuildInputs = [
-            inputs'.scip.packages.scip
-          ];
+        # pyscipopt-latest = pkgs.python3Packages.buildPythonPackage {
+        #   name = "pyscipopt";
+        #   version = "v4.3.0";
+        #   format = "pyproject";
+        #   SCIPOPTDIR = inputs'.scip.packages.scip;
+        #   src = inputs.pyscipopt-src;
+        #   propagatedBuildInputs = [
+        #     inputs'.scip.packages.scip
+        #   ];
 
-          nativeBuildInputs = with pkgs.python3Packages; [
-            setuptools
-            pkgs.pkg-config
-            inputs'.scip.packages.scip
-            pkgs.python311Packages.cython
-          ];
-          buildInputs = with pkgs.python3Packages; [
-            inputs'.scip.packages.scip
-            cython
-          ];
-        };
+        #   nativeBuildInputs = with pkgs.python3Packages; [
+        #     setuptools
+        #     pkgs.pkg-config
+        #     inputs'.scip.packages.scip
+        #     pkgs.python311Packages.cython
+        #   ];
+        #   buildInputs = with pkgs.python3Packages; [
+        #     inputs'.scip.packages.scip
+        #     cython
+        #   ];
+        # };
 
         dep = name:
           builtins.head (pkgs.lib.lists.filter
             (x: pkgs.lib.strings.hasInfix name x.name)
             poetryDeps.poetryPackages);
 
-        cvxpy-latest = pkgs.python3Packages.buildPythonPackage {
-          name = "cvxpy";
-          version = "1.3.2";
-          format = "pyproject";
+        # cvxpy-latest = pkgs.python3Packages.buildPythonPackage {
+        #   name = "cvxpy";
+        #   version = "1.3.2";
+        #   format = "pyproject";
 
-          src = inputs.cvxpy-src;
+        #   src = inputs.cvxpy-src;
 
-          nativeBuildInputs = with pkgs.python3Packages; [
-            (dep "numpy")
-            (dep "scipy")
-            poetry-core
-            setuptools
-            setuptools-git-versioning
-            pkgs.pkg-config
-          ];
-        };
+        #   nativeBuildInputs = with pkgs.python3Packages; [
+        #     (dep "numpy")
+        #     (dep "scipy")
+        #     poetry-core
+        #     setuptools
+        #     setuptools-git-versioning
+        #     pkgs.pkg-config
+        #   ];
+        # };
 
         # maturin-latest = pkgs.python3Packages.buildPythonPackage {
         #   name = "maturin";
@@ -290,7 +288,7 @@
               buildInputs = old.buildInputs or [] ++ [self.python.pkgs.hatchling];
             });
 
-            pyscipopt = pyscipopt-latest;
+            # pyscipopt = pyscipopt-latest;
             google = super.google.overridePythonAttrs (old: {
               buildInputs = old.buildInputs or [] ++ [self.python.pkgs.setuptools];
             });
@@ -300,18 +298,18 @@
             methodtools = super.methodtools.overridePythonAttrs (old: {
               buildInputs = old.buildInputs or [] ++ [self.python.pkgs.setuptools];
             });
-            mpire = super.mpire.overridePythonAttrs (old: {
-              buildInputs = old.buildInputs or [] ++ [self.python.pkgs.setuptools];
-            });
-            cylp = super.cylp.overridePythonAttrs (old: {
-              buildInputs = old.buildInputs or [] ++ [self.python.pkgs.setuptools self.python.pkgs.wheel pkgs.cbc pkgs.pkg-config];
-              nativeBuildInputs = old.nativeBuildInputs or [] ++ [self.python.pkgs.setuptools self.python.pkgs.wheel pkgs.cbc pkgs.pkg-config];
-            });
+            # mpire = super.mpire.overridePythonAttrs (old: {
+            #   buildInputs = old.buildInputs or [] ++ [self.python.pkgs.setuptools];
+            # });
+            # cylp = super.cylp.overridePythonAttrs (old: {
+            #   buildInputs = old.buildInputs or [] ++ [self.python.pkgs.setuptools self.python.pkgs.wheel pkgs.cbc pkgs.pkg-config];
+            #   nativeBuildInputs = old.nativeBuildInputs or [] ++ [self.python.pkgs.setuptools self.python.pkgs.wheel pkgs.cbc pkgs.pkg-config];
+            # });
 
             google-cloud = super.google-cloud.overridePythonAttrs (old: {
               buildInputs = old.buildInputs or [] ++ [self.python.pkgs.setuptools];
             });
-            cvxpy = cvxpy-latest;
+            # cvxpy = cvxpy-latest;
 
             # maturin = maturin-latest;
           });
@@ -445,7 +443,7 @@
             datamodel-code-generator
             cosmwasm-json-schema-ts
             mantis-blackbox
-            pyscipopt-latest
+            # pyscipopt-latest
             # maturin-latest
             
             ;

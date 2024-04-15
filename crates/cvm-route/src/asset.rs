@@ -15,6 +15,7 @@ pub struct AssetItem {
     pub network_id: NetworkId,
 
     /// TODO: make sure one cannot access local if it is bridged until bridged was unwrapped 
+    /// basically to access asset need to provide network_id to use local
     pub local: AssetReference,
     /// if asset was bridged, it would have way to identify bridge/source/channel
     pub bridged: Option<BridgeAsset>,
