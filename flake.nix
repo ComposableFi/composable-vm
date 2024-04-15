@@ -21,7 +21,7 @@
       flake = false;
     };
     poetry2nix = {
-      url = "github:nix-community/poetry2nix/master";
+      url = "github:dzmitry-lahoda/poetry2nix/dz/2";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     networks = {
@@ -288,10 +288,6 @@
             # editables = super.editables.overridePythonAttrs (old: {
             #   buildInputs = old.buildInputs or [] ++ [self.python.pkgs.flit-core];
             # });
-            # dnspython = super.dnspython.overridePythonAttrs (old: {
-            #   buildInputs = old.buildInputs or [] ++ [self.python.pkgs.hatchling];
-            # });
-
             # pyscipopt = pyscipopt-latest;
             # google = super.google.overridePythonAttrs (old: {
             #   buildInputs = old.buildInputs or [] ++ [self.python.pkgs.setuptools];
@@ -302,9 +298,6 @@
             maturin = super.maturin.overridePythonAttrs (old: {
               buildInputs = old.buildInputs or [] ++ [self.python.pkgs.setuptools];
             });
-            # mpire = super.mpire.overridePythonAttrs (old: {
-            #   buildInputs = old.buildInputs or [] ++ [self.python.pkgs.setuptools];
-            # });
             # cylp = super.cylp.overridePythonAttrs (old: {
             #   buildInputs = old.buildInputs or [] ++ [self.python.pkgs.setuptools self.python.pkgs.wheel pkgs.cbc pkgs.pkg-config];
             #   nativeBuildInputs = old.nativeBuildInputs or [] ++ [self.python.pkgs.setuptools self.python.pkgs.wheel pkgs.cbc pkgs.pkg-config];
@@ -380,7 +373,11 @@
           pkgs.ipopt
           pkgs.or-tools
         ];
-        pythonPackages = [pkgs.poetry];
+        pythonPackages = [
+          pkgs.poetry
+          pkgs.stdenv.cc.cc.lib
+          pyEnvShell
+        ];
       in {
         _module.args.pkgs = import self.inputs.nixpkgs {
           inherit system;
@@ -410,6 +407,7 @@
               pkgs.python3Packages.flit-core
               pkgs.python3Packages.uvicorn
               pkgs.stdenv.cc.cc.lib
+              pkgs.stdenv.cc.cc
               pkgs.virtualenv
               pkgs.zlib
               pkgs.zlib.dev

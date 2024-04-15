@@ -1474,16 +1474,16 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1708589824,
-        "narHash": "sha256-2GOiFTkvs5MtVF65sC78KNVxQSmsxtk0WmV1wJ9V2ck=",
-        "owner": "nix-community",
+        "lastModified": 1713213986,
+        "narHash": "sha256-96V+vXi1M/RMg44lGSir/ceIIIBPw7A11pFjXZZG/WY=",
+        "owner": "dzmitry-lahoda",
         "repo": "poetry2nix",
-        "rev": "3c92540611f42d3fb2d0d084a6c694cd6544b609",
+        "rev": "c5481fd22ff458caad3ec31a6e6c41532283a504",
         "type": "github"
       },
       "original": {
-        "owner": "nix-community",
-        "ref": "master",
+        "owner": "dzmitry-lahoda",
+        "ref": "dz/2",
         "repo": "poetry2nix",
         "type": "github"
       }

@@ -19,16 +19,16 @@ cosmpy = { version = "0.9.1" }
 
 #GLOP, PDLP require ortools which i fail to install
 
-cvxpy = { version = "1.3.2", extras = [
-    # "MOSEK",
-    "CBC",
-    # "CVXOPT",
-    # "GUROBI",
-    "SCIP",
-    # "CLARABEL",
-    # "GLPK",
-    # "XPRESS",
-]}
+# cvxpy = { version = "1.3.2", extras = [
+#     # "MOSEK",
+#     "CBC",
+#     # "CVXOPT",
+#     # "GUROBI",
+#     "SCIP",
+#     # "CLARABEL",
+#     # "GLPK",
+#     # "XPRESS",
+# ]}
 ecdsa = "0.18.0"
 fastapi = { extras = ["all"], version = "0.108.0" }
 google-cloud = "0.34.0"
@@ -56,7 +56,7 @@ orjson="3.9.10"
 typeguard = "2.13.3"
 
 deepdiff = "*"
-PySCIPOpt = "5.0.0" # i set it directly to allow override SCIP dep (currently it is goes as binary with this wheel)s
+# PySCIPOpt = "5.0.0" # i set it directly to allow override SCIP dep (currently it is goes as binary with this wheel)s
 # on if used only:
 # clarabel = "0.6.0"
 # cylp = "0.92.2"  # have problems installing
