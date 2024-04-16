@@ -314,10 +314,10 @@ class Input(
     model_config = ConfigDict(coerce_numbers_to_str=True)
 
     # natural set key is ordered pair (`in_asset_id``, `out_asset_id`)
-    in_asset_id: TId = Field(example="158456325028528675187087900673")
-    out_asset_id: TId = Field(example="158456325028528675187087900674")
+    in_asset_id: TId = Field(example="158456325028528675187087900673", default="158456325028528675187087900673")
+    out_asset_id: TId = Field(example="158456325028528675187087900674", default="158456325028528675187087900674")
     # tendered amount DELTA
-    in_asset_amount: TAmount = Field(example="10000000")
+    in_asset_amount: TAmount = Field(example="1000000000000", default="1000000000000")
     out_asset_amount: TAmount = Field(example="100")
     """
     expected received amount LAMBDA
