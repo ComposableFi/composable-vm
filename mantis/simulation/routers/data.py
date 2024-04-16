@@ -349,15 +349,6 @@ class Input(
                 'examples': ['123456'],
             }
         )
-    asdsadsad = Field(
-            example="10",
-            type='string',
-            json_schema_extra={
-                'title': 'Password',
-                'description': 'Password of the user',
-                'examples': ['123456'],
-            }
-        )    
     # if max is True, user wants to spent all in to get at least out
     # if max is False, user wants to get exact out, but spent as small as possible in
     # please fail if bool is False for now
@@ -396,13 +387,13 @@ class Spawn(BaseModel, Trade[TId, TAmount], Generic[TId, TAmount]):
     amount to take with transfer
     (delta)
     """
-    next: list[Union[Exchange, Spawn]]
+    next: list[Union[Exchange[TId, TAmount], Spawn[TId, TAmount]]]
 
 
 # @dataclass
 class Exchange(BaseModel, Trade[TId, TAmount], Generic[TId, TAmount]):
     pool_id: TId
-    next: list[Union[Exchange, Spawn]]
+    next: list[Union[Exchange[TId, TAmount], Spawn[TId, TAmount]]]
 
     @model_validator(mode="after")
     def after(self: Exchange[TId, TAmount]) -> "Exchange":
@@ -417,7 +408,7 @@ class SingleInputAssetCvmRoute(BaseModel, Trade[TId, TAmount], Generic[TId, TAmo
     always starts with Input asset_id
     """
 
-    next: list[Union[Exchange, Spawn]]
+    next: list[Union[Exchange[TId, TAmount], Spawn[TId, TAmount]]]
 
     # @model_validator(mode="after")
     # def model_validator_after(self):
