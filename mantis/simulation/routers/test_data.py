@@ -20,7 +20,12 @@ def test_big_numbers_api():
     """_summary_
     Ensures that amounts are strings on the wire but big integers in memory    
     """
-    input : Input[str, str] = Input(in_asset_id="1", out_asset_id="2", in_asset_amount="100", out_asset_amount="100")
+    input_api_raw : Input[str, str] = Input(in_asset_id="1", out_asset_id="2", in_asset_amount="100", out_asset_amount="100")
+    input_memory : Input[str, int] = Input(in_asset_id="1", out_asset_id="2", in_asset_amount=100, out_asset_amount=100)
+    input_api_converted : Input[str, str] = Input[str, str](**input_memory.model_dump())
+    assert input_api_converted.model_dump_json() == input_api_raw.model_dump_json()
+    # assert input_api_raw == input_api_converted
+    # input_memory : Input[str, int] = Input[str, int].model_validate(input_api)
 
 def test_token_price_in_usd():
     pica_usd = new_pair(

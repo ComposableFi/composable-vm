@@ -325,6 +325,8 @@ class Input(
     this is what user asks for
     """
 
+    model_config = ConfigDict(coerce_numbers_to_str=True)
+
     # natural set key is ordered pair (`in_asset_id``, `out_asset_id`)
     in_asset_id: TId = Field(example="158456325028528675187087900673")
     out_asset_id: TId = Field(example="158456325028528675187087900674")
