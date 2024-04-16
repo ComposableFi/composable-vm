@@ -4,7 +4,7 @@ use bounded_collections::Get;
 use cvm_runtime::{
     outpost::GetConfigResponse,
     shared::{CvmFundsFilter, CvmInstruction, CvmProgram},
-    Amount,
+    Amount, AssetId,
 };
 use cw_mantis_order::{CrossChainPart, OrderItem, SolutionSubMsg};
 
@@ -43,15 +43,12 @@ fn build_next(
 }
 
 fn new_spawn(
-    spawn: &Spawn,
+    spawn: &SpawnStrStr,
     program: CvmProgram,
     glt: &GetConfigResponse,
     salt: &[u8],
 ) -> CvmInstruction {
-    let in_asset_id = match spawn.in_asset_id.as_ref().expect("in_asset_id") {
-        InAssetId::Variant1(id) => id.parse().expect("in_asset_id"),
-        _ => panic!("in_asset_id"),
-    };
+    let in_asset_id = AssetId(spawn.in_asset_id.parse().expect("in_asset_id"));
 
     let in_amount: Amount = match spawn.in_asset_amount.as_ref().expect("in_asset_amount") {
         InAssetAmount::Variant0(x) => (*x).try_into().expect("in_asset_amount"),
@@ -80,7 +77,7 @@ fn new_spawn(
     }
 }
 
-fn new_exchange(exchange: &Exchange) -> CvmInstruction {
+fn new_exchange(exchange: &ExchangeStrStr) -> CvmInstruction {
     let exchange_id = match &exchange.pool_id {
         PoolId::Variant1(id) => id.parse().expect("pool id"),
         _ => panic!("exchange_id"),

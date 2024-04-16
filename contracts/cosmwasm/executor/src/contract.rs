@@ -11,9 +11,7 @@ use alloc::borrow::Cow;
 #[cfg(not(feature = "library"))]
 use cosmwasm_std::entry_point;
 use cosmwasm_std::{
-    ensure, to_json_binary, wasm_execute, Addr, BankMsg, Binary, Coin, CosmosMsg, Deps, DepsMut,
-    Env, MessageInfo, QueryRequest, Reply, Response, StdError, StdResult, SubMsg, SubMsgResult,
-    WasmQuery,
+    ensure, to_json_binary, wasm_execute, Addr, BankMsg, Binary, Coin, CosmosMsg, Deps, DepsMut, Env, MessageInfo, QueryRequest, Reply, Response, StdError, StdResult, SubMsg, SubMsgResult, Uint128, WasmQuery
 };
 use cvm_route::{asset::AssetReference, exchange::ExchangeItem};
 use cvm_runtime::{
@@ -483,7 +481,7 @@ pub fn interpret_transfer(
                 let mut coin = deps
                     .querier
                     .query_balance(env.contract.address.clone(), denom)?;
-                let transfer_amount = balance.apply(coin.amount.into())?.into();
+                let transfer_amount: Uint128 = balance.apply(coin.amount.into())?.into();
                 if transfer_amount.is_zero() {
                     // after cross chain route 1% of total can become zero, so it is not error
                     continue;
