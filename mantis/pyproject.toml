@@ -42,7 +42,7 @@ pendulum = "==2.0.3"
 
 protobuf = "4.25.1"
 pycryptodome = "3.19.1"
-pydantic = "2.5.3"
+pydantic = "2.6.2"
 pydantic_settings = "2.1.0"
 python-dateutil = "2.8.2"
 requests = "2.31.0"

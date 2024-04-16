@@ -13,7 +13,7 @@ import pandas as pd
 from anytree import NodeMixin
 from disjoint_set import DisjointSet
 from loguru import logger
-from pydantic import BaseModel, Field, model_validator, validator
+from pydantic import BaseModel, Field, model_validator, validator, ConfigDict
 from decimal import Decimal as dec
 from simulation.routers.oracles.usdoracle import merge_by_connection_from_existing
 
@@ -136,8 +136,8 @@ class Ctx(BaseModel, Generic[TAmount]):
 
 
 class TwoTokenConverter(Generic[TId]):
-    in_asset_id: TId
-    out_asset_id: TId
+    in_asset_id: TId = Field(frozen=True)
+    out_asset_id: TId = Field(frozen=True)
 
     def zero(self):
         self.in_asset_amount = 0
@@ -162,13 +162,27 @@ class AssetTransfers(
         Fixed costs $q_i$ >= 0s
     """
 
-    in_asset_amount: TAmount
+    in_asset_amount: TAmount = Field(
+            # strict=True,
+            json_schema_extra={
+                'title': 'Password',
+                'description': 'Password of the user',
+                'examples': ['123456'],
+            }
+        )
     """
      Tendered amount of token on chain were it is.
      Must be like escrowed amount.
     """
 
-    out_asset_amount: TAmount
+    out_asset_amount: TAmount = Field(
+            # strict=True,
+            json_schema_extra={
+                'title': 'Password',
+                'description': 'Password of the user',
+                'examples': ['123456'],
+            }
+        )
     """
       Expected received amount LAMBDA.
       Must be like liquid amount of this token minted.
@@ -315,9 +329,35 @@ class Input(
     in_asset_id: TId = Field(example="158456325028528675187087900673")
     out_asset_id: TId = Field(example="158456325028528675187087900674")
     # tendered amount DELTA
-    in_asset_amount: TAmount = Field(example="1000000000000")
+    in_asset_amount: TAmount = Field(
+            example="1000000000000",
+            title='Password',
+            type = 'string',
+            json_schema_extra={
+                'title': 'Password',
+                'description': 'Password of the user',
+                'examples': ['123456']
+            }
+        )
     # expected received amount LAMBDA
-    out_asset_amount: TAmount = Field(example="10")
+    out_asset_amount: TAmount = Field(
+            example="10",
+            type='string',
+            json_schema_extra={
+                'title': 'Password',
+                'description': 'Password of the user',
+                'examples': ['123456'],
+            }
+        )
+    asdsadsad = Field(
+            example="10",
+            type='string',
+            json_schema_extra={
+                'title': 'Password',
+                'description': 'Password of the user',
+                'examples': ['123456'],
+            }
+        )    
     # if max is True, user wants to spent all in to get at least out
     # if max is False, user wants to get exact out, but spent as small as possible in
     # please fail if bool is False for now
