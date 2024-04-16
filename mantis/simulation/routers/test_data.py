@@ -24,8 +24,8 @@ def test_big_numbers_api():
     input_memory : Input[str, int] = Input(in_asset_id="1", out_asset_id="2", in_asset_amount=100, out_asset_amount=100)
     input_api_converted : Input[str, str] = Input[str, str](**input_memory.model_dump())
     assert input_api_converted.model_dump_json() == input_api_raw.model_dump_json()
-    # assert input_api_raw == input_api_converted
-    # input_memory : Input[str, int] = Input[str, int].model_validate(input_api)
+    input_memory_converted : Input[str, int] = Input[str, int](**input_api_raw.model_dump())
+    assert input_memory_converted.model_dump_json() == input_memory.model_dump_json()
 
 def test_token_price_in_usd():
     pica_usd = new_pair(
