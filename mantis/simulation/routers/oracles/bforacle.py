@@ -176,12 +176,11 @@ class BFSolution:
     deltas: list[float]
     routes: list[SingleInputAssetCvmRoute]
 
-
 def route(
     input: Input,
     all_data: AllData,
     ctx: Ctx = Ctx(),
-):
+) -> list[SingleInputAssetCvmRoute[str, int]]:
     """
     Bellman Ford inspired solution.
     The function divides the transaction if several paths (`splits``) and for each path

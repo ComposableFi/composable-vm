@@ -63,6 +63,7 @@ def simulator_router(input: Input[str, str] = Depends()) -> list[SingleInputAsse
     """_summary_
     Given input, find and return route.
     """
+    
     raw_data = get_remote_data()
     cvm_data = ExtendedCvmRegistry.from_raw(
         raw_data.cvm_registry,
@@ -70,12 +71,13 @@ def simulator_router(input: Input[str, str] = Depends()) -> list[SingleInputAsse
         raw_data.cosmos_chains.chains,
         raw_data.osmosis_pools,
     )
-
+    input : Input[str, int] = Input[str, int](**input.model_dump())
     routes = solve(input, cvm_data)
+    routes: list[SingleInputAssetCvmRoute[str, str]] = [SingleInputAssetCvmRoute[str, str](**route.model_dump()) for route in routes]
     return routes
 
 
-def solve(original_input: Input, cvm_data: ExtendedCvmRegistry) -> list[SingleInputAssetCvmRoute]:
+def solve(original_input: Input, cvm_data: ExtendedCvmRegistry) -> list[SingleInputAssetCvmRoute[str, int]]:
     ctx = Ctx()
     ctx.max_depth_of_route = 6
     original_data = for_simulation(cvm_data, {})

@@ -162,27 +162,13 @@ class AssetTransfers(
         Fixed costs $q_i$ >= 0s
     """
 
-    in_asset_amount: TAmount = Field(
-            # strict=True,
-            json_schema_extra={
-                'title': 'Password',
-                'description': 'Password of the user',
-                'examples': ['123456'],
-            }
-        )
+    in_asset_amount: TAmount
     """
      Tendered amount of token on chain were it is.
      Must be like escrowed amount.
     """
 
-    out_asset_amount: TAmount = Field(
-            # strict=True,
-            json_schema_extra={
-                'title': 'Password',
-                'description': 'Password of the user',
-                'examples': ['123456'],
-            }
-        )
+    out_asset_amount: TAmount
     """
       Expected received amount LAMBDA.
       Must be like liquid amount of this token minted.
@@ -344,6 +330,8 @@ class Input(
 
 
 class Trade(Generic[TId, TAmount]):
+    model_config = ConfigDict(coerce_numbers_to_str=True)
+
     out_asset_amount: TAmount
     """
     Amount to be used out of trade.
@@ -367,7 +355,6 @@ class Spawn(BaseModel, Trade[TId, TAmount], Generic[TId, TAmount]):
     """
     cross chain transfer assets
     """
-
     in_asset_id: TId | None = None
 
     in_asset_amount: TAmount | None = None
@@ -395,6 +382,7 @@ class SingleInputAssetCvmRoute(BaseModel, Trade[TId, TAmount], Generic[TId, TAmo
     """
     always starts with Input asset_id
     """
+    model_config = ConfigDict(coerce_numbers_to_str=True)
 
     next: list[Union[Exchange[TId, TAmount], Spawn[TId, TAmount]]]
 
