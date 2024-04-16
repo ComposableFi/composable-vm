@@ -355,9 +355,9 @@ class Spawn(BaseModel, Trade[TId, TAmount], Generic[TId, TAmount]):
     """
     cross chain transfer assets
     """
-    in_asset_id: TId | None = None
+    in_asset_id: TId
 
-    in_asset_amount: TAmount | None = None
+    in_asset_amount: TAmount
     """
     amount to take with transfer
     (delta)

@@ -14,51 +14,30 @@
                     {
                         "name": "in_asset_id",
                         "in": "query",
-                        "required": true,
+                        "required": false,
                         "schema": {
-                            "anyOf": [
-                                {
-                                    "type": "integer"
-                                },
-                                {
-                                    "type": "string"
-                                }
-                            ],
+                            "type": "string",
+                            "default": "158456325028528675187087900673",
                             "title": "In Asset Id"
                         }
                     },
                     {
                         "name": "out_asset_id",
                         "in": "query",
-                        "required": true,
+                        "required": false,
                         "schema": {
-                            "anyOf": [
-                                {
-                                    "type": "integer"
-                                },
-                                {
-                                    "type": "string"
-                                }
-                            ],
+                            "type": "string",
+                            "default": "158456325028528675187087900674",
                             "title": "Out Asset Id"
                         }
                     },
                     {
                         "name": "in_asset_amount",
                         "in": "query",
-                        "required": true,
+                        "required": false,
                         "schema": {
-                            "anyOf": [
-                                {
-                                    "type": "integer"
-                                },
-                                {
-                                    "type": "string"
-                                },
-                                {
-                                    "type": "number"
-                                }
-                            ],
+                            "type": "string",
+                            "default": "1000000000000",
                             "title": "In Asset Amount"
                         }
                     },
@@ -67,26 +46,17 @@
                         "in": "query",
                         "required": true,
                         "schema": {
-                            "anyOf": [
-                                {
-                                    "type": "integer"
-                                },
-                                {
-                                    "type": "string"
-                                },
-                                {
-                                    "type": "number"
-                                }
-                            ],
+                            "type": "string",
                             "title": "Out Asset Amount"
                         }
                     },
                     {
                         "name": "max",
                         "in": "query",
-                        "required": true,
+                        "required": false,
                         "schema": {
                             "type": "boolean",
+                            "default": true,
                             "title": "Max"
                         }
                     }
@@ -99,7 +69,7 @@
                                 "schema": {
                                     "type": "array",
                                     "items": {
-                                        "$ref": "#/components/schemas/SingleInputAssetCvmRoute"
+                                        "$ref": "#/components/schemas/SingleInputAssetCvmRoute_str_str_"
                                     },
                                     "title": "Response Simulator Router Simulator Router Get"
                                 }
@@ -122,77 +92,36 @@
     },
     "components": {
         "schemas": {
-            "Exchange": {
+            "Exchange_str_str_": {
                 "properties": {
                     "out_asset_amount": {
-                        "anyOf": [
-                            {
-                                "type": "integer"
-                            },
-                            {
-                                "type": "string"
-                            },
-                            {
-                                "type": "number"
-                            }
-                        ],
+                        "type": "string",
                         "title": "Out Asset Amount"
                     },
                     "out_asset_id": {
-                        "anyOf": [
-                            {
-                                "type": "integer"
-                            },
-                            {
-                                "type": "string"
-                            }
-                        ],
+                        "type": "string",
                         "title": "Out Asset Id"
                     },
                     "in_asset_amount": {
-                        "anyOf": [
-                            {
-                                "type": "integer"
-                            },
-                            {
-                                "type": "string"
-                            },
-                            {
-                                "type": "number"
-                            }
-                        ],
+                        "type": "string",
                         "title": "In Asset Amount"
                     },
                     "in_asset_id": {
-                        "anyOf": [
-                            {
-                                "type": "integer"
-                            },
-                            {
-                                "type": "string"
-                            }
-                        ],
+                        "type": "string",
                         "title": "In Asset Id"
                     },
                     "pool_id": {
-                        "anyOf": [
-                            {
-                                "type": "integer"
-                            },
-                            {
-                                "type": "string"
-                            }
-                        ],
+                        "type": "string",
                         "title": "Pool Id"
                     },
                     "next": {
                         "items": {
                             "anyOf": [
                                 {
-                                    "$ref": "#/components/schemas/Exchange"
+                                    "$ref": "#/components/schemas/Exchange_str_str_"
                                 },
                                 {
-                                    "$ref": "#/components/schemas/Spawn"
+                                    "$ref": "#/components/schemas/Spawn_str_str_"
                                 }
                             ]
                         },
@@ -209,7 +138,7 @@
                     "pool_id",
                     "next"
                 ],
-                "title": "Exchange"
+                "title": "Exchange[str, str]"
             },
             "HTTPValidationError": {
                 "properties": {
@@ -224,66 +153,32 @@
                 "type": "object",
                 "title": "HTTPValidationError"
             },
-            "SingleInputAssetCvmRoute": {
+            "SingleInputAssetCvmRoute_str_str_": {
                 "properties": {
                     "out_asset_amount": {
-                        "anyOf": [
-                            {
-                                "type": "integer"
-                            },
-                            {
-                                "type": "string"
-                            },
-                            {
-                                "type": "number"
-                            }
-                        ],
+                        "type": "string",
                         "title": "Out Asset Amount"
                     },
                     "out_asset_id": {
-                        "anyOf": [
-                            {
-                                "type": "integer"
-                            },
-                            {
-                                "type": "string"
-                            }
-                        ],
+                        "type": "string",
                         "title": "Out Asset Id"
                     },
                     "in_asset_amount": {
-                        "anyOf": [
-                            {
-                                "type": "integer"
-                            },
-                            {
-                                "type": "string"
-                            },
-                            {
-                                "type": "number"
-                            }
-                        ],
+                        "type": "string",
                         "title": "In Asset Amount"
                     },
                     "in_asset_id": {
-                        "anyOf": [
-                            {
-                                "type": "integer"
-                            },
-                            {
-                                "type": "string"
-                            }
-                        ],
+                        "type": "string",
                         "title": "In Asset Id"
                     },
                     "next": {
                         "items": {
                             "anyOf": [
                                 {
-                                    "$ref": "#/components/schemas/Exchange"
+                                    "$ref": "#/components/schemas/Exchange_str_str_"
                                 },
                                 {
-                                    "$ref": "#/components/schemas/Spawn"
+                                    "$ref": "#/components/schemas/Spawn_str_str_"
                                 }
                             ]
                         },
@@ -299,69 +194,34 @@
                     "in_asset_id",
                     "next"
                 ],
-                "title": "SingleInputAssetCvmRoute",
-                "description": "always starts with Input asset_id"
+                "title": "SingleInputAssetCvmRoute[str, str]"
             },
-            "Spawn": {
+            "Spawn_str_str_": {
                 "properties": {
                     "out_asset_amount": {
-                        "anyOf": [
-                            {
-                                "type": "integer"
-                            },
-                            {
-                                "type": "string"
-                            },
-                            {
-                                "type": "number"
-                            }
-                        ],
+                        "type": "string",
                         "title": "Out Asset Amount"
                     },
                     "out_asset_id": {
-                        "anyOf": [
-                            {
-                                "type": "integer"
-                            },
-                            {
-                                "type": "string"
-                            }
-                        ],
+                        "type": "string",
                         "title": "Out Asset Id"
                     },
                     "in_asset_amount": {
-                        "anyOf": [
-                            {
-                                "type": "integer"
-                            },
-                            {
-                                "type": "string"
-                            },
-                            {
-                                "type": "number"
-                            }
-                        ],
+                        "type": "string",
                         "title": "In Asset Amount"
                     },
                     "in_asset_id": {
-                        "anyOf": [
-                            {
-                                "type": "integer"
-                            },
-                            {
-                                "type": "string"
-                            }
-                        ],
+                        "type": "string",
                         "title": "In Asset Id"
                     },
                     "next": {
                         "items": {
                             "anyOf": [
                                 {
-                                    "$ref": "#/components/schemas/Exchange"
+                                    "$ref": "#/components/schemas/Exchange_str_str_"
                                 },
                                 {
-                                    "$ref": "#/components/schemas/Spawn"
+                                    "$ref": "#/components/schemas/Spawn_str_str_"
                                 }
                             ]
                         },
@@ -373,10 +233,11 @@
                 "required": [
                     "out_asset_amount",
                     "out_asset_id",
+                    "in_asset_amount",
+                    "in_asset_id",
                     "next"
                 ],
-                "title": "Spawn",
-                "description": "cross chain transfer assets"
+                "title": "Spawn[str, str]"
             },
             "ValidationError": {
                 "properties": {

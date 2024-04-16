@@ -40,13 +40,13 @@ pub mod types {
         }
     }
 
-    ///Exchange
+    ///ExchangeStrStr
     ///
     /// <details><summary>JSON schema</summary>
     ///
     /// ```json
     ///{
-    ///  "title": "Exchange",
+    ///  "title": "Exchange[str, str]",
     ///  "type": "object",
     ///  "required": [
     ///    "in_asset_amount",
@@ -59,28 +59,11 @@ pub mod types {
     ///  "properties": {
     ///    "in_asset_amount": {
     ///      "title": "In Asset Amount",
-    ///      "anyOf": [
-    ///        {
-    ///          "type": "integer"
-    ///        },
-    ///        {
-    ///          "type": "string"
-    ///        },
-    ///        {
-    ///          "type": "number"
-    ///        }
-    ///      ]
+    ///      "type": "string"
     ///    },
     ///    "in_asset_id": {
     ///      "title": "In Asset Id",
-    ///      "anyOf": [
-    ///        {
-    ///          "type": "integer"
-    ///        },
-    ///        {
-    ///          "type": "string"
-    ///        }
-    ///      ]
+    ///      "type": "string"
     ///    },
     ///    "next": {
     ///      "title": "Next",
@@ -88,66 +71,42 @@ pub mod types {
     ///      "items": {
     ///        "anyOf": [
     ///          {
-    ///            "$ref": "#/components/schemas/Exchange"
+    ///            "$ref": "#/components/schemas/Exchange_str_str_"
     ///          },
     ///          {
-    ///            "$ref": "#/components/schemas/Spawn"
+    ///            "$ref": "#/components/schemas/Spawn_str_str_"
     ///          }
     ///        ]
     ///      }
     ///    },
     ///    "out_asset_amount": {
     ///      "title": "Out Asset Amount",
-    ///      "anyOf": [
-    ///        {
-    ///          "type": "integer"
-    ///        },
-    ///        {
-    ///          "type": "string"
-    ///        },
-    ///        {
-    ///          "type": "number"
-    ///        }
-    ///      ]
+    ///      "type": "string"
     ///    },
     ///    "out_asset_id": {
     ///      "title": "Out Asset Id",
-    ///      "anyOf": [
-    ///        {
-    ///          "type": "integer"
-    ///        },
-    ///        {
-    ///          "type": "string"
-    ///        }
-    ///      ]
+    ///      "type": "string"
     ///    },
     ///    "pool_id": {
     ///      "title": "Pool Id",
-    ///      "anyOf": [
-    ///        {
-    ///          "type": "integer"
-    ///        },
-    ///        {
-    ///          "type": "string"
-    ///        }
-    ///      ]
+    ///      "type": "string"
     ///    }
     ///  }
     ///}
     /// ```
     /// </details>
     #[derive(Clone, Debug, Deserialize, Serialize)]
-    pub struct Exchange {
-        pub in_asset_amount: InAssetAmount,
-        pub in_asset_id: InAssetId,
+    pub struct ExchangeStrStr {
+        pub in_asset_amount: String,
+        pub in_asset_id: String,
         pub next: Vec<NextItem>,
-        pub out_asset_amount: OutAssetAmount,
-        pub out_asset_id: OutAssetId,
-        pub pool_id: PoolId,
+        pub out_asset_amount: String,
+        pub out_asset_id: String,
+        pub pool_id: String,
     }
 
-    impl From<&Exchange> for Exchange {
-        fn from(value: &Exchange) -> Self {
+    impl From<&ExchangeStrStr> for ExchangeStrStr {
+        fn from(value: &ExchangeStrStr) -> Self {
             value.clone()
         }
     }
@@ -181,179 +140,6 @@ pub mod types {
     impl From<&HttpValidationError> for HttpValidationError {
         fn from(value: &HttpValidationError) -> Self {
             value.clone()
-        }
-    }
-
-    ///InAssetAmount
-    ///
-    /// <details><summary>JSON schema</summary>
-    ///
-    /// ```json
-    ///{
-    ///  "title": "In Asset Amount",
-    ///  "anyOf": [
-    ///    {
-    ///      "type": "integer"
-    ///    },
-    ///    {
-    ///      "type": "string"
-    ///    },
-    ///    {
-    ///      "type": "number"
-    ///    }
-    ///  ]
-    ///}
-    /// ```
-    /// </details>
-    #[derive(Clone, Debug, Deserialize, Serialize)]
-    #[serde(untagged)]
-    pub enum InAssetAmount {
-        Variant0(i64),
-        Variant1(String),
-        Variant2(f64),
-    }
-
-    impl From<&InAssetAmount> for InAssetAmount {
-        fn from(value: &InAssetAmount) -> Self {
-            value.clone()
-        }
-    }
-
-    impl std::str::FromStr for InAssetAmount {
-        type Err = self::error::ConversionError;
-        fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
-            if let Ok(v) = value.parse() {
-                Ok(Self::Variant0(v))
-            } else if let Ok(v) = value.parse() {
-                Ok(Self::Variant1(v))
-            } else if let Ok(v) = value.parse() {
-                Ok(Self::Variant2(v))
-            } else {
-                Err("string conversion failed for all variants".into())
-            }
-        }
-    }
-
-    impl std::convert::TryFrom<&str> for InAssetAmount {
-        type Error = self::error::ConversionError;
-        fn try_from(value: &str) -> Result<Self, self::error::ConversionError> {
-            value.parse()
-        }
-    }
-
-    impl std::convert::TryFrom<&String> for InAssetAmount {
-        type Error = self::error::ConversionError;
-        fn try_from(value: &String) -> Result<Self, self::error::ConversionError> {
-            value.parse()
-        }
-    }
-
-    impl std::convert::TryFrom<String> for InAssetAmount {
-        type Error = self::error::ConversionError;
-        fn try_from(value: String) -> Result<Self, self::error::ConversionError> {
-            value.parse()
-        }
-    }
-
-    impl ToString for InAssetAmount {
-        fn to_string(&self) -> String {
-            match self {
-                Self::Variant0(x) => x.to_string(),
-                Self::Variant1(x) => x.to_string(),
-                Self::Variant2(x) => x.to_string(),
-            }
-        }
-    }
-
-    impl From<i64> for InAssetAmount {
-        fn from(value: i64) -> Self {
-            Self::Variant0(value)
-        }
-    }
-
-    impl From<f64> for InAssetAmount {
-        fn from(value: f64) -> Self {
-            Self::Variant2(value)
-        }
-    }
-
-    ///InAssetId
-    ///
-    /// <details><summary>JSON schema</summary>
-    ///
-    /// ```json
-    ///{
-    ///  "title": "In Asset Id",
-    ///  "anyOf": [
-    ///    {
-    ///      "type": "integer"
-    ///    },
-    ///    {
-    ///      "type": "string"
-    ///    }
-    ///  ]
-    ///}
-    /// ```
-    /// </details>
-    #[derive(Clone, Debug, Deserialize, Serialize)]
-    #[serde(untagged)]
-    pub enum InAssetId {
-        Variant0(i64),
-        Variant1(String),
-    }
-
-    impl From<&InAssetId> for InAssetId {
-        fn from(value: &InAssetId) -> Self {
-            value.clone()
-        }
-    }
-
-    impl std::str::FromStr for InAssetId {
-        type Err = self::error::ConversionError;
-        fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
-            if let Ok(v) = value.parse() {
-                Ok(Self::Variant0(v))
-            } else if let Ok(v) = value.parse() {
-                Ok(Self::Variant1(v))
-            } else {
-                Err("string conversion failed for all variants".into())
-            }
-        }
-    }
-
-    impl std::convert::TryFrom<&str> for InAssetId {
-        type Error = self::error::ConversionError;
-        fn try_from(value: &str) -> Result<Self, self::error::ConversionError> {
-            value.parse()
-        }
-    }
-
-    impl std::convert::TryFrom<&String> for InAssetId {
-        type Error = self::error::ConversionError;
-        fn try_from(value: &String) -> Result<Self, self::error::ConversionError> {
-            value.parse()
-        }
-    }
-
-    impl std::convert::TryFrom<String> for InAssetId {
-        type Error = self::error::ConversionError;
-        fn try_from(value: String) -> Result<Self, self::error::ConversionError> {
-            value.parse()
-        }
-    }
-
-    impl ToString for InAssetId {
-        fn to_string(&self) -> String {
-            match self {
-                Self::Variant0(x) => x.to_string(),
-                Self::Variant1(x) => x.to_string(),
-            }
-        }
-    }
-
-    impl From<i64> for InAssetId {
-        fn from(value: i64) -> Self {
-            Self::Variant0(value)
         }
     }
 
@@ -444,10 +230,10 @@ pub mod types {
     ///{
     ///  "anyOf": [
     ///    {
-    ///      "$ref": "#/components/schemas/Exchange"
+    ///      "$ref": "#/components/schemas/Exchange_str_str_"
     ///    },
     ///    {
-    ///      "$ref": "#/components/schemas/Spawn"
+    ///      "$ref": "#/components/schemas/Spawn_str_str_"
     ///    }
     ///  ]
     ///}
@@ -456,8 +242,8 @@ pub mod types {
     #[derive(Clone, Debug, Deserialize, Serialize)]
     #[serde(untagged)]
     pub enum NextItem {
-        Exchange(Exchange),
-        Spawn(Spawn),
+        ExchangeStrStr(ExchangeStrStr),
+        SpawnStrStr(SpawnStrStr),
     }
 
     impl From<&NextItem> for NextItem {
@@ -466,279 +252,25 @@ pub mod types {
         }
     }
 
-    impl From<Exchange> for NextItem {
-        fn from(value: Exchange) -> Self {
-            Self::Exchange(value)
+    impl From<ExchangeStrStr> for NextItem {
+        fn from(value: ExchangeStrStr) -> Self {
+            Self::ExchangeStrStr(value)
         }
     }
 
-    impl From<Spawn> for NextItem {
-        fn from(value: Spawn) -> Self {
-            Self::Spawn(value)
+    impl From<SpawnStrStr> for NextItem {
+        fn from(value: SpawnStrStr) -> Self {
+            Self::SpawnStrStr(value)
         }
     }
 
-    ///OutAssetAmount
+    ///SingleInputAssetCvmRouteStrStr
     ///
     /// <details><summary>JSON schema</summary>
     ///
     /// ```json
     ///{
-    ///  "title": "Out Asset Amount",
-    ///  "anyOf": [
-    ///    {
-    ///      "type": "integer"
-    ///    },
-    ///    {
-    ///      "type": "string"
-    ///    },
-    ///    {
-    ///      "type": "number"
-    ///    }
-    ///  ]
-    ///}
-    /// ```
-    /// </details>
-    #[derive(Clone, Debug, Deserialize, Serialize)]
-    #[serde(untagged)]
-    pub enum OutAssetAmount {
-        Variant0(i64),
-        Variant1(String),
-        Variant2(f64),
-    }
-
-    impl From<&OutAssetAmount> for OutAssetAmount {
-        fn from(value: &OutAssetAmount) -> Self {
-            value.clone()
-        }
-    }
-
-    impl std::str::FromStr for OutAssetAmount {
-        type Err = self::error::ConversionError;
-        fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
-            if let Ok(v) = value.parse() {
-                Ok(Self::Variant0(v))
-            } else if let Ok(v) = value.parse() {
-                Ok(Self::Variant1(v))
-            } else if let Ok(v) = value.parse() {
-                Ok(Self::Variant2(v))
-            } else {
-                Err("string conversion failed for all variants".into())
-            }
-        }
-    }
-
-    impl std::convert::TryFrom<&str> for OutAssetAmount {
-        type Error = self::error::ConversionError;
-        fn try_from(value: &str) -> Result<Self, self::error::ConversionError> {
-            value.parse()
-        }
-    }
-
-    impl std::convert::TryFrom<&String> for OutAssetAmount {
-        type Error = self::error::ConversionError;
-        fn try_from(value: &String) -> Result<Self, self::error::ConversionError> {
-            value.parse()
-        }
-    }
-
-    impl std::convert::TryFrom<String> for OutAssetAmount {
-        type Error = self::error::ConversionError;
-        fn try_from(value: String) -> Result<Self, self::error::ConversionError> {
-            value.parse()
-        }
-    }
-
-    impl ToString for OutAssetAmount {
-        fn to_string(&self) -> String {
-            match self {
-                Self::Variant0(x) => x.to_string(),
-                Self::Variant1(x) => x.to_string(),
-                Self::Variant2(x) => x.to_string(),
-            }
-        }
-    }
-
-    impl From<i64> for OutAssetAmount {
-        fn from(value: i64) -> Self {
-            Self::Variant0(value)
-        }
-    }
-
-    impl From<f64> for OutAssetAmount {
-        fn from(value: f64) -> Self {
-            Self::Variant2(value)
-        }
-    }
-
-    ///OutAssetId
-    ///
-    /// <details><summary>JSON schema</summary>
-    ///
-    /// ```json
-    ///{
-    ///  "title": "Out Asset Id",
-    ///  "anyOf": [
-    ///    {
-    ///      "type": "integer"
-    ///    },
-    ///    {
-    ///      "type": "string"
-    ///    }
-    ///  ]
-    ///}
-    /// ```
-    /// </details>
-    #[derive(Clone, Debug, Deserialize, Serialize)]
-    #[serde(untagged)]
-    pub enum OutAssetId {
-        Variant0(i64),
-        Variant1(String),
-    }
-
-    impl From<&OutAssetId> for OutAssetId {
-        fn from(value: &OutAssetId) -> Self {
-            value.clone()
-        }
-    }
-
-    impl std::str::FromStr for OutAssetId {
-        type Err = self::error::ConversionError;
-        fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
-            if let Ok(v) = value.parse() {
-                Ok(Self::Variant0(v))
-            } else if let Ok(v) = value.parse() {
-                Ok(Self::Variant1(v))
-            } else {
-                Err("string conversion failed for all variants".into())
-            }
-        }
-    }
-
-    impl std::convert::TryFrom<&str> for OutAssetId {
-        type Error = self::error::ConversionError;
-        fn try_from(value: &str) -> Result<Self, self::error::ConversionError> {
-            value.parse()
-        }
-    }
-
-    impl std::convert::TryFrom<&String> for OutAssetId {
-        type Error = self::error::ConversionError;
-        fn try_from(value: &String) -> Result<Self, self::error::ConversionError> {
-            value.parse()
-        }
-    }
-
-    impl std::convert::TryFrom<String> for OutAssetId {
-        type Error = self::error::ConversionError;
-        fn try_from(value: String) -> Result<Self, self::error::ConversionError> {
-            value.parse()
-        }
-    }
-
-    impl ToString for OutAssetId {
-        fn to_string(&self) -> String {
-            match self {
-                Self::Variant0(x) => x.to_string(),
-                Self::Variant1(x) => x.to_string(),
-            }
-        }
-    }
-
-    impl From<i64> for OutAssetId {
-        fn from(value: i64) -> Self {
-            Self::Variant0(value)
-        }
-    }
-
-    ///PoolId
-    ///
-    /// <details><summary>JSON schema</summary>
-    ///
-    /// ```json
-    ///{
-    ///  "title": "Pool Id",
-    ///  "anyOf": [
-    ///    {
-    ///      "type": "integer"
-    ///    },
-    ///    {
-    ///      "type": "string"
-    ///    }
-    ///  ]
-    ///}
-    /// ```
-    /// </details>
-    #[derive(Clone, Debug, Deserialize, Serialize)]
-    #[serde(untagged)]
-    pub enum PoolId {
-        Variant0(i64),
-        Variant1(String),
-    }
-
-    impl From<&PoolId> for PoolId {
-        fn from(value: &PoolId) -> Self {
-            value.clone()
-        }
-    }
-
-    impl std::str::FromStr for PoolId {
-        type Err = self::error::ConversionError;
-        fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
-            if let Ok(v) = value.parse() {
-                Ok(Self::Variant0(v))
-            } else if let Ok(v) = value.parse() {
-                Ok(Self::Variant1(v))
-            } else {
-                Err("string conversion failed for all variants".into())
-            }
-        }
-    }
-
-    impl std::convert::TryFrom<&str> for PoolId {
-        type Error = self::error::ConversionError;
-        fn try_from(value: &str) -> Result<Self, self::error::ConversionError> {
-            value.parse()
-        }
-    }
-
-    impl std::convert::TryFrom<&String> for PoolId {
-        type Error = self::error::ConversionError;
-        fn try_from(value: &String) -> Result<Self, self::error::ConversionError> {
-            value.parse()
-        }
-    }
-
-    impl std::convert::TryFrom<String> for PoolId {
-        type Error = self::error::ConversionError;
-        fn try_from(value: String) -> Result<Self, self::error::ConversionError> {
-            value.parse()
-        }
-    }
-
-    impl ToString for PoolId {
-        fn to_string(&self) -> String {
-            match self {
-                Self::Variant0(x) => x.to_string(),
-                Self::Variant1(x) => x.to_string(),
-            }
-        }
-    }
-
-    impl From<i64> for PoolId {
-        fn from(value: i64) -> Self {
-            Self::Variant0(value)
-        }
-    }
-
-    ///always starts with Input asset_id
-    ///
-    /// <details><summary>JSON schema</summary>
-    ///
-    /// ```json
-    ///{
-    ///  "title": "SingleInputAssetCvmRoute",
-    ///  "description": "always starts with Input asset_id",
+    ///  "title": "SingleInputAssetCvmRoute[str, str]",
     ///  "type": "object",
     ///  "required": [
     ///    "in_asset_amount",
@@ -750,28 +282,11 @@ pub mod types {
     ///  "properties": {
     ///    "in_asset_amount": {
     ///      "title": "In Asset Amount",
-    ///      "anyOf": [
-    ///        {
-    ///          "type": "integer"
-    ///        },
-    ///        {
-    ///          "type": "string"
-    ///        },
-    ///        {
-    ///          "type": "number"
-    ///        }
-    ///      ]
+    ///      "type": "string"
     ///    },
     ///    "in_asset_id": {
     ///      "title": "In Asset Id",
-    ///      "anyOf": [
-    ///        {
-    ///          "type": "integer"
-    ///        },
-    ///        {
-    ///          "type": "string"
-    ///        }
-    ///      ]
+    ///      "type": "string"
     ///    },
     ///    "next": {
     ///      "title": "Next",
@@ -779,68 +294,52 @@ pub mod types {
     ///      "items": {
     ///        "anyOf": [
     ///          {
-    ///            "$ref": "#/components/schemas/Exchange"
+    ///            "$ref": "#/components/schemas/Exchange_str_str_"
     ///          },
     ///          {
-    ///            "$ref": "#/components/schemas/Spawn"
+    ///            "$ref": "#/components/schemas/Spawn_str_str_"
     ///          }
     ///        ]
     ///      }
     ///    },
     ///    "out_asset_amount": {
     ///      "title": "Out Asset Amount",
-    ///      "anyOf": [
-    ///        {
-    ///          "type": "integer"
-    ///        },
-    ///        {
-    ///          "type": "string"
-    ///        },
-    ///        {
-    ///          "type": "number"
-    ///        }
-    ///      ]
+    ///      "type": "string"
     ///    },
     ///    "out_asset_id": {
     ///      "title": "Out Asset Id",
-    ///      "anyOf": [
-    ///        {
-    ///          "type": "integer"
-    ///        },
-    ///        {
-    ///          "type": "string"
-    ///        }
-    ///      ]
+    ///      "type": "string"
     ///    }
     ///  }
     ///}
     /// ```
     /// </details>
     #[derive(Clone, Debug, Deserialize, Serialize)]
-    pub struct SingleInputAssetCvmRoute {
-        pub in_asset_amount: InAssetAmount,
-        pub in_asset_id: InAssetId,
+    pub struct SingleInputAssetCvmRouteStrStr {
+        pub in_asset_amount: String,
+        pub in_asset_id: String,
         pub next: Vec<NextItem>,
-        pub out_asset_amount: OutAssetAmount,
-        pub out_asset_id: OutAssetId,
+        pub out_asset_amount: String,
+        pub out_asset_id: String,
     }
 
-    impl From<&SingleInputAssetCvmRoute> for SingleInputAssetCvmRoute {
-        fn from(value: &SingleInputAssetCvmRoute) -> Self {
+    impl From<&SingleInputAssetCvmRouteStrStr> for SingleInputAssetCvmRouteStrStr {
+        fn from(value: &SingleInputAssetCvmRouteStrStr) -> Self {
             value.clone()
         }
     }
 
-    ///cross chain transfer assets
+    ///SpawnStrStr
     ///
     /// <details><summary>JSON schema</summary>
     ///
     /// ```json
     ///{
-    ///  "title": "Spawn",
-    ///  "description": "cross chain transfer assets",
+    ///  "title": "Spawn[str, str]",
     ///  "type": "object",
     ///  "required": [
+    ///    "in_asset_amount",
+    ///    "in_asset_id",
     ///    "next",
     ///    "out_asset_amount",
     ///    "out_asset_id"
@@ -848,28 +347,11 @@ pub mod types {
     ///  "properties": {
     ///    "in_asset_amount": {
     ///      "title": "In Asset Amount",
-    ///      "anyOf": [
-    ///        {
-    ///          "type": "integer"
-    ///        },
-    ///        {
-    ///          "type": "string"
-    ///        },
-    ///        {
-    ///          "type": "number"
-    ///        }
-    ///      ]
+    ///      "type": "string"
     ///    },
     ///    "in_asset_id": {
     ///      "title": "In Asset Id",
-    ///      "anyOf": [
-    ///        {
-    ///          "type": "integer"
-    ///        },
-    ///        {
-    ///          "type": "string"
-    ///        }
-    ///      ]
+    ///      "type": "string"
     ///    },
     ///    "next": {
     ///      "title": "Next",
@@ -877,56 +359,37 @@ pub mod types {
     ///      "items": {
     ///        "anyOf": [
     ///          {
-    ///            "$ref": "#/components/schemas/Exchange"
+    ///            "$ref": "#/components/schemas/Exchange_str_str_"
     ///          },
     ///          {
-    ///            "$ref": "#/components/schemas/Spawn"
+    ///            "$ref": "#/components/schemas/Spawn_str_str_"
     ///          }
     ///        ]
     ///      }
     ///    },
     ///    "out_asset_amount": {
     ///      "title": "Out Asset Amount",
-    ///      "anyOf": [
-    ///        {
-    ///          "type": "integer"
-    ///        },
-    ///        {
-    ///          "type": "string"
-    ///        },
-    ///        {
-    ///          "type": "number"
-    ///        }
-    ///      ]
+    ///      "type": "string"
     ///    },
     ///    "out_asset_id": {
     ///      "title": "Out Asset Id",
-    ///      "anyOf": [
-    ///        {
-    ///          "type": "integer"
-    ///        },
-    ///        {
-    ///          "type": "string"
-    ///        }
-    ///      ]
+    ///      "type": "string"
     ///    }
     ///  }
     ///}
     /// ```
     /// </details>
     #[derive(Clone, Debug, Deserialize, Serialize)]
-    pub struct Spawn {
-        #[serde(default, skip_serializing_if = "Option::is_none")]
-        pub in_asset_amount: Option<InAssetAmount>,
-        #[serde(default, skip_serializing_if = "Option::is_none")]
-        pub in_asset_id: Option<InAssetId>,
+    pub struct SpawnStrStr {
+        pub in_asset_amount: String,
+        pub in_asset_id: String,
         pub next: Vec<NextItem>,
-        pub out_asset_amount: OutAssetAmount,
-        pub out_asset_id: OutAssetId,
+        pub out_asset_amount: String,
+        pub out_asset_id: String,
     }
 
-    impl From<&Spawn> for Spawn {
-        fn from(value: &Spawn) -> Self {
+    impl From<&SpawnStrStr> for SpawnStrStr {
+        fn from(value: &SpawnStrStr) -> Self {
             value.clone()
         }
     }
@@ -1056,22 +519,34 @@ impl Client {
     ///Sends a `GET` request to `/simulator/router`
     pub async fn simulator_router_simulator_router_get<'a>(
         &'a self,
-        in_asset_amount: &'a types::InAssetAmount,
-        in_asset_id: &'a types::InAssetId,
-        max: bool,
-        out_asset_amount: &'a types::OutAssetAmount,
-        out_asset_id: &'a types::OutAssetId,
+        in_asset_amount: Option<&'a str>,
+        in_asset_id: Option<&'a str>,
+        max: Option<bool>,
+        out_asset_amount: &'a str,
+        out_asset_id: Option<&'a str>,
     ) -> Result<
-        ResponseValue<Vec<types::SingleInputAssetCvmRoute>>,
+        ResponseValue<Vec<types::SingleInputAssetCvmRouteStrStr>>,
         Error<types::HttpValidationError>,
     > {
         let url = format!("{}/simulator/router", self.baseurl,);
         let mut query = Vec::with_capacity(5usize);
-        query.push(("in_asset_amount", in_asset_amount.to_string()));
-        query.push(("in_asset_id", in_asset_id.to_string()));
-        query.push(("max", max.to_string()));
+        if let Some(v) = &in_asset_amount {
+            query.push(("in_asset_amount", v.to_string()));
+        }
+
+        if let Some(v) = &in_asset_id {
+            query.push(("in_asset_id", v.to_string()));
+        }
+
+        if let Some(v) = &max {
+            query.push(("max", v.to_string()));
+        }
+
         query.push(("out_asset_amount", out_asset_amount.to_string()));
-        query.push(("out_asset_id", out_asset_id.to_string()));
+        if let Some(v) = &out_asset_id {
+            query.push(("out_asset_id", v.to_string()));
+        }
+
         #[allow(unused_mut)]
         let mut request = self
             .client

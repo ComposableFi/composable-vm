@@ -449,6 +449,8 @@ runtimeInputs = [
             ]
             ++ native-deps;
           shellHook = ''
+            RUSTFMT=$(which rustfmt)
+            export RUSTFMT
             if [[ -f ./.env ]]; then
               source ./.env
             fi
