@@ -20,7 +20,7 @@ from simulation.routers.oracles.usdoracle import merge_by_connection_from_existi
 # This is global unique ID for token(asset) or exchange(pool)
 TId = TypeVar("TId", int, str)
 TNetworkId = TypeVar("TNetworkId", int, str)
-TAmount = TypeVar("TAmount", int, float, dec)
+TAmount = TypeVar("TAmount", int, float, dec, str)
 
 MINIMAL_FEE_PER_MILLION_DEFAULT = 100
 """
@@ -329,30 +329,16 @@ class Input(
     in_asset_id: TId = Field(example="158456325028528675187087900673")
     out_asset_id: TId = Field(example="158456325028528675187087900674")
     # tendered amount DELTA
-    in_asset_amount: TAmount = Field(
-            example="1000000000000",
-            title='Password',
-            type = 'string',
-            json_schema_extra={
-                'title': 'Password',
-                'description': 'Password of the user',
-                'examples': ['123456']
-            }
-        )
-    # expected received amount LAMBDA
-    out_asset_amount: TAmount = Field(
-            example="10",
-            type='string',
-            json_schema_extra={
-                'title': 'Password',
-                'description': 'Password of the user',
-                'examples': ['123456'],
-            }
-        )
+    in_asset_amount: TAmount = Field(example="10000000")
+    out_asset_amount: TAmount = Field(example="100")
+    """
+    expected received amount LAMBDA
+    """
+    
     # if max is True, user wants to spent all in to get at least out
     # if max is False, user wants to get exact out, but spent as small as possible in
     # please fail if bool is False for now
-    max: bool = Field(example=True)
+    max: bool = Field(example=True, default=True)
 
 
 class Trade(Generic[TId, TAmount]):

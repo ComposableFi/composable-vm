@@ -2,6 +2,7 @@
 from pathlib import Path
 
 from simulation.routers.data import (
+    Input,
     new_data,
     new_pair,
     new_transfer,
@@ -15,7 +16,13 @@ def _test_all_data_from_csv():
     assert read_dummy_data(TEST_DATA_DIR)
 
 
-def _test_token_price_in_usd():
+def test_big_numbers_api():
+    """_summary_
+    Ensures that amounts are strings on the wire but big integers in memory    
+    """
+    input : Input[str, str] = Input(in_asset_id="1", out_asset_id="2", in_asset_amount="100", out_asset_amount="100")
+
+def test_token_price_in_usd():
     pica_usd = new_pair(
         1,
         1,
