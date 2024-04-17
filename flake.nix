@@ -286,22 +286,25 @@
               SCIPOPTDIR = scip-src;
             });
             # pyscipopt = pyscipopt-latest;
-          
+            # ruff = super.ruff.overridePythonAttrs (old: {
+            #   # buildInputs = old.buildInputs or [] ++ [rust.cargo rust.rustc];
+            #   nativeBuildInputs = old.nativeBuildInputs or [] ++ [pkgs.cargo pkgs.rustc];
+            # });
             maturin = super.maturin.overridePythonAttrs (old: {
               buildInputs = old.buildInputs or [] ++ [self.python.pkgs.setuptools];
             });
-grpc = super.grpc.overridePythonAttrs (old: {
-          nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [ pkgs.pkg-config pkgs.stdenv.cc.cc.lib pkgs.stdenv.cc.cc ];
-          buildInputs = (old.buildInputs or [ ]) ++ [ pkgs.stdenv.cc.cc.lib pkgs.stdenv.cc.cc ];
-          LD_LIBRARY_PATH = with pkgs; lib.makeLibraryPath [
-            stdenv.cc.cc.lib
-          ];
-runtimeInputs = [
-              pkgs.stdenv.cc.cc.lib
-              pkgs.stdenv.cc.cc
-            
-          ];          
-      });            
+            grpc = super.grpc.overridePythonAttrs (old: {
+              nativeBuildInputs = (old.nativeBuildInputs or []) ++ [pkgs.pkg-config pkgs.stdenv.cc.cc.lib pkgs.stdenv.cc.cc];
+              buildInputs = (old.buildInputs or []) ++ [pkgs.stdenv.cc.cc.lib pkgs.stdenv.cc.cc];
+              LD_LIBRARY_PATH = with pkgs;
+                lib.makeLibraryPath [
+                  stdenv.cc.cc.lib
+                ];
+              runtimeInputs = [
+                pkgs.stdenv.cc.cc.lib
+                pkgs.stdenv.cc.cc
+              ];
+            });
             # cylp = super.cylp.overridePythonAttrs (old: {
             #   buildInputs = old.buildInputs or [] ++ [self.python.pkgs.setuptools self.python.pkgs.wheel pkgs.cbc pkgs.pkg-config];
             #   nativeBuildInputs = old.nativeBuildInputs or [] ++ [self.python.pkgs.setuptools self.python.pkgs.wheel pkgs.cbc pkgs.pkg-config];
@@ -376,11 +379,12 @@ runtimeInputs = [
         ];
         poetry = pkgs.stdenv.mkDerivation {
           name = "poetry";
-          buildInputs = [ pyEnvShell  ];
+          buildInputs = [pyEnvShell];
 
-          LD_LIBRARY_PATH = with pkgs; lib.makeLibraryPath [
-            stdenv.cc.cc.lib
-          ];
+          LD_LIBRARY_PATH = with pkgs;
+            lib.makeLibraryPath [
+              stdenv.cc.cc.lib
+            ];
 
           buildCommand = ''
             mkdir -p $out/bin
@@ -410,14 +414,10 @@ runtimeInputs = [
           OSMOSIS_POOLS = env.OSMOSIS_POOLS;
           ASTROPORT_POOLS = env.ASTROPORT_POOLS;
           SKIP_MONEY = env.SKIP_MONEY;
-# LD_LIBRARY_PATH = with pkgs; lib.makeLibraryPath [
-#             stdenv.cc.cc.lib
-#           ];
           BETTER_EXCEPTIONS = 1;
           runtimeInputs = [
-              pkgs.stdenv.cc.cc.lib
-              pkgs.stdenv.cc.cc
-            
+            pkgs.stdenv.cc.cc.lib
+            pkgs.stdenv.cc.cc
           ];
           buildInputs =
             [
