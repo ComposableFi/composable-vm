@@ -8,7 +8,7 @@ import uvicorn
 from cachetools import TTLCache
 from cosmpy.aerial.config import NetworkConfig
 from cosmpy.aerial.contract import LedgerClient, LedgerContract
-from cvm_indexer import ExtendedCvmRegistry, for_simulation
+from blackbox.cvm_indexer import ExtendedCvmRegistry, for_simulation
 from fastapi import Depends, FastAPI
 from loguru import logger
 from shelved_cache import PersistentCache
@@ -23,8 +23,8 @@ from blackbox.raw import (
     OsmosisPoolsResponse,
 )
 from blackbox.settings import settings
-from simulation.routers import generic_linear, test_generic_linear
-from simulation.routers.angeris_cvxpy import cvxpy_to_data
+# from simulation.routers import generic_linear, test_generic_linear
+# from simulation.routers.angeris_cvxpy import cvxpy_to_data
 from simulation.routers.data import (
     AllData as SimulationData,
 )
@@ -55,7 +55,7 @@ app = create_app()
 """
 app = FastAPI()
 
-cache = PersistentCache(TTLCache, filename="get_remote_data.cache", ttl=12 * 1000, maxsize=2)
+cache = PersistentCache(TTLCache, filename="$TEMP/get_remote_data.cache", ttl=12 * 1000, maxsize=2)
 
 
 @app.get("/simulator/router")
@@ -245,7 +245,7 @@ def start():
     logger.info(sys.path)
     logger.info(os.environ)
     uvicorn.run(
-        "main:app",
+        "blackbox.main:app",
         host="0.0.0.0",
         port=settings.port,
         reload=True,

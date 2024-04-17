@@ -1,17 +1,19 @@
 [tool.poetry]
-name = "mantis"
-version = "0.0.2"
+name = "blackbox"
+version = "0.0.3"
 description = "Python server which solves problems from provided input and additional data obtained from chains/indexers and outputs single route solution."
 authors = []
+package-mode = true
 packages = [
     { include = "simulation" },
     { include = "blackbox" },
-    { include = "cvm_runtime", from = "blackbox" },
-    { include = "main.py", from = "blackbox" },
+
+    # { include = "cvm_runtime", from = "blackbox" },
+    # { include = "main.py", from = "blackbox" },
 ]
 
 [tool.poetry.dependencies]
-python = ">=3.11.6, <=3.11.7"
+python = ">=3.11.6, <=3.11.8"
 
 #fastapi-cache2 = "^0.2.1"  # no needed now, too many things
 bech32 = "1.2.0"
@@ -81,7 +83,6 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
 blackbox = 'blackbox.main:start'
-dzmitry_solver = 'simulation.routers.test_dzmitry:simulate'
 
 [tool.ruff]
 unsafe-fixes = true

@@ -326,7 +326,7 @@ runtimeInputs = [
           runtimeInputs = [mantis-blackbox-package];
           text = ''
             # shellcheck disable=SC2068
-            mantis-blackbox $@
+            blackbox $@
           '';
         };
 
@@ -473,6 +473,7 @@ runtimeInputs = [
             datamodel-code-generator
             cosmwasm-json-schema-ts
             mantis-blackbox
+            mantis-blackbox-package
             # pyscipopt-latest
             
             # maturin-latest
