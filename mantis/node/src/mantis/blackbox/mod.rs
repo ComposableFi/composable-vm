@@ -4,7 +4,7 @@ use bounded_collections::Get;
 use cvm_runtime::{
     outpost::GetConfigResponse,
     shared::{CvmFundsFilter, CvmInstruction, CvmProgram},
-    Amount, AssetId,
+    Amount, AssetId, ExchangeId,
 };
 use cw_mantis_order::{CrossChainPart, OrderItem, SolutionSubMsg};
 
@@ -24,12 +24,12 @@ fn build_next(
 ) {
     match next.split_first_mut() {
         Some((head, rest)) => match head {
-            NextItem::Exchange(exchange) => {
+            NextItem::ExchangeStrStr(exchange) => {
                 let exchange = new_exchange(exchange);
                 current.instructions.push(exchange);
                 build_next(current, rest, glt, salt);
             }
-            NextItem::Spawn(spawn) => {
+            NextItem::SpawnStrStr(spawn) => {
                 let mut program = CvmProgram::default();
                 build_next(&mut program, rest, glt, salt);
                 let spawn = new_spawn(spawn, program, glt, salt);
@@ -48,20 +48,10 @@ fn new_spawn(
     glt: &GetConfigResponse,
     salt: &[u8],
 ) -> CvmInstruction {
-    let in_asset_id = AssetId(spawn.in_asset_id.parse().expect("in_asset_id"));
+    let in_asset_id: AssetId = spawn.in_asset_id.parse().expect("in_asset_id");
 
-    let in_amount: Amount = match spawn.in_asset_amount.as_ref().expect("in_asset_amount") {
-        InAssetAmount::Variant0(x) => (*x).try_into().expect("in_asset_amount"),
-        InAssetAmount::Variant1(x) => x.parse().expect("in_asset_amount"),
-        InAssetAmount::Variant2(x) => {
-            panic!("fix python not to have float or use to fixed point/fraction first")
-        } // Amount::try_floor_f64(*x).expect("in_asset_amount"),
-    };
-
-    let out_asset_id = match &spawn.out_asset_id {
-        OutAssetId::Variant1(id) => id.parse().expect("in_asset_id"),
-        _ => panic!("in_asset_id"),
-    };
+    let in_amount: Amount = spawn.in_asset_amount.parse().expect("in_asset_amount");
+    let out_asset_id = spawn.out_asset_id.parse().expect("out_asset_id");
 
     let network_id = glt
         .assets
@@ -78,27 +68,12 @@ fn new_spawn(
 }
 
 fn new_exchange(exchange: &ExchangeStrStr) -> CvmInstruction {
-    let exchange_id = match &exchange.pool_id {
-        PoolId::Variant1(id) => id.parse().expect("pool id"),
-        _ => panic!("exchange_id"),
-    };
-    let in_asset_id = match &exchange.in_asset_id {
-        InAssetId::Variant1(id) => id.parse().expect("in_asset_id"),
-        _ => panic!("in_asset_id"),
-    };
+    let exchange_id: ExchangeId = exchange.pool_id.parse().expect("pool_id");
+    let in_asset_id: AssetId = exchange.in_asset_id.parse().expect("in_asset_id");
 
-    let in_amount: Amount = match &exchange.in_asset_amount {
-        InAssetAmount::Variant0(x) => (*x).try_into().expect("in_asset_amount"),
-        InAssetAmount::Variant1(x) => x.parse().expect("in_asset_amount"),
-        InAssetAmount::Variant2(x) => {
-            panic!("covert f64 to fraction, but really just fix python to give strings")
-        } // Amount::try_floor_f64(*x).expect("in_asset_amount"),
-    };
+    let in_amount: Amount = exchange.in_asset_amount.parse().expect("in_asset_amount");
 
-    let out_asset_id = match &exchange.out_asset_id {
-        OutAssetId::Variant1(id) => id.parse().expect("in_asset_id"),
-        _ => panic!("in_asset_id"),
-    };
+    let out_asset_id: AssetId = exchange.out_asset_id.parse().expect("in_asset_id");
 
     CvmInstruction::Exchange {
         exchange_id,
@@ -119,13 +94,11 @@ pub async fn get_routes(
         let blackbox: Client = Client::new(route_provider);
         let mut route = blackbox
             .simulator_router_simulator_router_get(
-                &InAssetAmount::Variant0(
-                    input.in_asset_amount.0.try_into().expect("in_asset_amount"),
-                ),
-                &InAssetId::Variant1(input.in_asset_id.to_string()),
-                true,
-                &OutAssetAmount::Variant0(10),
-                &OutAssetId::Variant1(input.out_asset_id.to_string().into()),
+                input.in_asset_amount.to_string().as_str().into(),
+                input.in_asset_id.to_string().as_str().into(),
+                Some(true),
+                10.to_string().as_str().into(),
+                input.out_asset_id.to_string().as_str().into(),
             )
             .await
             .expect("route found")
@@ -135,7 +108,7 @@ pub async fn get_routes(
 
         let mut program = CvmProgram::default();
         build_next(&mut program, &mut route.next, cvm_glt, salt);
-        panic!("so need to build instruction so can plug into one program (transaciton)")
+        panic!("so need to build instruction so can plug into one program (transaction)")
     }
 }
 
