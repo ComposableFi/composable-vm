@@ -10,7 +10,8 @@ use crate::{
 };
 
 use cosmwasm_std::{
-    ensure, ensure_eq, entry_point, wasm_execute, Addr, BankMsg, Coin, CosmosMsg, Deps, DepsMut, Env, MessageInfo, Response, StdError
+    ensure, ensure_eq, entry_point, wasm_execute, Addr, BankMsg, Coin, CosmosMsg, Deps, DepsMut,
+    Env, MessageInfo, Response, StdError,
 };
 use cvm_route::asset::{AssetReference, NetworkAssetItem};
 use cw20::{Cw20Contract, Cw20ExecuteMsg};
@@ -172,9 +173,11 @@ fn transfer_from_user(
                         recipient: self_address.to_string(),
                         amount: (*program_amount).into(),
                     })?)
-                } // cvm_route::asset::AssetReference::Erc20 { .. } => {
-                  //     Err(ContractError::RuntimeUnsupportedOnNetwork)?
-                  // }
+                }
+                cvm_route::asset::AssetReference::Erc20 { .. } => {
+                    Err(ContractError::RuntimeUnsupportedOnNetwork)?
+                }
+                _ => todo!("implement other asset types"),
             }
         }
         Ok((transfers, program_funds))
@@ -188,7 +191,10 @@ fn transfer_from_user(
 
             program_funds.0.push((asset.asset_id, coin.amount.into()));
         }
-        deps.api.debug(&format!("cvm::outpost::funds obtained from msg {:?}", program_funds));
+        deps.api.debug(&format!(
+            "cvm::outpost::funds obtained from msg {:?}",
+            program_funds
+        ));
         // we cannot do same trick with CW20 as need to know CW20 address (and it has to support
         // Allowance query).
         // so it is implement CW20 receiver interface like Michal did for wallet
@@ -300,7 +306,7 @@ pub(crate) fn handle_execute_program_privilleged(
         )?;
 
         // Secondly, call itself again with the same parameters, so that this functions goes
-        // into `Ok` state and properly executes the executor        
+        // into `Ok` state and properly executes the executor
         let execute_program = cvm_runtime::outpost::BridgeExecuteProgramMsg {
             salt: executor_origin.salt,
             program,
@@ -328,9 +334,13 @@ fn send_funds_to_executor(
 ) -> Result {
     let mut response = Response::new();
     let executor_address = executor_address.into_string();
-    deps.api.debug(&format!("cvm::outpost::funds:: sending funds {:?}", funds));
-    for (asset_id, amount) in funds.0 {        
-        ensure!(amount >= <_>::default(), ContractError::DoNotAddFundsInsteadOfSendingZero);
+    deps.api
+        .debug(&format!("cvm::outpost::funds:: sending funds {:?}", funds));
+    for (asset_id, amount) in funds.0 {
+        ensure!(
+            amount >= <_>::default(),
+            ContractError::DoNotAddFundsInsteadOfSendingZero
+        );
         let msg = match assets::get_asset_by_id(deps, asset_id)?.local {
             cvm_route::asset::AssetReference::Native { denom } => BankMsg::Send {
                 to_address: executor_address.clone(),
@@ -343,9 +353,14 @@ fn send_funds_to_executor(
                     recipient: executor_address.clone(),
                     amount: amount.into(),
                 })?
-            } //cvm_route::asset::AssetReference::Erc20 { .. } => Err(ContractError::RuntimeUnsupportedOnNetwork)?,
+            }
+            cvm_route::asset::AssetReference::Erc20 { .. } => {
+                Err(ContractError::RuntimeUnsupportedOnNetwork)?
+            }
+            _ => todo!("implement other asset types"),
         };
-        deps.api.debug(&format!("cvm::outpost::funds::msg {:?}", msg));
+        deps.api
+            .debug(&format!("cvm::outpost::funds::msg {:?}", msg));
         response = response.add_message(msg);
     }
     Ok(response)

@@ -126,8 +126,9 @@ pub struct ChannelInfo {
 )]
 pub enum ForeignAssetId {
     IbcIcs20(PrefixedDenom),
-    #[cfg(feature = "xcm")]
-    Xcm(xcm::VersionedMultiLocation),
+
+    // `xcm::VersionedMultiLocation` not validated, until XCM supports std wasm or CW no_std (or copy paste)
+    Xcm(serde_cw_value::Value),
 }
 
 #[cfg(feature = "xcm")]

@@ -14,6 +14,9 @@ ibc-core-host-types = { workspace = true, features = [
 ] }
 ibc-app-transfer-types = { workspace = true, default-features = false, features = ["serde"] }
 cosmwasm-schema = {workspace = true, optional = true}
+serde-cw-value = { workspace = true, default-features = false }
+bs58 = { version = "*", default-features = false, features = ["alloc"] }
+hex = {workspace = true, default-features = false}
 
 [features]
 default = ["std", "cosmos",]
@@ -27,6 +30,7 @@ json-schema = [
     "dep:schemars",
     "dep:cosmwasm-schema",
     "ibc-app-transfer-types/schema",
+    "serde-cw-value/schema",
 ]
 cosmos = [
     "cvm/cosmos",
@@ -35,4 +39,5 @@ std = [
     "cvm/std",
     "ibc-core-host-types/std",
     "ibc-app-transfer-types/std",
+    "serde-cw-value/std",
 ]

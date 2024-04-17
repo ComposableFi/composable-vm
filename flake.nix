@@ -462,7 +462,7 @@
         };
         formatter = pkgs.alejandra;
         packages = rec {
-          pyscipopt = pkgs.python3Packages.pyscipopt;
+          # pyscipopt = pkgs.python3Packages.pyscipopt;
           # scip = inputs'.scip.packages.scip;
           inherit
             cw-mantis-order

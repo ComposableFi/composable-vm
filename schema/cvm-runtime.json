@@ -239,7 +239,12 @@
             ]
           },
           "local": {
-            "$ref": "#/definitions/AssetReference"
+            "description": "TODO: make sure one cannot access local if it is bridged until bridged was unwrapped basically to access asset need to provide network_id to use local",
+            "allOf": [
+              {
+                "$ref": "#/definitions/AssetReference"
+              }
+            ]
           },
           "network_id": {
             "description": "network id on which this asset id can be used locally",
@@ -252,9 +257,10 @@
         }
       },
       "AssetReference": {
-        "description": "Definition of an asset native to some chain to operate on. For example for Cosmos CW and EVM chains both CW20 and ERC20 can be actual. So if asset is local or only remote to some chain depends on context of network or connection. this design leads to some dummy matches, but in general unifies code (so that if one have to solve other chain route it can)",
+        "description": "Definition of an asset native to some chain to operate on. For example for Cosmos CW and EVM chains both CW20 and ERC20 can be actual. So if asset is local or only remote to some chain depends on context of network or connection. this design leads to some dummy matches, but in general unifies code (so that if one have to solve other chain route it can). One consensus(chain) can have assets produced by different protocols(VMs).",
         "oneOf": [
           {
+            "description": "Cosmos SDK native",
             "type": "object",
             "required": [
               "native"
@@ -293,25 +299,90 @@
               }
             },
             "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "required": [
+              "erc20"
+            ],
+            "properties": {
+              "erc20": {
+                "type": "object",
+                "required": [
+                  "contract"
+                ],
+                "properties": {
+                  "contract": {
+                    "$ref": "#/definitions/H160"
+                  }
+                }
+              }
+            },
+            "additionalProperties": false
+          },
+          {
+            "description": "Solana VM default token, not only Solana has this token",
+            "type": "object",
+            "required": [
+              "s_p_l20"
+            ],
+            "properties": {
+              "s_p_l20": {
+                "type": "object",
+                "required": [
+                  "mint"
+                ],
+                "properties": {
+                  "mint": {
+                    "$ref": "#/definitions/Pubkey"
+                  }
+                }
+              }
+            },
+            "additionalProperties": false
+          },
+          {
+            "description": "usually on Polkadot/Kusama and parachains Subtrate runtimes assets encoded as numbers up to u128 value",
+            "type": "object",
+            "required": [
+              "polkadot_substrate_asset"
+            ],
+            "properties": {
+              "polkadot_substrate_asset": {
+                "type": "object",
+                "required": [
+                  "general_index"
+                ],
+                "properties": {
+                  "general_index": {
+                    "type": "integer",
+                    "format": "uint128",
+                    "minimum": 0.0
+                  }
+                }
+              }
+            },
+            "additionalProperties": false
           }
         ]
       },
-      "AssetToNetwork": {
+      "AssetsVenueItem": {
+        "description": "assets which can be transomed into each other via venue",
         "type": "object",
         "required": [
-          "other_asset",
-          "other_network",
-          "this_asset"
+          "from_asset_id",
+          "to_asset_id",
+          "venue_id"
         ],
         "properties": {
-          "other_asset": {
+          "from_asset_id": {
             "$ref": "#/definitions/AssetId"
           },
-          "other_network": {
-            "$ref": "#/definitions/NetworkId"
-          },
-          "this_asset": {
+          "to_asset_id": {
             "$ref": "#/definitions/AssetId"
+          },
+          "venue_id": {
+            "$ref": "#/definitions/VenueId"
           }
         }
       },
@@ -533,7 +604,7 @@
             ],
             "properties": {
               "force_asset_to_network_map": {
-                "$ref": "#/definitions/AssetToNetwork"
+                "$ref": "#/definitions/NetworkAssetItem"
               }
             },
             "additionalProperties": false
@@ -607,6 +678,18 @@
                     "$ref": "#/definitions/Addr"
                   }
                 }
+              }
+            },
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "required": [
+              "force_assets_venue"
+            ],
+            "properties": {
+              "force_assets_venue": {
+                "$ref": "#/definitions/AssetsVenueItem"
               }
             },
             "additionalProperties": false
@@ -762,7 +845,7 @@
         ],
         "properties": {
           "assets": {
-            "description": "Assets to fund the CVM executor instance. The executor is funded prior to execution. If None, 100% of received funds go to executor.",
+            "description": "Assets to fund the CVM executor instance. The executor is funded prior to execution. If None, 100% of CosmWasm native received funds go to executor.",
             "allOf": [
               {
                 "$ref": "#/definitions/Funds_for_Displayed_for_uint128"
@@ -797,7 +880,7 @@
         ],
         "properties": {
           "assets": {
-            "description": "Assets to fund the CVM executor instance. The executor is funded prior to execution. If None, 100% of received funds go to executor.",
+            "description": "Assets to fund the CVM executor instance. The executor is funded prior to execution. If None, 100% of CosmWasm native received funds go to executor.",
             "anyOf": [
               {
                 "$ref": "#/definitions/Funds_for_Displayed_for_uint128"
@@ -856,6 +939,18 @@
               }
             },
             "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "required": [
+              "xcm"
+            ],
+            "properties": {
+              "xcm": {
+                "$ref": "#/definitions/JSON"
+              }
+            },
+            "additionalProperties": false
           }
         ]
       },
@@ -892,6 +987,9 @@
           "maxItems": 2,
           "minItems": 2
         }
+      },
+      "H160": {
+        "type": "string"
       },
       "IbcChannels": {
         "type": "object",
@@ -1159,6 +1257,26 @@
             "additionalProperties": false
           }
         ]
+      },
+      "JSON": true,
+      "NetworkAssetItem": {
+        "type": "object",
+        "required": [
+          "from_asset_id",
+          "to_asset_id",
+          "to_network_id"
+        ],
+        "properties": {
+          "from_asset_id": {
+            "$ref": "#/definitions/AssetId"
+          },
+          "to_asset_id": {
+            "$ref": "#/definitions/AssetId"
+          },
+          "to_network_id": {
+            "$ref": "#/definitions/NetworkId"
+          }
+        }
       },
       "NetworkId": {
         "description": "Newtype for CVM networks ID. Must be unique for each network and must never change. This ID is an opaque, arbitrary type from the CVM protocol and no assumption must be made on how it is computed.",
@@ -1452,6 +1570,17 @@
           }
         }
       },
+      "Pubkey": {
+        "description": "Is `solana-program` crate `Pubkey` type, but with proper serde support into base58 encoding.",
+        "type": "array",
+        "items": {
+          "type": "integer",
+          "format": "uint8",
+          "minimum": 0.0
+        },
+        "maxItems": 32,
+        "minItems": 32
+      },
       "Register": {
         "oneOf": [
           {
@@ -1590,6 +1719,28 @@
           }
         }
       },
+      "VenueId": {
+        "oneOf": [
+          {
+            "type": "string",
+            "enum": [
+              "transfer"
+            ]
+          },
+          {
+            "type": "object",
+            "required": [
+              "exchange"
+            ],
+            "properties": {
+              "exchange": {
+                "$ref": "#/definitions/Displayed_for_uint128"
+              }
+            },
+            "additionalProperties": false
+          }
+        ]
+      },
       "XcAddr": {
         "description": "A wrapper around any address on any chain. Similar to `ibc_rs::Signer`(multi encoding), but not depend on ibc code bloat. Unlike parity MultiLocation/Account32/Account20 which hard codes enum into code. Better send canonical address to each chain for performance, But it will also decode/reencode best effort. Inner must be either base64 or hex encoded or contain only characters from these. Added with helper per chain to get final address to use.",
         "type": "string"
@@ -1633,6 +1784,18 @@
                 "$ref": "#/definitions/AssetId"
               }
             }
+          }
+        },
+        "additionalProperties": false
+      },
+      {
+        "type": "object",
+        "required": [
+          "get_all_asset_ids"
+        ],
+        "properties": {
+          "get_all_asset_ids": {
+            "type": "object"
           }
         },
         "additionalProperties": false
@@ -1714,6 +1877,18 @@
           }
         },
         "additionalProperties": false
+      },
+      {
+        "type": "object",
+        "required": [
+          "get_all_asset_venues"
+        ],
+        "properties": {
+          "get_all_asset_venues": {
+            "type": "object"
+          }
+        },
+        "additionalProperties": false
       }
     ],
     "definitions": {
@@ -1726,9 +1901,10 @@
         "type": "string"
       },
       "AssetReference": {
-        "description": "Definition of an asset native to some chain to operate on. For example for Cosmos CW and EVM chains both CW20 and ERC20 can be actual. So if asset is local or only remote to some chain depends on context of network or connection. this design leads to some dummy matches, but in general unifies code (so that if one have to solve other chain route it can)",
+        "description": "Definition of an asset native to some chain to operate on. For example for Cosmos CW and EVM chains both CW20 and ERC20 can be actual. So if asset is local or only remote to some chain depends on context of network or connection. this design leads to some dummy matches, but in general unifies code (so that if one have to solve other chain route it can). One consensus(chain) can have assets produced by different protocols(VMs).",
         "oneOf": [
           {
+            "description": "Cosmos SDK native",
             "type": "object",
             "required": [
               "native"
@@ -1767,6 +1943,70 @@
               }
             },
             "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "required": [
+              "erc20"
+            ],
+            "properties": {
+              "erc20": {
+                "type": "object",
+                "required": [
+                  "contract"
+                ],
+                "properties": {
+                  "contract": {
+                    "$ref": "#/definitions/H160"
+                  }
+                }
+              }
+            },
+            "additionalProperties": false
+          },
+          {
+            "description": "Solana VM default token, not only Solana has this token",
+            "type": "object",
+            "required": [
+              "s_p_l20"
+            ],
+            "properties": {
+              "s_p_l20": {
+                "type": "object",
+                "required": [
+                  "mint"
+                ],
+                "properties": {
+                  "mint": {
+                    "$ref": "#/definitions/Pubkey"
+                  }
+                }
+              }
+            },
+            "additionalProperties": false
+          },
+          {
+            "description": "usually on Polkadot/Kusama and parachains Subtrate runtimes assets encoded as numbers up to u128 value",
+            "type": "object",
+            "required": [
+              "polkadot_substrate_asset"
+            ],
+            "properties": {
+              "polkadot_substrate_asset": {
+                "type": "object",
+                "required": [
+                  "general_index"
+                ],
+                "properties": {
+                  "general_index": {
+                    "type": "integer",
+                    "format": "uint128",
+                    "minimum": 0.0
+                  }
+                }
+              }
+            },
+            "additionalProperties": false
           }
         ]
       },
@@ -1774,17 +2014,337 @@
         "description": "A wrapper around a type which is serde-serialised as a string.\n\nFor serde-serialisation to be implemented for the type `T` must implement `Display` and `FromStr` traits.\n\n```rust use cvm::shared::Displayed;\n\n#[derive(serde::Serialize, serde::Deserialize)] struct Foo { value: Displayed<u64> }\n\nlet encoded = serde_json_wasm::to_string(&Foo { value: Displayed(42) }).unwrap(); assert_eq!(r#\"{\"value\":\"42\"}\"#, encoded);\n\nlet decoded = serde_json_wasm::from_str::<Foo>(r#\"{\"value\":\"42\"}\"#).unwrap(); assert_eq!(Displayed(42), decoded.value); ```",
         "type": "string"
       },
+      "H160": {
+        "type": "string"
+      },
       "NetworkId": {
         "description": "Newtype for CVM networks ID. Must be unique for each network and must never change. This ID is an opaque, arbitrary type from the CVM protocol and no assumption must be made on how it is computed.",
         "type": "integer",
         "format": "uint32",
         "minimum": 0.0
+      },
+      "Pubkey": {
+        "description": "Is `solana-program` crate `Pubkey` type, but with proper serde support into base58 encoding.",
+        "type": "array",
+        "items": {
+          "type": "integer",
+          "format": "uint8",
+          "minimum": 0.0
+        },
+        "maxItems": 32,
+        "minItems": 32
       }
     }
   },
   "migrate": null,
   "sudo": null,
   "responses": {
+    "get_all_asset_ids": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Array_of_AssetItem",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/AssetItem"
+      },
+      "definitions": {
+        "Addr": {
+          "description": "A human readable address.\n\nIn Cosmos, this is typically bech32 encoded. But for multi-chain smart contracts no assumptions should be made other than being UTF-8 encoded and of reasonable length.\n\nThis type represents a validated address. It can be created in the following ways 1. Use `Addr::unchecked(input)` 2. Use `let checked: Addr = deps.api.addr_validate(input)?` 3. Use `let checked: Addr = deps.api.addr_humanize(canonical_addr)?` 4. Deserialize from JSON. This must only be done from JSON that was validated before such as a contract's state. `Addr` must not be used in messages sent by the user because this would result in unvalidated instances.\n\nThis type is immutable. If you really need to mutate it (Really? Are you sure?), create a mutable copy using `let mut mutable = Addr::to_string()` and operate on that `String` instance.",
+          "type": "string"
+        },
+        "AssetId": {
+          "description": "Newtype for CVM assets ID. Must be unique for each asset and must never change. This ID is an opaque, arbitrary type from the CVM protocol and no assumption must be made on how it is computed.",
+          "type": "string"
+        },
+        "AssetItem": {
+          "type": "object",
+          "required": [
+            "asset_id",
+            "local",
+            "network_id"
+          ],
+          "properties": {
+            "asset_id": {
+              "$ref": "#/definitions/AssetId"
+            },
+            "bridged": {
+              "description": "if asset was bridged, it would have way to identify bridge/source/channel",
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/BridgeAsset"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "local": {
+              "description": "TODO: make sure one cannot access local if it is bridged until bridged was unwrapped basically to access asset need to provide network_id to use local",
+              "allOf": [
+                {
+                  "$ref": "#/definitions/AssetReference"
+                }
+              ]
+            },
+            "network_id": {
+              "description": "network id on which this asset id can be used locally",
+              "allOf": [
+                {
+                  "$ref": "#/definitions/NetworkId"
+                }
+              ]
+            }
+          }
+        },
+        "AssetReference": {
+          "description": "Definition of an asset native to some chain to operate on. For example for Cosmos CW and EVM chains both CW20 and ERC20 can be actual. So if asset is local or only remote to some chain depends on context of network or connection. this design leads to some dummy matches, but in general unifies code (so that if one have to solve other chain route it can). One consensus(chain) can have assets produced by different protocols(VMs).",
+          "oneOf": [
+            {
+              "description": "Cosmos SDK native",
+              "type": "object",
+              "required": [
+                "native"
+              ],
+              "properties": {
+                "native": {
+                  "type": "object",
+                  "required": [
+                    "denom"
+                  ],
+                  "properties": {
+                    "denom": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "required": [
+                "cw20"
+              ],
+              "properties": {
+                "cw20": {
+                  "type": "object",
+                  "required": [
+                    "contract"
+                  ],
+                  "properties": {
+                    "contract": {
+                      "$ref": "#/definitions/Addr"
+                    }
+                  }
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "required": [
+                "erc20"
+              ],
+              "properties": {
+                "erc20": {
+                  "type": "object",
+                  "required": [
+                    "contract"
+                  ],
+                  "properties": {
+                    "contract": {
+                      "$ref": "#/definitions/H160"
+                    }
+                  }
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "description": "Solana VM default token, not only Solana has this token",
+              "type": "object",
+              "required": [
+                "s_p_l20"
+              ],
+              "properties": {
+                "s_p_l20": {
+                  "type": "object",
+                  "required": [
+                    "mint"
+                  ],
+                  "properties": {
+                    "mint": {
+                      "$ref": "#/definitions/Pubkey"
+                    }
+                  }
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "description": "usually on Polkadot/Kusama and parachains Subtrate runtimes assets encoded as numbers up to u128 value",
+              "type": "object",
+              "required": [
+                "polkadot_substrate_asset"
+              ],
+              "properties": {
+                "polkadot_substrate_asset": {
+                  "type": "object",
+                  "required": [
+                    "general_index"
+                  ],
+                  "properties": {
+                    "general_index": {
+                      "type": "integer",
+                      "format": "uint128",
+                      "minimum": 0.0
+                    }
+                  }
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        },
+        "BridgeAsset": {
+          "type": "object",
+          "required": [
+            "location_on_network"
+          ],
+          "properties": {
+            "location_on_network": {
+              "$ref": "#/definitions/ForeignAssetId"
+            }
+          }
+        },
+        "ForeignAssetId": {
+          "oneOf": [
+            {
+              "type": "object",
+              "required": [
+                "ibc_ics20"
+              ],
+              "properties": {
+                "ibc_ics20": {
+                  "$ref": "#/definitions/PrefixedDenom"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "required": [
+                "xcm"
+              ],
+              "properties": {
+                "xcm": {
+                  "$ref": "#/definitions/JSON"
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        },
+        "H160": {
+          "type": "string"
+        },
+        "JSON": true,
+        "NetworkId": {
+          "description": "Newtype for CVM networks ID. Must be unique for each network and must never change. This ID is an opaque, arbitrary type from the CVM protocol and no assumption must be made on how it is computed.",
+          "type": "integer",
+          "format": "uint32",
+          "minimum": 0.0
+        },
+        "PrefixedDenom": {
+          "description": "A type that contains the base denomination for ICS20 and the source tracing information path.",
+          "type": "object",
+          "required": [
+            "base_denom",
+            "trace_path"
+          ],
+          "properties": {
+            "base_denom": {
+              "description": "Base denomination of the relayed fungible token.",
+              "type": "string"
+            },
+            "trace_path": {
+              "description": "A series of `{port-id}/{channel-id}`s for tracing the source of the token.",
+              "type": "string"
+            }
+          }
+        },
+        "Pubkey": {
+          "description": "Is `solana-program` crate `Pubkey` type, but with proper serde support into base58 encoding.",
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "uint8",
+            "minimum": 0.0
+          },
+          "maxItems": 32,
+          "minItems": 32
+        }
+      }
+    },
+    "get_all_asset_venues": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Array_of_AssetsVenueItem",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/AssetsVenueItem"
+      },
+      "definitions": {
+        "AssetId": {
+          "description": "Newtype for CVM assets ID. Must be unique for each asset and must never change. This ID is an opaque, arbitrary type from the CVM protocol and no assumption must be made on how it is computed.",
+          "type": "string"
+        },
+        "AssetsVenueItem": {
+          "description": "assets which can be transomed into each other via venue",
+          "type": "object",
+          "required": [
+            "from_asset_id",
+            "to_asset_id",
+            "venue_id"
+          ],
+          "properties": {
+            "from_asset_id": {
+              "$ref": "#/definitions/AssetId"
+            },
+            "to_asset_id": {
+              "$ref": "#/definitions/AssetId"
+            },
+            "venue_id": {
+              "$ref": "#/definitions/VenueId"
+            }
+          }
+        },
+        "Displayed_for_uint128": {
+          "description": "A wrapper around a type which is serde-serialised as a string.\n\nFor serde-serialisation to be implemented for the type `T` must implement `Display` and `FromStr` traits.\n\n```rust use cvm::shared::Displayed;\n\n#[derive(serde::Serialize, serde::Deserialize)] struct Foo { value: Displayed<u64> }\n\nlet encoded = serde_json_wasm::to_string(&Foo { value: Displayed(42) }).unwrap(); assert_eq!(r#\"{\"value\":\"42\"}\"#, encoded);\n\nlet decoded = serde_json_wasm::from_str::<Foo>(r#\"{\"value\":\"42\"}\"#).unwrap(); assert_eq!(Displayed(42), decoded.value); ```",
+          "type": "string"
+        },
+        "VenueId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "transfer"
+              ]
+            },
+            {
+              "type": "object",
+              "required": [
+                "exchange"
+              ],
+              "properties": {
+                "exchange": {
+                  "$ref": "#/definitions/Displayed_for_uint128"
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        }
+      }
+    },
     "get_asset_by_id": {
       "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "GetAssetResponse",
@@ -1829,7 +2389,12 @@
               ]
             },
             "local": {
-              "$ref": "#/definitions/AssetReference"
+              "description": "TODO: make sure one cannot access local if it is bridged until bridged was unwrapped basically to access asset need to provide network_id to use local",
+              "allOf": [
+                {
+                  "$ref": "#/definitions/AssetReference"
+                }
+              ]
             },
             "network_id": {
               "description": "network id on which this asset id can be used locally",
@@ -1842,9 +2407,10 @@
           }
         },
         "AssetReference": {
-          "description": "Definition of an asset native to some chain to operate on. For example for Cosmos CW and EVM chains both CW20 and ERC20 can be actual. So if asset is local or only remote to some chain depends on context of network or connection. this design leads to some dummy matches, but in general unifies code (so that if one have to solve other chain route it can)",
+          "description": "Definition of an asset native to some chain to operate on. For example for Cosmos CW and EVM chains both CW20 and ERC20 can be actual. So if asset is local or only remote to some chain depends on context of network or connection. this design leads to some dummy matches, but in general unifies code (so that if one have to solve other chain route it can). One consensus(chain) can have assets produced by different protocols(VMs).",
           "oneOf": [
             {
+              "description": "Cosmos SDK native",
               "type": "object",
               "required": [
                 "native"
@@ -1883,6 +2449,70 @@
                 }
               },
               "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "required": [
+                "erc20"
+              ],
+              "properties": {
+                "erc20": {
+                  "type": "object",
+                  "required": [
+                    "contract"
+                  ],
+                  "properties": {
+                    "contract": {
+                      "$ref": "#/definitions/H160"
+                    }
+                  }
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "description": "Solana VM default token, not only Solana has this token",
+              "type": "object",
+              "required": [
+                "s_p_l20"
+              ],
+              "properties": {
+                "s_p_l20": {
+                  "type": "object",
+                  "required": [
+                    "mint"
+                  ],
+                  "properties": {
+                    "mint": {
+                      "$ref": "#/definitions/Pubkey"
+                    }
+                  }
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "description": "usually on Polkadot/Kusama and parachains Subtrate runtimes assets encoded as numbers up to u128 value",
+              "type": "object",
+              "required": [
+                "polkadot_substrate_asset"
+              ],
+              "properties": {
+                "polkadot_substrate_asset": {
+                  "type": "object",
+                  "required": [
+                    "general_index"
+                  ],
+                  "properties": {
+                    "general_index": {
+                      "type": "integer",
+                      "format": "uint128",
+                      "minimum": 0.0
+                    }
+                  }
+                }
+              },
+              "additionalProperties": false
             }
           ]
         },
@@ -1910,9 +2540,25 @@
                 }
               },
               "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "required": [
+                "xcm"
+              ],
+              "properties": {
+                "xcm": {
+                  "$ref": "#/definitions/JSON"
+                }
+              },
+              "additionalProperties": false
             }
           ]
         },
+        "H160": {
+          "type": "string"
+        },
+        "JSON": true,
         "NetworkId": {
           "description": "Newtype for CVM networks ID. Must be unique for each network and must never change. This ID is an opaque, arbitrary type from the CVM protocol and no assumption must be made on how it is computed.",
           "type": "integer",
@@ -1936,6 +2582,17 @@
               "type": "string"
             }
           }
+        },
+        "Pubkey": {
+          "description": "Is `solana-program` crate `Pubkey` type, but with proper serde support into base58 encoding.",
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "uint8",
+            "minimum": 0.0
+          },
+          "maxItems": 32,
+          "minItems": 32
         }
       }
     },
@@ -1944,6 +2601,7 @@
       "title": "GetConfigResponse",
       "type": "object",
       "required": [
+        "asset_venue_items",
         "assets",
         "exchanges",
         "network_assets",
@@ -1951,6 +2609,12 @@
         "networks"
       ],
       "properties": {
+        "asset_venue_items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AssetsVenueItem"
+          }
+        },
         "assets": {
           "type": "array",
           "items": {
@@ -2018,7 +2682,12 @@
               ]
             },
             "local": {
-              "$ref": "#/definitions/AssetReference"
+              "description": "TODO: make sure one cannot access local if it is bridged until bridged was unwrapped basically to access asset need to provide network_id to use local",
+              "allOf": [
+                {
+                  "$ref": "#/definitions/AssetReference"
+                }
+              ]
             },
             "network_id": {
               "description": "network id on which this asset id can be used locally",
@@ -2031,9 +2700,10 @@
           }
         },
         "AssetReference": {
-          "description": "Definition of an asset native to some chain to operate on. For example for Cosmos CW and EVM chains both CW20 and ERC20 can be actual. So if asset is local or only remote to some chain depends on context of network or connection. this design leads to some dummy matches, but in general unifies code (so that if one have to solve other chain route it can)",
+          "description": "Definition of an asset native to some chain to operate on. For example for Cosmos CW and EVM chains both CW20 and ERC20 can be actual. So if asset is local or only remote to some chain depends on context of network or connection. this design leads to some dummy matches, but in general unifies code (so that if one have to solve other chain route it can). One consensus(chain) can have assets produced by different protocols(VMs).",
           "oneOf": [
             {
+              "description": "Cosmos SDK native",
               "type": "object",
               "required": [
                 "native"
@@ -2072,8 +2742,92 @@
                 }
               },
               "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "required": [
+                "erc20"
+              ],
+              "properties": {
+                "erc20": {
+                  "type": "object",
+                  "required": [
+                    "contract"
+                  ],
+                  "properties": {
+                    "contract": {
+                      "$ref": "#/definitions/H160"
+                    }
+                  }
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "description": "Solana VM default token, not only Solana has this token",
+              "type": "object",
+              "required": [
+                "s_p_l20"
+              ],
+              "properties": {
+                "s_p_l20": {
+                  "type": "object",
+                  "required": [
+                    "mint"
+                  ],
+                  "properties": {
+                    "mint": {
+                      "$ref": "#/definitions/Pubkey"
+                    }
+                  }
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "description": "usually on Polkadot/Kusama and parachains Subtrate runtimes assets encoded as numbers up to u128 value",
+              "type": "object",
+              "required": [
+                "polkadot_substrate_asset"
+              ],
+              "properties": {
+                "polkadot_substrate_asset": {
+                  "type": "object",
+                  "required": [
+                    "general_index"
+                  ],
+                  "properties": {
+                    "general_index": {
+                      "type": "integer",
+                      "format": "uint128",
+                      "minimum": 0.0
+                    }
+                  }
+                }
+              },
+              "additionalProperties": false
             }
           ]
+        },
+        "AssetsVenueItem": {
+          "description": "assets which can be transomed into each other via venue",
+          "type": "object",
+          "required": [
+            "from_asset_id",
+            "to_asset_id",
+            "venue_id"
+          ],
+          "properties": {
+            "from_asset_id": {
+              "$ref": "#/definitions/AssetId"
+            },
+            "to_asset_id": {
+              "$ref": "#/definitions/AssetId"
+            },
+            "venue_id": {
+              "$ref": "#/definitions/VenueId"
+            }
+          }
         },
         "BridgeAsset": {
           "type": "object",
@@ -2234,8 +2988,23 @@
                 }
               },
               "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "required": [
+                "xcm"
+              ],
+              "properties": {
+                "xcm": {
+                  "$ref": "#/definitions/JSON"
+                }
+              },
+              "additionalProperties": false
             }
           ]
+        },
+        "H160": {
+          "type": "string"
         },
         "IbcChannels": {
           "type": "object",
@@ -2368,15 +3137,16 @@
             }
           }
         },
+        "JSON": true,
         "NetworkAssetItem": {
           "type": "object",
           "required": [
-            "asset_id",
+            "from_asset_id",
             "to_asset_id",
             "to_network_id"
           ],
           "properties": {
-            "asset_id": {
+            "from_asset_id": {
               "$ref": "#/definitions/AssetId"
             },
             "to_asset_id": {
@@ -2616,6 +3386,17 @@
             }
           }
         },
+        "Pubkey": {
+          "description": "Is `solana-program` crate `Pubkey` type, but with proper serde support into base58 encoding.",
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "uint8",
+            "minimum": 0.0
+          },
+          "maxItems": 32,
+          "minItems": 32
+        },
         "RelativeTimeout": {
           "description": "relative timeout to CW/IBC-rs time. very small, assumed messages are arriving fast enough, like less than hours",
           "oneOf": [
@@ -2630,6 +3411,28 @@
                   "type": "integer",
                   "format": "uint16",
                   "minimum": 0.0
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        },
+        "VenueId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "transfer"
+              ]
+            },
+            {
+              "type": "object",
+              "required": [
+                "exchange"
+              ],
+              "properties": {
+                "exchange": {
+                  "$ref": "#/definitions/Displayed_for_uint128"
                 }
               },
               "additionalProperties": false
@@ -2946,7 +3749,12 @@
               ]
             },
             "local": {
-              "$ref": "#/definitions/AssetReference"
+              "description": "TODO: make sure one cannot access local if it is bridged until bridged was unwrapped basically to access asset need to provide network_id to use local",
+              "allOf": [
+                {
+                  "$ref": "#/definitions/AssetReference"
+                }
+              ]
             },
             "network_id": {
               "description": "network id on which this asset id can be used locally",
@@ -2959,9 +3767,10 @@
           }
         },
         "AssetReference": {
-          "description": "Definition of an asset native to some chain to operate on. For example for Cosmos CW and EVM chains both CW20 and ERC20 can be actual. So if asset is local or only remote to some chain depends on context of network or connection. this design leads to some dummy matches, but in general unifies code (so that if one have to solve other chain route it can)",
+          "description": "Definition of an asset native to some chain to operate on. For example for Cosmos CW and EVM chains both CW20 and ERC20 can be actual. So if asset is local or only remote to some chain depends on context of network or connection. this design leads to some dummy matches, but in general unifies code (so that if one have to solve other chain route it can). One consensus(chain) can have assets produced by different protocols(VMs).",
           "oneOf": [
             {
+              "description": "Cosmos SDK native",
               "type": "object",
               "required": [
                 "native"
@@ -3000,6 +3809,70 @@
                 }
               },
               "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "required": [
+                "erc20"
+              ],
+              "properties": {
+                "erc20": {
+                  "type": "object",
+                  "required": [
+                    "contract"
+                  ],
+                  "properties": {
+                    "contract": {
+                      "$ref": "#/definitions/H160"
+                    }
+                  }
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "description": "Solana VM default token, not only Solana has this token",
+              "type": "object",
+              "required": [
+                "s_p_l20"
+              ],
+              "properties": {
+                "s_p_l20": {
+                  "type": "object",
+                  "required": [
+                    "mint"
+                  ],
+                  "properties": {
+                    "mint": {
+                      "$ref": "#/definitions/Pubkey"
+                    }
+                  }
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "description": "usually on Polkadot/Kusama and parachains Subtrate runtimes assets encoded as numbers up to u128 value",
+              "type": "object",
+              "required": [
+                "polkadot_substrate_asset"
+              ],
+              "properties": {
+                "polkadot_substrate_asset": {
+                  "type": "object",
+                  "required": [
+                    "general_index"
+                  ],
+                  "properties": {
+                    "general_index": {
+                      "type": "integer",
+                      "format": "uint128",
+                      "minimum": 0.0
+                    }
+                  }
+                }
+              },
+              "additionalProperties": false
             }
           ]
         },
@@ -3027,9 +3900,25 @@
                 }
               },
               "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "required": [
+                "xcm"
+              ],
+              "properties": {
+                "xcm": {
+                  "$ref": "#/definitions/JSON"
+                }
+              },
+              "additionalProperties": false
             }
           ]
         },
+        "H160": {
+          "type": "string"
+        },
+        "JSON": true,
         "NetworkId": {
           "description": "Newtype for CVM networks ID. Must be unique for each network and must never change. This ID is an opaque, arbitrary type from the CVM protocol and no assumption must be made on how it is computed.",
           "type": "integer",
@@ -3053,6 +3942,17 @@
               "type": "string"
             }
           }
+        },
+        "Pubkey": {
+          "description": "Is `solana-program` crate `Pubkey` type, but with proper serde support into base58 encoding.",
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "uint8",
+            "minimum": 0.0
+          },
+          "maxItems": 32,
+          "minItems": 32
         }
       }
     }

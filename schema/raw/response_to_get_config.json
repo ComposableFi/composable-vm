@@ -3,6 +3,7 @@
   "title": "GetConfigResponse",
   "type": "object",
   "required": [
+    "asset_venue_items",
     "assets",
     "exchanges",
     "network_assets",
@@ -10,6 +11,12 @@
     "networks"
   ],
   "properties": {
+    "asset_venue_items": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/AssetsVenueItem"
+      }
+    },
     "assets": {
       "type": "array",
       "items": {
@@ -77,7 +84,12 @@
           ]
         },
         "local": {
-          "$ref": "#/definitions/AssetReference"
+          "description": "TODO: make sure one cannot access local if it is bridged until bridged was unwrapped basically to access asset need to provide network_id to use local",
+          "allOf": [
+            {
+              "$ref": "#/definitions/AssetReference"
+            }
+          ]
         },
         "network_id": {
           "description": "network id on which this asset id can be used locally",
@@ -90,9 +102,10 @@
       }
     },
     "AssetReference": {
-      "description": "Definition of an asset native to some chain to operate on. For example for Cosmos CW and EVM chains both CW20 and ERC20 can be actual. So if asset is local or only remote to some chain depends on context of network or connection. this design leads to some dummy matches, but in general unifies code (so that if one have to solve other chain route it can)",
+      "description": "Definition of an asset native to some chain to operate on. For example for Cosmos CW and EVM chains both CW20 and ERC20 can be actual. So if asset is local or only remote to some chain depends on context of network or connection. this design leads to some dummy matches, but in general unifies code (so that if one have to solve other chain route it can). One consensus(chain) can have assets produced by different protocols(VMs).",
       "oneOf": [
         {
+          "description": "Cosmos SDK native",
           "type": "object",
           "required": [
             "native"
@@ -131,8 +144,92 @@
             }
           },
           "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "erc20"
+          ],
+          "properties": {
+            "erc20": {
+              "type": "object",
+              "required": [
+                "contract"
+              ],
+              "properties": {
+                "contract": {
+                  "$ref": "#/definitions/H160"
+                }
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "description": "Solana VM default token, not only Solana has this token",
+          "type": "object",
+          "required": [
+            "s_p_l20"
+          ],
+          "properties": {
+            "s_p_l20": {
+              "type": "object",
+              "required": [
+                "mint"
+              ],
+              "properties": {
+                "mint": {
+                  "$ref": "#/definitions/Pubkey"
+                }
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "description": "usually on Polkadot/Kusama and parachains Subtrate runtimes assets encoded as numbers up to u128 value",
+          "type": "object",
+          "required": [
+            "polkadot_substrate_asset"
+          ],
+          "properties": {
+            "polkadot_substrate_asset": {
+              "type": "object",
+              "required": [
+                "general_index"
+              ],
+              "properties": {
+                "general_index": {
+                  "type": "integer",
+                  "format": "uint128",
+                  "minimum": 0.0
+                }
+              }
+            }
+          },
+          "additionalProperties": false
         }
       ]
+    },
+    "AssetsVenueItem": {
+      "description": "assets which can be transomed into each other via venue",
+      "type": "object",
+      "required": [
+        "from_asset_id",
+        "to_asset_id",
+        "venue_id"
+      ],
+      "properties": {
+        "from_asset_id": {
+          "$ref": "#/definitions/AssetId"
+        },
+        "to_asset_id": {
+          "$ref": "#/definitions/AssetId"
+        },
+        "venue_id": {
+          "$ref": "#/definitions/VenueId"
+        }
+      }
     },
     "BridgeAsset": {
       "type": "object",
@@ -293,8 +390,23 @@
             }
           },
           "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "xcm"
+          ],
+          "properties": {
+            "xcm": {
+              "$ref": "#/definitions/JSON"
+            }
+          },
+          "additionalProperties": false
         }
       ]
+    },
+    "H160": {
+      "type": "string"
     },
     "IbcChannels": {
       "type": "object",
@@ -427,15 +539,16 @@
         }
       }
     },
+    "JSON": true,
     "NetworkAssetItem": {
       "type": "object",
       "required": [
-        "asset_id",
+        "from_asset_id",
         "to_asset_id",
         "to_network_id"
       ],
       "properties": {
-        "asset_id": {
+        "from_asset_id": {
           "$ref": "#/definitions/AssetId"
         },
         "to_asset_id": {
@@ -675,6 +788,17 @@
         }
       }
     },
+    "Pubkey": {
+      "description": "Is `solana-program` crate `Pubkey` type, but with proper serde support into base58 encoding.",
+      "type": "array",
+      "items": {
+        "type": "integer",
+        "format": "uint8",
+        "minimum": 0.0
+      },
+      "maxItems": 32,
+      "minItems": 32
+    },
     "RelativeTimeout": {
       "description": "relative timeout to CW/IBC-rs time. very small, assumed messages are arriving fast enough, like less than hours",
       "oneOf": [
@@ -689,6 +813,28 @@
               "type": "integer",
               "format": "uint16",
               "minimum": 0.0
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "VenueId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "transfer"
+          ]
+        },
+        {
+          "type": "object",
+          "required": [
+            "exchange"
+          ],
+          "properties": {
+            "exchange": {
+              "$ref": "#/definitions/Displayed_for_uint128"
             }
           },
           "additionalProperties": false

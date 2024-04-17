@@ -14,7 +14,7 @@ pub struct AssetItem {
     /// network id on which this asset id can be used locally
     pub network_id: NetworkId,
 
-    /// TODO: make sure one cannot access local if it is bridged until bridged was unwrapped 
+    /// TODO: make sure one cannot access local if it is bridged until bridged was unwrapped
     /// basically to access asset need to provide network_id to use local
     pub local: AssetReference,
     /// if asset was bridged, it would have way to identify bridge/source/channel
@@ -70,11 +70,15 @@ pub struct BridgeAsset {
     pub location_on_network: ForeignAssetId,
 }
 
+pub type SvmPubkey = crate::solana_program::Pubkey;
+pub type EvmAddress = crate::primitive_types::H160;
+
 /// Definition of an asset native to some chain to operate on.
 /// For example for Cosmos CW and EVM chains both CW20 and ERC20 can be actual.
 /// So if asset is local or only remote to some chain depends on context of network or connection.
 /// this design leads to some dummy matches, but in general unifies code (so that if one have to
-/// solve other chain route it can)
+/// solve other chain route it can).
+/// One consensus(chain) can have assets produced by different protocols(VMs).
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "snake_case")]
 #[cfg_attr(
@@ -89,9 +93,20 @@ pub enum AssetReference {
     Cw20 {
         contract: cosmwasm_std::Addr,
     },
-    // Erc20 { contract: EthAddress },
-    // SPL20 { mint: Pubkey },    
-    // PolkadotSubstrateAsset{ general_index: u128 }
+
+    Erc20 {
+        contract: EvmAddress,
+    },
+
+    /// Solana VM default token, not only Solana has this token
+    SPL20 {
+        mint: SvmPubkey,
+    },
+
+    /// usually on Polkadot/Kusama and parachains Subtrate runtimes assets encoded as numbers up to u128 value
+    PolkadotSubstrateAsset {
+        general_index: u128,
+    },
 }
 
 impl AssetReference {
@@ -99,7 +114,7 @@ impl AssetReference {
         match self {
             AssetReference::Native { denom } => denom.clone(),
             AssetReference::Cw20 { contract } => ["cw20:", contract.as_str()].concat(),
-            //AssetReference::Erc20 { contract } => ["erc20:", &contract.to_string()].concat(),
+            _ => todo!("implement other asset types"),
         }
     }
 }
@@ -123,7 +138,8 @@ impl cw_storage_plus::PrimaryKey<'_> for AssetReference {
         let (tag, value) = match self {
             AssetReference::Native { denom } => (0, denom.as_bytes()),
             AssetReference::Cw20 { contract } => (1, contract.as_bytes()),
-            // AssetReference::Erc20 { contract } => (2, contract.as_bytes()),
+            AssetReference::Erc20 { contract } => (2, contract.as_bytes()),
+            _ => todo!("implement other asset types"),
         };
         vec![Key::Val8([tag]), Key::Ref(value)]
     }

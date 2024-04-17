@@ -6,7 +6,7 @@ use crate::{
     state::{self, network::load_this},
 };
 use cosmwasm_std::{
-    ensure, to_json_binary, Deps, DepsMut, Reply, Response, StdError, StdResult, SubMsg, WasmMsg
+    ensure, to_json_binary, Deps, DepsMut, Reply, Response, StdError, StdResult, SubMsg, WasmMsg,
 };
 
 use cvm_runtime::{executor::CvmExecutorInstantiated, CallOrigin, ExecutorOrigin};

@@ -78,7 +78,7 @@ impl IntentBankInput {
         let mut intents = vec![];
         let a_asset = cvm_glt.cvm_asset_by_cw(pair.a.denom);
         let b_asset = cvm_glt.cvm_asset_by_cw(pair.b.denom);
-        
+
         if pair.a.amount.u128() > 0 {
             let b_received = a_to_b.iter().map(|x| {
                 let part = Ratio::new(x.1.u128(), pair.a.amount.u128()).msb_limit_unsigned();

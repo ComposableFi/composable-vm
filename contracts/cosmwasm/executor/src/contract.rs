@@ -11,7 +11,9 @@ use alloc::borrow::Cow;
 #[cfg(not(feature = "library"))]
 use cosmwasm_std::entry_point;
 use cosmwasm_std::{
-    ensure, to_json_binary, wasm_execute, Addr, BankMsg, Binary, Coin, CosmosMsg, Deps, DepsMut, Env, MessageInfo, QueryRequest, Reply, Response, StdError, StdResult, SubMsg, SubMsgResult, Uint128, WasmQuery
+    ensure, to_json_binary, wasm_execute, Addr, BankMsg, Binary, Coin, CosmosMsg, Deps, DepsMut,
+    Env, MessageInfo, QueryRequest, Reply, Response, StdError, StdResult, SubMsg, SubMsgResult,
+    Uint128, WasmQuery,
 };
 use cvm_route::{asset::AssetReference, exchange::ExchangeItem};
 use cvm_runtime::{
@@ -60,7 +62,8 @@ pub fn execute(
     msg: cvm_runtime::executor::ExecuteMsg,
 ) -> Result {
     let token = ensure_owner(deps.as_ref(), &env.contract.address, info.sender.clone())?;
-    deps.api.debug(&format!("cvm::executor::execute::coins {:?}", &info.funds));
+    deps.api
+        .debug(&format!("cvm::executor::execute::coins {:?}", &info.funds));
     use cvm_runtime::executor::*;
     match msg {
         ExecuteMsg::Execute { tip, program } => initiate_execution(token, deps, env, tip, program),
@@ -340,7 +343,7 @@ impl<'a> BindingResolver<'a> {
         let value = match reference.local {
             AssetReference::Cw20 { contract } => contract.into_string(),
             AssetReference::Native { denom } => denom,
-            // AssetReference::Erc20 { contract } => contract.to_string(),
+            _ => todo!("implement other asset types"),
         };
         Ok(Cow::Owned(value.into()))
     }
@@ -366,7 +369,9 @@ impl<'a> BindingResolver<'a> {
                 balance
                     .apply(coin.amount.into())
                     .map_err(|_| ContractError::ArithmeticError)?
-            } // AssetReference::Erc20 { .. } => Err(ContractError::AssetUnsupportedOnThisNetwork)?,
+            }
+            AssetReference::Erc20 { .. } => Err(ContractError::AssetUnsupportedOnThisNetwork)?,
+            _ => todo!("implement other asset types"),
         };
         Ok(Cow::Owned(amount.to_string().into_bytes()))
     }
@@ -392,13 +397,19 @@ pub fn execute_spawn(
     response = response.add_event(events::CvmExecutorInstructionSpawning::new(network_id));
     for (asset_id, balance) in assets.0 {
         let reference = outpost_address.get_asset_by_id(deps.querier, asset_id)?;
-        deps.api.debug(&format!("cvm::executor::execute::spawn::asset {:?}", reference)); 
+        deps.api.debug(&format!(
+            "cvm::executor::execute::spawn::asset {:?}",
+            reference
+        ));
         let transfer_amount = match &reference.local {
             AssetReference::Native { denom } => {
                 let coin = deps
-                .querier
-                .query_balance(env.contract.address.clone(), denom.clone())?;
-                deps.api.debug(&format!("cvm::executor::execute::spawn::filter {:?} {:?} {:?}", balance, coin, asset_id));
+                    .querier
+                    .query_balance(env.contract.address.clone(), denom.clone())?;
+                deps.api.debug(&format!(
+                    "cvm::executor::execute::spawn::filter {:?} {:?} {:?}",
+                    balance, coin, asset_id
+                ));
                 balance
                     .apply(coin.amount.into())
                     .map_err(|_| ContractError::ArithmeticError)
@@ -409,9 +420,13 @@ pub fn execute_spawn(
                 contract,
                 &env.contract.address,
             ),
-            // AssetReference::Erc20 { .. } => Err(ContractError::AssetUnsupportedOnThisNetwork)?,
+            AssetReference::Erc20 { .. } => Err(ContractError::AssetUnsupportedOnThisNetwork)?,
+            _ => todo!("implement other asset types"),
         }?;
-        deps.api.debug(&format!("cvm::executor::execute::spawn::transfer_amount {:?}", transfer_amount));
+        deps.api.debug(&format!(
+            "cvm::executor::execute::spawn::transfer_amount {:?}",
+            transfer_amount
+        ));
 
         if !transfer_amount.is_zero() {
             let asset_id: u128 = asset_id.into();
@@ -431,7 +446,9 @@ pub fn execute_spawn(
                         recipient: outpost_address.address().into(),
                         amount: transfer_amount.into(),
                     })?)
-                } // AssetReference::Erc20 { .. } => Err(ContractError::AssetUnsupportedOnThisNetwork)?,
+                }
+                AssetReference::Erc20 { .. } => Err(ContractError::AssetUnsupportedOnThisNetwork)?,
+                _ => todo!("implement other asset types"),
             };
         }
     }
@@ -507,7 +524,9 @@ pub fn interpret_transfer(
                     recipient: recipient.clone(),
                     amount: transfer_amount.into(),
                 })?)
-            } // AssetReference::Erc20 { .. } => Err(ContractError::AssetUnsupportedOnThisNetwork)?,
+            }
+            AssetReference::Erc20 { .. } => Err(ContractError::AssetUnsupportedOnThisNetwork)?,
+            _ => todo!("implement other asset types"),
         };
     }
 

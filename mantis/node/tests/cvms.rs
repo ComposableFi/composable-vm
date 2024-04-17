@@ -227,10 +227,26 @@ async fn cvm_devnet_case() {
             },
         ],
         network_assets: vec![
-            NetworkAssetItem::new(OSMOSIS.into(), CENTAURI_OSMOSIS_OSMO.into(), OSMOSIS_OSMO.into()),
-            NetworkAssetItem::new(OSMOSIS.into(), CENTAURI_PICA.into(), OSMOSIS_CENTAURI_PICA.into()),
-            NetworkAssetItem::new(CENTAURI.into(), OSMOSIS_CENTAURI_PICA.into(), CENTAURI_PICA.into()),
-            NetworkAssetItem::new(CENTAURI.into(), OSMOSIS_OSMO.into(), CENTAURI_OSMOSIS_OSMO.into()),
+            NetworkAssetItem::new(
+                OSMOSIS.into(),
+                CENTAURI_OSMOSIS_OSMO.into(),
+                OSMOSIS_OSMO.into(),
+            ),
+            NetworkAssetItem::new(
+                OSMOSIS.into(),
+                CENTAURI_PICA.into(),
+                OSMOSIS_CENTAURI_PICA.into(),
+            ),
+            NetworkAssetItem::new(
+                CENTAURI.into(),
+                OSMOSIS_CENTAURI_PICA.into(),
+                CENTAURI_PICA.into(),
+            ),
+            NetworkAssetItem::new(
+                CENTAURI.into(),
+                OSMOSIS_OSMO.into(),
+                CENTAURI_OSMOSIS_OSMO.into(),
+            ),
         ],
         asset_venue_items: vec![
             AssetsVenueItem::new(

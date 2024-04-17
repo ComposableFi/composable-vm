@@ -400,6 +400,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f5353f36341f7451062466f0b755b96ac3a9547e4d7f6b70d603fc721a7d7896"
 dependencies = [
  "sha2 0.10.8",
+ "tinyvec",
 ]
 
 [[package]]
@@ -736,14 +737,17 @@ version = "0.1.0"
 name = "cvm-route"
 version = "0.1.0"
 dependencies = [
+ "bs58",
  "cosmwasm-schema",
  "cosmwasm-std",
  "cvm",
  "cw-storage-plus 1.2.0",
+ "hex",
  "ibc-app-transfer-types",
  "ibc-core-host-types",
  "schemars",
  "serde",
+ "serde-cw-value 0.7.0 (git+https://github.com/dzmitry-lahoda-forks/serde-cw-value.git?branch=dz/3)",
 ]
 
 [[package]]

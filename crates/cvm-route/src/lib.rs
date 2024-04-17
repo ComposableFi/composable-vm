@@ -5,5 +5,7 @@ extern crate alloc;
 pub mod asset;
 pub mod exchange;
 mod prelude;
+pub mod primitive_types;
+mod solana_program;
 pub mod transport;
 pub mod venue;

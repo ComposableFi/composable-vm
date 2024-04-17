@@ -133,7 +133,7 @@ sha2 = { version = "^0.10.8", default-features = false }
 
 thiserror = { version = "^1.0.50", default-features = false, package = "thiserror-core" }
 # no XCM until it has decent support for cosmwasm and wasm32 std https://github.com/paritytech/polkadot-sdk/pull/1454
-# xcm = { version = "^5.0.0", default-features = false, package = "staging-xcm" }
+# xcm = { version = "11.0.0", default-features = false, package = "staging-xcm" }
 cw-utils = { version = "^1.0.3", default-features = false }
 cw2 = { version = "^1.1.2", default-features = false }
 
@@ -148,9 +148,11 @@ ibc-core-host-types = { git = "https://github.com/dzmitry-lahoda-forks/ibc-rs.gi
 ibc-primitives = { git = "https://github.com/dzmitry-lahoda-forks/ibc-rs.git", branch = "dz/14", default-features = false, features = [
     "serde",
 ] }
-primitive-types = { git = "https://github.com/dzmitry-lahoda-forks/parity-common.git", branch = "dz/3", default-features = false, features = [
+
+primitive-types = { version =   "*", default-features = false, features = [
     "serde_no_std",
 ] }
+
 neutron-sdk = { version = "^0.10.0", default-features = false }
 
 osmosis-std = { version = "^0.22.0", default-features = false }
@@ -165,7 +167,6 @@ cw-mantis-order = { path = "./contracts/cosmwasm/order", features = [
     "json-schema",
     "std",
 ] }
-
 
 cw-cvm-executor = { path = "./contracts/cosmwasm/executor", features = [
     "json-schema",
