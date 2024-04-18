@@ -106,9 +106,10 @@ pub async fn get_routes(
             .pop()
             .expect("at least one route");
 
+        panic!("route: {:?}", route);
         let mut program = CvmProgram::default();
         build_next(&mut program, &mut route.next, cvm_glt, salt);
-        panic!("so need to build instruction so can plug into one program (transaction)")
+        panic!("program: {:?}", program);
     }
 }
 
