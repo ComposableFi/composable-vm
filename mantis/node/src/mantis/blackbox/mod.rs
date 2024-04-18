@@ -106,51 +106,69 @@ pub async fn get_routes(
             .into_inner()
             .pop()
             .expect("at least one route");
-        
-        
+
         log::info!("route: {:?}", route);
-        let result = build_instructions(input.order_accounts, &route, cvm_glt, salt);
-        panic!("program: {:?}", program);
-        result
+        build_instructions(input.order_accounts, &route.next[0], cvm_glt, salt)
     }
 }
 
-fn build_instructions(final_instructions: Vec<CvmInstruction>, route: &NextItem, cvm_glt: &CvmGlt, salt: &[u8]) -> Vec<CvmInstruction> {
+fn build_instructions(
+    mut final_instructions: Vec<CvmInstruction>,
+    route: &NextItem,
+    cvm_glt: &CvmGlt,
+    salt: &[u8],
+) -> Vec<CvmInstruction> {
     match route {
         NextItem::ExchangeStrStr(exchange) => {
-            let ix = CvmInstruction::Exchange 
-            { 
-                exchange_id: exchange.pool_id.parse().expect("pool_id"), 
-                give: (), 
-                want: () 
+            let ix = CvmInstruction::Exchange {
+                exchange_id: exchange.pool_id.parse().expect("pool_id"),
+                give: CvmFundsFilter::all_of(exchange.in_asset_id.parse().expect("in")),
+                want: CvmFundsFilter::one_of(exchange.out_asset_id.parse().expect("out")),
             };
+
+            let mut ixs = vec![];
             if let Some(next) = exchange.next.get(0) {
                 let mut next = build_instructions(final_instructions, next, cvm_glt, salt);
-                let mut ixs = vec![];
                 ixs.push(ix);
                 ixs.append(&mut next);
                 ixs
             } else {
-                vec![ix]
+                ixs.append(&mut final_instructions);
+                ixs
             }
         }
         NextItem::SpawnStrStr(spawn) => {
-            let mut program = vec![];
-            let spawn = new_spawn(spawn, program, cvm_glt, salt);
-            final_instructions.push(spawn);
-            final_instructions
+            if let Some(next) = spawn.next.get(0) {
+                let mut next = build_instructions(final_instructions, next, cvm_glt, salt);   
+                let program = CvmProgram {
+                    tag: salt.to_vec(),
+                    instructions: next,
+                };
+                let to_asset_id = spawn.out_asset_id.parse().expect("out");
+                let spawn = CvmInstruction::Spawn { 
+                    network_id: cvm_glt.get_network_for_asset(to_asset_id), 
+                    salt: salt.to_vec(), 
+                    assets: CvmFundsFilter::all_of(spawn.in_asset_id.parse().expect("in")), 
+                    program, 
+                };
+                vec![spawn]             
+            } else {
+                let program = CvmProgram {
+                    tag: salt.to_vec(),
+                    instructions: final_instructions,
+                };
+                let to_asset_id = spawn.out_asset_id.parse().expect("out");
+                let spawn = CvmInstruction::Spawn { 
+                    network_id: cvm_glt.get_network_for_asset(to_asset_id), 
+                    salt: salt.to_vec(), 
+                    assets: CvmFundsFilter::all_of(spawn.in_asset_id.parse().expect("in")), 
+                    program, 
+                };
+                vec![spawn]
+            }
         }
     }
-    // if !route.next.is_empty() {
-    //     let next = build_instructions(final_instructions, route.next[0], cvm_glt, salt);
-         
-    // } else {
-    //     final_instructions
-    // }
 }
-
-
-
 
 pub async fn solve<Decider: Get<bool>>(
     active_orders: Vec<OrderItem>,
@@ -227,6 +245,7 @@ async fn intent_banks_to_cvm_program(
     }
 
     log::info!(target: "mantis::solver", "built instructions: {:?}", instructions);
+    //panic!("built instructions: {:?}", instructions);
 
     let cvm_program = CvmProgram {
         tag: salt.to_vec(),
