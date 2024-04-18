@@ -211,7 +211,7 @@ def for_simulation(cvm_registry: ExtendedCvmRegistry, usd_oracles) -> Simulation
     asset_transfers = []
     bidirectional = set()
     for transfer in cvm_registry.network_assets:
-        in_asset_id = transfer.asset_id.root
+        in_asset_id = transfer.from_asset_id.root
         out_asset_id = transfer.to_asset_id.root
         if (in_asset_id, out_asset_id) not in bidirectional:
             asset_transfers.append(
