@@ -6,6 +6,7 @@ use cvm_runtime::{
     shared::{CvmFundsFilter, CvmInstruction, CvmProgram},
     Amount, AssetId, ExchangeId,
 };
+use cw_cvm_outpost::msg::CvmGlt;
 use cw_mantis_order::{CrossChainPart, OrderItem, SolutionSubMsg};
 
 use crate::solver::router::shortest_path;
@@ -105,13 +106,51 @@ pub async fn get_routes(
             .into_inner()
             .pop()
             .expect("at least one route");
-
-        panic!("route: {:?}", route);
-        let mut program = CvmProgram::default();
-        build_next(&mut program, &mut route.next, cvm_glt, salt);
+        
+        
+        log::info!("route: {:?}", route);
+        let result = build_instructions(input.order_accounts, &route, cvm_glt, salt);
         panic!("program: {:?}", program);
+        result
     }
 }
+
+fn build_instructions(final_instructions: Vec<CvmInstruction>, route: &NextItem, cvm_glt: &CvmGlt, salt: &[u8]) -> Vec<CvmInstruction> {
+    match route {
+        NextItem::ExchangeStrStr(exchange) => {
+            let ix = CvmInstruction::Exchange 
+            { 
+                exchange_id: exchange.pool_id.parse().expect("pool_id"), 
+                give: (), 
+                want: () 
+            };
+            if let Some(next) = exchange.next.get(0) {
+                let mut next = build_instructions(final_instructions, next, cvm_glt, salt);
+                let mut ixs = vec![];
+                ixs.push(ix);
+                ixs.append(&mut next);
+                ixs
+            } else {
+                vec![ix]
+            }
+        }
+        NextItem::SpawnStrStr(spawn) => {
+            let mut program = vec![];
+            let spawn = new_spawn(spawn, program, cvm_glt, salt);
+            final_instructions.push(spawn);
+            final_instructions
+        }
+    }
+    // if !route.next.is_empty() {
+    //     let next = build_instructions(final_instructions, route.next[0], cvm_glt, salt);
+         
+    // } else {
+    //     final_instructions
+    // }
+}
+
+
+
 
 pub async fn solve<Decider: Get<bool>>(
     active_orders: Vec<OrderItem>,
