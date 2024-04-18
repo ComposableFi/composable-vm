@@ -7,7 +7,7 @@ from pydantic import BaseModel
 from blackbox.composablefi_networks import Model as NetworksModel
 from blackbox.cvm_runtime.response_to_get_config import (
     AssetItem,
-    AssetReference7,
+    AssetReference21 as CosmosNativeAssetReference,
     ExchangeItem,
     NetworkAssetItem,
     NetworkItem,
@@ -134,7 +134,7 @@ class ExtendedCvmRegistry(BaseModel):
 
         def find_asset_by_token(token: str) -> Optional[AssetItem]:
             for asset in assets:
-                local: AssetReference7 = asset.local.root
+                local: CosmosNativeAssetReference = asset.local.root
                 if local.native.denom == token:
                     return asset
             return None
