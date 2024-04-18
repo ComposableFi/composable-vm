@@ -127,8 +127,9 @@ pub struct ChannelInfo {
 pub enum ForeignAssetId {
     IbcIcs20(PrefixedDenom),
 
-    // `xcm::VersionedMultiLocation` not validated, until XCM supports std wasm or CW no_std (or copy paste)
-    Xcm(serde_cw_value::Value),
+    /// `xcm::VersionedMultiLocation` not validated, until XCM supports std wasm or CW no_std (or copy paste)
+    /// for now just store scale binary
+    XcmVersionedMultiLocation(Vec<u8>), // using serde_cw_value breaks py/ts generators
 }
 
 #[cfg(feature = "xcm")]

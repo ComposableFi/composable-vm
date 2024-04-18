@@ -18,7 +18,7 @@ class Addr(RootModel[str]):
 class AssetId(RootModel[str]):
     root: str = Field(
         ...,
-        description="Newtype for CVM assets ID. Must be unique for each asset and must never change. This ID is an opaque, arbitrary type from the CVM protocol and no assumption must be made on how it is computed.",
+        description='Newtype for CVM assets ID. Must be unique for each asset and must never change. This ID is an opaque, arbitrary type from the CVM protocol and no assumption must be made on how it is computed.',
     )
 
 
@@ -27,21 +27,25 @@ class ChannelId(RootModel[str]):
 
 
 class IbcIcs20Sender(Enum):
-    CosmosStargateIbcApplicationsTransferV1MsgTransfer = "CosmosStargateIbcApplicationsTransferV1MsgTransfer"
-    CosmWasmStd1_3 = "CosmWasmStd1_3"
+    CosmosStargateIbcApplicationsTransferV1MsgTransfer = (
+        'CosmosStargateIbcApplicationsTransferV1MsgTransfer'
+    )
+    CosmWasmStd1_3 = 'CosmWasmStd1_3'
 
 
 class NetworkId(RootModel[conint(ge=0)]):
     root: conint(ge=0) = Field(
         ...,
-        description="Newtype for CVM networks ID. Must be unique for each network and must never change. This ID is an opaque, arbitrary type from the CVM protocol and no assumption must be made on how it is computed.",
+        description='Newtype for CVM networks ID. Must be unique for each network and must never change. This ID is an opaque, arbitrary type from the CVM protocol and no assumption must be made on how it is computed.',
     )
 
 
 class CosmWasm(BaseModel):
-    admin: Addr = Field(..., description="admin of everything")
+    admin: Addr = Field(..., description='admin of everything')
     contract: Addr
-    executor_code_id: conint(ge=0) = Field(..., description="CVM executor contract code")
+    executor_code_id: conint(ge=0) = Field(
+        ..., description='CVM executor contract code'
+    )
 
 
 class OutpostId3(BaseModel):
@@ -50,7 +54,7 @@ class OutpostId3(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra='forbid',
     )
     cosm_wasm: CosmWasm
 
@@ -58,7 +62,7 @@ class OutpostId3(BaseModel):
 class OutpostId(RootModel[OutpostId3]):
     root: OutpostId3 = Field(
         ...,
-        description="when message is sent to other side, we should identify receiver of some kind",
+        description='when message is sent to other side, we should identify receiver of some kind',
     )
 
 
@@ -68,7 +72,7 @@ class RelativeTimeout3(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra='forbid',
     )
     seconds: conint(ge=0)
 
@@ -76,7 +80,7 @@ class RelativeTimeout3(BaseModel):
 class RelativeTimeout(RootModel[RelativeTimeout3]):
     root: RelativeTimeout3 = Field(
         ...,
-        description="relative timeout to CW/IBC-rs time. very small, assumed messages are arriving fast enough, like less than hours",
+        description='relative timeout to CW/IBC-rs time. very small, assumed messages are arriving fast enough, like less than hours',
     )
 
 
@@ -92,7 +96,9 @@ class IbcIcs20ProgramRoute(BaseModel):
     ibc_ics_20_sender: IbcIcs20Sender
     local_native_denom: str
     on_remote_asset: AssetId
-    to_outpost: OutpostId = Field(..., description="the contract address of the gateway to send to assets")
+    to_outpost: OutpostId = Field(
+        ..., description='the contract address of the gateway to send to assets'
+    )
 
 
 class GetIbcIcs20RouteResponse(BaseModel):

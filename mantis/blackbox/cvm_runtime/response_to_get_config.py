@@ -25,7 +25,7 @@ class Adr08IbcCallbacks(BaseModel):
 class AssetId(RootModel[str]):
     root: str = Field(
         ...,
-        description="Newtype for CVM assets ID. Must be unique for each asset and must never change. This ID is an opaque, arbitrary type from the CVM protocol and no assumption must be made on how it is computed.",
+        description='Newtype for CVM assets ID. Must be unique for each asset and must never change. This ID is an opaque, arbitrary type from the CVM protocol and no assumption must be made on how it is computed.',
     )
 
 
@@ -33,13 +33,13 @@ class Native(BaseModel):
     denom: str
 
 
-class AssetReference7(BaseModel):
+class AssetReference21(BaseModel):
     """
-    Definition of an asset native to some chain to operate on. For example for Cosmos CW and EVM chains both CW20 and ERC20 can be actual. So if asset is local or only remote to some chain depends on context of network or connection. this design leads to some dummy matches, but in general unifies code (so that if one have to solve other chain route it can)
+    Cosmos SDK native
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra='forbid',
     )
     native: Native
 
@@ -48,22 +48,30 @@ class Cw20(BaseModel):
     contract: Addr
 
 
-class AssetReference8(BaseModel):
+class AssetReference22(BaseModel):
     """
-    Definition of an asset native to some chain to operate on. For example for Cosmos CW and EVM chains both CW20 and ERC20 can be actual. So if asset is local or only remote to some chain depends on context of network or connection. this design leads to some dummy matches, but in general unifies code (so that if one have to solve other chain route it can)
+    Definition of an asset native to some chain to operate on. For example for Cosmos CW and EVM chains both CW20 and ERC20 can be actual. So if asset is local or only remote to some chain depends on context of network or connection. this design leads to some dummy matches, but in general unifies code (so that if one have to solve other chain route it can). One consensus(chain) can have assets produced by different protocols(VMs).
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra='forbid',
     )
     cw20: Cw20
 
 
-class AssetReference(RootModel[Union[AssetReference7, AssetReference8]]):
-    root: Union[AssetReference7, AssetReference8] = Field(
-        ...,
-        description="Definition of an asset native to some chain to operate on. For example for Cosmos CW and EVM chains both CW20 and ERC20 can be actual. So if asset is local or only remote to some chain depends on context of network or connection. this design leads to some dummy matches, but in general unifies code (so that if one have to solve other chain route it can)",
+class PolkadotSubstrateAsset(BaseModel):
+    general_index: conint(ge=0)
+
+
+class AssetReference25(BaseModel):
+    """
+    usually on Polkadot/Kusama and parachains Subtrate runtimes assets encoded as numbers up to u128 value
+    """
+
+    model_config = ConfigDict(
+        extra='forbid',
     )
+    polkadot_substrate_asset: PolkadotSubstrateAsset
 
 
 class ChannelId(RootModel[str]):
@@ -89,7 +97,7 @@ class OsmosisPoolManagerModuleV1Beta1(BaseModel):
 
 class ExchangeType3(BaseModel):
     model_config = ConfigDict(
-        extra="forbid",
+        extra='forbid',
     )
     osmosis_pool_manager_module_v1_beta1: OsmosisPoolManagerModuleV1Beta1
 
@@ -102,7 +110,7 @@ class AstroportRouterContract(BaseModel):
 
 class ExchangeType4(BaseModel):
     model_config = ConfigDict(
-        extra="forbid",
+        extra='forbid',
     )
     astroport_router_contract: AstroportRouterContract
 
@@ -111,14 +119,31 @@ class ExchangeType(RootModel[Union[ExchangeType3, ExchangeType4]]):
     root: Union[ExchangeType3, ExchangeType4]
 
 
+class ForeignAssetId8(BaseModel):
+    """
+    `xcm::VersionedMultiLocation` not validated, until XCM supports std wasm or CW no_std (or copy paste) for now just store scale binary
+    """
+
+    model_config = ConfigDict(
+        extra='forbid',
+    )
+    xcm_versioned_multi_location: List[conint(ge=0)]
+
+
+class H160(RootModel[str]):
+    root: str
+
+
 class IbcEndpoint(BaseModel):
     channel_id: str
     port_id: str
 
 
 class IbcIcs20Sender(Enum):
-    CosmosStargateIbcApplicationsTransferV1MsgTransfer = "CosmosStargateIbcApplicationsTransferV1MsgTransfer"
-    CosmWasmStd1_3 = "CosmWasmStd1_3"
+    CosmosStargateIbcApplicationsTransferV1MsgTransfer = (
+        'CosmosStargateIbcApplicationsTransferV1MsgTransfer'
+    )
+    CosmWasmStd1_3 = 'CosmWasmStd1_3'
 
 
 class IcsPair(BaseModel):
@@ -133,7 +158,7 @@ class IcsPair(BaseModel):
 class NetworkId(RootModel[conint(ge=0)]):
     root: conint(ge=0) = Field(
         ...,
-        description="Newtype for CVM networks ID. Must be unique for each network and must never change. This ID is an opaque, arbitrary type from the CVM protocol and no assumption must be made on how it is computed.",
+        description='Newtype for CVM networks ID. Must be unique for each network and must never change. This ID is an opaque, arbitrary type from the CVM protocol and no assumption must be made on how it is computed.',
     )
 
 
@@ -142,9 +167,11 @@ class OsmosisIbcHooks(BaseModel):
 
 
 class CosmWasm(BaseModel):
-    admin: Addr = Field(..., description="admin of everything")
+    admin: Addr = Field(..., description='admin of everything')
     contract: Addr
-    executor_code_id: conint(ge=0) = Field(..., description="CVM executor contract code")
+    executor_code_id: conint(ge=0) = Field(
+        ..., description='CVM executor contract code'
+    )
 
 
 class OutpostId2(BaseModel):
@@ -153,7 +180,7 @@ class OutpostId2(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra='forbid',
     )
     cosm_wasm: CosmWasm
 
@@ -161,7 +188,7 @@ class OutpostId2(BaseModel):
 class OutpostId(RootModel[OutpostId2]):
     root: OutpostId2 = Field(
         ...,
-        description="when message is sent to other side, we should identify receiver of some kind",
+        description='when message is sent to other side, we should identify receiver of some kind',
     )
 
 
@@ -175,7 +202,7 @@ class Prefix3(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra='forbid',
     )
     s_s58: conint(ge=0)
 
@@ -186,7 +213,7 @@ class Prefix4(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra='forbid',
     )
     bech: str
 
@@ -194,7 +221,7 @@ class Prefix4(BaseModel):
 class Prefix(RootModel[Union[Prefix3, Prefix4]]):
     root: Union[Prefix3, Prefix4] = Field(
         ...,
-        description="given prefix you may form accounts from 32 bit addresses or partially identify chains",
+        description='given prefix you may form accounts from 32 bit addresses or partially identify chains',
     )
 
 
@@ -203,10 +230,29 @@ class PrefixedDenom(BaseModel):
     A type that contains the base denomination for ICS20 and the source tracing information path.
     """
 
-    base_denom: str = Field(..., description="Base denomination of the relayed fungible token.")
+    base_denom: str = Field(
+        ..., description='Base denomination of the relayed fungible token.'
+    )
     trace_path: str = Field(
         ...,
-        description="A series of `{port-id}/{channel-id}`s for tracing the source of the token.",
+        description='A series of `{port-id}/{channel-id}`s for tracing the source of the token.',
+    )
+
+
+class PubkeyItem(RootModel[conint(ge=0)]):
+    root: conint(ge=0)
+
+
+class Pubkey(RootModel[List[PubkeyItem]]):
+    """
+    Is `solana-program` crate `Pubkey` type, but with proper serde support into base58 encoding.
+    """
+
+    root: List[PubkeyItem] = Field(
+        ...,
+        description='Is `solana-program` crate `Pubkey` type, but with proper serde support into base58 encoding.',
+        max_length=32,
+        min_length=32,
     )
 
 
@@ -216,7 +262,7 @@ class RelativeTimeout2(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra='forbid',
     )
     seconds: conint(ge=0)
 
@@ -224,8 +270,86 @@ class RelativeTimeout2(BaseModel):
 class RelativeTimeout(RootModel[RelativeTimeout2]):
     root: RelativeTimeout2 = Field(
         ...,
-        description="relative timeout to CW/IBC-rs time. very small, assumed messages are arriving fast enough, like less than hours",
+        description='relative timeout to CW/IBC-rs time. very small, assumed messages are arriving fast enough, like less than hours',
     )
+
+
+class VenueId5(Enum):
+    transfer = 'transfer'
+
+
+class VenueId6(BaseModel):
+    model_config = ConfigDict(
+        extra='forbid',
+    )
+    exchange: DisplayedForUint128
+
+
+class VenueId(RootModel[Union[VenueId5, VenueId6]]):
+    root: Union[VenueId5, VenueId6]
+
+
+class Erc20(BaseModel):
+    contract: H160
+
+
+class AssetReference23(BaseModel):
+    """
+    Definition of an asset native to some chain to operate on. For example for Cosmos CW and EVM chains both CW20 and ERC20 can be actual. So if asset is local or only remote to some chain depends on context of network or connection. this design leads to some dummy matches, but in general unifies code (so that if one have to solve other chain route it can). One consensus(chain) can have assets produced by different protocols(VMs).
+    """
+
+    model_config = ConfigDict(
+        extra='forbid',
+    )
+    erc20: Erc20
+
+
+class SPL20(BaseModel):
+    mint: Pubkey
+
+
+class AssetReference24(BaseModel):
+    """
+    Solana VM default token, not only Solana has this token
+    """
+
+    model_config = ConfigDict(
+        extra='forbid',
+    )
+    s_p_l20: SPL20
+
+
+class AssetReference(
+    RootModel[
+        Union[
+            AssetReference21,
+            AssetReference22,
+            AssetReference23,
+            AssetReference24,
+            AssetReference25,
+        ]
+    ]
+):
+    root: Union[
+        AssetReference21,
+        AssetReference22,
+        AssetReference23,
+        AssetReference24,
+        AssetReference25,
+    ] = Field(
+        ...,
+        description='Definition of an asset native to some chain to operate on. For example for Cosmos CW and EVM chains both CW20 and ERC20 can be actual. So if asset is local or only remote to some chain depends on context of network or connection. this design leads to some dummy matches, but in general unifies code (so that if one have to solve other chain route it can). One consensus(chain) can have assets produced by different protocols(VMs).',
+    )
+
+
+class AssetsVenueItem(BaseModel):
+    """
+    assets which can be transomed into each other via venue
+    """
+
+    from_asset_id: AssetId
+    to_asset_id: AssetId
+    venue_id: VenueId
 
 
 class ChannelInfo(BaseModel):
@@ -235,10 +359,12 @@ class ChannelInfo(BaseModel):
 
     connection_id: ConnectionId = Field(
         ...,
-        description="the connection this exists on (you can use to query client/consensus info)",
+        description='the connection this exists on (you can use to query client/consensus info)',
     )
-    counterparty_endpoint: IbcEndpoint = Field(..., description="the remote channel/port we connect to")
-    id: ChannelId = Field(..., description="id of this channel")
+    counterparty_endpoint: IbcEndpoint = Field(
+        ..., description='the remote channel/port we connect to'
+    )
+    id: ChannelId = Field(..., description='id of this channel')
 
 
 class ExchangeItem(BaseModel):
@@ -252,15 +378,15 @@ class ExchangeItem(BaseModel):
     network_id: NetworkId
 
 
-class ForeignAssetId3(BaseModel):
+class ForeignAssetId7(BaseModel):
     model_config = ConfigDict(
-        extra="forbid",
+        extra='forbid',
     )
     ibc_ics20: PrefixedDenom
 
 
-class ForeignAssetId(RootModel[ForeignAssetId3]):
-    root: ForeignAssetId3
+class ForeignAssetId(RootModel[Union[ForeignAssetId7, ForeignAssetId8]]):
+    root: Union[ForeignAssetId7, ForeignAssetId8]
 
 
 class Ics20Features(BaseModel):
@@ -270,22 +396,28 @@ class Ics20Features(BaseModel):
 
     ibc_callbacks: Optional[Adr08IbcCallbacks] = None
     pfm: Optional[PFM] = None
-    wasm_hooks: Optional[OsmosisIbcHooks] = Field(None, description="if it is exists, chain has that enabled")
+    wasm_hooks: Optional[OsmosisIbcHooks] = Field(
+        None, description='if it is exists, chain has that enabled'
+    )
 
 
 class NetworkAssetItem(BaseModel):
-    asset_id: AssetId
+    from_asset_id: AssetId
     to_asset_id: AssetId
     to_network_id: NetworkId
 
 
 class OtherNetworkItem(BaseModel):
-    counterparty_timeout: RelativeTimeout = Field(..., description="default timeout to use for direct send")
-    ics27_channel: Optional[ChannelInfo] = Field(None, description="if there is ICS27 IBC channel opened")
+    counterparty_timeout: RelativeTimeout = Field(
+        ..., description='default timeout to use for direct send'
+    )
+    ics27_channel: Optional[ChannelInfo] = Field(
+        None, description='if there is ICS27 IBC channel opened'
+    )
     ics_20: Optional[IcsPair] = None
     use_shortcut: Optional[bool] = Field(
         None,
-        description="if true, than will use shortcuts for example, if program transfer only program will just use native transfer or if connection supports exchange, it will use exchange default is false if target chain has CVM gateway",
+        description='if true, than will use shortcuts for example, if program transfer only program will just use native transfer or if connection supports exchange, it will use exchange default is false if target chain has CVM gateway',
     )
 
 
@@ -295,13 +427,17 @@ class BridgeAsset(BaseModel):
 
 class Ics20Channel(BaseModel):
     features: Optional[Ics20Features] = None
-    sender: IbcIcs20Sender = Field(..., description="specific per chain way to send IBC ICS 20 assets")
+    sender: IbcIcs20Sender = Field(
+        ..., description='specific per chain way to send IBC ICS 20 assets'
+    )
 
 
 class NetworkToNetworkItem(BaseModel):
     closed: Optional[conint(ge=0)] = None
     from_network_id: NetworkId
-    to_network: OtherNetworkItem = Field(..., description="how to send `to_network_id` chain")
+    to_network: OtherNetworkItem = Field(
+        ..., description='how to send `to_network_id` chain'
+    )
     to_network_id: NetworkId
 
 
@@ -309,10 +445,15 @@ class AssetItem(BaseModel):
     asset_id: AssetId
     bridged: Optional[BridgeAsset] = Field(
         None,
-        description="if asset was bridged, it would have way to identify bridge/source/channel",
+        description='if asset was bridged, it would have way to identify bridge/source/channel',
     )
-    local: AssetReference
-    network_id: NetworkId = Field(..., description="network id on which this asset id can be used locally")
+    local: AssetReference = Field(
+        ...,
+        description='TODO: make sure one cannot access local if it is bridged until bridged was unwrapped basically to access asset need to provide network_id to use local',
+    )
+    network_id: NetworkId = Field(
+        ..., description='network id on which this asset id can be used locally'
+    )
 
 
 class IbcChannels(BaseModel):
@@ -324,16 +465,17 @@ class IbcEnabled(BaseModel):
 
 
 class NetworkItem(BaseModel):
-    accounts: Optional[Prefix] = Field(None, description="Account encoding type")
+    accounts: Optional[Prefix] = Field(None, description='Account encoding type')
     ibc: Optional[IbcEnabled] = None
     network_id: NetworkId
     outpost: Optional[OutpostId] = Field(
         None,
-        description="something which will be receiver on other side case of network has CVM deployed as contract, account address is stored here",
+        description='something which will be receiver on other side case of network has CVM deployed as contract, account address is stored here',
     )
 
 
 class GetConfigResponse(BaseModel):
+    asset_venue_items: List[AssetsVenueItem]
     assets: List[AssetItem]
     exchanges: List[ExchangeItem]
     network_assets: List[NetworkAssetItem]

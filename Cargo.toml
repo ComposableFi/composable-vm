@@ -5,7 +5,7 @@ members = [
     "mantis/node",
     "mantis/blackbox_rs",
 ]
-exclude = ["contracts/cosmwasm/node_modules/", "contracts/cosmwasm/dist"]
+exclude = ["contracts/cosmwasm/node_modules/", "contracts/cosmwasm/dist", "contracts/cosmwasm/schema",]
 resolver = "2"
 package.version = "0.4.0"
 

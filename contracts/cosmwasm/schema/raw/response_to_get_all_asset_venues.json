@@ -1,0 +1,60 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Array_of_AssetsVenueItem",
+  "type": "array",
+  "items": {
+    "$ref": "#/definitions/AssetsVenueItem"
+  },
+  "definitions": {
+    "AssetId": {
+      "description": "Newtype for CVM assets ID. Must be unique for each asset and must never change. This ID is an opaque, arbitrary type from the CVM protocol and no assumption must be made on how it is computed.",
+      "type": "string"
+    },
+    "AssetsVenueItem": {
+      "description": "assets which can be transomed into each other via venue",
+      "type": "object",
+      "required": [
+        "from_asset_id",
+        "to_asset_id",
+        "venue_id"
+      ],
+      "properties": {
+        "from_asset_id": {
+          "$ref": "#/definitions/AssetId"
+        },
+        "to_asset_id": {
+          "$ref": "#/definitions/AssetId"
+        },
+        "venue_id": {
+          "$ref": "#/definitions/VenueId"
+        }
+      }
+    },
+    "Displayed_for_uint128": {
+      "description": "A wrapper around a type which is serde-serialised as a string.\n\nFor serde-serialisation to be implemented for the type `T` must implement `Display` and `FromStr` traits.\n\n```rust use cvm::shared::Displayed;\n\n#[derive(serde::Serialize, serde::Deserialize)] struct Foo { value: Displayed<u64> }\n\nlet encoded = serde_json_wasm::to_string(&Foo { value: Displayed(42) }).unwrap(); assert_eq!(r#\"{\"value\":\"42\"}\"#, encoded);\n\nlet decoded = serde_json_wasm::from_str::<Foo>(r#\"{\"value\":\"42\"}\"#).unwrap(); assert_eq!(Displayed(42), decoded.value); ```",
+      "type": "string"
+    },
+    "VenueId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "transfer"
+          ]
+        },
+        {
+          "type": "object",
+          "required": [
+            "exchange"
+          ],
+          "properties": {
+            "exchange": {
+              "$ref": "#/definitions/Displayed_for_uint128"
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    }
+  }
+}

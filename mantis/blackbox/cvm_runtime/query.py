@@ -3,20 +3,34 @@
 
 from __future__ import annotations
 
-from typing import Any, Dict, Union
+from typing import Any, Dict, List, Union
 
 from pydantic import BaseModel, ConfigDict, Field, RootModel, conint
 
 
-class QueryMsg5(BaseModel):
+class QueryMsg2(BaseModel):
+    model_config = ConfigDict(
+        extra='forbid',
+    )
+    get_all_asset_ids: Dict[str, Any]
+
+
+class QueryMsg6(BaseModel):
     """
     Get all information this CVM knows about local and foreign assets/exchanges/networks
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra='forbid',
     )
     get_config: Dict[str, Any]
+
+
+class QueryMsg7(BaseModel):
+    model_config = ConfigDict(
+        extra='forbid',
+    )
+    get_all_asset_venues: Dict[str, Any]
 
 
 class Addr(RootModel[str]):
@@ -29,7 +43,7 @@ class Addr(RootModel[str]):
 class AssetId(RootModel[str]):
     root: str = Field(
         ...,
-        description="Newtype for CVM assets ID. Must be unique for each asset and must never change. This ID is an opaque, arbitrary type from the CVM protocol and no assumption must be made on how it is computed.",
+        description='Newtype for CVM assets ID. Must be unique for each asset and must never change. This ID is an opaque, arbitrary type from the CVM protocol and no assumption must be made on how it is computed.',
     )
 
 
@@ -37,13 +51,13 @@ class Native(BaseModel):
     denom: str
 
 
-class AssetReference3(BaseModel):
+class AssetReference6(BaseModel):
     """
-    Definition of an asset native to some chain to operate on. For example for Cosmos CW and EVM chains both CW20 and ERC20 can be actual. So if asset is local or only remote to some chain depends on context of network or connection. this design leads to some dummy matches, but in general unifies code (so that if one have to solve other chain route it can)
+    Cosmos SDK native
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra='forbid',
     )
     native: Native
 
@@ -52,22 +66,30 @@ class Cw20(BaseModel):
     contract: Addr
 
 
-class AssetReference4(BaseModel):
+class AssetReference7(BaseModel):
     """
-    Definition of an asset native to some chain to operate on. For example for Cosmos CW and EVM chains both CW20 and ERC20 can be actual. So if asset is local or only remote to some chain depends on context of network or connection. this design leads to some dummy matches, but in general unifies code (so that if one have to solve other chain route it can)
+    Definition of an asset native to some chain to operate on. For example for Cosmos CW and EVM chains both CW20 and ERC20 can be actual. So if asset is local or only remote to some chain depends on context of network or connection. this design leads to some dummy matches, but in general unifies code (so that if one have to solve other chain route it can). One consensus(chain) can have assets produced by different protocols(VMs).
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra='forbid',
     )
     cw20: Cw20
 
 
-class AssetReference(RootModel[Union[AssetReference3, AssetReference4]]):
-    root: Union[AssetReference3, AssetReference4] = Field(
-        ...,
-        description="Definition of an asset native to some chain to operate on. For example for Cosmos CW and EVM chains both CW20 and ERC20 can be actual. So if asset is local or only remote to some chain depends on context of network or connection. this design leads to some dummy matches, but in general unifies code (so that if one have to solve other chain route it can)",
+class PolkadotSubstrateAsset(BaseModel):
+    general_index: conint(ge=0)
+
+
+class AssetReference10(BaseModel):
+    """
+    usually on Polkadot/Kusama and parachains Subtrate runtimes assets encoded as numbers up to u128 value
+    """
+
+    model_config = ConfigDict(
+        extra='forbid',
     )
+    polkadot_substrate_asset: PolkadotSubstrateAsset
 
 
 class DisplayedForUint128(RootModel[str]):
@@ -77,10 +99,31 @@ class DisplayedForUint128(RootModel[str]):
     )
 
 
+class H160(RootModel[str]):
+    root: str
+
+
 class NetworkId(RootModel[conint(ge=0)]):
     root: conint(ge=0) = Field(
         ...,
-        description="Newtype for CVM networks ID. Must be unique for each network and must never change. This ID is an opaque, arbitrary type from the CVM protocol and no assumption must be made on how it is computed.",
+        description='Newtype for CVM networks ID. Must be unique for each network and must never change. This ID is an opaque, arbitrary type from the CVM protocol and no assumption must be made on how it is computed.',
+    )
+
+
+class PubkeyItem(RootModel[conint(ge=0)]):
+    root: conint(ge=0)
+
+
+class Pubkey(RootModel[List[PubkeyItem]]):
+    """
+    Is `solana-program` crate `Pubkey` type, but with proper serde support into base58 encoding.
+    """
+
+    root: List[PubkeyItem] = Field(
+        ...,
+        description='Is `solana-program` crate `Pubkey` type, but with proper serde support into base58 encoding.',
+        max_length=32,
+        min_length=32,
     )
 
 
@@ -94,24 +137,9 @@ class QueryMsg1(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra='forbid',
     )
     get_asset_by_id: GetAssetById
-
-
-class GetLocalAssetByReference(BaseModel):
-    reference: AssetReference
-
-
-class QueryMsg2(BaseModel):
-    """
-    Returns [`AssetItem`] for an asset with given local reference.
-    """
-
-    model_config = ConfigDict(
-        extra="forbid",
-    )
-    get_local_asset_by_reference: GetLocalAssetByReference
 
 
 class GetIbcIcs20Route(BaseModel):
@@ -119,9 +147,9 @@ class GetIbcIcs20Route(BaseModel):
     to_network: NetworkId
 
 
-class QueryMsg3(BaseModel):
+class QueryMsg4(BaseModel):
     model_config = ConfigDict(
-        extra="forbid",
+        extra='forbid',
     )
     get_ibc_ics20_route: GetIbcIcs20Route
 
@@ -130,12 +158,88 @@ class GetExchangeById(BaseModel):
     exchange_id: DisplayedForUint128
 
 
-class QueryMsg4(BaseModel):
+class QueryMsg5(BaseModel):
     model_config = ConfigDict(
-        extra="forbid",
+        extra='forbid',
     )
     get_exchange_by_id: GetExchangeById
 
 
-class QueryMsg(RootModel[Union[QueryMsg1, QueryMsg2, QueryMsg3, QueryMsg4, QueryMsg5]]):
-    root: Union[QueryMsg1, QueryMsg2, QueryMsg3, QueryMsg4, QueryMsg5] = Field(..., title="QueryMsg")
+class Erc20(BaseModel):
+    contract: H160
+
+
+class AssetReference8(BaseModel):
+    """
+    Definition of an asset native to some chain to operate on. For example for Cosmos CW and EVM chains both CW20 and ERC20 can be actual. So if asset is local or only remote to some chain depends on context of network or connection. this design leads to some dummy matches, but in general unifies code (so that if one have to solve other chain route it can). One consensus(chain) can have assets produced by different protocols(VMs).
+    """
+
+    model_config = ConfigDict(
+        extra='forbid',
+    )
+    erc20: Erc20
+
+
+class SPL20(BaseModel):
+    mint: Pubkey
+
+
+class AssetReference9(BaseModel):
+    """
+    Solana VM default token, not only Solana has this token
+    """
+
+    model_config = ConfigDict(
+        extra='forbid',
+    )
+    s_p_l20: SPL20
+
+
+class AssetReference(
+    RootModel[
+        Union[
+            AssetReference6,
+            AssetReference7,
+            AssetReference8,
+            AssetReference9,
+            AssetReference10,
+        ]
+    ]
+):
+    root: Union[
+        AssetReference6,
+        AssetReference7,
+        AssetReference8,
+        AssetReference9,
+        AssetReference10,
+    ] = Field(
+        ...,
+        description='Definition of an asset native to some chain to operate on. For example for Cosmos CW and EVM chains both CW20 and ERC20 can be actual. So if asset is local or only remote to some chain depends on context of network or connection. this design leads to some dummy matches, but in general unifies code (so that if one have to solve other chain route it can). One consensus(chain) can have assets produced by different protocols(VMs).',
+    )
+
+
+class GetLocalAssetByReference(BaseModel):
+    reference: AssetReference
+
+
+class QueryMsg3(BaseModel):
+    """
+    Returns [`AssetItem`] for an asset with given local reference.
+    """
+
+    model_config = ConfigDict(
+        extra='forbid',
+    )
+    get_local_asset_by_reference: GetLocalAssetByReference
+
+
+class QueryMsg(
+    RootModel[
+        Union[
+            QueryMsg1, QueryMsg2, QueryMsg3, QueryMsg4, QueryMsg5, QueryMsg6, QueryMsg7
+        ]
+    ]
+):
+    root: Union[
+        QueryMsg1, QueryMsg2, QueryMsg3, QueryMsg4, QueryMsg5, QueryMsg6, QueryMsg7
+    ] = Field(..., title='QueryMsg')

@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-from typing import Optional, Union
+from typing import List, Optional, Union
 
 from pydantic import BaseModel, ConfigDict, Field, RootModel, conint
 
@@ -18,7 +18,7 @@ class Addr(RootModel[str]):
 class AssetId(RootModel[str]):
     root: str = Field(
         ...,
-        description="Newtype for CVM assets ID. Must be unique for each asset and must never change. This ID is an opaque, arbitrary type from the CVM protocol and no assumption must be made on how it is computed.",
+        description='Newtype for CVM assets ID. Must be unique for each asset and must never change. This ID is an opaque, arbitrary type from the CVM protocol and no assumption must be made on how it is computed.',
     )
 
 
@@ -26,13 +26,13 @@ class Native(BaseModel):
     denom: str
 
 
-class AssetReference5(BaseModel):
+class AssetReference16(BaseModel):
     """
-    Definition of an asset native to some chain to operate on. For example for Cosmos CW and EVM chains both CW20 and ERC20 can be actual. So if asset is local or only remote to some chain depends on context of network or connection. this design leads to some dummy matches, but in general unifies code (so that if one have to solve other chain route it can)
+    Cosmos SDK native
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra='forbid',
     )
     native: Native
 
@@ -41,28 +41,51 @@ class Cw20(BaseModel):
     contract: Addr
 
 
-class AssetReference6(BaseModel):
+class AssetReference17(BaseModel):
     """
-    Definition of an asset native to some chain to operate on. For example for Cosmos CW and EVM chains both CW20 and ERC20 can be actual. So if asset is local or only remote to some chain depends on context of network or connection. this design leads to some dummy matches, but in general unifies code (so that if one have to solve other chain route it can)
+    Definition of an asset native to some chain to operate on. For example for Cosmos CW and EVM chains both CW20 and ERC20 can be actual. So if asset is local or only remote to some chain depends on context of network or connection. this design leads to some dummy matches, but in general unifies code (so that if one have to solve other chain route it can). One consensus(chain) can have assets produced by different protocols(VMs).
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra='forbid',
     )
     cw20: Cw20
 
 
-class AssetReference(RootModel[Union[AssetReference5, AssetReference6]]):
-    root: Union[AssetReference5, AssetReference6] = Field(
-        ...,
-        description="Definition of an asset native to some chain to operate on. For example for Cosmos CW and EVM chains both CW20 and ERC20 can be actual. So if asset is local or only remote to some chain depends on context of network or connection. this design leads to some dummy matches, but in general unifies code (so that if one have to solve other chain route it can)",
+class PolkadotSubstrateAsset(BaseModel):
+    general_index: conint(ge=0)
+
+
+class AssetReference20(BaseModel):
+    """
+    usually on Polkadot/Kusama and parachains Subtrate runtimes assets encoded as numbers up to u128 value
+    """
+
+    model_config = ConfigDict(
+        extra='forbid',
     )
+    polkadot_substrate_asset: PolkadotSubstrateAsset
+
+
+class ForeignAssetId6(BaseModel):
+    """
+    `xcm::VersionedMultiLocation` not validated, until XCM supports std wasm or CW no_std (or copy paste) for now just store scale binary
+    """
+
+    model_config = ConfigDict(
+        extra='forbid',
+    )
+    xcm_versioned_multi_location: List[conint(ge=0)]
+
+
+class H160(RootModel[str]):
+    root: str
 
 
 class NetworkId(RootModel[conint(ge=0)]):
     root: conint(ge=0) = Field(
         ...,
-        description="Newtype for CVM networks ID. Must be unique for each network and must never change. This ID is an opaque, arbitrary type from the CVM protocol and no assumption must be made on how it is computed.",
+        description='Newtype for CVM networks ID. Must be unique for each network and must never change. This ID is an opaque, arbitrary type from the CVM protocol and no assumption must be made on how it is computed.',
     )
 
 
@@ -71,22 +94,94 @@ class PrefixedDenom(BaseModel):
     A type that contains the base denomination for ICS20 and the source tracing information path.
     """
 
-    base_denom: str = Field(..., description="Base denomination of the relayed fungible token.")
+    base_denom: str = Field(
+        ..., description='Base denomination of the relayed fungible token.'
+    )
     trace_path: str = Field(
         ...,
-        description="A series of `{port-id}/{channel-id}`s for tracing the source of the token.",
+        description='A series of `{port-id}/{channel-id}`s for tracing the source of the token.',
     )
 
 
-class ForeignAssetId2(BaseModel):
+class PubkeyItem(RootModel[conint(ge=0)]):
+    root: conint(ge=0)
+
+
+class Pubkey(RootModel[List[PubkeyItem]]):
+    """
+    Is `solana-program` crate `Pubkey` type, but with proper serde support into base58 encoding.
+    """
+
+    root: List[PubkeyItem] = Field(
+        ...,
+        description='Is `solana-program` crate `Pubkey` type, but with proper serde support into base58 encoding.',
+        max_length=32,
+        min_length=32,
+    )
+
+
+class Erc20(BaseModel):
+    contract: H160
+
+
+class AssetReference18(BaseModel):
+    """
+    Definition of an asset native to some chain to operate on. For example for Cosmos CW and EVM chains both CW20 and ERC20 can be actual. So if asset is local or only remote to some chain depends on context of network or connection. this design leads to some dummy matches, but in general unifies code (so that if one have to solve other chain route it can). One consensus(chain) can have assets produced by different protocols(VMs).
+    """
+
     model_config = ConfigDict(
-        extra="forbid",
+        extra='forbid',
+    )
+    erc20: Erc20
+
+
+class SPL20(BaseModel):
+    mint: Pubkey
+
+
+class AssetReference19(BaseModel):
+    """
+    Solana VM default token, not only Solana has this token
+    """
+
+    model_config = ConfigDict(
+        extra='forbid',
+    )
+    s_p_l20: SPL20
+
+
+class AssetReference(
+    RootModel[
+        Union[
+            AssetReference16,
+            AssetReference17,
+            AssetReference18,
+            AssetReference19,
+            AssetReference20,
+        ]
+    ]
+):
+    root: Union[
+        AssetReference16,
+        AssetReference17,
+        AssetReference18,
+        AssetReference19,
+        AssetReference20,
+    ] = Field(
+        ...,
+        description='Definition of an asset native to some chain to operate on. For example for Cosmos CW and EVM chains both CW20 and ERC20 can be actual. So if asset is local or only remote to some chain depends on context of network or connection. this design leads to some dummy matches, but in general unifies code (so that if one have to solve other chain route it can). One consensus(chain) can have assets produced by different protocols(VMs).',
+    )
+
+
+class ForeignAssetId5(BaseModel):
+    model_config = ConfigDict(
+        extra='forbid',
     )
     ibc_ics20: PrefixedDenom
 
 
-class ForeignAssetId(RootModel[ForeignAssetId2]):
-    root: ForeignAssetId2
+class ForeignAssetId(RootModel[Union[ForeignAssetId5, ForeignAssetId6]]):
+    root: Union[ForeignAssetId5, ForeignAssetId6]
 
 
 class BridgeAsset(BaseModel):
@@ -97,10 +192,15 @@ class AssetItem(BaseModel):
     asset_id: AssetId
     bridged: Optional[BridgeAsset] = Field(
         None,
-        description="if asset was bridged, it would have way to identify bridge/source/channel",
+        description='if asset was bridged, it would have way to identify bridge/source/channel',
     )
-    local: AssetReference
-    network_id: NetworkId = Field(..., description="network id on which this asset id can be used locally")
+    local: AssetReference = Field(
+        ...,
+        description='TODO: make sure one cannot access local if it is bridged until bridged was unwrapped basically to access asset need to provide network_id to use local',
+    )
+    network_id: NetworkId = Field(
+        ..., description='network id on which this asset id can be used locally'
+    )
 
 
 class GetAssetResponse(BaseModel):
