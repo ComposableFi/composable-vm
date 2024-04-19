@@ -191,37 +191,34 @@ pub async fn solve<Decider: Get<bool>>(
 
     for pair_solution in cows_per_pair {
         let salt = super::cosmos::cvm::calculate_salt(signing_key, tip, pair_solution.ab.clone());
-        let cvm_program = if let Some(ref cvm_glt) = cvm_glt {
-            let cvm_program = intent_banks_to_cvm_program(
-                pair_solution.clone(),
-                &active_orders,
-                cvm_glt,
-                router,
-                &salt,
-            )
-            .await;
-
-            if cvm_program.is_err() {
-                log::error!("cvm_program error: {:?}", cvm_program);
-                continue;
-            }
-
-            let cvm_program = cvm_program.expect("qed");
-
-            Some(cvm_program)
-        } else {
-            None
-        };
 
         // would be reasonable to do do cross chain if it solves some % of whole trade
-        let route = if let Some(cvm_program) = cvm_program
-            && Decider::get()
-        {
-            Some(CrossChainPart::new(
-                cvm_program,
-                salt.clone(),
-                pair_solution.optimal_price.into(),
-            ))
+        let route = if Decider::get() {
+            let cvm_program = if let Some(ref cvm_glt) = cvm_glt {
+                let cvm_program = intent_banks_to_cvm_program(
+                    pair_solution.clone(),
+                    &active_orders,
+                    cvm_glt,
+                    router,
+                    &salt,
+                )
+                .await;
+
+                if cvm_program.is_err() {
+                    log::error!("cvm_program error: {:?}", cvm_program);
+                }
+                cvm_program.ok()
+            } else {
+                None
+            };
+
+            cvm_program.map(|cvm_program| {
+                CrossChainPart::new(
+                    cvm_program,
+                    salt.clone(),
+                    pair_solution.optimal_price.into(),
+                )
+            })
         } else {
             None
         };
