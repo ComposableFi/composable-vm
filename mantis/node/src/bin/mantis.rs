@@ -141,26 +141,28 @@ async fn simulate_orders(simulate_args: &SimulateArgs) {
     let tip =
         get_latest_block_and_account_by_key(&args.rpc_centauri, &args.grpc_centauri, &signer).await;
 
-    let pair = simulate_args
-        .coins
-        .choose(&mut rand::thread_rng())
-        .expect("some");
-    let rpc = CosmosChainInfo {
-        rpc: args.rpc_centauri.clone(),
-        chain_id: args.main_chain_id.clone(),
-    };
-    simulate::simulate_order(
-        &mut write_client,
-        &mut cosmos_query_client,
-        args.order_contract.clone(),
-        pair,
-        &signer,
-        &rpc,
-        &tip,
-        gas,
-        simulate_args.random_parts,
-    )
-    .await;
+    assert!(simulate_args.coins.len() > 0);
+    let mut coinpairs = simulate_args.coins.clone();
+    coinpairs.shuffle(&mut rand::thread_rng());
+
+    for coin_pair in coinpairs {
+        let rpc = CosmosChainInfo {
+            rpc: args.rpc_centauri.clone(),
+            chain_id: args.main_chain_id.clone(),
+        };
+        simulate::simulate_order(
+            &mut write_client,
+            &mut cosmos_query_client,
+            args.order_contract.clone(),
+            &coin_pair,
+            &signer,
+            &rpc,
+            &tip,
+            gas,
+            simulate_args.random_parts,
+        )
+        .await;
+    }
 }
 
 enum CoinToss {}

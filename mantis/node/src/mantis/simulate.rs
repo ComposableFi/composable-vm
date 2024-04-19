@@ -81,7 +81,7 @@ pub async fn simulate_order(
     log::info!("========================= simulate_order =========================");
     let (msg, fund) = randomize_order(&coins_pair, tip.block, random_parts);
 
-    println!("msg: {:?}", msg);
+    log::info!("msg: {:?}", msg);
 
     let auth_info = simulate_and_set_fee(signing_key, &tip.account, gas).await;
 
