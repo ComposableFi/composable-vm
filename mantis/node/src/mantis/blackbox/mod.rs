@@ -9,7 +9,7 @@ use cvm_runtime::{
 use cw_cvm_outpost::msg::CvmGlt;
 use cw_mantis_order::{CrossChainPart, OrderItem, SolutionSubMsg};
 
-use crate::solver::router::shortest_path;
+use crate::{error::MantisError, solver::router::shortest_path};
 
 use super::{
     cosmos::client::Tip,
@@ -88,9 +88,9 @@ pub async fn get_routes(
     input: IntentBankInput,
     cvm_glt: &GetConfigResponse,
     salt: &[u8],
-) -> Vec<CvmInstruction> {
+) -> Result<Vec<CvmInstruction>, MantisError> {
     if route_provider == "shortest_path" {
-        return shortest_path::route(cvm_glt, input, salt);
+        Ok(shortest_path::route(cvm_glt, input, salt))
     } else {
         let blackbox: Client = Client::new(route_provider);
         let mut route = blackbox
@@ -102,13 +102,22 @@ pub async fn get_routes(
                 input.out_asset_id.to_string().as_str().into(),
             )
             .await
-            .expect("route found")
+            .map_err(|x| MantisError::BlackboxError {
+                reason: x.to_string(),
+            })?
             .into_inner()
             .pop()
-            .expect("at least one route");
+            .ok_or(MantisError::BlackboxError {
+                reason: "no routes".to_string(),
+            })?;
 
         log::info!("route: {:?}", route);
-        build_instructions(input.order_accounts, &route.next[0], cvm_glt, salt)
+        Ok(build_instructions(
+            input.order_accounts,
+            &route.next[0],
+            cvm_glt,
+            salt,
+        ))
     }
 }
 
@@ -180,9 +189,6 @@ pub async fn solve<Decider: Get<bool>>(
     let cows_per_pair = find_cows(&active_orders);
     let mut msgs = vec![];
 
-    // this we do just to avoid one pair to fail all others, really need to handle all errors gracefully or run solver(thread/process) per pair (i am for second)
-    let cows_per_pair = cows_per_pair.into_iter().take(1).collect::<Vec<_>>();
-
     for pair_solution in cows_per_pair {
         let salt = super::cosmos::cvm::calculate_salt(signing_key, tip, pair_solution.ab.clone());
         let cvm_program = if let Some(ref cvm_glt) = cvm_glt {
@@ -194,6 +200,13 @@ pub async fn solve<Decider: Get<bool>>(
                 &salt,
             )
             .await;
+
+            if cvm_program.is_err() {
+                log::error!("cvm_program error: {:?}", cvm_program);
+                continue;
+            }
+
+            let cvm_program = cvm_program.expect("qed");
 
             Some(cvm_program)
         } else {
@@ -230,21 +243,21 @@ async fn intent_banks_to_cvm_program(
     cvm_glt: &cw_cvm_outpost::msg::GetConfigResponse,
     router_api: &str,
     salt: &Vec<u8>,
-) -> CvmProgram {
+) -> Result<CvmProgram, MantisError> {
     let intents = IntentBankInput::find_intent_amount(
         pair_solution.cows.as_ref(),
         all_orders,
         pair_solution.optimal_price,
         cvm_glt,
         pair_solution.ab.clone(),
-    );
+    )?;
 
     log::info!(target:"mantis::solver::", "intents: {:?}", intents);
 
     let mut instructions = vec![];
 
     for intent in intents.into_iter().filter(|x| x.in_asset_amount.0.gt(&0)) {
-        let mut cvm_routes = get_routes(router_api, intent, cvm_glt, salt.as_ref()).await;
+        let mut cvm_routes = get_routes(router_api, intent, cvm_glt, salt.as_ref()).await?;
         instructions.append(&mut cvm_routes);
     }
 
@@ -254,5 +267,5 @@ async fn intent_banks_to_cvm_program(
         tag: salt.to_vec(),
         instructions,
     };
-    cvm_program
+    Ok(cvm_program)
 }

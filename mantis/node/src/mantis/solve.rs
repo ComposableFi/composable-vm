@@ -8,6 +8,7 @@ use mantis_cw::{DenomPair, OrderCoinPair};
 use num_rational::Ratio;
 
 use crate::{
+    error::MantisError,
     prelude::*,
     solver::cows::{orderbook::OrderList, solution::Solution},
 };
@@ -43,7 +44,7 @@ impl IntentBankInput {
         optimal_ratio: Ratio<u64>,
         cvm_glt: &GetConfigResponse,
         pair: DenomPair,
-    ) -> Vec<IntentBankInput> {
+    ) -> Result<Vec<IntentBankInput>, MantisError> {
         // native calculations
         let mut pair = OrderCoinPair::zero(pair.a, pair.b);
         let mut a_to_b = Vec::new();
@@ -55,11 +56,16 @@ impl IntentBankInput {
                     let mut order = orders
                         .iter()
                         .find(|x| x.order_id == cow.order_id)
-                        .expect("order")
+                        .ok_or(MantisError::MatchingOrderNotFound {
+                            order_id: cow.order_id,
+                        })?
                         .clone();
                     order
                         .fill(cow.cow_out_amount, optimal_ratio.into())
-                        .expect("off chain");
+                        .map_err(|x| MantisError::CowFillBadlyFound {
+                            order_id: cow.order_id,
+                            reason: x.to_string(),
+                        })?;
                     pair.add(&order.given);
 
                     if order.given.denom == pair.a.denom {
@@ -106,7 +112,7 @@ impl IntentBankInput {
                 IntentBankInput::new(b_asset, pair.b.amount.into(), a_asset, a_received.collect());
             intents.push(intent);
         }
-        intents
+        Ok(intents)
     }
 }
 

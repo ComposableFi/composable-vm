@@ -21,7 +21,7 @@ todo = "warn"
 let_unit_value = "allow"
 
 [workspace.dependencies]
-
+displaydoc = {  version = "^0.2.0", default-features = false }
 cvm = { path = "./crates/cvm", default-features = false }
 blackbox_rs = { path = "./node/blackbox_rs", default-features = false }
 cvm-route = { path = "./crates/cvm-route", default-features = false }

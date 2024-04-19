@@ -24,6 +24,7 @@ cw-mantis-order = { workspace = true, features = [
     "std",
 ] }
 
+displaydoc = { workspace = true }
 cw-cvm-outpost = { workspace = true, features = ["std"] }
 cw-cvm-executor = { workspace = true, features = ["std"] }
 

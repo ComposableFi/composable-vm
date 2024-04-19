@@ -2442,6 +2442,7 @@ dependencies = [
  "cw-multi-test",
  "cw-orch",
  "derive_more",
+ "displaydoc",
  "env_logger",
  "itertools 0.12.1",
  "log",
