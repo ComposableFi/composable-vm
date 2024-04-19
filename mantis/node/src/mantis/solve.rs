@@ -183,10 +183,10 @@ fn decimal_to_fraction(amount: Decimal) -> Ratio<u64> {
         Ratio::new(decimal_string[0].parse().expect("in range"), 1)
     } else {
         let digits_after_decimal = decimal_string[1].len() as u32;
-        let denominator = 10_u128.pow(digits_after_decimal) as u64;
+        let denominator = 10_u128.pow(digits_after_decimal);
         let numerator = (amount * Decimal::from(denominator))
-            .to_u64()
+            .to_u128()
             .expect("integer");
-        Ratio::new(numerator, denominator)
+        Ratio::new(numerator, denominator).msb_limit_unsigned::<u64>()
     }
 }
