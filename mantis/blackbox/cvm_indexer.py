@@ -144,9 +144,9 @@ class ExtendedCvmRegistry(BaseModel):
             if isinstance(onchain.exchange.root, OsmosisPool):
                 subonchain: OsmosisPool = onchain.exchange.root
                 pool_id = subonchain.osmosis_pool_manager_module_v1_beta1.pool_id
-                indexer = [c for c in indexers_2.root if c.id == str(pool_id)]
+                indexer = [c for c in indexers_2.root if c.id == str(pool_id) or c.pool_id == str(pool_id)]
                 if any(indexer):
-                    indexer = indexer[0]
+                    indexer = indexer[0]                    
                     token_a = indexer.token0 if indexer.token0 else indexer.pool_assets[0].token.denom
                     token_b = indexer.token1 if indexer.token1 else indexer.pool_assets[1].token.denom
                     asset_a = find_asset_by_token(token_a)
