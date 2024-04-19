@@ -55,7 +55,7 @@ app = create_app()
 """
 app = FastAPI()
 
-cache = PersistentCache(TTLCache, filename="$TEMP/get_remote_data.cache", ttl=12 * 1000, maxsize=2)
+cache = PersistentCache(TTLCache, filename="$TEMP/get_remote_data.cache", ttl=240, maxsize=2)
 
 
 @app.get("/simulator/router")
