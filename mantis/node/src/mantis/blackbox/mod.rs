@@ -205,7 +205,9 @@ pub async fn solve<Decider: Get<bool>>(
                 .await;
 
                 if cvm_program.is_err() {
-                    log::error!("cvm_program error: {:?}", cvm_program);
+                    log::error!("cvm_program error formation: {:?}", cvm_program);
+                } else {
+                    log::info!("cvm_program found: {:?}", cvm_program);
                 }
                 cvm_program.ok()
             } else {
@@ -220,6 +222,7 @@ pub async fn solve<Decider: Get<bool>>(
                 )
             })
         } else {
+            log::trace!("decided not cross chain");
             None
         };
         let msg = SolutionSubMsg {
