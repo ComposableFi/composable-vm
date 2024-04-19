@@ -249,7 +249,6 @@ async fn intent_banks_to_cvm_program(
     }
 
     log::info!(target: "mantis::solver", "built instructions: {:?}", instructions);
-    //panic!("built instructions: {:?}", instructions);
 
     let cvm_program = CvmProgram {
         tag: salt.to_vec(),
