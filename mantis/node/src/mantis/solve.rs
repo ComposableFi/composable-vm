@@ -139,8 +139,8 @@ pub fn find_cows(all_orders: &[OrderItem]) -> Vec<PairSolution> {
             value: orders.collect(),
         };
         let optimal_price = orders.compute_optimal_price(1000);
-        println!("mantis::solver::cows::optimal_price: {:?}", optimal_price);
-        println!("mantis::solver::cows::orders: {:?}", orders);
+        log::info!("mantis::solver::cows::optimal_price: {:?}", optimal_price);
+        log::info!("mantis::solver::cows::orders: {:?}", orders);
         let mut solution = Solution::new(orders.value.clone());
         solution = solution.match_orders(optimal_price);
         let cows = solution
@@ -158,7 +158,7 @@ pub fn find_cows(all_orders: &[OrderItem]) -> Vec<PairSolution> {
             })
             .collect::<Vec<_>>();
         let optimal_price = decimal_to_fraction(optimal_price.0);
-        println!("cows: {:?}", cows);
+        log::info!("cows: {:?}", cows);
         if !cows.is_empty() {
             let pair_solution = PairSolution {
                 ab,
@@ -168,6 +168,9 @@ pub fn find_cows(all_orders: &[OrderItem]) -> Vec<PairSolution> {
             cows_per_pair.push(pair_solution);
         }
     }
+    use rand::prelude::SliceRandom;
+    cows_per_pair.shuffle(&mut rand::thread_rng());
+
     cows_per_pair
 }
 

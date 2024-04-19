@@ -139,30 +139,30 @@ fn build_instructions(
         }
         NextItem::SpawnStrStr(spawn) => {
             if let Some(next) = spawn.next.get(0) {
-                let mut next = build_instructions(final_instructions, next, cvm_glt, salt);   
+                let mut next = build_instructions(final_instructions, next, cvm_glt, salt);
                 let program = CvmProgram {
                     tag: salt.to_vec(),
                     instructions: next,
                 };
                 let to_asset_id = spawn.out_asset_id.parse().expect("out");
-                let spawn = CvmInstruction::Spawn { 
-                    network_id: cvm_glt.get_network_for_asset(to_asset_id), 
-                    salt: salt.to_vec(), 
-                    assets: CvmFundsFilter::all_of(spawn.in_asset_id.parse().expect("in")), 
-                    program, 
+                let spawn = CvmInstruction::Spawn {
+                    network_id: cvm_glt.get_network_for_asset(to_asset_id),
+                    salt: salt.to_vec(),
+                    assets: CvmFundsFilter::all_of(spawn.in_asset_id.parse().expect("in")),
+                    program,
                 };
-                vec![spawn]             
+                vec![spawn]
             } else {
                 let program = CvmProgram {
                     tag: salt.to_vec(),
                     instructions: final_instructions,
                 };
                 let to_asset_id = spawn.out_asset_id.parse().expect("out");
-                let spawn = CvmInstruction::Spawn { 
-                    network_id: cvm_glt.get_network_for_asset(to_asset_id), 
-                    salt: salt.to_vec(), 
-                    assets: CvmFundsFilter::all_of(spawn.in_asset_id.parse().expect("in")), 
-                    program, 
+                let spawn = CvmInstruction::Spawn {
+                    network_id: cvm_glt.get_network_for_asset(to_asset_id),
+                    salt: salt.to_vec(),
+                    assets: CvmFundsFilter::all_of(spawn.in_asset_id.parse().expect("in")),
+                    program,
                 };
                 vec![spawn]
             }
@@ -179,6 +179,10 @@ pub async fn solve<Decider: Get<bool>>(
 ) -> Vec<cw_mantis_order::ExecMsg> {
     let cows_per_pair = find_cows(&active_orders);
     let mut msgs = vec![];
+
+    // this we do just to avoid one pair to fail all others, really need to handle all errors gracefully or run solver(thread/process) per pair (i am for second)
+    let cows_per_pair = cows_per_pair.into_iter().take(1).collect::<Vec<_>>();
+
     for pair_solution in cows_per_pair {
         let salt = super::cosmos::cvm::calculate_salt(signing_key, tip, pair_solution.ab.clone());
         let cvm_program = if let Some(ref cvm_glt) = cvm_glt {

@@ -188,7 +188,7 @@ async fn get_data_and_solve(
     rpc: &CosmosChainInfo,
     tip: &Tip,
     gas: Gas,
-    all_orders: Vec<OrderItem>,
+    all_active_orders: Vec<OrderItem>,
     router_api: &String,
 ) {
     log::info!(target: "mantis::solver", "Solving orders");
@@ -198,7 +198,7 @@ async fn get_data_and_solve(
     };
 
     let msgs = mantis_node::mantis::blackbox::solve::<CoinToss>(
-        all_orders,
+        all_active_orders,
         signing_key,
         tip,
         cvm_glt,
