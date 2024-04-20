@@ -129,7 +129,15 @@ pub struct PairSolution {
 /// 2. iterate over router and amounts to find good routing `cow`s
 /// 3. return cow optimal price with cross chain (virtual) order.
 pub fn find_cows(all_orders: &[OrderItem]) -> Vec<PairSolution> {
-    let all_orders = all_orders.into_iter().group_by(|x| x.pair());
+    // need to tune price of posing order vs solving it (sure need to peek only big orders higher than gas, but not more than max gas)
+    // so basically need to enumerate taking part of order
+    use rand::prelude::SliceRandom;
+    let mut all_orders = all_orders.to_vec();
+    all_orders.shuffle(&mut rand::thread_rng());
+    let all_orders: Vec<OrderItem> = all_orders.into_iter().take(20).collect();
+
+    let mut all_orders = all_orders.into_iter().group_by(|x| x.pair());
+
     let mut cows_per_pair = vec![];
     for (ab, orders) in all_orders.into_iter() {
         let orders = orders.collect::<Vec<_>>();
@@ -174,7 +182,6 @@ pub fn find_cows(all_orders: &[OrderItem]) -> Vec<PairSolution> {
             cows_per_pair.push(pair_solution);
         }
     }
-    use rand::prelude::SliceRandom;
     cows_per_pair.shuffle(&mut rand::thread_rng());
 
     cows_per_pair
