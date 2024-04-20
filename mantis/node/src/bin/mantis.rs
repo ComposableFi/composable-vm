@@ -98,7 +98,7 @@ async fn solve_orders(solver_args: &SolverArgs) {
             .await;
         }
 
-        let tip =
+        let mut tip =
             get_latest_block_and_account_by_key(&args.rpc_centauri, &args.grpc_centauri, &signer)
                 .await;
         let all_orders = get_active_orders(&args.order_contract, &mut wasm_read_client, &tip).await;
@@ -114,7 +114,7 @@ async fn solve_orders(solver_args: &SolverArgs) {
                 &args.order_contract,
                 &signer,
                 &main_chain,
-                &tip,
+                &mut tip,
                 gas,
                 all_orders,
                 &solver_args.router,
@@ -189,7 +189,7 @@ async fn get_data_and_solve(
     order_contract: &String,
     signing_key: &cosmrs::crypto::secp256k1::SigningKey,
     rpc: &CosmosChainInfo,
-    tip: &Tip,
+    tip: &mut Tip,
     gas: Gas,
     all_active_orders: Vec<OrderItem>,
     router_api: &String,
@@ -211,6 +211,7 @@ async fn get_data_and_solve(
 
     for msg in msgs {
         send_solution(msg, tip, signing_key, order_contract, rpc, gas).await;
+        tip.account.sequence += 1;
     }
 }
 
