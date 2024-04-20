@@ -100,6 +100,7 @@ async fn solve_orders(solver_args: &SolverArgs) {
             )
             .await;
             if stale_orders.len() > 0 {
+                // need to have function to check count, cause this timeouts
                 if stale_orders.len() > 0 {
                     log::warn!(target: "mantis::autopilot", "timedouted orders");
                 }
