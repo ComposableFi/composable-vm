@@ -21,6 +21,7 @@ use simulator::simulate_cows_via_bank;
 use state::*;
 pub use types::*;
 
+use crate::constants::MAX_ORDER_COUNT;
 pub use crate::sv::{ExecMsg, QueryMsg};
 
 use cosmwasm_std::{wasm_execute, Addr, BankMsg, Coin, Event, Order, StdError, Storage};
@@ -84,6 +85,14 @@ impl OrderContract<'_> {
     /// spamming), and stores order for searchers.
     #[msg(exec)]
     pub fn order(&self, ctx: ExecCtx, msg: OrderSubMsg) -> StdResult<Response> {
+        ensure!(
+            self.orders
+                .keys_raw(ctx.deps.storage, None, None, Order::Ascending)
+                .count()
+                < MAX_ORDER_COUNT,
+            errors::max_order_count_reached(MAX_ORDER_COUNT)
+        );
+
         // for now we just use bank for ics20 tokens
         let funds = ctx
             .info

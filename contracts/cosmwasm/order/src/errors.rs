@@ -20,6 +20,10 @@ pub(crate) fn expected_some_funds_in_route() -> StdError {
     StdError::generic_err("Expected some funds in route")
 }
 
+pub fn max_order_count_reached(max: usize) -> StdError {
+    StdError::generic_err(format!("Max order count reached: {}", max))
+}
+
 pub fn banks_funds_must_be_at_least_routed(has: &Coin, expected: &Coin) -> StdError {
     StdError::generic_err(format!(
         "banks_funds_must_be_at_least_routed {:?} => {:?} ",
