@@ -85,8 +85,10 @@ async fn solve_orders(solver_args: &SolverArgs) {
             &tip,
         )
         .await;
-        if stale_orders.len() > 0 {
-            log::warn!(target: "mantis::autopilot", "timedouted orders");
+        if stale_orders.len() > 0 || rand::random::<u8>() > 200 {
+            if stale_orders.len() > 0 {
+                log::warn!(target: "mantis::autopilot", "timedouted orders");
+            }
             autopilot::cleanup(
                 &mut write_client,
                 &mut cosmos_query_client,
