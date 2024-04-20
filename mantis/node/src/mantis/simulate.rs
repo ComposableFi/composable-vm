@@ -18,6 +18,7 @@ pub fn randomize_order(
     pair: &String,
     tip: Height,
     random_parts: u8,
+    duration: u32,
 ) -> (cw_mantis_order::ExecMsg, cosmrs::Coin) {
     let pair = parse_coin_pair(pair);
 
@@ -36,7 +37,7 @@ pub fn randomize_order(
                 denom: pair.0.denom.clone(),
             },
             convert: None,
-            timeout: timeout(tip, 100),
+            timeout: timeout(tip, duration),
             min_fill: None,
             virtual_given: None,
         },
@@ -77,9 +78,10 @@ pub async fn simulate_order(
     tip: &Tip,
     gas: Gas,
     random_parts: u8,
+    duration: u32,
 ) {
     log::info!("========================= simulate_order =========================");
-    let (msg, fund) = randomize_order(&coins_pair, tip.block, random_parts);
+    let (msg, fund) = randomize_order(&coins_pair, tip.block, random_parts, duration);
 
     log::info!("msg: {:?}", msg);
 

@@ -99,6 +99,9 @@ pub struct SimulateArgs {
     /// the larger value the smaller deviation for randomized order
     #[arg(long, default_value_t = 3)]
     pub random_parts: u8,
+
+    #[arg(long, default_value_t = 240)]
+    pub duration: u32,
 }
 
 #[derive(clap::Parser, Debug)]

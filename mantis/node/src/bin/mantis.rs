@@ -160,6 +160,7 @@ async fn simulate_orders(simulate_args: &SimulateArgs) {
             &tip,
             gas,
             simulate_args.random_parts,
+            simulate_args.duration,
         )
         .await;
         tip.account.sequence += 1;
