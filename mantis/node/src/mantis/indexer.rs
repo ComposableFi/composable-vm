@@ -31,6 +31,15 @@ pub async fn get_stale_orders(
         .collect::<Vec<OrderItem>>()
 }
 
+pub async fn has_stale_orders(
+    order_contract: &String,
+    cosmos_query_client: &mut CosmWasmReadClient,
+    tip: &Tip,
+) -> bool {
+    let query = cw_mantis_order::QueryMsg::HasStale {};
+    smart_query::<_, bool>(order_contract, query, cosmos_query_client).await
+}
+
 pub async fn get_cvm_glt(
     contract: &String,
     cosmos_query_client: &mut CosmWasmReadClient,

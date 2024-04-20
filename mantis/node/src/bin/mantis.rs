@@ -13,7 +13,7 @@ use mantis_node::{
         args::*,
         autopilot, blackbox,
         cosmos::{client::*, cosmwasm::to_exec_signed, *},
-        indexer::{get_active_orders, get_cvm_glt},
+        indexer::{get_active_orders, get_cvm_glt, has_stale_orders},
         simulate,
         solve::PairSolution,
     },
@@ -80,7 +80,9 @@ async fn solve_orders(solver_args: &SolverArgs) {
             get_latest_block_and_account_by_key(&args.rpc_centauri, &args.grpc_centauri, &signer)
                 .await;
 
-        if rand::random::<u8>() > 150 {
+        if rand::random::<u8>() > 200
+            || has_stale_orders(&args.order_contract, &mut wasm_read_client, &tip).await
+        {
             autopilot::cleanup(
                 &mut write_client,
                 &mut cosmos_query_client,
@@ -92,30 +94,6 @@ async fn solve_orders(solver_args: &SolverArgs) {
             )
             .await;
             tip.account.sequence += 1;
-        } else {
-            let stale_orders = mantis_node::mantis::indexer::get_stale_orders(
-                &args.order_contract,
-                &mut wasm_read_client,
-                &tip,
-            )
-            .await;
-            if stale_orders.len() > 0 {
-                // need to have function to check count, cause this timeouts
-                if stale_orders.len() > 0 {
-                    log::warn!(target: "mantis::autopilot", "timedouted orders");
-                }
-                autopilot::cleanup(
-                    &mut write_client,
-                    &mut cosmos_query_client,
-                    args.order_contract.clone(),
-                    &signer,
-                    &cosmos_chain_info,
-                    &tip,
-                    gas,
-                )
-                .await;
-                tip.account.sequence += 1;
-            }
         }
 
         let mut tip =

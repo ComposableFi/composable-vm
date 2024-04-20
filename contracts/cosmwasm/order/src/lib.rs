@@ -120,6 +120,17 @@ impl OrderContract<'_> {
         Ok(Response::default().add_event(order_created))
     }
 
+    #[msg(query)]
+    pub fn has_stale(&self, ctx: QueryCtx) -> StdResult<bool> {
+        Ok(self
+            .orders
+            .range(ctx.deps.storage, None, None, Order::Ascending)
+            .any(|x| {
+                let (_id, order) = x.as_ref().unwrap();
+                order.msg.timeout < ctx.env.block.height
+            }))
+    }
+
     /// Hook/crank for cleanup.
     /// Caller receives small reward for doing so.
     /// This is to prevent spamming of old orders.
@@ -143,6 +154,7 @@ impl OrderContract<'_> {
                 let (_id, order) = x.as_ref().unwrap();
                 order.msg.timeout < ctx.env.block.height
             })
+            .take(30) // in batches
             .collect();
         let mut msgs = vec![];
         for order in orders? {
