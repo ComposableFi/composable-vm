@@ -96,7 +96,8 @@ pub async fn simulate_order(
         signing_key,
         &tip,
     )
-    .await;
+    .await
+    .expect("simulated");
 
-    println!("simulated tx {:?}", result.height)
+    log::trace!("simulated tx {:?}", result.height)
 }

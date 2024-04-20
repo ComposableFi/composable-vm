@@ -8,6 +8,10 @@ pub enum MantisError {
     CowFillBadlyFound { order_id: Uint128, reason: String },
     /// Blackbox error: `{reason}`
     BlackboxError { reason: String },
+    /// `{source}` Failed to broadcast tx
+    FailedToBroadcastTx { source: String },
+    /// `{source}` Failed to execute tx
+    FailedToExecuteTx { source: String },
 }
 
 impl std::error::Error for MantisError {}

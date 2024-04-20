@@ -8,6 +8,7 @@ use cosmrs::{tx::Msg, Gas};
 use cvm_runtime::shared::CvmProgram;
 use cw_mantis_order::{CrossChainPart, OrderItem, OrderSolution, Ratio, SolutionSubMsg};
 use mantis_node::{
+    error::MantisError,
     mantis::{
         args::*,
         autopilot, blackbox,
@@ -103,6 +104,7 @@ async fn solve_orders(solver_args: &SolverArgs) {
                 .await;
         let all_orders = get_active_orders(&args.order_contract, &mut wasm_read_client, &tip).await;
         if !all_orders.is_empty() {
+            log::debug!(target: "mantis::solver::", "there are {:?} to try solve", all_orders.len());
             let main_chain = CosmosChainInfo {
                 rpc: args.rpc_centauri.clone(),
                 chain_id: args.main_chain_id.clone(),
@@ -210,9 +212,21 @@ async fn get_data_and_solve(
     )
     .await;
 
+    let mut errors = vec![];
     for msg in msgs {
-        send_solution(msg, tip, signing_key, order_contract, rpc, gas).await;
-        tip.account.sequence += 1;
+        match send_solution(msg.clone(), tip, signing_key, order_contract, rpc, gas).await {
+            Ok(ok) => {
+                log::info!("solution sent for msg {:?}", msg);
+                tip.account.sequence += 1;
+            }
+            Err(err) => {
+                log::error!("solution failed: {:?}", err);
+                errors.push(err);
+            }
+        };
+    }
+    if errors.len() > 0 {
+        panic!("errors: {:?}", errors)
     }
 }
 
@@ -223,7 +237,7 @@ async fn send_solution(
     order_contract: &String,
     rpc: &CosmosChainInfo,
     gas: Gas,
-) {
+) -> Result<(), MantisError> {
     log::info!("========================= settle =========================");
     let auth_info = simulate_and_set_fee(signing_key, &tip.account, gas).await;
     let msg = to_exec_signed(signing_key, order_contract.clone(), msg);
@@ -234,14 +248,14 @@ async fn send_solution(
         signing_key,
         tip,
     )
-    .await;
+    .await?;
     match &result.tx_result.code {
         cosmrs::tendermint::abci::Code::Err(err) => {
             log::error!("solution result: {:?}", result);
-            panic!("Error: {:?}", err)
         }
         cosmrs::tendermint::abci::Code::Ok => {
             log::trace!("ok: {:?}", result);
         }
     }
+    Ok(())
 }

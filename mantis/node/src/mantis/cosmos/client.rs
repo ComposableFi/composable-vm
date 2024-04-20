@@ -1,4 +1,4 @@
-use crate::prelude::*;
+use crate::{error::MantisError, prelude::*};
 
 use cosmos_sdk_proto::cosmos::auth::v1beta1::BaseAccount;
 use cosmrs::{
@@ -132,17 +132,24 @@ pub async fn sign_and_tx_tendermint(
     rpc: &str,
     sign_doc: SignDoc,
     signing_key: &cosmrs::crypto::secp256k1::SigningKey,
-) -> cosmrs::rpc::endpoint::broadcast::tx_commit::Response {
+) -> Result<cosmrs::rpc::endpoint::broadcast::tx_commit::Response, MantisError> {
     let rpc_client: cosmrs::rpc::HttpClient = cosmrs::rpc::HttpClient::new(rpc).unwrap();
     let tx_raw = sign_doc.sign(signing_key).expect("signed");
-    let result = tx_raw
-        .broadcast_commit(&rpc_client)
-        .await
-        .expect("broadcasted");
+
+    let result = tx_raw.broadcast_commit(&rpc_client).await.map_err(|x| {
+        MantisError::FailedToBroadcastTx {
+            source: x.to_string(),
+        }
+    })?;
+
+    if result.check_tx.code.is_err() || result.tx_result.code.is_err() {
+        log::error!("tx error: {:?}", result);
+        return Err(MantisError::FailedToExecuteTx {
+            source: format!("{:?}", result),
+        });
+    }
     log::trace!("result: {:?}", result);
-    assert!(!result.check_tx.code.is_err(), "err");
-    assert!(!result.tx_result.code.is_err(), "err");
-    result
+    Ok(result)
 }
 
 #[derive(Debug, Clone)]
@@ -157,7 +164,7 @@ pub async fn tx_broadcast_single_signed_msg(
     rpc: &CosmosChainInfo,
     signing_key: &cosmrs::crypto::secp256k1::SigningKey,
     tip: &Tip,
-) -> cosmrs::rpc::endpoint::broadcast::tx_commit::Response {
+) -> Result<cosmrs::rpc::endpoint::broadcast::tx_commit::Response, MantisError> {
     let tx_body = tx::Body::new(vec![msg], "", Height::try_from(tip.timeout(100)).unwrap());
 
     let sign_doc = SignDoc::new(

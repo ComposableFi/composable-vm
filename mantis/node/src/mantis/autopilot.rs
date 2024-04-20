@@ -19,7 +19,7 @@ pub async fn cleanup(
     tip: &Tip,
     gas: Gas,
 ) {
-    log::info!("========================= cleanup =========================");
+    log::info!(target: "mantis::autopilot", " cleanup of old orders");
     let auth_info = simulate_and_set_fee(signing_key, &tip.account, gas).await;
     let msg = cw_mantis_order::ExecMsg::Timeout {
         orders: vec![],
@@ -33,7 +33,8 @@ pub async fn cleanup(
         signing_key,
         tip,
     )
-    .await;
+    .await
+    .expect("cleaned");
     match &result.tx_result.code {
         cosmrs::tendermint::abci::Code::Err(err) => {
             log::error!("clean result: {:?}", result);
