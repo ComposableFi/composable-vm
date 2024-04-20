@@ -55,6 +55,7 @@ app = create_app()
 """
 app = FastAPI()
 
+# ttl is in seconds
 cache = PersistentCache(TTLCache, filename="$TEMP/get_remote_data.cache", ttl=240, maxsize=2)
 
 

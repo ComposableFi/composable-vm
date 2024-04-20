@@ -138,7 +138,7 @@ async fn simulate_orders(simulate_args: &SimulateArgs) {
     let mut write_client = create_wasm_write_client(&args.rpc_centauri).await;
     log::info!("Simulating orders");
 
-    let tip =
+    let mut tip =
         get_latest_block_and_account_by_key(&args.rpc_centauri, &args.grpc_centauri, &signer).await;
 
     assert!(simulate_args.coins.len() > 0);
@@ -162,6 +162,7 @@ async fn simulate_orders(simulate_args: &SimulateArgs) {
             simulate_args.random_parts,
         )
         .await;
+        tip.account.sequence += 1;
     }
 }
 
