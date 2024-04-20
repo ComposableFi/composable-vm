@@ -100,7 +100,7 @@ pub struct SimulateArgs {
     #[arg(long, default_value_t = 3)]
     pub random_parts: u8,
 
-    #[arg(long, default_value_t = 240)]
+    #[arg(long, default_value_t = 360)]
     pub duration: u32,
 }
 
