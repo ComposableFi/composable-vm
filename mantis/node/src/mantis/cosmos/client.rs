@@ -139,7 +139,7 @@ pub async fn sign_and_tx_tendermint(
         .broadcast_commit(&rpc_client)
         .await
         .expect("broadcasted");
-    log::error!("result: {:?}", result);
+    log::trace!("result: {:?}", result);
     assert!(!result.check_tx.code.is_err(), "err");
     assert!(!result.tx_result.code.is_err(), "err");
     result

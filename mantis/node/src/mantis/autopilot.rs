@@ -36,11 +36,10 @@ pub async fn cleanup(
     .await;
     match &result.tx_result.code {
         cosmrs::tendermint::abci::Code::Err(err) => {
-            log::warn!("result: {:?}", result);
-            panic!("Error: {:?}", err)
+            log::error!("clean result: {:?}", result);
         }
         cosmrs::tendermint::abci::Code::Ok => {
-            log::info!("ok: {:?}", result);
+            log::trace!("ok: {:?}", result);
         }
     }
 }

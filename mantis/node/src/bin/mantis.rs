@@ -237,11 +237,11 @@ async fn send_solution(
     .await;
     match &result.tx_result.code {
         cosmrs::tendermint::abci::Code::Err(err) => {
-            log::info!("result: {:?}", result);
+            log::error!("solution result: {:?}", result);
             panic!("Error: {:?}", err)
         }
         cosmrs::tendermint::abci::Code::Ok => {
-            log::info!("ok: {:?}", result);
+            log::trace!("ok: {:?}", result);
         }
     }
 }
