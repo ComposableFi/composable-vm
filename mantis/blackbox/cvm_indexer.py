@@ -147,8 +147,8 @@ class ExtendedCvmRegistry(BaseModel):
                 indexer = [c for c in indexers_2.root if c.id == str(pool_id) or c.pool_id == str(pool_id)]
                 if any(indexer):
                     indexer = indexer[0]                    
-                    token_a = indexer.token0 if indexer.token0 else indexer.pool_assets[0].token.denom
-                    token_b = indexer.token1 if indexer.token1 else indexer.pool_assets[1].token.denom
+                    token_a = indexer.token0 if indexer.token0 else indexer.pool_assets[0].token.denom if indexer.pool_assets else indexer.tokens[0].denom
+                    token_b = indexer.token1 if indexer.token1 else indexer.pool_assets[1].token.denom if indexer.pool_assets else indexer.tokens[1].denom
                     asset_a = find_asset_by_token(token_a)
                     asset_b = find_asset_by_token(token_b)
 
@@ -160,10 +160,10 @@ class ExtendedCvmRegistry(BaseModel):
                         continue
 
                     token_a_amount = (
-                        int(indexer.token0Amount) if indexer.token0Amount else indexer.pool_assets[0].token.amount
+                        int(indexer.token0Amount) if indexer.token0Amount else indexer.pool_assets[0].token.amount if indexer.pool_assets else indexer.tokens[0].amount
                     )
                     token_b_amount = (
-                        int(indexer.token1Amount) if indexer.token1Amount else indexer.pool_assets[1].token.amount
+                        int(indexer.token1Amount) if indexer.token1Amount else indexer.pool_assets[1].token.amount if indexer.pool_assets else indexer.tokens[1].amount
                     )
                     weight_a = 1
                     weight_b = 1
